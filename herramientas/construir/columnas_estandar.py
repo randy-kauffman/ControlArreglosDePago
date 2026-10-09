@@ -8,15 +8,17 @@ una vez; se vuelve a leer y se compara con las MISMAS comprobaciones que una tab
 idioma y lo propio de cada tipo), más que ninguna columna con el prefijo del publisher falte en el playbook (una tabla estándar trae cientos
 de columnas del sistema: «columnas de más» solo cuenta las propias del publisher, salvo lookups y sombras).
 
-**Variante sin ensayar (0 ciclos).** Mientras no pase por un ciclo completo la herramienta devuelve `bloqueado`:
-- `variante:columnas-estandar`: que la tabla acepte columnas propias (`CanCreateAttributes`), que se pueda publicar una tabla estándar y la
-  combinación tipo de columna por tabla (el primer ciclo es un entero sobre `email`).
-- `variante:pertenencia`: la pertenencia a la solución. Learn recomienda agregar solo lo nuevo; lo esperado es que la tabla figure con
-  `rootcomponentbehavior` distinto de 0, pero si el alta con la cabecera agrega la tabla así y qué filas quedan (columna, tabla) no se sabe.
-  Mientras no esté verificada la herramienta la OBSERVA y la informa (con las filas que ve), y nunca la da por buena. Si alguien la marca
-  verificada, exige que la tabla figure en la solución, una vez, con `rootcomponentbehavior` distinto de 0.
-`--permitir-no-verificadas` corre la receta, pero solo si TODAS las columnas del playbook son descartables (`_zz` en el nombre): el ensayo se
-hace con columnas que se borran después, nunca con las del diseño. Las banderas de reparación de `tabla.py` no aplican a esta variante.
+**Variante ensayada (2026-10-09, Dev).** El primer ciclo fue `email_zz`: un entero `sanic_zztiemporespuesta` sobre `email`, con
+`--permitir-no-verificadas` → `creado`. Las dos características de la variante están en `tb.VERIFICADAS_EN_PLATAFORMA`:
+- `variante:columnas-estandar`: la tabla estándar aceptó la columna (`CanCreateAttributes`) y se pudo publicar; la tabla no se toca.
+- `variante:pertenencia`: en `solutioncomponents` la tabla `email` quedó UNA vez con `rootcomponentbehavior` 1 y la columna con 1 fila; la
+  solución exportada trae `<RootComponent type="1" schemaName="email" behavior="1" />` y en customizations.xml la entidad Email trae SOLO la
+  columna agregada (sin formularios ni vistas). Criterio fijado, que la herramienta EXIGE (si no se cumple, `difiere`; al crear, `error`): la
+  tabla figura en la solución exactamente una vez con `rootcomponentbehavior` distinto de 0, y cada columna con exactamente una fila.
+Si una característica de la variante volviera a estar sin verificar (`verificadas` sin ella), la herramienta devuelve `bloqueado` y la pertenencia
+solo se OBSERVA y se informa («NO verificada»), nunca se da por buena.
+`--permitir-no-verificadas` corre la receta de algo sin ensayar, pero solo si TODAS las columnas del playbook son descartables (`_zz` en el nombre): el
+ensayo se hace con columnas que se borran después, nunca con las del diseño. Las banderas de reparación de `tabla.py` no aplican a esta variante.
 
 Última línea de la salida: JSON de una línea con `estado` (creado | ya_existia | difiere | bloqueado | error), `componente` (la tabla estándar)
 y `detalle`.
@@ -46,18 +48,16 @@ from _comun import (  # noqa: E402
 
 TIPO = "columnas-estandar"
 CLAVES_VARIANTE = {"tipo": str, "tabla": str, "columnas": list}
-CARACTERISTICAS_DE_LA_VARIANTE = frozenset({"variante:columnas-estandar", "variante:pertenencia"})
+CARACTERISTICAS_DE_LA_VARIANTE = tb.CARACTERISTICAS_DE_LA_VARIANTE  # definidas junto a las verificadas de `tabla.py`, que es quien arma el gate
 INFIJO_DESCARTABLE_COLUMNA = "_zz"
 TIPOS_NO_ENSAYADOS_EN_ESTANDAR = ("autonumerico", "archivo")  # `tabla.md` sección 6: «no se admiten, no se ensayaron sobre una estándar»
+PREFIJO_PERTENENCIA = "pertenencia a la solución"
 COMPONENTE_ATRIBUTO = 2  # tipo de componente de una columna en solutioncomponents
 REPARACIONES_QUE_NO_APLICAN = ("--corregir-primaria", "--publicar", "--corregir-nombres", "--agregar-columnas")
 
-PENDIENTE_DE_LA_VARIANTE = {
-    "variante:columnas-estandar": "variante sin ciclo completo: falta comprobar que la tabla estándar acepte columnas propias en este entorno (CanCreateAttributes), "
-                                  "que se pueda publicar una tabla estándar y la combinación tipo de columna por tabla (el primer ciclo es un entero sobre `email`)",
-    "variante:pertenencia": "la pertenencia a la solución no tiene criterio fijado: falta comprobar si crear la columna con la cabecera MSCRM.SolutionUniqueName agrega "
-                            "la tabla con rootcomponentbehavior distinto de 0 y qué filas de solutioncomponents quedan (columna, tabla)",
-}
+# Nada pendiente: las dos características de la variante se ensayaron el 2026-10-09 (ver `tb.CARACTERISTICAS_DE_LA_VARIANTE`). El diccionario queda para la
+# próxima característica de la variante que se agregue sin ensayar: su texto de «qué falta comprobar» se dice en el bloqueo, nunca se supone.
+PENDIENTE_DE_LA_VARIANTE = {}
 
 
 # ---------------------------------------------------------------------------
@@ -131,13 +131,13 @@ def comprobar_tabla(dv, datos, identidad):
 
 
 def _pertenencia(dv, datos, solution_id, info, en_entorno, verificadas, difs, notas):
-    """Pertenencia a la solución. Siempre se OBSERVA (la tabla y cada columna, con `rootcomponentbehavior`); solo se EXIGE si `variante:pertenencia` está
-    verificada. La skill fija la expectativa de la tabla (figura en la solución con `rootcomponentbehavior` distinto de 0) y deja pendiente qué filas
-    crea cada columna: por eso de las columnas solo se informa."""
+    """Pertenencia a la solución. Siempre se OBSERVA (la tabla y cada columna, con `rootcomponentbehavior`); se EXIGE si `variante:pertenencia` está
+    verificada (ensayo del 2026-10-09): la tabla figura en la solución exactamente una vez con `rootcomponentbehavior` distinto de 0 y cada columna
+    con exactamente una fila. Sin verificar, solo se informa."""
     consulta = "la consulta de pertenencia a la solución (GET solutioncomponents)"
     filas = tb._lista(dv, f"solutioncomponents?$filter=_solutionid_value eq {solution_id} and objectid eq {info['metadata_id']} and componenttype eq {tb.COMPONENTE_TABLA}", consulta)
     comportamientos = [exigir_forma(f.get("rootcomponentbehavior"), int, consulta, f"value[{i}].rootcomponentbehavior", permite_nulo=True) for i, f in enumerate(filas)]
-    por_columna = []
+    por_columna, columnas_mal = [], []
     for c in datos["columnas"]:
         g = en_entorno.get(c["nombre"])
         if g is None:
@@ -145,12 +145,16 @@ def _pertenencia(dv, datos, solution_id, info, en_entorno, verificadas, difs, no
         id_columna = exigir_forma(g.get("MetadataId"), str, "la consulta de las columnas", f"value[{g['_i']}].MetadataId", no_vacio=True)
         del_columna = tb._lista(dv, f"solutioncomponents?$filter=_solutionid_value eq {solution_id} and objectid eq {id_columna} and componenttype eq {COMPONENTE_ATRIBUTO}", consulta)
         por_columna.append(f"{c['nombre']}: {len(del_columna)} fila(s)")
+        if len(del_columna) != 1:
+            columnas_mal.append(f"{c['nombre']} tiene {len(del_columna)} fila(s)")
     if "variante:pertenencia" in verificadas:
         if len(filas) != 1 or comportamientos[0] in (None, 0):
-            difs.append(f"pertenencia a la solución: la tabla '{datos['tabla']}' tiene que figurar una vez en la solución con rootcomponentbehavior distinto de 0 "
+            difs.append(f"{PREFIJO_PERTENENCIA}: la tabla '{datos['tabla']}' tiene que figurar una vez en la solución con rootcomponentbehavior distinto de 0 "
                         f"(0 la arrastraría entera al managed); hay {len(filas)} fila(s), rootcomponentbehavior {comportamientos}")
+        if columnas_mal:
+            difs.append(f"{PREFIJO_PERTENENCIA}: cada columna tiene que figurar una vez en la solución; {'; '.join(columnas_mal)}")
     else:
-        notas.append(f"pertenencia a la solución NO verificada (criterio pendiente de fijar en el primer ciclo): la tabla '{datos['tabla']}' tiene {len(filas)} fila(s) "
+        notas.append(f"pertenencia a la solución NO verificada (la variante se está corriendo sin esa característica verificada): la tabla '{datos['tabla']}' tiene {len(filas)} fila(s) "
                      f"en solutioncomponents (rootcomponentbehavior {comportamientos}); columnas: {'; '.join(por_columna) or 'ninguna'}")
 
 
@@ -165,11 +169,15 @@ def verificar(dv, datos, identidad, solution_id, info, verificadas):
 
 def _faltan_solo_columnas(datos, diffs):
     """Si TODAS las diferencias son columnas (no fórmulas) que el playbook declara y el entorno no tiene, devuelve esas columnas en orden; si hay
-    cualquier otra diferencia, `None`: una columna que difiere no se toca."""
+    cualquier otra diferencia, `None`: una columna que difiere no se toca. La pertenencia a la solución no cuenta como «otra diferencia» mientras
+    falten columnas: la tabla estándar entra a la solución recién cuando se agrega la primera columna con la cabecera MSCRM.SolutionUniqueName
+    (ensayo del 2026-10-09), así que antes del alta es esperable que no figure; se exige al releer, ya con las columnas."""
     prefijo = "falta la columna "
     declaradas = {c["nombre"] for c in datos["columnas"]}
     faltan = set()
     for d in diffs:
+        if d.startswith(PREFIJO_PERTENENCIA):
+            continue
         if not d.startswith(prefijo) or d[len(prefijo):] not in declaradas:
             return None
         faltan.add(d[len(prefijo):])

@@ -101,26 +101,40 @@ ESTADOS_DE_TABLA = (0, 1)  # statecode: activo / inactivo; fijos en la plataform
 MOTIVO_POR_DEFECTO = {0: 1, 1: 2}  # statecode -> valor del motivo que trae la plataforma
 PROPIEDAD = {"usuario": "UserOwned", "organizacion": "OrganizationOwned"}
 
+# La variante `columnas-estandar` (`columnas_estandar.py`): columnas propias sobre una tabla estándar. No son características de un playbook de tabla,
+# pero el mismo gate (`verificadas`) las gobierna. Ensayada el 2026-10-09 (Dev, org36e60d9d; playbook `email_zz`: entero `sanic_zztiemporespuesta`
+# sobre `email`, `--permitir-no-verificadas` → `creado`): la tabla estándar aceptó la columna (CanCreateAttributes) y se publicó; en `solutioncomponents`
+# la tabla `email` quedó UNA vez con `rootcomponentbehavior` 1 y la columna con 1 fila; la solución exportada trae `<RootComponent type="1"
+# schemaName="email" behavior="1" />` y en customizations.xml la entidad Email trae SOLO el atributo `sanic_zztiemporespuesta` (sin formularios ni vistas).
+# Criterio de pertenencia fijado: la tabla figura en la solución exactamente una vez con `rootcomponentbehavior` distinto de 0 y cada columna con 1 fila.
+CARACTERISTICAS_DE_LA_VARIANTE = frozenset({"variante:columnas-estandar", "variante:pertenencia"})
+SIN_ENSAYAR_DE_LA_VARIANTE = frozenset()
 # Todo lo que el formato admite…
 CARACTERISTICAS = frozenset({f"tipo:{t}" for t in CLAVES_POR_TIPO} | {"tabla:auditoria", "columna:auditoria", "columna:protegida", "primaria:autonumerica",
                                                                        "decimal:precision0", "motivos_estado"})
 # …lo que la skill 0.2.0 agregó y NO tiene ciclo completo contra la plataforma (`tabla.md` y la receta de `construir`, 2.2:
-# «Características que el playbook ya admite y la herramienta aún no ensayó»)…
-SIN_ENSAYAR = frozenset({"tipo:decimal", "decimal:precision0", "tipo:formula", "motivos_estado"})
+# «Características que el playbook ya admite y la herramienta aún no ensayó»). Quedan la precisión 0 de un decimal y la fórmula (que además
+# crea una persona, no la herramienta)…
+SIN_ENSAYAR = frozenset({"decimal:precision0", "tipo:formula"})
 # …y lo que ya se comprobó contra la plataforma real. Un playbook que usa algo
 # que no está acá se bloquea: primero se ensaya sobre una tabla descartable
 # (`…_tbl_zz…`, con --permitir-no-verificadas) y recién después se mueve de SIN_ENSAYAR a acá, con la fecha del ensayo.
 # Los 9 tipos de la versión 0.1.0 de la skill (texto, autonumérico, multilínea, entero, choice, sí/no, fecha, fecha y hora, archivo),
 # la primaria autonumérica, la auditoría de tabla y de columna y una columna protegida se ensayaron con el proyecto 2026-001
 # (2026-09-20 y 2026-09-21: creado, releído y `ya_existia`).
-VERIFICADAS_EN_PLATAFORMA = frozenset(CARACTERISTICAS - SIN_ENSAYAR)
+# `tipo:decimal` y `motivos_estado` se ensayaron el 2026-10-09 (Dev, org36e60d9d, tabla descartable `sanic_carp_tbl_zzensayo`, `--permitir-no-verificadas`:
+# `creado`, verificación propia OK y releído a mano en `EntityDefinitions`):
+# - Decimal: `MinValue`/`MaxValue`/`Precision` vuelven exactos (0 / 999999999.99 / 2 y -1000 / 1000 / 4) e `IsAuditEnabled` se respeta; en el XML
+#   exportado es `<Type>decimal</Type>` con `MinValue`, `MaxValue` y `Accuracy` (la precisión).
+# - Motivos de estado: `UpdateOptionValue` sobre statuscode SÍ renombra los dos motivos por defecto (1 y 2) en 1033 y 3082; `InsertStatusValue` respeta
+#   el `Value` explícito (159460001..3) con su `State`; `$expand=OptionSet` sobre `StatusAttributeMetadata` devuelve las opciones con `State`; un alta
+#   sin statuscode toma statecode 0 / statuscode 1; un PATCH de statecode 0 con un statuscode del estado 1 lo rechaza la plataforma (400); statecode y
+#   statuscode nacen con `IsAuditEnabled = true` si la tabla es auditada. En el XML: `<attribute PhysicalName="statuscode">` con `<statuses><status value state>`.
+VERIFICADAS_EN_PLATAFORMA = frozenset(CARACTERISTICAS - SIN_ENSAYAR) | (CARACTERISTICAS_DE_LA_VARIANTE - SIN_ENSAYAR_DE_LA_VARIANTE)
 # Qué está pendiente de cada característica sin ensayar (receta de `construir`, 2.2): se dice en el mensaje, nunca se supone.
 PENDIENTE_DE_VERIFICAR = {
-    "tipo:decimal": "columna decimal sin ciclo completo: falta comprobar que MinValue/MaxValue vuelvan exactos y el aspecto de la columna en el XML exportado",
     "decimal:precision0": "Learn documenta la precisión de 1 a 10: el 0 en una columna decimal común está pendiente de verificar "
                           "(si el diseño pide cero decimales, la columna es un `entero`)",
-    "motivos_estado": "falta comprobar que UpdateOptionValue acepte statuscode (si no, renombrar los dos motivos por defecto es un paso manual), "
-                      "que InsertStatusValue respete un Value explícito, cómo se expanden las opciones del status en la lectura y qué motivo toma un alta sin statuscode",
     "tipo:formula": "la fórmula no se crea por código (paso manual); falta comprobar cómo guarda FormulaDefinition el editor, "
                     "con qué IsAuditEnabled nace y si deja las etiquetas de los demás idiomas",
 }

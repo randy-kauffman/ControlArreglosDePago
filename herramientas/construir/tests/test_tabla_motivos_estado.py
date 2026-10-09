@@ -4,9 +4,12 @@ Dominio: los motivos de Conversación (3) y de Arreglo (5), diccionario de datos
 1 Inactivo) que no se personalizan; `statuscode` parte de los motivos 1 (estado 0) y 2 (estado 1), que se RENOMBRAN, y se agregan los
 demás con el prefijo de opciones del publisher.
 
-Sin ensayar contra la plataforma (0 ciclos): `UpdateOptionValue` sobre `statuscode`, `InsertStatusValue` con `Value` explícito y la
-forma de la lectura de las opciones del status están pendientes de verificar. Los dobles de estas pruebas REPITEN la suposición del
-código sobre esa forma (patrones de pruebas, 2.2): se validan contra una respuesta real en el primer ciclo. Ninguna prueba toca la red."""
+Ensayado contra la plataforma el 2026-10-09 (Dev, tabla descartable `sanic_carp_tbl_zzensayo`): `UpdateOptionValue` sobre `statuscode` SÍ renombra
+los dos motivos por defecto (1 y 2, en 1033 y 3082); `InsertStatusValue` respeta el `Value` explícito (159460001..3) con su `State`;
+`$expand=OptionSet` sobre `StatusAttributeMetadata` devuelve las opciones con `State`; un alta sin `statuscode` toma statecode 0 / statuscode 1;
+`statecode` y `statuscode` nacen auditados si la tabla lo es. `motivos_estado` está en `VERIFICADAS_EN_PLATAFORMA`. Los dobles de estas pruebas
+repiten esa forma (ya comprobada contra una respuesta real); para probar el mecanismo del gate se simula la característica sin verificar con
+`SIN_MOTIVOS`. Ninguna prueba toca la red."""
 import copy
 import os
 import sys
@@ -150,20 +153,41 @@ class ValidacionDeLosMotivos(Base):
         self.assertIn("10000", detalle)
 
 
+class MotivosVerificados(Base):
+    def test_los_motivos_de_estado_estan_verificados_y_ya_no_estan_sin_ensayar(self):
+        self.assertIn("motivos_estado", tb.CARACTERISTICAS)
+        self.assertIn("motivos_estado", tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertNotIn("motivos_estado", tb.SIN_ENSAYAR)
+        self.assertNotIn("motivos_estado", tb.PENDIENTE_DE_VERIFICAR)
+
+    def test_un_playbook_con_motivos_no_se_bloquea_por_eso_con_las_verificadas_por_defecto(self):
+        # tabla real (sin el infijo `_zz`) y sin --permitir-no-verificadas: el gate deja pasar los motivos
+        real = dict(copy.deepcopy(ARREGLO), nombre="sanic_carp_tbl_arreglo")
+        cliente = tt.armar(ClienteSimulado(), real)
+        estado, _, detalle = self.con_cliente(cliente, real, verificadas=tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertEqual(estado, "ya_existia", detalle)
+        self.assertNotIn("motivos_estado", detalle)
+
+    def test_crear_con_motivos_con_las_verificadas_por_defecto(self):
+        cliente = tt.armar(ClienteSimulado(), ARREGLO, existe=False)
+        estado, _, detalle = self.con_cliente(cliente, ARREGLO, verificadas=tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertEqual(estado, "creado", detalle)
+        self.assertTrue(any(l["ruta"] == "InsertStatusValue" for l in cliente.llamadas))
+
+
 class MotivosSinEnsayar(Base):
-    def test_sin_el_flag_es_bloqueado_sin_tocar_la_red_y_dice_que_esta_pendiente(self):
+    """El gate con `motivos_estado` simulado como NO verificado (`SIN_MOTIVOS`): el mecanismo sigue valiendo para cualquier característica nueva."""
+
+    def test_sin_el_flag_es_bloqueado_sin_tocar_la_red_y_dice_que_hay_que_ensayar(self):
         centinela = FabricaCentinela()
         estado, _, detalle = self.correr(centinela, ARREGLO, verificadas=SIN_MOTIVOS)
         self.assertEqual(estado, "bloqueado", detalle)
         self.assertIn("motivos_estado", detalle)
         self.assertIn("--permitir-no-verificadas", detalle)
-        self.assertIn("UpdateOptionValue", detalle)
-        self.assertIn("InsertStatusValue", detalle)
         self.assertFalse(centinela.llamada)
 
     def test_motivos_null_no_usa_la_caracteristica(self):
         self.assertIn("motivos_estado", tb.CARACTERISTICAS)
-        self.assertNotIn("motivos_estado", tb.VERIFICADAS_EN_PLATAFORMA)
         self.assertIn("motivos_estado", tb.caracteristicas_usadas(ARREGLO))
         self.assertNotIn("motivos_estado", tb.caracteristicas_usadas(dict(ARREGLO, motivos_estado=None)))
         cliente = tt.armar(ClienteSimulado(), dict(ARREGLO, motivos_estado=None))

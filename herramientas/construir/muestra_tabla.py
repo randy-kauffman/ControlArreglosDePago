@@ -10,11 +10,18 @@ bien. Solo lee.
 Sin playbooks, compara todos los de `<carpeta de playbooks>/tabla/` (no los de `ensayos/`); la carpeta sale de `proyecto.json`.
 Con `--guardar`, deja el XML real de cada tabla en `<carpeta de playbooks>/tabla/muestras/`.
 
-Lo que la skill 0.2.0 agregó (columnas `decimal` y `formula`, motivos de estado) no tiene todavía una muestra real de cómo se ve en el XML
-exportado: la herramienta no inventa esa forma. Lo nombra como «sin comparar» (`no_comparables`) y el playbook no sale `OK` hasta que una
-muestra real fije la comparación.
+Lo que la skill 0.2.0 agregó se compara según tenga o no una exportación real (2026-10-09, `tests/muestras/tabla/sanic_carp_tbl_zzensayo_decimal_motivos.*`):
+- Columna `decimal`: `<Type>decimal</Type>` con `<MinValue>`, `<MaxValue>` y `<Accuracy>` (la precisión). Los tres se comparan NUMÉRICAMENTE con
+  `decimal.Decimal` (el XML dice `0` y el playbook puede decir `0` o `0.0`; `999999999.99` tiene que coincidir exacto, sin pasar por `float`).
+- Motivos de estado (`motivos_estado`): el atributo `statuscode` trae `<statuses><status value state>` con las etiquetas por idioma. Si el playbook
+  declara motivos, se comparan en los DOS sentidos (cada motivo declarado: valor, `statecode` = `state` y etiqueta en cada idioma; y cada `<status>` del
+  XML que el playbook no declara es una diferencia, «sobra»). Si es `null` no se compara nada de `statuscode`: la tabla trae los de la plataforma.
+  La `descripcion` de un motivo NO aparece en el XML: no se compara.
+- Columna `formula`: sin muestra real todavía (la crea una persona, la plataforma no la acepta por código). La herramienta no inventa su forma: la
+  nombra como «sin comparar» (`no_comparables`) y el playbook no sale `OK` hasta que una muestra real fije la comparación.
 """
 import base64
+import decimal
 import glob
 import io
 import json
@@ -31,17 +38,42 @@ from _comun import carpeta_playbooks, dividir_secciones, escribir_metadatos, lee
 
 TIPO = "tabla"
 COMPONENTE_TABLA = "1"
-# Cómo se ve cada tipo del playbook en el XML de la solución (observado, 2026-09-20).
-TIPO_XML = {"texto": "nvarchar", "autonumerico": "nvarchar", "memo": "ntext", "entero": "int", "choice": "picklist",
+# Cómo se ve cada tipo del playbook en el XML de la solución (observado, 2026-09-20; `decimal` observado el 2026-10-09).
+TIPO_XML = {"texto": "nvarchar", "autonumerico": "nvarchar", "memo": "ntext", "entero": "int", "decimal": "decimal", "choice": "picklist",
             "sino": "bit", "fecha": "datetime", "fechahora": "datetime", "archivo": "file"}
 PROPIEDAD_XML = {"usuario": "UserOwned", "organizacion": "OrgOwned"}
-TIPOS_SIN_MUESTRA = ("decimal", "formula")  # skill 0.2.0: sin exportación real de cómo se ven en el XML
+TIPOS_SIN_MUESTRA = ("formula",)  # skill 0.2.0: sin exportación real de cómo se ve en el XML (decimal y motivos de estado ya la tienen, 2026-10-09)
+ATRIBUTO_MOTIVOS = "statuscode"  # el atributo de la tabla cuyo `<optionset>` trae los `<status>`
 NO_DECLARABLES = {"lookup", "owner", "primarykey", "uniqueidentifier", "virtual"}
 
 
 def _etiquetas(nodo, contenedor, hijo):
     c = nodo.find(contenedor) if nodo is not None else None
     return {} if c is None else {int(e.get("languagecode")): e.get("description") or "" for e in c.findall(hijo)}
+
+
+def _comparar_motivos(atributo, motivos, idiomas, texto, difs):
+    """Los motivos de estado declarados contra los `<status value state>` del atributo `statuscode`, en los DOS sentidos. `texto` es el comparador de
+    etiquetas por idioma de `comparar_con_xml` (también denuncia una etiqueta en un idioma que el playbook no declara). La `descripcion` de un motivo
+    NO se compara: no aparece en el XML exportado."""
+    if atributo is None:
+        difs.append(f"motivos_estado: la tabla exportada no tiene el atributo {ATRIBUTO_MOTIVOS}")
+        return
+    en_xml = {}
+    for st in atributo.iter("status"):
+        en_xml[int(st.get("value"))] = (st.get("state"), _etiquetas(st, "labels", "label"))
+    declarados = {m["valor"] for m in motivos}
+    for m in motivos:
+        v = m["valor"]
+        if v not in en_xml:
+            difs.append(f"motivos_estado[{v}]: el playbook lo declara y el statuscode del XML no lo tiene (falta)")
+            continue
+        estado, etiquetas = en_xml[v]
+        if estado != str(m["statecode"]):
+            difs.append(f"motivos_estado[{v}].statecode: xml={estado!r} playbook={str(m['statecode'])!r}")
+        texto(etiquetas, m["etiqueta"], f"motivos_estado[{v}].etiqueta")
+    for v in sorted(en_xml.keys() - declarados):
+        difs.append(f"motivos_estado[{v}]: el statuscode del XML lo tiene y el playbook no lo declara (sobra)")
 
 
 def comparar_con_xml(customizations_xml, datos, idiomas):
@@ -65,6 +97,17 @@ def comparar_con_xml(customizations_xml, datos, idiomas):
     def igual(nodo, etiqueta, esperado, que):
         real = (nodo.findtext(etiqueta) or "").strip()
         if real != str(esperado):
+            difs.append(f"{que}: xml={real!r} playbook={str(esperado)!r}")
+
+    def numero(nodo, etiqueta, esperado, que):
+        """Compara un número del XML con el del playbook como `Decimal`: `0` == `0.0`, y `999999999.99` exacto (un `float` del playbook se pasa por su
+        texto más corto, no por su aproximación binaria). Un valor del XML que no es un número es una diferencia, no una excepción."""
+        real = (nodo.findtext(etiqueta) or "").strip()
+        try:
+            igual_numerico = decimal.Decimal(real) == decimal.Decimal(str(esperado))
+        except decimal.InvalidOperation:
+            igual_numerico = False
+        if not igual_numerico:
             difs.append(f"{que}: xml={real!r} playbook={str(esperado)!r}")
 
     texto(_etiquetas(ent, "LocalizedNames", "LocalizedName"), datos["displayname"], "displayname")
@@ -101,6 +144,10 @@ def comparar_con_xml(customizations_xml, datos, idiomas):
         elif tipo == "entero":
             igual(a, "MinValue", c["minimo"], f"{n}.minimo")
             igual(a, "MaxValue", c["maximo"], f"{n}.maximo")
+        elif tipo == "decimal":
+            numero(a, "MinValue", c["minimo"], f"{n}.minimo")
+            numero(a, "MaxValue", c["maximo"], f"{n}.maximo")
+            numero(a, "Accuracy", c["precision"], f"{n}.precision")  # en el XML la precisión de un decimal es <Accuracy>
         elif tipo == "choice":
             igual(a, "OptionSetName", c["choice"], f"{n}.choice")
         elif tipo == "sino":
@@ -110,6 +157,9 @@ def comparar_con_xml(customizations_xml, datos, idiomas):
         elif tipo in ("fecha", "fechahora"):
             igual(a, "Format", "date" if tipo == "fecha" else "datetime", f"{n}.tipo (formato de la fecha)")
             igual(a, "Behavior", 2 if tipo == "fecha" else 1, f"{n}.tipo (comportamiento: 1 usuario local, 2 fecha sola)")
+
+    if datos.get("motivos_estado") is not None:
+        _comparar_motivos(attrs.get(ATRIBUTO_MOTIVOS), datos["motivos_estado"], idiomas, texto, difs)
 
     nombres = {c["nombre"] for c in declaradas}
     for n, a in sorted(attrs.items()):
@@ -136,10 +186,9 @@ def no_coinciden(veredictos):
 
 
 def no_comparables(datos):
-    """Lo que esta herramienta NO sabe comparar contra el XML por falta de una muestra real (skill 0.2.0). Cada ítem lo dice con la misma frase."""
+    """Lo que esta herramienta NO sabe comparar contra el XML por falta de una muestra real (skill 0.2.0): hoy solo las columnas `formula`. Cada ítem
+    lo dice con la misma frase."""
     cosas = [f"{c['nombre']} (columna {c['tipo']})" for c in datos["columnas"] if c["tipo"] in TIPOS_SIN_MUESTRA]
-    if datos.get("motivos_estado") is not None:
-        cosas.append("motivos_estado (motivos de estado de statuscode)")
     return [f"{cosa}: sin muestra real de cómo se ve en el XML exportado; se compara cuando un ciclo asiente la forma" for cosa in cosas]
 
 

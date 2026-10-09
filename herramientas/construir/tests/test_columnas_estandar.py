@@ -1,10 +1,11 @@
 """`tabla.py` con un playbook `columnas-estandar` (skill power-platform-especificar 0.2.0, `tabla.md` sección 6): columnas PROPIAS sobre una
 tabla estándar que ya existe, sin crear ni modificar la tabla.
 
-Dominio: `sanic_tiemporespuesta` (entero) sobre `email` (diccionario de datos, sección 5). Variante SIN ENSAYAR (0 ciclos): la herramienta
-devuelve `bloqueado` salvo con `--permitir-no-verificadas`, y ese flag solo vale si TODAS las columnas son descartables (`_zz`). La
-pertenencia a la solución es un pendiente de la skill: la herramienta la OBSERVA y la informa, y solo la exige cuando alguien marca
-`variante:pertenencia` como verificada. Ninguna prueba toca la red."""
+Dominio: `sanic_tiemporespuesta` (entero) sobre `email` (diccionario de datos, sección 5). La variante se ENSAYÓ contra la plataforma el
+2026-10-09 (`email_zz`: entero `sanic_zztiemporespuesta` sobre `email`): `variante:columnas-estandar` y `variante:pertenencia` están en
+`tb.VERIFICADAS_EN_PLATAFORMA` y la herramienta EXIGE la pertenencia (la tabla una vez con `rootcomponentbehavior` distinto de 0 y cada columna
+con una fila). Para probar lo que pasa ANTES de un ensayo (bloqueo, observar sin exigir, `--permitir-no-verificadas` solo con columnas `_zz`) las
+pruebas simulan la variante sin verificar con `ANTES_DEL_ENSAYO`. Ninguna prueba toca la red."""
 import copy
 import os
 import sys
@@ -36,8 +37,9 @@ EMAIL = {
 }
 REAL = dict(copy.deepcopy(EMAIL), columnas=[col("sanic_tiemporespuesta", "entero", minimo=0, maximo=2147483647)])
 VERIFICADAS_TODO = frozenset(tb.CARACTERISTICAS) | ce.CARACTERISTICAS_DE_LA_VARIANTE
-SOLO_TABLA = tb.VERIFICADAS_EN_PLATAFORMA  # lo que hoy tiene la herramienta como verificado: ningún rastro de la variante
-PERMITIR = dict(verificadas=SOLO_TABLA, permitir=True)
+# Lo que tenía la herramienta ANTES del ensayo del 2026-10-09: lo de la tabla verificado, ningún rastro de la variante (simula la variante sin ensayar).
+ANTES_DEL_ENSAYO = SOLO_TABLA = tb.VERIFICADAS_EN_PLATAFORMA - ce.CARACTERISTICAS_DE_LA_VARIANTE
+PERMITIR = dict(verificadas=ANTES_DEL_ENSAYO, permitir=True)
 SISTEMA_EMAIL = [
     {"LogicalName": "subject", "SchemaName": "Subject", "AttributeOf": None, "IsCustomAttribute": False, "IsPrimaryName": True,
      "AttributeTypeName": {"Value": "StringType"}, "RequiredLevel": rl("None"), "IsSecured": False, "IsAuditEnabled": aud(False),
@@ -154,15 +156,17 @@ class ValidacionSinRed(Base):
 
 
 class SinEnsayar(Base):
+    """La variante simulada SIN ensayar (`ANTES_DEL_ENSAYO`): el gate original, que sigue valiendo para toda característica nueva."""
+
     def test_sin_el_flag_es_bloqueado_sin_tocar_la_red_y_nombra_lo_pendiente(self):
         centinela = FabricaCentinela()
         estado, _, detalle = self.correr(centinela, EMAIL)
         self.assertEqual(estado, "bloqueado", detalle)
-        for pieza in ("variante:columnas-estandar", "variante:pertenencia", "--permitir-no-verificadas", "CanCreateAttributes", "rootcomponentbehavior"):
+        for pieza in ("variante:columnas-estandar", "variante:pertenencia", "--permitir-no-verificadas"):
             self.assertIn(pieza, detalle)
         self.assertFalse(centinela.llamada)
 
-    def test_el_playbook_real_del_diccionario_tampoco_pasa_hasta_que_un_ciclo_lo_verifique(self):
+    def test_el_playbook_real_del_diccionario_no_pasa_si_la_variante_no_estuviera_verificada(self):
         estado, _, detalle = self.correr(FabricaCentinela(), REAL, **PERMITIR)
         self.assertEqual(estado, "bloqueado", detalle)
         self.assertIn("_zz", detalle)
@@ -175,9 +179,9 @@ class SinEnsayar(Base):
         self.assertIn("sanic_tiemporespuesta", detalle)
         self.assertNotIn("sanic_zzmonto", detalle)
 
-    def test_las_caracteristicas_de_la_variante_no_estan_en_las_verificadas_de_la_herramienta(self):
+    def test_las_caracteristicas_de_la_variante_son_esas_dos(self):
         self.assertEqual({"variante:columnas-estandar", "variante:pertenencia"}, set(ce.CARACTERISTICAS_DE_LA_VARIANTE))
-        self.assertFalse(set(ce.CARACTERISTICAS_DE_LA_VARIANTE) & set(tb.VERIFICADAS_EN_PLATAFORMA))
+        self.assertFalse(set(ce.CARACTERISTICAS_DE_LA_VARIANTE) & set(ANTES_DEL_ENSAYO))
 
     def test_el_gate_tambien_incluye_lo_sin_ensayar_de_cada_columna(self):
         # Todo lo de la variante verificado, salvo el decimal: sigue bloqueado por el decimal.
@@ -431,6 +435,133 @@ class Verificacion(Base):
         estado, _, detalle = self.correr(FabricaCentinela(), EMAIL, verificadas=verificadas)
         self.assertEqual(estado, "bloqueado", detalle)
         self.assertIn("variante:pertenencia", detalle)
+
+
+class VarianteVerificada(Base):
+    """Después del ensayo del 2026-10-09 (`email_zz`): con las verificadas POR DEFECTO de la herramienta la variante no se bloquea, y la
+    pertenencia a la solución se EXIGE en vez de observarse. Criterio fijado: la tabla figura en la solución exactamente una vez con
+    `rootcomponentbehavior` distinto de 0, y cada columna agregada con exactamente una fila."""
+
+    def por_defecto(self, cliente, datos=REAL, **kw):
+        """Sin pasar `verificadas` ni `--permitir-no-verificadas`: como corre la herramienta de verdad."""
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            ruta = os.path.join(d, "playbook.md")
+            with open(ruta, "w", encoding="utf-8") as f:
+                f.write(playbook_md(IDENT, datos))
+            return tb.construir(ruta, kw.pop("solo_verificar", False), lambda: cliente, **kw)
+
+    def test_las_dos_caracteristicas_de_la_variante_estan_verificadas_por_defecto(self):
+        self.assertTrue(set(ce.CARACTERISTICAS_DE_LA_VARIANTE) <= set(tb.VERIFICADAS_EN_PLATAFORMA))
+        # y no queda nada pendiente de ellas en el mensaje de bloqueo
+        self.assertFalse(set(ce.CARACTERISTICAS_DE_LA_VARIANTE) & set(ce.PENDIENTE_DE_LA_VARIANTE))
+
+    def test_un_playbook_con_columnas_reales_corre_sin_flag_ni_descartables(self):
+        cliente = armar(ClienteSimulado(), REAL)
+        estado, comp, detalle = self.por_defecto(cliente)
+        self.assertEqual(estado, "ya_existia", detalle)
+        self.assertEqual("email", comp)
+        self.assertNotIn("NO verificada", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_crear_las_columnas_con_las_verificadas_por_defecto(self):
+        nombres = [c["nombre"] for c in REAL["columnas"]]
+        lecturas = {"n": 0}
+
+        def listado(ruta, cuerpo, solucion):
+            lecturas["n"] += 1
+            return (200, {"value": genericas_variante(REAL, sin=nombres if lecturas["n"] == 1 else ())}, {})
+
+        cliente = armar(ClienteSimulado(), REAL)
+        cliente._reglas.insert(0, ("GET", lambda r: "/Attributes?" in r, listado))
+        estado, _, detalle = self.por_defecto(cliente)
+        self.assertEqual(estado, "creado", detalle)
+        self.assertEqual([RUTA_ATRIBUTOS, "PublishXml"], [l["ruta"] for l in cliente.llamadas if l["metodo"] == "POST"])
+
+    def test_la_tabla_mal_en_la_solucion_difiere_con_las_verificadas_por_defecto(self):
+        casos = {
+            "0 filas": [],
+            "2 filas": [{"rootcomponentbehavior": 1}, {"rootcomponentbehavior": 1}],
+            "rootcomponentbehavior 0": [{"rootcomponentbehavior": 0}],
+            "rootcomponentbehavior nulo": [{"rootcomponentbehavior": None}],
+        }
+        for nombre, filas in casos.items():
+            with self.subTest(nombre):
+                cliente = armar(ClienteSimulado(), REAL, tabla_filas=filas)
+                estado, _, detalle = self.por_defecto(cliente)
+                self.assertEqual(estado, "difiere", detalle)
+                self.assertIn("pertenencia a la solución", detalle)
+                self.assertIn("rootcomponentbehavior distinto de 0", detalle)
+                self.assertIn(f"hay {len(filas)} fila(s)", detalle)
+                self.assertFalse(cliente.hubo_escritura())
+
+    def test_la_tabla_bien_en_la_solucion_pasa_con_rootcomponentbehavior_1_o_2(self):
+        for bueno in (1, 2):
+            with self.subTest(bueno):
+                cliente = armar(ClienteSimulado(), REAL, tabla_filas=[{"rootcomponentbehavior": bueno}])
+                estado, _, detalle = self.por_defecto(cliente)
+                self.assertEqual(estado, "ya_existia", detalle)
+
+    def test_cada_columna_tiene_que_figurar_en_la_solucion_exactamente_una_vez(self):
+        casos = {
+            "0 filas": ([], "tiene 0 fila(s)"),
+            "2 filas": ([{"rootcomponentbehavior": None}, {"rootcomponentbehavior": None}], "tiene 2 fila(s)"),
+        }
+        for nombre, (filas, esperado) in casos.items():
+            with self.subTest(nombre):
+                cliente = armar(ClienteSimulado(), REAL, columna_filas=filas)
+                estado, _, detalle = self.por_defecto(cliente)
+                self.assertEqual(estado, "difiere", detalle)
+                self.assertIn("pertenencia a la solución", detalle)
+                self.assertIn("sanic_tiemporespuesta", detalle)
+                self.assertIn(esperado, detalle)
+                self.assertFalse(cliente.hubo_escritura())
+
+    def test_solo_verificar_tambien_la_exige(self):
+        cliente = armar(ClienteSimulado(), REAL, tabla_filas=[])
+        estado, _, detalle = self.por_defecto(cliente, solo_verificar=True)
+        self.assertEqual(estado, "difiere", detalle)
+        self.assertIn("pertenencia a la solución", detalle)
+
+    def test_la_tabla_que_entra_a_la_solucion_recien_al_agregar_la_columna_se_crea(self):
+        """Lo que pasó en el ensayo: ANTES del alta la tabla estándar no figura en la solución; la cabecera MSCRM.SolutionUniqueName de la primera columna
+        la agrega (rootcomponentbehavior 1). Que la pertenencia difiera en la primera lectura no puede impedir el alta; se exige al releer."""
+        nombres = [c["nombre"] for c in REAL["columnas"]]
+        cliente = armar(ClienteSimulado(), REAL)
+        altas = {"n": 0}
+        cliente._reglas.insert(0, ("POST", RUTA_ATRIBUTOS, lambda r, c, s: (altas.update(n=altas["n"] + 1) or (204, None, {}))))
+        cliente._reglas.insert(0, ("GET", lambda r: "/Attributes?" in r,
+                                   lambda r, c, s: (200, {"value": genericas_variante(REAL, sin=nombres if altas["n"] == 0 else ())}, {})))
+        cliente._reglas.insert(0, ("GET", lambda r: es_ruta_solutioncomponents(r) and "componenttype eq 1" in r and META_EMAIL in r,
+                                   lambda r, c, s: (200, {"value": [] if altas["n"] == 0 else [{"rootcomponentbehavior": 1}]}, {})))
+        estado, _, detalle = self.por_defecto(cliente)
+        self.assertEqual(estado, "creado", detalle)
+        self.assertEqual(1, altas["n"])
+
+    def test_si_al_crear_la_tabla_no_queda_en_la_solucion_es_error_no_creado(self):
+        nombres = [c["nombre"] for c in REAL["columnas"]]
+        cliente = armar(ClienteSimulado(), REAL, genericas=genericas_variante(REAL, sin=nombres), tabla_filas=[])
+        lecturas = {"n": 0}
+
+        def listado(ruta, cuerpo, solucion):
+            lecturas["n"] += 1
+            return (200, {"value": genericas_variante(REAL, sin=nombres if lecturas["n"] == 1 else ())}, {})
+
+        cliente._reglas.insert(0, ("GET", lambda r: "/Attributes?" in r, listado))
+        estado, _, detalle = self.por_defecto(cliente)
+        self.assertEqual(estado, "error", detalle)
+        self.assertIn("pertenencia a la solución", detalle)
+
+    def test_el_resto_del_gate_sigue_valiendo(self):
+        # una característica NO verificada de la tabla (la fórmula) sigue bloqueando aunque la variante esté verificada
+        formula = col("sanic_antiguedad", "formula", expresion="DateDiff(createdon, Now(), TimeUnit.Minutes) / 60", resultado="decimal", precision=2,
+                      depende_de=["createdon"])
+        datos = dict(copy.deepcopy(REAL), columnas=REAL["columnas"] + [formula])
+        centinela = FabricaCentinela()
+        estado, _, detalle = self.por_defecto(centinela, datos)
+        self.assertEqual(estado, "bloqueado", detalle)
+        self.assertIn("tipo:formula", detalle)
+        self.assertFalse(centinela.llamada)
 
 
 if __name__ == "__main__":

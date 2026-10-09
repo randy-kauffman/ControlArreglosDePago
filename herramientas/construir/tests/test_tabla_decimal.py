@@ -1,8 +1,9 @@
 """`tabla.py` y la columna `decimal` (skill power-platform-especificar 0.2.0, `tabla.md` «Columna `decimal`»).
 
 Dominio: la tabla Cuota del diccionario (`diseno/02-diccionario-datos.md`, 4.4) con sus montos `decimal(2) [0..999999999.99]`.
-Ninguna prueba toca la red. El tipo está SIN ensayar contra la plataforma (0 ciclos): sin `--permitir-no-verificadas`
-la herramienta devuelve `bloqueado` y no llama al entorno."""
+Ninguna prueba toca la red. El tipo se ENSAYÓ contra la plataforma el 2026-10-09 (tabla descartable `sanic_carp_tbl_zzensayo`): está en
+`VERIFICADAS_EN_PLATAFORMA` y un playbook que lo usa no se bloquea por eso. Lo que sigue sin ensayar es la precisión 0 (`decimal:precision0`).
+Para probar el mecanismo del gate (bloqueo sin red, el ensayo solo sobre una tabla descartable) se simula el decimal sin verificar con `SIN_DECIMAL`."""
 import copy
 import os
 import sys
@@ -106,7 +107,8 @@ class ValidacionDelDecimal(Base):
 
 
 class DecimalSinEnsayar(Base):
-    """«Ensayo antes de usar algo por primera vez»: el tipo no está verificado contra la plataforma."""
+    """El gate «Ensayo antes de usar algo por primera vez», con el decimal simulado como NO verificado (`SIN_DECIMAL`): el mecanismo sigue
+    valiendo para cualquier característica nueva. La realidad de hoy (decimal verificado, precisión 0 no) está en `DecimalVerificado`."""
 
     def test_sin_el_flag_es_bloqueado_sin_tocar_la_red_y_dice_que_hay_que_ensayarlo(self):
         centinela = FabricaCentinela()
@@ -116,9 +118,8 @@ class DecimalSinEnsayar(Base):
         self.assertIn("--permitir-no-verificadas", detalle)
         self.assertFalse(centinela.llamada)
 
-    def test_el_tipo_decimal_es_una_caracteristica_del_formato_y_todavia_no_esta_verificada(self):
+    def test_el_tipo_decimal_es_una_caracteristica_del_formato(self):
         self.assertIn("tipo:decimal", tb.CARACTERISTICAS)
-        self.assertNotIn("tipo:decimal", tb.VERIFICADAS_EN_PLATAFORMA)
         self.assertIn("tipo:decimal", tb.caracteristicas_usadas(CUOTA))
         self.assertNotIn("tipo:decimal", tb.caracteristicas_usadas(tt.COMPLETO))
 
@@ -127,10 +128,6 @@ class DecimalSinEnsayar(Base):
         estado, _, detalle = self.correr(FabricaCentinela(), real, verificadas=SIN_DECIMAL, permitir=True)
         self.assertEqual(estado, "bloqueado", detalle)
         self.assertIn("_tbl_zz", detalle)
-
-    def test_la_herramienta_real_por_defecto_bloquea_el_decimal(self):
-        estado, _, detalle = self.correr(FabricaCentinela(), CUOTA, verificadas=tb.VERIFICADAS_EN_PLATAFORMA)
-        self.assertEqual(estado, "bloqueado", detalle)
 
     def test_la_precision_cero_esta_pendiente_de_verificar_y_se_bloquea_aparte(self):
         # Learn documenta 1 a 10; el 0 para un decimal común no se verificó. Aunque el decimal estuviera verificado, el 0 no.
@@ -143,6 +140,45 @@ class DecimalSinEnsayar(Base):
         self.assertEqual(estado, "bloqueado", detalle)
         self.assertIn("decimal:precision0", detalle)
         self.assertIn("entero", detalle)  # la salida honesta: si no hay decimales, la columna es un entero
+        self.assertFalse(centinela.llamada)
+
+
+class DecimalVerificado(Base):
+    """Ensayo del 2026-10-09 (Dev, `sanic_carp_tbl_zzensayo`): MinValue/MaxValue/Precision vuelven exactos (0 / 999999999.99 / 2 y -1000 / 1000 / 4),
+    IsAuditEnabled se respeta y la exportación de la solución trae `<Type>decimal</Type>` con `MinValue`, `MaxValue` y `Accuracy`."""
+
+    def test_el_tipo_decimal_esta_verificado_y_ya_no_esta_sin_ensayar(self):
+        self.assertIn("tipo:decimal", tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertNotIn("tipo:decimal", tb.SIN_ENSAYAR)
+        self.assertNotIn("tipo:decimal", tb.PENDIENTE_DE_VERIFICAR)
+
+    def test_la_precision_cero_sigue_sin_ensayar(self):
+        self.assertNotIn("decimal:precision0", tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertIn("decimal:precision0", tb.SIN_ENSAYAR)
+        self.assertIn("decimal:precision0", tb.PENDIENTE_DE_VERIFICAR)
+        self.assertEqual(frozenset({"decimal:precision0", "tipo:formula"}), tb.SIN_ENSAYAR)  # lo único que queda sin ensayar
+
+    def test_un_playbook_con_decimales_no_se_bloquea_por_el_decimal_con_las_verificadas_por_defecto(self):
+        cliente = tt.armar(ClienteSimulado(), CUOTA)
+        estado, _, detalle = self.con_cliente(cliente, CUOTA, verificadas=tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertEqual(estado, "ya_existia", detalle)
+        self.assertNotIn("tipo:decimal", detalle)
+
+    def test_ni_siquiera_hace_falta_que_la_tabla_sea_descartable(self):
+        # el nombre `_tbl_zz` solo se exige para usar --permitir-no-verificadas; con el decimal verificado una tabla real con decimales corre sin ese flag
+        real = dict(copy.deepcopy(CUOTA), nombre="sanic_carp_tbl_cuota")
+        cliente = tt.armar(ClienteSimulado(), real)
+        estado, _, detalle = self.con_cliente(cliente, real, verificadas=tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertEqual(estado, "ya_existia", detalle)
+
+    def test_con_las_verificadas_por_defecto_la_precision_cero_se_bloquea_y_dice_que_la_salida_es_un_entero(self):
+        cero = con_cambio(CUOTA, ["columnas", POSICION_MONTO, "precision"], 0)
+        centinela = FabricaCentinela()
+        estado, _, detalle = self.correr(centinela, cero, verificadas=tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertEqual(estado, "bloqueado", detalle)
+        self.assertIn("decimal:precision0", detalle)
+        self.assertNotIn("tipo:decimal", detalle)
+        self.assertIn("entero", detalle)
         self.assertFalse(centinela.llamada)
 
 

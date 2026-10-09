@@ -1,1 +1,4 @@
 Formas de exportacion derivadas de las exportaciones reales del proyecto 2026-001 (nombres renombrados al dominio de este proyecto y una etiqueta 3082 gemela por cada 1033); reemplazar por la exportacion real de este proyecto en el primer ciclo (muestra_tabla.py --guardar).
+
+
+sanic_carp_tbl_zzensayo_decimal_motivos.solucion.xml y .md: EXPORTACION REAL (ExportSolution) del ensayo del 2026-10-09 en Dev (org36e60d9d), tabla descartable sanic_carp_tbl_zzensayo con columnas decimal y motivos de estado; el .md es el playbook que la creo (playbooks/tabla/ensayos/). No es una forma derivada.
