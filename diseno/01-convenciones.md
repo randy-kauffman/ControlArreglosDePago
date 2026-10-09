@@ -36,12 +36,12 @@ Si un componente **no tiene nombre lógico** en la plataforma, aplica solo la re
 | Columna | Texto de negocio | `sanic_nombre` (sin abreviatura ni tipo) | `Sin respuesta desde` · `sanic_sinrespuestadesde` |
 | Lookup | Texto de negocio | `sanic_<destino>id` | `sanic_clienteid`, `sanic_conversacionid` |
 | Choice global | `CH - CARP - Nombre` | `sanic_carp_ch_nombre` | `sanic_carp_ch_productocrediticio` |
-| Clave alternativa | `KEY - CARP - Tabla - Campos` | `sanic_carp_key_<tabla>_<campos>` | `sanic_carp_key_arreglo_producto_numero_nroarreglo` |
+| Clave alternativa | `KEY - CARP - Tabla - Campos` | `sanic_carp_key_<tabla>_<campos>` | `sanic_carp_key_arreglo_producto_numeroproducto_numeroarreglo` (K-02 del diccionario) |
 | Relación 1:N | no tiene | `sanic_carp_<padre>_<hijo>`; con más de una relación entre el mismo par, sufijo con el lookup sin prefijo | `sanic_carp_arreglo_cuota` · `sanic_carp_systemuser_arreglo_anuladoporid` |
 | Custom API | `CAPI - CARP - Nombre` | `sanic_carp_capi_nombre` | `CAPI - CARP - Generar formato` · `sanic_carp_capi_generarformato` |
 | Parámetro de entrada de Custom API | `CAPI_IP - CARP - Nombre` | `uniquename` **corto**: `nombre` · `name`: `sanic_carp_capiip_<api>_<nombre>` | `arregloid` · `sanic_carp_capiip_generarformato_arregloid` |
 | Parámetro de salida de Custom API | `CAPI_OP - CARP - Nombre` | `uniquename` corto · `name`: `sanic_carp_capiop_<api>_<nombre>` | `archivo` · `sanic_carp_capiop_generarformato_archivo` |
-| Environment variable | `EV - CARP - Nombre` | `sanic_carp_ev_nombre` | `EV - CARP - Team del area` · `sanic_carp_ev_teamarea` |
+| Environment variable | `EV - CARP - Nombre` | `sanic_carp_ev_nombre` | `EV - CARP - Business unit del area` · `sanic_carp_ev_businessunitarea` (el team propietario se resuelve por `isdefault` dentro de esa business unit; ver sección 2) |
 | Connection reference | `CONR - CARP - Nombre` | `sanic_carp_conr_nombre` | `CONR - CARP - Outlook` · `sanic_carp_conr_outlook` |
 | Cloud flow | `Cloud Flow - CARP - COD - Nombre`, con `CARP-COD` como identificador corto de tres letras (BP-PP-196) | **no tiene**: Power Automate no popula `uniquename` al crear un cloud flow (verificado en el proyecto 2026-001) | `Cloud Flow - CARP - SAL - Salud del buzon` · ID `CARP-SAL` |
 | Security role | `SR - CARP - Nombre` | **no tiene** | `SR - CARP - Oficial` |
@@ -52,7 +52,7 @@ Si un componente **no tiene nombre lógico** en la plataforma, aplica solo la re
 | Formulario | `FRM - CARP - Tabla - Tipo` | no tiene | `FRM - CARP - Conversacion - Principal` |
 | Regla de negocio | `BR - CARP - Tabla - Nombre` | no tiene | |
 | Dashboard / gráfico | `DASH - CARP - Nombre` / `CHT - CARP - Nombre` | no tiene | `DASH - CARP - Supervision` |
-| Web resource | `WR - CARP - TIPO - Nombre` | `sanic_carp_wr_<tipo>_nombre` | `WR - CARP - JS - Comandos arreglo` · `sanic_carp_wr_js_comandosarreglo` |
+| Web resource | `WR - CARP - TIPO - Nombre` | `sanic_carp_wr_<tipo>_nombre` | `WR - CARP - JS - Comandos` · `sanic_carp_wr_js_comandos` (sirve a Conversación y a Arreglo, definición §6) |
 | Paquete de plugins | no aplica | `sanic_carp_pkg_plugins` | |
 | Step de plugin | `STEP - CARP - tabla - mensaje - etapa` | no tiene | `STEP - CARP - email - Create - PreOperation` |
 | Usuario de aplicación | `APP - CARP - Nombre` | no aplica | |
@@ -143,5 +143,5 @@ Prefijo de opciones del publisher más correlativo de 4 dígitos: `159460001`, `
 | Nombre de step: máximo 256 caracteres; schema name de relación: máximo 100; identificador de tabla: máximo 95 | Verificado en el proyecto 2026-001 (Learn y Dev) |
 | El `uniquename` de un parámetro de Custom API no exige prefijo y puede repetirse entre APIs | Verificado en el proyecto 2026-001 |
 | Cloud flows sin `uniquename` | Verificado en el proyecto 2026-001: se identifican solo por display name |
-| La solución existe en Dev | **Pendiente**: se crea con su playbook, primer componente del inventario |
+| La solución existe en Dev | Creada el 2026-10-09 (`solutionid` `ce4baec7-36c4-f111-a05a-7ced8d3c456b`, versión 1.0.0.0, no administrada, publisher `Sistemas_Abiertos_Nicaragua`), verificada releyendo; inventario 1.1 |
 | Nombres de la business unit, los teams y la queue | Aprobados el 2026-10-09 (sección 2); el team propietario es el del sistema de la business unit (opción A, 2026-10-09). En Dev (`org36e60d9d`) se crearon el 2026-10-09 la business unit `Arreglos de Pago` (hija de la raíz) y el team `Arreglos de Pago - Jefatura` (propietario, en esa business unit); el team `Arreglos de Pago` lo creó la plataforma con la business unit. Verificado releyendo |

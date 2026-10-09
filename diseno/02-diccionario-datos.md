@@ -23,7 +23,7 @@ Convenciones en `01-convenciones.md` (estándar BP-PP-181 a BP-PP-197). Fuente d
 
 **Encabezados de las tablas de columnas.** *Req*: requerida por negocio (la aplica la app, no el servicio: por API una columna "requerida" puede llegar vacía). *Aud*: auditada a nivel de columna (D-20). *Seg*: protegida con seguridad por columna (D-19). *Sis*: solo-sistema (D-30): un plugin pre-update rechaza el cambio hecho por un usuario.
 
-**Referencias a decisiones.** Las propuestas P-01 a P-21 se **aceptaron el 2026-10-09** (sección 11) y ya no llevan marca de propuesta en las secciones 3 a 8: lo que se lee ahí está decidido. Una cita `(P-nn)` en una celda remite a la decisión que explica el valor. La única propuesta que sigue abierta, P-22, está en la sección 11.6 y no aparece en el modelo. Un valor sin cita sale de la definición (se cita el requisito o la decisión) o de un hecho verificado en un spike.
+**Referencias a decisiones.** Las propuestas P-01 a P-21 se **aceptaron el 2026-10-09** (sección 11) y ya no llevan marca de propuesta en las secciones 3 a 8: lo que se lee ahí está decidido. Una cita `(P-nn)` en una celda remite a la decisión que explica el valor. P-22, que era la única abierta, se decidió el mismo día (sección 11.6) y no cambia el modelo. Un valor sin cita sale de la definición (se cita el requisito o la decisión) o de un hecho verificado en un spike.
 
 **Nombres.** Los nombres lógicos van en minúscula, sin tildes y sin separadores dentro del segmento (BP-PP-184). Los nombres visibles van sin tildes ni eñe (BP-PP-197). Las etiquetas de metadatos se escriben en español en **los dos** idiomas (1033 y 3082), con el mismo texto, como fija `01-convenciones.md` §0. Las descripciones son prosa y llevan ortografía completa.
 
@@ -644,7 +644,7 @@ Fuente: RNF-02 y §6 Datos (Volumen): unas 4.000 conversaciones y 3.000 arreglos
 
 ## 11. Decisiones tomadas y decisión pendiente
 
-**Las propuestas P-01 a P-21 fueron aceptadas por el usuario el 2026-10-09.** Dos cambios respecto del texto original: P-01 se decidió como `sanic_<evento>porid` y P-02 usa `CONV-{SEQNUM:6}` para la conversación; P-04, P-05 y P-18 se actualizaron por las decisiones de moneda y de cálculo del arreglo (R-08, R-04). Los valores decididos están en las secciones 3 a 8, ya sin marca de propuesta. Cada fila indica qué playbook habilita. **Lo único abierto es la pregunta P-22 para Héctor Romero (11.6).** Las reglas de negocio de 11.4 que la definición mantiene abiertas siguen abiertas; este documento no las decide.
+**Las propuestas P-01 a P-21 fueron aceptadas por el usuario el 2026-10-09.** Dos cambios respecto del texto original: P-01 se decidió como `sanic_<evento>porid` y P-02 usa `CONV-{SEQNUM:6}` para la conversación; P-04, P-05 y P-18 se actualizaron por las decisiones de moneda y de cálculo del arreglo (R-08, R-04). Los valores decididos están en las secciones 3 a 8, ya sin marca de propuesta. Cada fila indica qué playbook habilita. **P-22, que era lo único abierto, quedó decidida el mismo día (11.6).** Las reglas de negocio de 11.4 que la definición mantiene abiertas siguen abiertas; este documento no las decide.
 
 ### 11.1 Decisiones del diseño que un playbook exige (decididas el 2026-10-09)
 
@@ -716,7 +716,7 @@ Estado al 2026-10-09. **R-01, R-02, R-04, R-05 y R-08 están decididas** (por el
 | R-02 | **Cuándo pasa a Terminado** (supuesto de §6) | **Decidida (2026-10-09)**: un pago parcial registrado alcanza para que la cuota cuente como pagada a efectos de Terminado | Se confirma el modelo: Cuota no lleva un indicador `pagada` ni se compara `monto pagado` con `monto`; la lista de riesgo (RF-11, ítem 11) no cambia |
 | R-03 | **Regla de fechas de vencimiento** (mismo día de cada mes, fin de mes; §6 Lógica ítem 8, a confirmar con Héctor) | Abierta | No cambia columnas; fija cómo se calculan `sanic_fechavencimiento` y `sanic_fechafin` |
 | R-04 | **Validaciones numéricas del formato** (saldo remanente; total; ítem 7) | **Decidida (2026-10-09)**: el sistema calcula el saldo remanente (= saldo inicial − monto abonado) y el total a pagar (= el menor entre cuota mensual × plazo y el saldo remanente). Rechaza el registro si el monto abonado supera el saldo inicial. Si cuota × plazo supera el saldo remanente, la última cuota se achica a lo que queda; si con una cuota menos ya se cubre el saldo (la última cuota daría cero o negativa), rechaza indicando con cuántas cuotas se cubre | `sanic_saldoremanente` y `sanic_totalpagar` son requeridas y **solo-sistema**: un plugin las escribe al crear el arreglo y al modificar el borrador, y quedan congeladas con el resto del acuerdo. No son columnas calculadas ni de fórmula de Dataverse. El monto de la última cuota lo fija el plugin del calendario |
-| R-05 | **Conversación de origen opcional** (supuesto de §6) | **Decidida (2026-10-09)**: opcional, porque un arreglo puede originarse por teléfono, presencial, en una sucursal o por correo | `sanic_conversacionid` sigue opcional. No hay columna de canal de origen en el modelo: el usuario todavía no la confirmó |
+| R-05 | **Conversación de origen opcional** (supuesto de §6) | **Decidida (2026-10-09)**: opcional, porque un arreglo puede originarse por teléfono, presencial, en una sucursal o por correo | `sanic_conversacionid` sigue opcional. El canal de origen se confirmó después, el mismo día: columna `sanic_canalorigen` (DD-13) |
 | R-06 | **"Con arreglo de pago" sin arreglo formalizado vinculado**: hoy solo avisa (ítem 6; supuesto de §6) | Abierta | No cambia el esquema; si se vuelve obligatorio, lo valida el plugin |
 | R-07 | **Más de un borrador del mismo crédito**: la clave K-02 no los impide (spike 2). La definición dice que el borrador "no consume número" pero no si se permiten dos borradores iguales | Abierta | Si no se permiten, es una regla del plugin; la clave no lo resuelve |
 | R-08 | **Moneda de los arreglos** (la definición no la mencionaba; el mockup y el formato muestran C$) | **Decidida (2026-10-09)**: hay arreglos en córdobas y en dólares | Choice global `sanic_carp_ch_moneda` (Cordobas, Dolares) y columna requerida `sanic_moneda` en Arreglo; montos `decimal(2)` en la moneda del arreglo; las cuotas heredan la moneda; sin tipo Moneda de Dataverse (DD-11, D-36). La opción "Moneda" (`159460027`) se agrega al choice de campos mapeables para que el formato la imprima. P-22 (11.6) decidida: un solo arreglo en una sola moneda |
@@ -733,7 +733,7 @@ No son huecos del diseño: son datos que el diseño sí trae pero para los que e
 | H-03 | `choice-global.md` excluye "las opciones de `statecode`/`statuscode`" y `tabla.md` no los menciona: nadie especifica los motivos de estado de una tabla | Sección 3.2 |
 | H-04 | `relacion.md` excluye "relaciones jerárquicas de una tabla consigo misma"; `sanic_unidaaid` es autorreferida pero no jerárquica | REL-09 |
 
-### 11.6 Decisión pendiente (la única)
+### 11.6 Decisión que estaba pendiente (P-22, decidida)
 
 Pregunta para **Héctor Romero**, respondida por el usuario el 2026-10-09.
 
@@ -763,7 +763,7 @@ Comprobado con una expresión regular sobre este mismo documento antes de entreg
 | Comprobación | Resultado |
 |---|---|
 | Tablas: `^sanic_carp_tbl_[a-z0-9]+$`, 95 caracteres o menos | 7 de 7 cumplen |
-| Choices: `^sanic_carp_ch_[a-z0-9]+$`, 95 caracteres o menos | 8 de 8 cumplen |
+| Choices: `^sanic_carp_ch_[a-z0-9]+$`, 95 caracteres o menos | 9 de 9 cumplen |
 | Claves: `^sanic_carp_key_[a-z0-9]+(_[a-z0-9]+)+$`, 95 caracteres o menos | 3 decididas cumplen (43, 60 y 38 caracteres) |
 | Relaciones: `^sanic_carp_<padre>_<hijo>(_<lookup>)?$` en minúscula, 100 caracteres o menos | 19 de 19 cumplen (máximo 52) |
 | Columnas propias: `^sanic_[a-z0-9]+$`, sin `_carp_`, sin mayúsculas, tildes ni eñe | Cumplen todas |
