@@ -17,7 +17,7 @@ Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **secciones 0 a 6
 | Idioma base de Dev | **1033 (inglés)**; idiomas provisionados en Dev: **1033 y 3082** (verificado con `RetrieveProvisionedLanguages` el 2026-10-09) |
 | Idiomas del proyecto | **`idiomas: [1033, 3082]`**. **Etiquetas de metadatos** (tablas, columnas, choices, vistas, formularios): se escriben en **los dos** LCID, en español. **Etiquetas embebidas** en el XML de un componente (títulos del sitemap, textos de comandos y las que demuestre cada export real): una por cada idioma de la lista, porque ahí la plataforma no cae al idioma base. Origen: tropiezo A-28 del proyecto 2026-001, una solución con base en inglés importada en un entorno con base en español no mostró ninguna página |
 | Idioma base de Dev, Test y Prod de BAC Nicaragua | **Pendiente de confirmar con el administrador de BAC.** Si alguno tiene base 3082, las etiquetas en 3082 son las que se ven; por eso se escriben siempre las dos |
-| Excepciones al estándar | Ninguna |
+| Excepciones al estándar | **Una**, decidida por el usuario el 2026-10-09. El lookup a `systemuser` que guarda quién hizo un evento se llama `sanic_<evento>porid` (por ejemplo `sanic_anuladoporid`, `sanic_formalizadoporid`), y no `sanic_<evento>por` como dice BP-PP-191. Motivo: BP-PP-187 es la regla de todos los lookups ("todo lookup termina en `id`") y se prefiere una regla sin casos especiales a una excepción que obligue a recordar cuáles lookups no terminan en `id`. Nota: el proyecto 2026-001 usó `...por` sin `id`, así que los dos proyectos difieren en este nombre. El resto de BP-PP-191 (fechas de auditoría `sanic_fecha<evento>` y comportamiento Usuario local) se cumple tal cual |
 
 ## 1. Las tres reglas que gobiernan todo
 
@@ -37,7 +37,7 @@ Si un componente **no tiene nombre lógico** en la plataforma, aplica solo la re
 | Lookup | Texto de negocio | `sanic_<destino>id` | `sanic_clienteid`, `sanic_conversacionid` |
 | Choice global | `CH - CARP - Nombre` | `sanic_carp_ch_nombre` | `sanic_carp_ch_productocrediticio` |
 | Clave alternativa | `KEY - CARP - Tabla - Campos` | `sanic_carp_key_<tabla>_<campos>` | `sanic_carp_key_arreglo_producto_numero_nroarreglo` |
-| Relación 1:N | no tiene | `sanic_carp_<padre>_<hijo>`; con más de una relación entre el mismo par, sufijo con el lookup sin prefijo | `sanic_carp_arreglo_cuota` · `sanic_carp_systemuser_arreglo_anuladopor` |
+| Relación 1:N | no tiene | `sanic_carp_<padre>_<hijo>`; con más de una relación entre el mismo par, sufijo con el lookup sin prefijo | `sanic_carp_arreglo_cuota` · `sanic_carp_systemuser_arreglo_anuladoporid` |
 | Custom API | `CAPI - CARP - Nombre` | `sanic_carp_capi_nombre` | `CAPI - CARP - Generar formato` · `sanic_carp_capi_generarformato` |
 | Parámetro de entrada de Custom API | `CAPI_IP - CARP - Nombre` | `uniquename` **corto**: `nombre` · `name`: `sanic_carp_capiip_<api>_<nombre>` | `arregloid` · `sanic_carp_capiip_generarformato_arregloid` |
 | Parámetro de salida de Custom API | `CAPI_OP - CARP - Nombre` | `uniquename` corto · `name`: `sanic_carp_capiop_<api>_<nombre>` | `archivo` · `sanic_carp_capiop_generarformato_archivo` |
@@ -98,7 +98,7 @@ Lo que llega a Prod queda etiquetado en git con su versión.
 - **Nombres lógicos**: regla 3 de la sección 1.
 - **Nombres visibles**: en español, **sin tildes ni ñ** (BP-PP-197, confirmado por el usuario el 2026-10-09): tablas, columnas, choices y sus opciones, claves, lookups, roles, perfiles, flujos, vistas, formularios, steps y variables. Se escribe la palabra sin la tilde (`Conversacion`, `Version de plantilla`, `Anulacion`). Las **descripciones** son prosa y sí llevan ortografía completa.
 - **Código C#**: identificadores técnicos en inglés y términos del dominio en español tal como los nombra el negocio (`Conversacion`, `Arreglo`, `Cuota`), nunca traducidos. PascalCase en el código.
-- **Fechas de auditoría propias**: `sanic_fecha<evento>` y quién lo hizo `sanic_<evento>por` (lookup a `systemuser`). Ejemplo: `sanic_fechaanulacion`, `sanic_anuladopor`. Toda columna de fecha y hora usa el comportamiento **Usuario local** (BP-PP-191): guarda el instante en UTC y permite restar fechas para medir tiempos. No se puede cambiar después de crear la columna. Las columnas que solo representan un día (vencimiento de una cuota) son **Solo fecha** y el diccionario lo declara columna por columna.
+- **Fechas de auditoría propias**: `sanic_fecha<evento>` y quién lo hizo `sanic_<evento>porid` (lookup a `systemuser`; excepción a BP-PP-191 declarada en la sección 0, para cumplir BP-PP-187). Ejemplo: `sanic_fechaanulacion`, `sanic_anuladoporid`. Toda columna de fecha y hora usa el comportamiento **Usuario local** (BP-PP-191): guarda el instante en UTC y permite restar fechas para medir tiempos. No se puede cambiar después de crear la columna. Las columnas que solo representan un día (vencimiento de una cuota) son **Solo fecha** y el diccionario lo declara columna por columna.
 - **Columna primaria** de cada tabla: `sanic_nombre`, nunca texto libre (BP-PP-192). El diccionario declara para cada tabla si es calculada, autonumérica o la clave de negocio.
 
 ## 5. Ensamblados y código
