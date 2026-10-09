@@ -465,12 +465,12 @@ Lookup: `sanic_aprobadoporid` (Aprobado por, `systemuser`), opcional (vacío en 
 | Propiedad | usuario o equipo (DD-01) |
 | Notas / Actividades | no / no |
 | Auditoría de tabla | **Sí** (D-20: "registra quién cambió el mapeo y cuándo"); todas sus columnas se auditan |
-| Columna primaria | `sanic_nombre`, display `Celda`, forma **calculada** por plugin: `<hoja>!<celda>`; requerida |
+| Columna primaria | `sanic_nombre`, display `Hoja y celda` (no `Celda`, que es el nombre de `sanic_celda`; corregido el 2026-10-09), forma **calculada** por plugin: `<hoja>!<celda>`; requerida |
 | Origen | RF-09, D-14, D-15, D-16, D-20 |
 
 | Nombre lógico | Display name | Tipo y forma | Req | Aud | Seg | Sis | Descripción | Origen |
 |---|---|---|---|---|---|---|---|---|
-| `sanic_nombre` | Celda | primaria calculada, texto T(50) | Sí | Sí (hereda) | No | No | Hoja y celda del mapeo. La calcula el sistema; nadie la digita. | BP-PP-192 |
+| `sanic_nombre` | Hoja y celda | primaria calculada, texto T(50) | Sí | Sí (hereda) | No | No | Hoja y celda del mapeo. La calcula el sistema; nadie la digita. | BP-PP-192 |
 | `sanic_hoja` | Hoja | texto T(31) | Sí | **Sí** | No | No | Nombre exacto de la hoja del libro. Se compara tal cual: la hoja del formato se llama " FORMATO ARP ELECTRONICO", con un espacio al inicio (spike 1). El límite de Excel para un nombre de hoja es 31 caracteres. | §6 Datos (Mapeo de celda), spike 1 |
 | `sanic_celda` | Celda | texto T(10); notación A1, mayúscula | Sí | **Sí** | No | No | Celda en notación A1. Para un bloque de cuotas, la celda de la primera cuota. El plugin de publicación valida que esté bien formada y que no haya dos campos en la misma celda. | §6 Datos (Mapeo de celda), ítem 15 |
 | `sanic_tipo` | Tipo de mapeo | choice `sanic_carp_ch_tipomapeo` | Sí | **Sí** | No | No | Valor simple, total calculado o columna de bloque de cuotas. | §6 Datos (Mapeo de celda), D-16 |
