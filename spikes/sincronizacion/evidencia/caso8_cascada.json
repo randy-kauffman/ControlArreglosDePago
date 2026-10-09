@@ -1,0 +1,61 @@
+{
+ "8a": {
+  "antes": {
+   "queueitems": [
+    "7cbd9ae9-4fc3-f111-a05a-000d3a35abca",
+    "7dbd9ae9-4fc3-f111-a05a-000d3a35abca"
+   ],
+   "activitymimeattachments": [
+    [
+     "87de1f36-39c8-4879-bc22-aa361d09e9d9",
+     "foto.png"
+    ],
+    [
+     "a7e0a82b-55ed-456e-a8b2-ca2c61064779",
+     "comprobante.pdf"
+    ]
+   ],
+   "attachment_ids": [
+    "81bd9ae9-4fc3-f111-a05a-000d3a35abca",
+    "7fbd9ae9-4fc3-f111-a05a-000d3a35abca"
+   ]
+  },
+  "delete_http": 204,
+  "despues": {
+   "email_existe": false,
+   "queueitems_existentes": [],
+   "activitymimeattachments_existentes": [],
+   "attachments_existentes": [
+    "81bd9ae9-4fc3-f111-a05a-000d3a35abca",
+    "7fbd9ae9-4fc3-f111-a05a-000d3a35abca"
+   ]
+  }
+ },
+ "8b": {
+  "conv_descartable": "ef2f0451-51c3-f111-a05a-000d3a35abca",
+  "antes": {
+   "queueitems": [
+    "96bd9ae9-4fc3-f111-a05a-000d3a35abca",
+    "97bd9ae9-4fc3-f111-a05a-000d3a35abca"
+   ],
+   "activitymimeattachments": [
+    [
+     "767e824b-0cc4-4532-8233-bf55f8472a03",
+     "logo.png"
+    ]
+   ],
+   "attachment_ids": [
+    "99bd9ae9-4fc3-f111-a05a-000d3a35abca"
+   ]
+  },
+  "delete_http": 204,
+  "despues": {
+   "email_existe": false,
+   "queueitems_existentes": [],
+   "activitymimeattachments_existentes": [],
+   "attachments_existentes": [
+    "99bd9ae9-4fc3-f111-a05a-000d3a35abca"
+   ]
+  }
+ }
+}

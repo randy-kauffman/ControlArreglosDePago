@@ -1,0 +1,102 @@
+{
+ "B": {
+  "escenario": "B",
+  "whoami_ok": true,
+  "roles": [
+   "SPK Lector Cliente"
+  ],
+  "lectura": [
+   200,
+   [
+    [
+     "Q2-ana",
+     null
+    ],
+    [
+     "Q2-beto",
+     null
+    ]
+   ]
+  ],
+  "cedulas_vistas_por_admin": {
+   "Q2-ana": "001-000000-0001A",
+   "Q2-beto": "001-000000-0002B"
+  },
+  "quickfind_cedula": [
+   200,
+   []
+  ],
+  "like_solo_cedula": [
+   200,
+   []
+  ],
+  "quickfind_nombre": [
+   200,
+   [
+    "Q2-beto"
+   ]
+  ],
+  "filter_eq_cedula": [
+   200,
+   []
+  ],
+  "filter_ne_cedula": [
+   200,
+   []
+  ]
+ },
+ "A": {
+  "escenario": "A",
+  "whoami_ok": true,
+  "roles": [
+   "SPK Lector Cliente"
+  ],
+  "lectura": [
+   200,
+   [
+    [
+     "Q2-ana",
+     "001-000000-0001A"
+    ],
+    [
+     "Q2-beto",
+     "001-000000-0002B"
+    ]
+   ]
+  ],
+  "cedulas_vistas_por_admin": {
+   "Q2-ana": "001-000000-0001A",
+   "Q2-beto": "001-000000-0002B"
+  },
+  "quickfind_cedula": [
+   200,
+   [
+    "Q2-beto"
+   ]
+  ],
+  "like_solo_cedula": [
+   200,
+   [
+    "Q2-beto"
+   ]
+  ],
+  "quickfind_nombre": [
+   200,
+   [
+    "Q2-beto"
+   ]
+  ],
+  "filter_eq_cedula": [
+   200,
+   [
+    "Q2-beto"
+   ]
+  ],
+  "filter_ne_cedula": [
+   200,
+   [
+    "Q2-ana"
+   ]
+  ]
+ }
+}

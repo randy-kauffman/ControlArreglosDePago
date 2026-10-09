@@ -1,0 +1,1398 @@
+<title>Control de Arreglos de Pago</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: model-driven shell — top bar, left sitemap, command bar over a form or grid. Paper-white sheet for the printed format. */
+:root{
+  --bg:#f2f4f3; --surface:#ffffff; --surface-2:#eaefed; --line:#d5ddda; --fg:#16201d; --muted:#596864;
+  --accent:#0d6656; --accent-fg:#ffffff; --accent-soft:#d9ede7;
+  --nav:#13221e; --nav-fg:#d6e2de; --nav-muted:#8ea29c;
+  --ok:#1b7a3d; --ok-soft:#dcf1e3; --warn:#9a5800; --warn-soft:#fbeacd; --bad:#b0261d; --bad-soft:#f8dedb; --info:#2455a3; --info-soft:#dfe8f8;
+  --sheet:#ffffff; --sheet-fg:#111111; --sheet-line:#c8c8c8; --sheet-band:#e4e4e4; --sheet-mark:#d9ede7;
+  --shadow:0 10px 30px rgba(10,30,25,.18);
+  --f-body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-sheet:Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e1412; --surface:#16201c; --surface-2:#1d2925; --line:#2b3a35; --fg:#e3ebe8; --muted:#98aaa4;
+  --accent:#55bca2; --accent-fg:#05231b; --accent-soft:#163a31;
+  --nav:#090f0d; --nav-fg:#cddad5; --nav-muted:#7b8f89;
+  --ok:#6cc68b; --ok-soft:#163522; --warn:#e4a64c; --warn-soft:#382811; --bad:#f07e74; --bad-soft:#3c1916; --info:#88aae9; --info-soft:#19263f;
+  --shadow:0 10px 30px rgba(0,0,0,.5); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e1412; --surface:#16201c; --surface-2:#1d2925; --line:#2b3a35; --fg:#e3ebe8; --muted:#98aaa4;
+  --accent:#55bca2; --accent-fg:#05231b; --accent-soft:#163a31;
+  --nav:#090f0d; --nav-fg:#cddad5; --nav-muted:#7b8f89;
+  --ok:#6cc68b; --ok-soft:#163522; --warn:#e4a64c; --warn-soft:#382811; --bad:#f07e74; --bad-soft:#3c1916; --info:#88aae9; --info-soft:#19263f;
+  --shadow:0 10px 30px rgba(0,0,0,.5); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:14px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+#root{height:100%}
+.app{display:grid;grid-template-rows:auto auto 1fr;height:100%}
+.top{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:9px 16px;background:var(--nav);color:var(--nav-fg)}
+.brand{font-weight:700;font-size:15px;letter-spacing:.005em}
+.sim{font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;border:1px dashed var(--nav-muted);padding:2px 8px;border-radius:3px}
+.clock{font-family:var(--f-mono);font-size:12px;color:var(--nav-muted)}
+.spacer{flex:1}
+.top select,.top .tbtn{background:transparent;color:var(--nav-fg);border:1px solid #ffffff33;border-radius:4px;padding:5px 9px;cursor:pointer}
+.top select option{color:#111;background:#fff}
+.top .tbtn:hover{background:#ffffff14}
+.menu-btn{display:none}
+.searchbar{display:flex;gap:6px;padding:8px 16px;background:var(--surface);border-bottom:1px solid var(--line);align-items:center;flex-wrap:wrap}
+.searchbar input{flex:1;min-width:0;max-width:520px;padding:6px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg)}
+.searchbar .hint{color:var(--muted);font-size:12px}
+.body{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:0}
+.nav{background:var(--surface);border-right:1px solid var(--line);overflow:auto;padding:6px 8px 20px}
+.nav h4{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 10px 6px;font-weight:600}
+.nav button{display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px;padding:7px 10px;border:0;background:none;border-radius:4px;text-align:left;cursor:pointer}
+.nav button:hover{background:var(--surface-2)}
+.nav button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.count{font-family:var(--f-mono);font-size:11px;padding:0 6px;border-radius:9px;background:var(--surface-2);color:var(--muted)}
+.count.bad{background:var(--bad-soft);color:var(--bad)}
+.main{overflow:auto;min-width:0}
+.cmdbar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:4px;padding:6px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.content{padding:16px 20px 40px;display:grid;gap:16px;align-content:start}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;background:none;padding:6px 10px;border-radius:4px;cursor:pointer;white-space:nowrap}
+.btn:hover:not(:disabled){background:var(--surface-2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.btn.primary:hover:not(:disabled){filter:brightness(1.08);background:var(--accent)}
+.btn.outline{border-color:var(--line);background:var(--surface)}
+.btn.danger{color:var(--bad)}
+.btn .ic{font-family:var(--f-mono);font-size:12px;opacity:.8}
+.pagehead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.pagehead h1{font-size:20px;margin:0;font-weight:700;text-wrap:balance}
+.pagehead .sub{color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)} .chip.info{background:var(--info-soft);color:var(--info)}
+.chip.acc{background:var(--accent-soft);color:var(--accent)}
+.ask{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--info);background:var(--info-soft);border:1px dashed var(--info);border-radius:3px;padding:0 6px;cursor:pointer;letter-spacing:.01em;white-space:nowrap}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;min-width:0}
+.panel h3{margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:16px;align-items:start}
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px 18px}
+.field{min-width:0}
+.field label{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:3px}
+.field .v{padding:6px 0;min-height:32px;overflow-wrap:anywhere}
+.field input,.field select,.field textarea{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.field input[readonly],.field textarea[readonly]{background:var(--surface-2);border-color:transparent}
+.field.wide{grid-column:1/-1}
+.field .err{color:var(--bad);font-size:12px;margin-top:3px}
+.field .warnmsg{color:var(--warn);font-size:12px;margin-top:3px}
+.req{color:var(--bad)}
+.lock{font-family:var(--f-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:0 4px}
+.mono{font-family:var(--f-mono);font-size:13px}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+.muted{color:var(--muted)}
+.note{border:1px solid var(--line);background:var(--surface-2);border-radius:6px;padding:10px 12px;font-size:13px}
+.note.warn{background:var(--warn-soft);border-color:transparent;color:var(--fg)}
+.note.bad{background:var(--bad-soft);border-color:transparent}
+.note.info{background:var(--info-soft);border-color:transparent}
+.note b{font-weight:600}
+.views{display:flex;flex-wrap:wrap;gap:4px}
+.views button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13px}
+.views button.on{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.gridwrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table.grid{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.grid th{position:sticky;top:0;background:var(--surface-2);text-align:left;font-weight:600;color:var(--muted);font-size:12px;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.grid td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.grid tr:last-child td{border-bottom:0}
+.grid tr.click{cursor:pointer}
+.grid tr.click:hover td{background:var(--accent-soft)}
+.grid tr.tot td{font-weight:700;background:var(--surface-2)}
+.grid .nowrap{white-space:nowrap}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--fg);font-size:15px;margin-bottom:4px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:0;background:none;padding:8px 14px;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);white-space:nowrap}
+.tabs button.on{color:var(--fg);border-bottom-color:var(--accent);font-weight:600}
+.timeline{display:grid;gap:10px}
+.mail{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--surface);min-width:0}
+.mail.out{background:var(--accent-soft);border-color:transparent}
+.mail .mh{display:flex;flex-wrap:wrap;gap:4px 10px;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}
+.mail .subj{font-weight:600;margin-bottom:4px}
+.mail .bodytext{white-space:pre-wrap;overflow-wrap:anywhere}
+.editor{border:1px solid var(--accent);border-radius:6px;padding:12px;background:var(--surface);display:grid;gap:8px}
+.editor .row{display:flex;gap:8px;font-size:13px;flex-wrap:wrap}
+.editor .row span:first-child{color:var(--muted);width:56px}
+.editor textarea{width:100%;min-height:130px;padding:8px;border:1px solid var(--line);border-radius:4px;background:var(--bg)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.tile .k{font-size:12px;color:var(--muted)}
+.tile .n{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.tile.alert .n{color:var(--bad)}
+.chart text{fill:var(--fg);font-family:var(--f-body);font-size:12px}
+.chart .lbl{fill:var(--muted)}
+.chart .grid-l{stroke:var(--line)}
+.chart .bar{fill:var(--accent)}
+.back{position:fixed;inset:0;background:rgba(5,15,12,.45);display:grid;place-items:center;z-index:50;padding:16px}
+.modal{background:var(--surface);color:var(--fg);border-radius:8px;box-shadow:var(--shadow);width:100%;max-width:560px;max-height:100%;display:flex;flex-direction:column;min-width:0}
+.modal.wide{max-width:1040px}
+.modal .mhd{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;justify-content:space-between}
+.modal .mhd h2{margin:0;font-size:16px}
+.modal .mbd{padding:16px 18px;overflow:auto;display:grid;gap:12px}
+.modal .mft{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:6px;box-shadow:var(--shadow);max-width:min(620px,calc(100% - 32px));font-size:13px}
+.toast.bad{background:var(--bad);color:var(--bg)}
+.toast.info{background:var(--info);color:var(--bg)}
+/* Printed format preview: paper is white in both themes */
+.paper{background:var(--sheet);color:var(--sheet-fg);font-family:var(--f-sheet);font-size:11.5px;border:1px solid var(--sheet-line);border-radius:2px;position:relative;overflow-x:auto;padding:14px}
+.paper::after{content:"SIMULADO · SIN VALIDEZ";position:absolute;top:42%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);font-size:46px;font-weight:700;color:rgba(176,38,29,.10);letter-spacing:.08em;pointer-events:none;white-space:nowrap}
+table.sheet{border-collapse:collapse;width:100%;min-width:720px;table-layout:fixed}
+.sheet td,.sheet th{border:1px dotted var(--sheet-line);padding:3px 5px;vertical-align:top;height:20px;overflow-wrap:anywhere;color:var(--sheet-fg)}
+.sheet th{background:#f1f1f1;font-weight:400;color:#666;font-size:10px;text-align:center}
+.sheet th.rn{width:34px}
+.sheet .lbl{font-weight:700}
+.sheet .title{font-weight:700;font-size:13px;text-align:center}
+.sheet .title2{font-weight:700;text-align:center;letter-spacing:.04em}
+.sheet .band{font-weight:700;background:var(--sheet-band)}
+.sheet .clause{font-size:10.5px;line-height:1.35}
+.sheet .small{font-size:10px;color:#333}
+.sheet .val{background:#ffffff}
+.sheet.coords .val{background:var(--sheet-mark)}
+.sheet .coord{display:block;font-family:var(--f-mono);font-size:9px;color:#0d6656}
+.sheet .hdr{font-weight:700;background:var(--sheet-band);text-align:center}
+.sheet .gap td{height:8px;border-color:transparent}
+.sheet .cleared td{font-style:italic;color:#777;text-align:center;background:#fafafa}
+.sheet .sig{padding-top:26px;border-top:0}
+.qlist{display:grid;gap:10px;counter-reset:q}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:grid;gap:6px}
+.q .qt{font-weight:600}
+.q .qd{color:var(--muted);font-size:13px}
+.inline-pay{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.inline-pay input{padding:4px 6px;border:1px solid var(--line);border-radius:4px;background:var(--surface);width:140px}
+.maprow input,.maprow select{padding:4px 6px;border:1px solid var(--line);border-radius:4px;background:var(--surface);max-width:100%}
+.maprow input{width:70px;font-family:var(--f-mono)}
+.list-errors{margin:0;padding-left:18px}
+.atts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.att{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:4px;padding:3px 8px;font-size:12px;background:var(--surface);color:var(--fg);max-width:100%}
+.att .ext{font-family:var(--f-mono);font-size:10px;font-weight:500;color:var(--accent);text-transform:uppercase}
+.att .sz{color:var(--muted)}
+.att button{border:0;background:none;cursor:pointer;color:var(--muted);padding:0 2px}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.thumbs figure{margin:0;display:grid;gap:2px;font-size:11px;color:var(--muted)}
+.thumbs img{max-width:160px;max-height:120px;border-radius:4px;border:1px solid var(--line);object-fit:cover}
+.thumbs .ph{width:160px;height:90px;border-radius:4px;border:1px dashed var(--line);display:grid;place-items:center;background:var(--surface-2)}
+label.btn input[type=file]{display:none}
+@media (max-width:860px){
+  .menu-btn{display:inline-flex}
+  .body{grid-template-columns:minmax(0,1fr)}
+  .nav{display:none;border-right:0;border-bottom:1px solid var(--line)}
+  .nav.open{display:block}
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .content{padding:14px 16px 40px}
+  .cmdbar{padding:6px 16px}
+}
+@media (prefers-reduced-motion:no-preference){ .toast{animation:up .18s ease-out} @keyframes up{from{transform:translate(-50%,8px);opacity:0}to{transform:translate(-50%,0);opacity:1}} }
+</style>
+
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+const { useState, useEffect, createContext, useContext } = React;
+const html = htm.bind(React.createElement);
+
+/* ---------- Reloj simulado y formato ---------- */
+const T0 = Date.now();
+const SIM = new Date(2026, 9, 7, 10, 30, 0).getTime();
+const now = () => new Date(SIM + (Date.now() - T0));
+const D = s => { const [d, t] = s.split(' '); const [y, m, dd] = d.split('-').map(Number); const [h, mi] = (t || '0:0').split(':').map(Number); return new Date(y, m - 1, dd, h, mi); };
+const pad = n => String(n).padStart(2, '0');
+const fd = d => d ? `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}` : '';
+const fdt = d => d ? `${fd(d)} ${pad(d.getHours())}:${pad(d.getMinutes())}` : '';
+const iso = d => d ? `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` : '';
+const n2 = n => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const money = n => (n === null || n === undefined || n === '') ? '' : 'C$ ' + n2(n);
+const dur = min => { min = Math.max(0, Math.round(min)); if (min < 60) return `${min} min`; const h = Math.floor(min / 60), m = min % 60; if (h < 24) return `${h} h ${pad(m)} min`; return `${Math.floor(h / 24)} d ${h % 24} h`; };
+const day0 = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const addMonths = (d, k) => { const y = d.getFullYear(), m = d.getMonth() + k, last = new Date(y, m + 1, 0).getDate(); return new Date(y, m, Math.min(d.getDate(), last)); };
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9@.]/g, '');
+const fakeHash = s => { let h = 2166136261, out = ''; for (let r = 0; r < 8; r++) { for (const ch of s + r) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } out += h.toString(16).padStart(8, '0'); } return out; };
+const avg = xs => xs.length ? xs.reduce((t, x) => t + x, 0) / xs.length : null;
+const fsize = b => b < 1024 * 1024 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1048576).toFixed(1)} MB`;
+const ext = n => (String(n).match(/\.([a-z0-9]+)$/i) || [, ''])[1].toLowerCase();
+// Límite del entorno (Organization.MaxUploadFileSize): 5 MB por defecto, medido sobre el Base64 del archivo.
+const MAX_B64 = 5 * 1024 * 1024;
+const BLOQUEADAS = ['exe', 'bat', 'cmd', 'com', 'js', 'jse', 'vbs', 'vbe', 'ps1', 'msi', 'scr', 'dll', 'jar', 'reg', 'lnk', 'hta', 'url'];
+const IMG_OK = ['png', 'jpg', 'jpeg', 'gif'];
+
+/* ---------- Usuarios simulados ---------- */
+const USERS = {
+  o1: { id: 'o1', nombre: 'Mariela Gutiérrez', rol: 'Oficial' },
+  o2: { id: 'o2', nombre: 'Carlos Aráuz', rol: 'Oficial' },
+  o3: { id: 'o3', nombre: 'Lucía Pérez', rol: 'Oficial' },
+  j1: { id: 'j1', nombre: 'Ramón Téllez', rol: 'Jefe' },
+};
+const OFICIALES = ['o1', 'o2', 'o3'];
+const uname = id => USERS[id]?.nombre || '—';
+const BUZON = 'arreglosdepago@banco.ejemplo';
+
+/* ---------- Campos mapeables (choice global, lo mantiene el equipo) ---------- */
+const FIELDS = [
+  ['fechaFormalizacion', 'Fecha de formalización', 'simple'], ['oficial', 'Oficial de arreglo', 'simple'],
+  ['clienteNombre', 'Nombre del cliente', 'simple'], ['clienteCedula', 'Cédula del cliente', 'simple'],
+  ['clienteCorreo', 'Correo del cliente', 'simple'], ['clienteCelular', 'Celular del cliente', 'simple'],
+  ['numeroProducto', 'Número de préstamo o tarjeta', 'simple'], ['tipo', 'Tipo de arreglo', 'simple'],
+  ['numeroArreglo', 'Número de arreglo', 'simple'], ['saldoInicial', 'Saldo inicial', 'simple'],
+  ['montoAbonado', 'Monto abonado', 'simple'], ['saldoRemanente', 'Saldo remanente', 'simple'],
+  ['plazo', 'Plazo (cuotas)', 'simple'], ['cuota', 'Cuota mensual', 'simple'], ['totalPagar', 'Total a pagar', 'simple'],
+  ['fechaInicio', 'Fecha de inicio', 'simple'], ['fechaFin', 'Fecha de finalización', 'simple'],
+  ['cuentaDebitar', 'Cuenta a debitar', 'simple'], ['comentarios', 'Comentarios', 'simple'],
+  ['cuota.numero', 'Cuota: número', 'bloque'], ['cuota.fecha', 'Cuota: fecha de vencimiento', 'bloque'],
+  ['cuota.monto', 'Cuota: monto', 'bloque'], ['cuota.fechaPago', 'Cuota: fecha de pago', 'bloque'],
+  ['cuota.montoPagado', 'Cuota: monto pagado', 'bloque'],
+  ['total.montoCuotas', 'Total: montos de cuota', 'total'], ['total.montoPagado', 'Total: montos pagados', 'total'],
+];
+const FIELD = Object.fromEntries(FIELDS.map(f => [f[0], { label: f[1], tipo: f[2] }]));
+const HOJAS = { FORMATO: 'FORMATO ARP ELECTRONICO', CONTROL: 'CONTROL DE PAGOS' };
+const TIPO_MAP = { simple: 'Valor simple', bloque: 'Bloque de cuotas', total: 'Total calculado' };
+
+const MAP_V07 = () => [
+  ['FORMATO', 'B7', 'fechaFormalizacion'], ['FORMATO', 'F7', 'oficial'], ['FORMATO', 'B8', 'clienteNombre'], ['FORMATO', 'F8', 'clienteCedula'],
+  ['FORMATO', 'B9', 'clienteCorreo'], ['FORMATO', 'F9', 'clienteCelular'], ['FORMATO', 'B12', 'numeroProducto'], ['FORMATO', 'D12', 'tipo'],
+  ['FORMATO', 'F12', 'numeroArreglo'], ['FORMATO', 'B13', 'saldoInicial'], ['FORMATO', 'D13', 'montoAbonado'], ['FORMATO', 'F13', 'saldoRemanente'],
+  ['FORMATO', 'B14', 'plazo'], ['FORMATO', 'D14', 'cuota'], ['FORMATO', 'F14', 'totalPagar'], ['FORMATO', 'B15', 'fechaInicio'],
+  ['FORMATO', 'D15', 'fechaFin'], ['FORMATO', 'F15', 'cuentaDebitar'], ['FORMATO', 'A18', 'comentarios'],
+  ['CONTROL', 'B4', 'clienteNombre'], ['CONTROL', 'E4', 'fechaFormalizacion'],
+  ['CONTROL', 'A7', 'cuota.numero'], ['CONTROL', 'B7', 'cuota.fecha'], ['CONTROL', 'C7', 'cuota.monto'], ['CONTROL', 'D7', 'cuota.fechaPago'], ['CONTROL', 'E7', 'cuota.montoPagado'],
+  ['CONTROL', 'C67', 'total.montoCuotas'], ['CONTROL', 'E67', 'total.montoPagado'],
+].map(([hoja, celda, campo], i) => ({ id: 'm' + i + Math.random().toString(36).slice(2, 6), hoja, celda, campo }));
+
+/* ---------- Plantilla (contenido fijo del documento) ---------- */
+const CLAUSES = [
+  'Por este medio autorizo al Banco a debitar de mi cuenta de Planilla o cualquier otra cuenta que posea con el Banco las cuotas pactadas en el presente Arreglo para el pago de mi Préstamo.',
+  'En caso que el Banco no pudiera debitar alguna de las cuotas acordadas en la fecha establecida por falta de fondos suficientes en la cuenta del cliente o cualquier otra razón, el Banco procederá a debitar la cuota pendiente más la cuota actual del arreglo.',
+  'Quedo enterado (a) que en caso de incumplimiento en el pago de alguna de las cuotas pactadas del presente arreglo, este se anulará y continuará con las gestiones de cobro según las Políticas y Procedimientos establecidos por el Banco.',
+  'Es expresamente aceptado por el CLIENTE que el presente Arreglo no podrá ser considerado en modo o circunstancia alguna como una modificación y/o sustitución del o los contratos de tarjetas de crédito y/o préstamos suscritos previamente con el Banco y que, por lo tanto, no cancela y/o anula y/o modifica los derechos y obligaciones establecidos en dichos contratos.',
+];
+function template(ver) {
+  const cap = ver.capacidad, tr = 7 + cap;
+  const F = {
+    A4: { t: `F-NIC-0000052 · Formato de Arreglo de Pagos Préstamos y Tarjetas · Versión ${ver.num.slice(1)}`, span: 6, cls: 'title' },
+    A5: { t: 'FORMALIZACION DE ARREGLO DE PAGOS', span: 6, cls: 'title2' },
+    A7: 'Fecha Formalización:', E7: 'Oficial de Arreglo de Pagos:', A8: 'Nombre del Cliente:', E8: 'Número de Cédula:',
+    A9: 'Correo electrónico:', E9: 'Número de Celular:',
+    A11: { t: 'DATOS DEL ARREGLO DE PAGOS', span: 6, cls: 'band' },
+    A12: 'Número de Préstamo / Tarjeta:', C12: 'Tipo de Arreglo T/C:', E12: 'Número de Arreglo de Pagos:',
+    A13: 'Saldo Inicial:', C13: 'Monto abonado a la fecha:', E13: 'Saldo remanente por pagar:',
+    A14: 'Plazo (meses):', C14: 'Cuota mensual del Arreglo:', E14: 'Total a pagar en este arreglo:',
+    A15: 'Fecha de Inicio:', C15: 'Fecha de Finalización:', E15: 'Número de cuenta a debitar:',
+    A17: { t: 'COMENTARIOS', span: 6, cls: 'band' },
+    A25: { t: CLAUSES[0], span: 6, cls: 'clause' }, A27: { t: CLAUSES[1], span: 6, cls: 'clause' },
+    A29: { t: CLAUSES[2], span: 6, cls: 'clause' }, A31: { t: CLAUSES[3], span: 6, cls: 'clause' },
+    A45: { t: 'Firma Cliente: ______________________', span: 3, cls: 'lbl sig' }, D45: { t: 'Firma Oficial Arp: ______________________', span: 3, cls: 'lbl sig' },
+    A57: { t: 'En caso de realizar sus pagos a través de gestor de cobro a domicilio solicitar recibo firmado y sellado por todo efectivo entregado al colector.', span: 6, cls: 'small' },
+    A58: { t: 'Este formato consta de una hoja adjunta.', span: 6, cls: 'small' },
+  };
+  const C = {
+    A1: { t: 'CALENDARIO DE PAGOS', span: 5, cls: 'title' },
+    A4: 'Nombre:', D4: 'Fecha:',
+    A6: { t: 'N° cuota', cls: 'hdr' }, B6: { t: 'Fecha cuota', cls: 'hdr' }, C6: { t: 'Monto cuota', cls: 'hdr' }, D6: { t: 'Fecha pago', cls: 'hdr' }, E6: { t: 'Monto pagado', cls: 'hdr' },
+    ['B' + tr]: { t: 'TOTALES', cls: 'lbl' },
+    ['A' + (tr + 2)]: { t: CLAUSES[3], span: 5, cls: 'clause' },
+    ['A' + (tr + 6)]: { t: 'Firma Cliente: __________________', span: 3, cls: 'lbl sig' }, ['D' + (tr + 6)]: { t: 'Firma del Oficial de Arp: ____________', span: 2, cls: 'lbl sig' },
+  };
+  return { FORMATO: { cols: 6, cells: F }, CONTROL: { cols: 5, cells: C, block: [7, 6 + cap] } };
+}
+const parseCell = c => { const m = /^([A-Z]{1,2})([1-9]\d*)$/.exec(String(c || '').trim().toUpperCase()); return m ? { col: m[1], row: Number(m[2]) } : null; };
+
+/* ---------- Reglas del dominio (en la solución viven en plugins) ---------- */
+const genCuotas = (inicio, plazo, cuota) => Array.from({ length: plazo }, (_, i) => ({ n: i + 1, fecha: addMonths(inicio, i), monto: Number(cuota), fechaPago: null, montoPagado: null }));
+const vencidasSinPago = a => a.cuotas.filter(c => !c.fechaPago && day0(c.fecha) < day0(now()));
+const enRiesgo = a => a.estado === 'Vigente' && vencidasSinPago(a).length > 0;
+const estadoCuota = (c, a) => {
+  if (a.estado === 'Borrador' || a.estado === 'Descartado') return ['Propuesta', ''];
+  if (c.fechaPago) return Number(c.montoPagado) < Number(c.monto) ? ['Pago parcial', 'warn'] : ['Pagada', 'ok'];
+  return day0(c.fecha) < day0(now()) ? ['Vencida sin pago', 'bad'] : ['Por vencer', ''];
+};
+// Solo cuentan los arreglos formalizados: un borrador o un descartado no consumen número.
+const sigNumeroArreglo = (db, producto, numero) => 1 + Math.max(0, ...db.arreglos.filter(a => a.numeroArreglo != null && a.producto === producto && norm(a.numeroProducto) === norm(numero)).map(a => a.numeroArreglo));
+const vigente = db => db.versiones.find(v => v.estado === 'Vigente');
+
+// Conversación: todo se deriva de sus correos.
+const mailsSorted = s => [...s.mails].sort((a, b) => a.fecha - b.fecha);
+function convInfo(s) {
+  const ms = mailsSorted(s); let pend = null; const rounds = []; let first = null;
+  for (const m of ms) {
+    if (m.dir === 'in') { if (!pend) pend = m.fecha; }
+    else if (m.estado === 'Enviado') { if (pend) { rounds.push({ id: m.id, por: m.por, fecha: m.fecha, min: (m.fecha - pend) / 60000 }); if (first === null) first = (m.fecha - ms[0].fecha) / 60000; } pend = null; }
+  }
+  const fin = s.estado === 'Finalizada';
+  const nuevos = fin ? ms.filter(m => m.dir === 'in' && m.fecha > s.fin.fecha) : [];
+  const abierta = s.estado === 'Abierta';
+  const error = abierta && pend && ms.some(m => m.dir === 'out' && m.estado === 'Error de envío' && m.fecha > pend);
+  return { pend: abierta ? pend : null, rounds, first, nuevos, error, total: fin ? (s.fin.fecha - ms[0].fecha) / 60000 : null, ultimo: ms[ms.length - 1], ms };
+}
+const needsAttention = (s, i) => !!i.pend || i.nuevos.length > 0;
+
+/* ---------- Datos simulados ---------- */
+function seed() {
+  const db = { clientes: [], solicitudes: [], arreglos: [], versiones: [], audit: [], seq: { sol: 125, cli: 8, arr: 12, ver: 9, mail: 1 }, simIdx: 0 };
+  const log = (fecha, uid, ent, id, texto) => db.audit.push({ fecha, uid, ent, id, texto });
+  const C = (id, nombre, cedula, correo, celular) => db.clientes.push({ id, nombre, cedula, correo, celular });
+  C('c1', 'Ana Lucía Martínez Ruiz', '001-120488-0023K', 'ana.martinez@ejemplo.com', '8812-4410');
+  C('c2', 'José Manuel Rivas Toruño', '401-030779-0007B', 'jm.rivas@ejemplo.com', '8456-9900');
+  C('c3', 'Karla Vanessa Obando Mejía', '001-250592-0041P', 'kvobando@ejemplo.com', '7789-1102');
+  C('c4', 'Roberto Antonio Sevilla', '281-110865-0002M', 'rsevilla@ejemplo.com', '8320-7765');
+  C('c5', 'María Fernanda López Castillo', '001-070901-0019Q', 'mflopez@ejemplo.com', '5761-3390');
+  C('c6', 'Francisco Javier Duarte', '361-190283-0005T', 'fduarte@ejemplo.com', '8901-5543');
+  C('c7', 'Silvia Elena Gómez Urbina', '001-300370-0088F', 'silvia.gomez@ejemplo.com', '8644-0912');
+
+  db.versiones.push({ id: 'v07', num: 'v07', estado: 'Vigente', capacidad: 60, archivo: 'F-NIC-0000052_v07.xlsx', kb: 52, huella: fakeHash('v07'), aprobador: 'j1', aprobado: D('2024-01-15 09:00'), mapeo: MAP_V07() });
+  const m8 = MAP_V07(); m8.find(m => m.campo === 'cuentaDebitar').celda = 'F14';
+  db.versiones.push({ id: 'v08', num: 'v08', estado: 'Borrador', capacidad: 60, archivo: 'F-NIC-0000052_v08.xlsx', kb: 53, huella: null, aprobador: null, aprobado: null, mapeo: m8 });
+
+  // mails: [dir, fecha, cuerpo, extra]
+  const S = o => {
+    const s = { estado: 'Abierta', resultado: null, fin: null, asignado: null, clienteId: null, carrera: false, unidaA: null, ...o };
+    s.mails = o.mails.map(([dir, f, cuerpo, extra], i) => ({ id: 'e' + (db.seq.mail++), dir, de: dir === 'in' ? o.de : BUZON, para: dir === 'in' ? BUZON : o.de, asunto: (i ? 'RE: ' : '') + o.asunto, cuerpo, fecha: D(f), estado: dir === 'out' ? 'Enviado' : null, por: dir === 'out' ? o.asignado : null, ...(extra || {}) }));
+    s.llegada = s.mails[0].fecha;
+    s.mails.filter(m => m.dir === 'out' && m.estado === 'Enviado').forEach(m => log(m.fecha, m.por, 'sol', s.id, 'Respondió al cliente desde el buzón del área'));
+    if (o.finalizar) { const [res, f, motivo, detalle] = o.finalizar; s.estado = 'Finalizada'; s.resultado = res; s.fin = { uid: o.asignado, fecha: D(f), motivo, detalle }; log(s.fin.fecha, o.asignado, 'sol', s.id, `Finalizó la conversación: ${res}${motivo ? ' (' + motivo + ')' : ''}`); }
+    delete s.finalizar; db.solicitudes.push(s); return s;
+  };
+  S({ id: 's1', num: 'SOL-0124', de: 'ana.martinez@ejemplo.com', clienteId: 'c1', asignado: 'o1', asunto: 'Consulta sobre mi arreglo de tarjeta', mails: [['in', '2026-10-07 07:42', 'Buenos días. Tengo un arreglo vigente con mi tarjeta y quisiera saber si puedo adelantar dos cuotas este mes. Gracias.\n\nAna Martínez']] });
+  S({ id: 's2', num: 'SOL-0123', de: 'pedro.zamora@ejemplo.com', carrera: true, asunto: 'Necesito un arreglo para mi préstamo', mails: [['in', '2026-10-07 08:15', 'Buen día, estoy atrasado con mi préstamo personal porque me redujeron el salario. Quisiera saber qué opciones tengo para ponerme al día.\n\nPedro Zamora\nCel. 8790-2231']] });
+  S({ id: 's10', num: 'SOL-0122', de: 'lucia.hernandez@ejemplo.com', asignado: 'o3', asunto: 'Solicitud de arreglo de pago', mails: [['in', '2026-10-07 08:40', 'Hola, quiero hacer un arreglo de pago. Mi préstamo está a mi nombre, Lucía Hernández.'], ['out', '2026-10-07 09:10', 'Estimada señora Hernández: para avanzar con su arreglo necesitamos el número de su préstamo...', { estado: 'Error de envío' }]] });
+  S({ id: 's18', num: 'SOL-0121', de: 'kvobando@ejemplo.com', clienteId: 'c3', asunto: 'Olvidé decirles', mails: [['in', '2026-10-07 09:50', 'Perdón, olvidé decirles en mi correo de ayer que me pagan el 15. ¿Podría pagar las dos cuotas ese día?\n\nKarla']] });
+  S({ id: 's3', num: 'SOL-0120', de: 'mflopez@ejemplo.com', clienteId: 'c5', asignado: 'o2', asunto: 'Arreglo nuevo para otra tarjeta', mails: [
+    ['in', '2026-10-06 16:50', 'Buenas tardes. Ya terminé de pagar mi arreglo anterior. Ahora tengo atraso en otra tarjeta y quisiera un nuevo arreglo.\n\nMaría Fernanda López'],
+    ['out', '2026-10-06 17:40', 'Estimada señora López: le proponemos cancelar el saldo de su tarjeta en 6 cuotas de C$ 2,900.00 a partir del 5 de noviembre. ¿Está de acuerdo?'],
+    ['in', '2026-10-07 08:05', 'Sí, estoy de acuerdo. Paso el viernes a firmar. ¿Qué documentos llevo? Les adjunto mi cédula.', { adjuntos: [{ name: 'cedula-frente.jpg', size: 912384 }, { name: 'cedula-reverso.jpg', size: 887120 }] }]] });
+  S({ id: 's4', num: 'SOL-0119', de: 'kvobando@ejemplo.com', clienteId: 'c3', asignado: 'o2', asunto: 'No pude pagar la cuota de septiembre', mails: [['in', '2026-10-06 11:05', 'Les escribo porque no pude pagar la cuota de septiembre de mi arreglo. ¿Puedo pagarla junto con la de octubre?\n\nKarla Obando']] });
+  S({ id: 's6', num: 'SOL-0118', de: 'jm.rivas@ejemplo.com', clienteId: 'c2', asignado: 'o1', asunto: 'Cambio de número de celular', mails: [['in', '2026-10-06 08:10', 'Buenos días, cambié mi número de celular. El nuevo es 8456-9900. ¿Lo pueden actualizar en mi arreglo?\n\nJosé Rivas'], ['out', '2026-10-06 10:05', 'Estimado señor Rivas: actualizamos su número de contacto. El formato que firmó conserva los datos de la fecha de firma.']] });
+  S({ id: 's5', num: 'SOL-0117', de: 'noreply@notificaciones.ejemplo.com', asignado: 'o3', asunto: 'Respuesta automática: fuera de la oficina', mails: [['in', '2026-10-06 09:00', 'Estaré fuera de la oficina hasta el lunes 12 de octubre.']], finalizar: ['Sin respuesta', '2026-10-06 09:20', 'Respuesta automática', 'Respuesta automática a un correo nuestro; no es una solicitud.'] });
+  S({ id: 's7', num: 'SOL-0116', de: 'rsevilla@ejemplo.com', clienteId: 'c4', asignado: 'o2', asunto: 'Pago parcial de la cuota', mails: [
+    ['in', '2026-10-05 14:20', 'Este mes solo pude pagar la mitad de la cuota. ¿Qué pasa con mi arreglo?'],
+    ['out', '2026-10-05 18:45', 'Estimado señor Sevilla: registramos su pago parcial. Le recordamos completar la cuota lo antes posible.'],
+    ['in', '2026-10-05 19:10', 'Gracias. Pago la otra mitad la próxima semana.'],
+    ['out', '2026-10-06 08:30', 'Perfecto, quedamos atentos.']], finalizar: ['Sin arreglo de pago', '2026-10-06 08:35'] });
+  S({ id: 's8', num: 'SOL-0115', de: 'fduarte@ejemplo.com', clienteId: 'c6', asignado: 'o3', asunto: 'Constancia de arreglo', mails: [
+    ['in', '2026-10-05 09:30', '¿Me pueden enviar una constancia de que tengo arreglo vigente?'],
+    ['out', '2026-10-05 10:12', 'Estimado señor Duarte: adjuntamos la constancia solicitada.'],
+    ['in', '2026-10-07 10:05', 'Gracias. ¿Me pueden enviar también el calendario de cuotas?']], finalizar: ['Sin arreglo de pago', '2026-10-05 10:15'] });
+  S({ id: 's11', num: 'SOL-0114', de: 'ofertas@promo.ejemplo.net', asignado: 'o1', asunto: 'Promoción exclusiva por tiempo limitado', mails: [['in', '2026-10-04 13:00', 'Gane premios increíbles haciendo clic aquí...']], finalizar: ['Sin respuesta', '2026-10-04 13:30', 'Spam', 'Publicidad no solicitada.'] });
+  S({ id: 's9', num: 'SOL-0113', de: 'silvia.gomez@ejemplo.com', clienteId: 'c7', asignado: 'o1', asunto: 'Quiero cancelar mi tarjeta con un arreglo', mails: [
+    ['in', '2026-10-03 11:00', 'Quiero terminar de pagar mi tarjeta en cuotas. Puedo pagar unos 3,000 córdobas al mes.\n\nSilvia Gómez'],
+    ['out', '2026-10-03 12:40', 'Estimada señora Gómez: le proponemos 8 cuotas de C$ 3,125.00 a partir del 20 de octubre.'],
+    ['in', '2026-10-03 15:00', 'Me parece bien. ¿Cuándo puedo ir a firmar?'],
+    ['out', '2026-10-03 15:30', 'La esperamos cualquier día hábil en el área de Arreglos de Pago o en una sucursal.']] });
+  S({ id: 's15', num: 'SOL-0112', de: 'jm.rivas@ejemplo.com', clienteId: 'c2', asignado: 'o1', asunto: 'Fecha de mi próxima cuota', mails: [['in', '2026-09-30 09:00', '¿Cuándo vence mi próxima cuota?'], ['out', '2026-09-30 11:10', 'Su próxima cuota vence el 15 de octubre.']], finalizar: ['Sin arreglo de pago', '2026-09-30 11:15'] });
+  S({ id: 's14', num: 'SOL-0111', de: 'kvobando@ejemplo.com', clienteId: 'c3', asignado: 'o3', asunto: 'Monto de la cuota', mails: [['in', '2026-09-29 15:00', '¿Me confirman el monto de la cuota mensual?'], ['out', '2026-09-29 16:15', 'Su cuota mensual es de C$ 6,800.00.']], finalizar: ['Sin arreglo de pago', '2026-09-29 16:20'] });
+  S({ id: 's13', num: 'SOL-0110', de: 'mflopez@ejemplo.com', clienteId: 'c5', asignado: 'o2', asunto: 'Pago final', mails: [['in', '2026-09-28 08:30', 'Realicé el último pago de mi arreglo.'], ['out', '2026-09-28 11:40', 'Confirmamos el pago. Su arreglo quedó terminado.']], finalizar: ['Sin arreglo de pago', '2026-09-28 11:45'] });
+  S({ id: 's17', num: 'SOL-0109', de: 'rsevilla@ejemplo.com', clienteId: 'c4', asignado: 'o3', asunto: 'Dónde pagar', mails: [['in', '2026-09-24 10:00', '¿Puedo pagar la cuota por la web?'], ['out', '2026-09-24 10:55', 'Sí, puede pagar por la banca en línea o en cualquier sucursal.']], finalizar: ['Sin arreglo de pago', '2026-09-24 11:00'] });
+  S({ id: 's16', num: 'SOL-0108', de: 'ana.martinez@ejemplo.com', clienteId: 'c1', asignado: 'o2', asunto: 'Comprobante de pago', mails: [['in', '2026-09-22 08:00', 'Adjunto comprobante de la cuota de septiembre.', { adjuntos: [{ name: 'comprobante-septiembre.pdf', size: 184320 }] }], ['out', '2026-09-22 13:10', 'Recibido, gracias. Le adjuntamos su calendario de pagos actualizado.', { adjuntos: [{ name: 'calendario-pagos.pdf', size: 96256 }] }]], finalizar: ['Sin arreglo de pago', '2026-09-22 13:15'] });
+  S({ id: 's19', num: 'SOL-0104', de: 'carlos.mendoza@ejemplo.com', asignado: 'o1', asunto: 'Información de arreglos de pago', mails: [['in', '2026-09-15 09:00', 'Buenos días, quisiera información para hacer un arreglo de pago.'], ['out', '2026-09-15 10:30', 'Estimado señor Mendoza: con gusto. Indíquenos el número de su préstamo o tarjeta y su cédula.']], finalizar: ['Sin respuesta', '2026-10-01 09:00', 'El cliente no respondió', 'Sin respuesta del cliente en dos semanas.'] });
+  S({ id: 's12', num: 'SOL-0021', de: 'jm.rivas@ejemplo.com', clienteId: 'c2', asignado: 'o1', asunto: 'Solicitud de arreglo de préstamo', mails: [
+    ['in', '2026-04-08 09:30', 'Necesito un arreglo para mi préstamo personal.'], ['out', '2026-04-08 12:00', 'Le proponemos 12 cuotas de C$ 7,000.00.'],
+    ['in', '2026-04-09 08:00', 'Acepto la propuesta.'], ['out', '2026-04-09 09:00', 'Lo esperamos para firmar.']], finalizar: ['Con arreglo de pago', '2026-04-10 15:30'] });
+
+  const A = o => {
+    const a = { estado: 'Vigente', version: 'v07', congelado: null, instantanea: null, numeroImpreso: null, anulacion: null, descarte: null, reapertura: null, reaperturas: 0, fechaTermino: null, generaciones: [], comentarios: '', solicitudId: null, ...o };
+    a.fechaInicio = D(o.inicio); a.fechaFormalizacion = D(o.formalizacion); delete a.inicio; delete a.formalizacion;
+    a.cuotas = genCuotas(a.fechaInicio, a.plazo, a.cuota); a.fechaFin = a.cuotas[a.cuotas.length - 1].fecha;
+    log(new Date(a.fechaFormalizacion.getTime() + 9 * 3600000), a.oficial, 'arr', a.id, `Creó el arreglo en borrador; el sistema generó ${a.plazo} cuotas`);
+    db.arreglos.push(a); return a;
+  };
+  const freeze = (a, f) => { const c = db.clientes.find(x => x.id === a.clienteId); a.congelado = D(f); a.instantanea = { nombre: c.nombre, cedula: c.cedula, correo: c.correo, celular: c.celular }; a.numeroImpreso = a.numeroArreglo || sigNumeroArreglo(db, a.producto, a.numeroProducto); a.generaciones.push({ fecha: D(f), uid: a.oficial, version: a.version }); log(D(f), a.oficial, 'arr', a.id, `Generó el formato para firma con la plantilla ${a.version}; los datos quedaron bloqueados`); };
+  const formal = (a, f) => log(D(f), a.oficial, 'arr', a.id, `Formalizó el arreglo con el N.º ${a.numeroArreglo}: el cliente firmó`);
+  const pay = (a, k) => { for (let i = 0; i < k; i++) { const c = a.cuotas[i]; c.fechaPago = new Date(c.fecha.getTime() - 86400000 * (i % 3)); c.montoPagado = c.monto; log(new Date(c.fechaPago.getTime() + 86400000 * 2), a.oficial, 'arr', a.id, `Registró el pago de la cuota ${c.n} (${money(c.monto)})`); } };
+
+  const a1 = A({ id: 'a1', clienteId: 'c2', solicitudId: 's12', producto: 'Préstamo', numeroProducto: '10-2033-4471', numeroArreglo: 1, tipo: 'Temporal', saldoInicial: 85000, montoAbonado: 5000, saldoRemanente: 80000, plazo: 12, cuota: 7000, totalPagar: 84000, inicio: '2026-04-15', formalizacion: '2026-04-10', cuentaDebitar: '201-334-41187', oficial: 'o1', comentarios: 'Reducción de ingresos. Se acuerda alivio temporal por 12 meses.' });
+  freeze(a1, '2026-04-10 14:00'); formal(a1, '2026-04-10 15:20'); a1.instantanea.celular = '8456-2231'; pay(a1, 5);
+  const a3 = A({ id: 'a3', clienteId: 'c1', producto: 'Tarjeta', numeroProducto: '5412 7500 1234 8890', numeroArreglo: 1, tipo: 'Temporal', saldoInicial: 38000, montoAbonado: 2000, saldoRemanente: 36000, plazo: 12, cuota: 3000, totalPagar: 36000, inicio: '2024-03-28', formalizacion: '2024-03-20', cuentaDebitar: '201-118-90021', oficial: 'o2' });
+  freeze(a3, '2024-03-20 10:05'); formal(a3, '2024-03-20 11:00'); pay(a3, 12); a3.estado = 'Terminado'; a3.fechaTermino = D('2025-02-27'); log(D('2025-02-27 16:00'), 'o2', 'arr', 'a3', 'El arreglo pasó a Terminado: todas las cuotas tienen pago registrado');
+  const a2 = A({ id: 'a2', clienteId: 'c1', producto: 'Tarjeta', numeroProducto: '5412 7500 1234 8890', numeroArreglo: 2, tipo: 'Cancelación', saldoInicial: 42300, montoAbonado: 2300, saldoRemanente: 40000, plazo: 24, cuota: 1667, totalPagar: 40008, inicio: '2026-07-30', formalizacion: '2026-07-22', cuentaDebitar: '201-118-90021', oficial: 'o2', comentarios: 'Cancelación total de la tarjeta en 24 cuotas. Vence el día 30; en febrero vence el 28.' });
+  freeze(a2, '2026-07-22 11:40'); formal(a2, '2026-07-22 12:30'); pay(a2, 3);
+  const a4 = A({ id: 'a4', clienteId: 'c4', producto: 'Préstamo', numeroProducto: '10-2019-0098', numeroArreglo: 1, tipo: 'Temporal', saldoInicial: 310000, montoAbonado: 10000, saldoRemanente: 300000, plazo: 60, cuota: 5000, totalPagar: 300000, inicio: '2026-06-05', formalizacion: '2026-05-29', cuentaDebitar: '201-776-55012', oficial: 'o2', comentarios: 'Plazo máximo de 60 cuotas.' });
+  freeze(a4, '2026-05-29 14:10'); formal(a4, '2026-05-29 15:00'); pay(a4, 3); a4.cuotas[3].fechaPago = D('2026-09-08'); a4.cuotas[3].montoPagado = 2500; log(D('2026-09-09 09:00'), 'o2', 'arr', 'a4', 'Registró el pago de la cuota 4 (C$ 2,500.00, parcial)');
+  const a5 = A({ id: 'a5', clienteId: 'c6', producto: 'Préstamo', numeroProducto: '10-2041-7710', numeroArreglo: 1, tipo: 'Temporal', saldoInicial: 64000, montoAbonado: 4000, saldoRemanente: 60000, plazo: 6, cuota: 10000, totalPagar: 60000, inicio: '2026-05-10', formalizacion: '2026-05-04', cuentaDebitar: '201-551-30987', oficial: 'o3' });
+  freeze(a5, '2026-05-04 09:30'); formal(a5, '2026-05-04 10:15'); pay(a5, 1); a5.estado = 'Anulado'; a5.anulacion = { motivo: 'No pagó las cuotas 2 y 3 y no responde. Se traslada a Cobranza.', uid: 'o3', fecha: D('2026-07-20 11:15') }; a5.fechaTermino = a5.anulacion.fecha; log(a5.anulacion.fecha, 'o3', 'arr', 'a5', 'Anuló el arreglo. Motivo: ' + a5.anulacion.motivo);
+  const a6 = A({ id: 'a6', clienteId: 'c6', producto: 'Préstamo', numeroProducto: '10-2041-7710', numeroArreglo: 2, tipo: 'Temporal', saldoInicial: 58000, montoAbonado: 8000, saldoRemanente: 50000, plazo: 10, cuota: 5000, totalPagar: 50000, inicio: '2026-09-10', formalizacion: '2026-09-03', cuentaDebitar: '201-551-30987', oficial: 'o3', comentarios: 'Segundo arreglo sobre el mismo préstamo después de la anulación del primero.' });
+  freeze(a6, '2026-09-03 10:00'); formal(a6, '2026-09-03 11:30'); pay(a6, 1);
+  const a8 = A({ id: 'a8', clienteId: 'c3', producto: 'Préstamo', numeroProducto: '10-2050-1123', numeroArreglo: 1, tipo: 'Temporal', saldoInicial: 120000, montoAbonado: 0, saldoRemanente: 120000, plazo: 18, cuota: 6800, totalPagar: 122400, inicio: '2026-08-01', formalizacion: '2026-07-25', cuentaDebitar: '201-447-62230', oficial: 'o2' });
+  freeze(a8, '2026-07-25 15:45'); formal(a8, '2026-07-25 16:30'); pay(a8, 1);
+  const a9 = A({ id: 'a9', clienteId: 'c5', producto: 'Tarjeta', numeroProducto: '5291 0088 4410 7765', numeroArreglo: 1, tipo: 'Temporal', saldoInicial: 18000, montoAbonado: 0, saldoRemanente: 18000, plazo: 6, cuota: 3000, totalPagar: 18000, inicio: '2026-03-25', formalizacion: '2026-03-18', cuentaDebitar: '201-338-77410', oficial: 'o1' });
+  freeze(a9, '2026-03-18 12:00'); formal(a9, '2026-03-18 12:45'); pay(a9, 6); a9.estado = 'Terminado'; a9.fechaTermino = D('2026-08-24'); log(D('2026-08-24 10:00'), 'o1', 'arr', 'a9', 'El arreglo pasó a Terminado: todas las cuotas tienen pago registrado');
+  // Borradores
+  A({ id: 'a7', estado: 'Borrador', clienteId: 'c7', solicitudId: 's9', producto: 'Tarjeta', numeroProducto: '4916 3301 7752 0043', numeroArreglo: null, tipo: 'Cancelación', saldoInicial: 26500, montoAbonado: 1500, saldoRemanente: 25000, plazo: 8, cuota: 3125, totalPagar: 25000, inicio: '2026-10-20', formalizacion: '2026-10-07', cuentaDebitar: '201-902-11873', oficial: 'o1', comentarios: 'La clienta aceptó por correo; falta que venga a firmar.' });
+  const a10 = A({ id: 'a10', estado: 'Borrador', clienteId: 'c5', solicitudId: 's3', producto: 'Tarjeta', numeroProducto: '4556 2210 9087 3321', numeroArreglo: null, tipo: 'Cancelación', saldoInicial: 17900, montoAbonado: 500, saldoRemanente: 17400, plazo: 6, cuota: 2900, totalPagar: 17400, inicio: '2026-11-05', formalizacion: '2026-10-07', cuentaDebitar: '201-338-77410', oficial: 'o2', comentarios: 'Firma prevista el viernes 9 de octubre.' });
+  freeze(a10, '2026-10-07 09:30');
+  const a11 = A({ id: 'a11', estado: 'Descartado', clienteId: 'c2', producto: 'Tarjeta', numeroProducto: '4024 0071 5532 1180', numeroArreglo: null, tipo: 'Temporal', saldoInicial: 22000, montoAbonado: 0, saldoRemanente: 22000, plazo: 10, cuota: 2200, totalPagar: 22000, inicio: '2026-10-15', formalizacion: '2026-10-01', cuentaDebitar: '201-334-41187', oficial: 'o1' });
+  a11.descarte = { motivo: 'El cliente no aceptó la cuota propuesta; prefiere pagar el saldo completo en dos semanas.', uid: 'o1', fecha: D('2026-10-02 10:00') }; log(a11.descarte.fecha, 'o1', 'arr', 'a11', 'Descartó el borrador. Motivo: ' + a11.descarte.motivo);
+  db.audit.push({ fecha: D('2026-10-02 16:20'), uid: 'j1', ent: 'ver', id: 'v08', texto: 'Creó la versión v08 en Borrador clonando la v07 y movió la cuenta a debitar a F14' });
+  return db;
+}
+
+const INCOMING = [
+  { tipo: 'hilo', target: 's6', cuerpo: 'Muchas gracias. ¿Me confirman la fecha de la próxima cuota?\n\nJosé Rivas', msg: 'Llegó una respuesta del cliente en el mismo hilo. La sincronización la relacionó con su conversación por el encabezado In-Reply-To.' },
+  { tipo: 'nuevo', de: 'ernesto.calero@ejemplo.com', asunto: 'Arreglo de pago tarjeta de crédito', cuerpo: 'Hola, tengo tres meses de atraso en mi tarjeta y quiero hacer un arreglo de pago. ¿Qué necesito?\n\nErnesto Calero', msg: 'Llegó un correo nuevo al buzón. Se registró como una conversación nueva.' },
+  { tipo: 'hilo', target: 's15', cuerpo: 'Disculpen, una consulta más: ¿puedo cambiar la fecha de pago al día 20?', msg: 'Llegó un correo a una conversación ya finalizada. Alguien tiene que decidir si se reabre o si se inicia una conversación nueva.' },
+];
+
+/* ---------- Preguntas para negocio ---------- */
+const PREGUNTAS = [
+  { id: 'fechas', t: '¿Cómo se calculan las fechas de vencimiento?', d: 'Propuesta: el mismo día de cada mes a partir de la fecha de inicio. Si ese día no existe (30 o 31), vence el último día del mes.', ver: { p: 'arreglo', id: 'a2', tab: 'cuotas' }, verTxt: 'Ver calendario que vence el 30 (febrero el 28)' },
+  { id: 'terminado', t: '¿Cuándo un arreglo queda Terminado?', d: 'Propuesta: cuando todas sus cuotas tienen un pago registrado, aunque alguno sea parcial. ¿O debe cubrir el monto completo?', ver: { p: 'arreglo', id: 'a9', tab: 'cuotas' }, verTxt: 'Ver arreglo terminado' },
+  { id: 'parcial', t: '¿Un pago parcial saca la cuota de la lista de riesgo?', d: 'Propuesta: sí. La lista de riesgo solo mira si la cuota vencida tiene un pago registrado, no el monto.', ver: { p: 'arreglo', id: 'a4', tab: 'cuotas' }, verTxt: 'Ver cuota 4 con pago parcial' },
+  { id: 'unpago', t: '¿Basta un solo pago por cuota?', d: 'El formato tiene un par fecha y monto por cuota. Si un cliente paga una cuota en dos partes, se anota la suma y la última fecha.', ver: { p: 'arreglo', id: 'a4', tab: 'cuotas' }, verTxt: 'Ver registro de pagos' },
+  { id: 'numericas', t: '¿Qué validaciones numéricas debe hacer el sistema, y bloquean o solo advierten?', d: 'Candidatas: saldo remanente = saldo inicial − monto abonado; total a pagar = cuota × plazo. Ojo: en un préstamo con intereses el total puede ser mayor que el saldo remanente.', ver: { p: 'arregloNuevo', clienteId: 'c4' }, verTxt: 'Probar en un arreglo nuevo' },
+  { id: 'numero-borrador', t: 'El número de arreglo de un borrador es provisional. ¿Está bien?', d: 'Un borrador no consume número: si se descarta, no deja huecos. El formato para firma imprime el siguiente número libre. Al formalizar, el sistema lo confirma. Si justo en ese intervalo se formalizó otro arreglo del mismo crédito, el sistema no deja formalizar y pide reimprimir con el número nuevo.', ver: { p: 'arreglo', id: 'a10' }, verTxt: 'Ver borrador pendiente de firma' },
+  { id: 'firma-bloqueo', t: 'Al imprimir para firma, el borrador se bloquea. ¿Está bien?', d: 'Así lo que se firma coincide con lo registrado. Si el cliente pide un cambio antes de firmar, el oficial lo desbloquea (sin jefatura), corrige y reimprime. Después de formalizar, solo la jefatura reabre, con motivo.', ver: { p: 'arreglo', id: 'a7' }, verTxt: 'Probar con un borrador sin imprimir' },
+  { id: 'con-arreglo', t: '¿"Finalizada – Con arreglo de pago" exige un arreglo formalizado vinculado?', d: 'Hoy el mockup solo avisa si la conversación no tiene un arreglo formalizado, pero deja finalizar. La alternativa es exigirlo.', ver: { p: 'sol', id: 's3' }, verTxt: 'Ver conversación con borrador' },
+  { id: 'tiempo-total', t: '¿El tiempo total promedio incluye las conversaciones "Sin respuesta"?', d: 'Propuesta: no. Un spam se cierra en minutos y bajaría el promedio sin reflejar el trabajo real. Se muestran aparte.', ver: { p: 'panel' }, verTxt: 'Ver panel de supervisión' },
+  { id: 'origen', t: '¿Un arreglo puede registrarse sin una conversación por correo?', d: 'Propuesta: sí, es opcional (por ejemplo, el cliente llegó a una sucursal).', ver: { p: 'arregloNuevo', clienteId: 'c4' }, verTxt: 'Ver formulario de arreglo nuevo' },
+  { id: 'plantilla', t: '¿Aprueban la plantilla v07 del F-NIC-0000052?', d: 'Cambios contra la v06: 60 filas de cuotas sin números preimpresos, totales sobre las 60 filas, sin =TODAY(), sin oficial precargado y con la etiqueta "Número de Préstamo / Tarjeta".', ver: { p: 'version', id: 'v07' }, verTxt: 'Ver plantilla y mapeo' },
+  { id: 'responder', t: '¿Se puede responder una conversación sin tomarla antes?', d: 'Hoy el mockup lo permite y avisa. La alternativa es obligar a tomarla primero para que el tiempo quede atribuido a un oficial.', ver: { p: 'sol', id: 's2' }, verTxt: 'Ver conversación sin asignar' },
+  { id: 'umbrales', t: '¿Desde cuántas horas un correo sin respuesta es preocupante?', d: 'En el mockup: más de 2 horas se marca en amarillo y más de 8 horas en rojo.', ver: { p: 'panel' }, verTxt: 'Ver panel de supervisión' },
+  { id: 'adjuntos', t: '¿Qué tamaño máximo y qué tipos de archivo se pueden adjuntar?', d: 'El límite lo fija el entorno, y el entorno es compartido con otras soluciones. Por defecto es 5 MB por archivo, medido sobre el archivo codificado, lo que equivale a unos 3,7 MB reales. Se puede subir hasta 128 MB, pero el cambio afecta a todo el entorno. Los tipos bloqueados (.exe, .bat, .js y otros) también son una lista del entorno. Se acuerda con el administrador.', ver: { p: 'sol', id: 's16' }, verTxt: 'Ver conversación con adjuntos' },
+  { id: 'outlook', t: '¿Los oficiales dejan de responder desde Outlook?', d: 'Para medir el 100 % de las respuestas, todas tienen que salir desde la aplicación. Los oficiales no tendrían acceso al buzón desde Outlook.', ver: { p: 'sol', id: 's1' }, verTxt: 'Ver cómo se responde' },
+];
+const CONFIRMADO = [
+  'El filtro por producto (Préstamo o Tarjeta) aplica solo a los arreglos.',
+  'Se trabaja por conversación: los correos de ida y vuelta quedan juntos. Las respuestas del cliente en el mismo hilo se unen solas; un correo suelto se une a mano.',
+  'Una conversación se finaliza a mano con un resultado: Con arreglo de pago, Sin arreglo de pago o Sin respuesta.',
+  '"Sin respuesta" cubre spam, respuestas automáticas y clientes que no volvieron a escribir.',
+  'Se mide el tiempo de cada respuesta y el tiempo total desde el primer correo hasta la finalización.',
+  'Si llega un correo a una conversación finalizada, el oficial decide si la reabre o si inicia una conversación nueva.',
+  'Un arreglo nace en borrador, se puede descartar con motivo y pasa a vigente con el botón Formalizar.',
+  'Mockup v2 validado. Además, al responder se pueden adjuntar archivos e insertar imágenes en el texto.',
+];
+
+/* ---------- Contexto y piezas comunes ---------- */
+const Ctx = createContext(null);
+const useApp = () => useContext(Ctx);
+
+function Ask({ id }) {
+  const { go } = useApp();
+  return html`<span className="ask" role="button" tabIndex="0" title="Regla a confirmar con negocio" onClick=${e => { e.stopPropagation(); go({ p: 'preguntas', focus: id }); }} onKeyDown=${e => { if (e.key === 'Enter') go({ p: 'preguntas', focus: id }); }}>A confirmar</span>`;
+}
+function Chip({ k, children }) { return html`<span className=${'chip ' + (k || '')}>${children}</span>`; }
+const RES_K = { 'Con arreglo de pago': 'ok', 'Sin arreglo de pago': '', 'Sin respuesta': '' };
+function convChips(s, i) {
+  const out = [];
+  if (s.estado === 'Abierta') out.push(i.pend ? html`<${Chip} key="e" k="warn">Pendiente de respuesta</${Chip}>` : html`<${Chip} key="e" k="info">Esperando al cliente</${Chip}>`);
+  else if (s.estado === 'Finalizada') out.push(html`<${Chip} key="e" k=${RES_K[s.resultado]}>Finalizada · ${s.resultado}</${Chip}>`);
+  else out.push(html`<${Chip} key="e">Unida a otra</${Chip}>`);
+  if (i.nuevos.length) out.push(html`<${Chip} key="n" k="bad">Correo nuevo</${Chip}>`);
+  if (i.error) out.push(html`<${Chip} key="x" k="bad">Error de envío</${Chip}>`);
+  return html`<div className="chips">${out}</div>`;
+}
+const estadoArrChip = a => {
+  const m = { Vigente: 'acc', Terminado: 'ok', Anulado: 'bad', Borrador: 'warn', Descartado: '' };
+  return html`<span className="chips"><${Chip} k=${m[a.estado]}>${a.estado}</${Chip}>${a.estado === 'Borrador' && a.congelado ? html`<${Chip} k="info">Pendiente de firma</${Chip}>` : null}</span>`;
+};
+const ageChip = min => html`<${Chip} k=${min > 480 ? 'bad' : min > 120 ? 'warn' : ''}>${dur(min)}</${Chip}>`;
+
+function Field({ label, children, wide, extra }) {
+  return html`<div className=${'field' + (wide ? ' wide' : '')}><label>${label}${extra}</label>${children}</div>`;
+}
+function Grid({ cols, rows, onOpen, empty, foot }) {
+  if (!rows.length) return html`<div className="gridwrap"><div className="empty">${empty}</div></div>`;
+  return html`<div className="gridwrap"><table className="grid"><thead><tr>${cols.map((c, i) => html`<th key=${i} className=${c.num ? 'num' : ''}>${c.h}</th>`)}</tr></thead>
+    <tbody>${rows.map((r, ri) => html`<tr key=${r.id || ri} className=${onOpen ? 'click' : ''} onClick=${onOpen ? () => onOpen(r) : null}>${cols.map((c, i) => html`<td key=${i} className=${(c.num ? 'num ' : '') + (c.cls || '')}>${c.r(r)}</td>`)}</tr>`)}${foot}</tbody></table></div>`;
+}
+function Modal({ title, children, foot, onClose, wide }) {
+  useEffect(() => { const k = e => { if (e.key === 'Escape') onClose(); }; window.addEventListener('keydown', k); return () => window.removeEventListener('keydown', k); }, []);
+  return html`<div className="back" onClick=${e => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className=${'modal' + (wide ? ' wide' : '')} role="dialog" aria-modal="true" aria-label=${title}>
+      <div className="mhd"><h2>${title}</h2><button className="btn" onClick=${onClose} aria-label="Cerrar">✕</button></div>
+      <div className="mbd">${children}</div>
+      ${foot && html`<div className="mft">${foot}</div>`}
+    </div></div>`;
+}
+function ViewChips({ views, cur, onPick, count }) {
+  return html`<div className="views">${views.map(x => html`<button key=${x[0]} className=${x[0] === cur ? 'on' : ''} onClick=${() => onPick(x[0])}>${x[1]} <span className="count">${count(x)}</span></button>`)}</div>`;
+}
+
+/* ---------- Bandeja de conversaciones ---------- */
+function Bandeja({ v }) {
+  const { db, uid, go } = useApp();
+  const info = new Map(db.solicitudes.map(s => [s.id, convInfo(s)]));
+  const I = s => info.get(s.id);
+  const VIEWS = [
+    ['mias', 'Mis pendientes', s => s.asignado === uid && needsAttention(s, I(s))],
+    ['sinasignar', 'Sin asignar', s => s.estado === 'Abierta' && !s.asignado],
+    ['pendientes', 'Pendientes de respuesta', s => needsAttention(s, I(s))],
+    ['esperando', 'Esperando al cliente', s => s.estado === 'Abierta' && !I(s).pend],
+    ['decision', 'Correo en finalizadas', s => I(s).nuevos.length > 0],
+    ['finalizadas', 'Finalizadas', s => s.estado === 'Finalizada'],
+    ['todas', 'Todas', s => s.estado !== 'Unida'],
+  ];
+  const cur = VIEWS.find(x => x[0] === v) || VIEWS[1];
+  const since = s => I(s).pend || I(s).nuevos[0]?.fecha;
+  const pendView = ['mias', 'pendientes', 'decision'].includes(cur[0]);
+  const rows = db.solicitudes.filter(cur[2]).sort((a, b) => pendView ? since(a) - since(b) : b.llegada - a.llegada);
+  const cli = id => db.clientes.find(c => c.id === id);
+  return html`<div className="content">
+    <div className="pagehead"><h1>Conversaciones</h1><span className="sub">Cada conversación agrupa los correos de ida y vuelta con un cliente.</span></div>
+    <${ViewChips} views=${VIEWS} cur=${cur[0]} onPick=${k => go({ p: 'bandeja', v: k })} count=${x => db.solicitudes.filter(x[2]).length} />
+    ${cur[0] === 'decision' && html`<div className="note warn">Llegaron correos a conversaciones ya finalizadas. Cada una espera que alguien decida si se reabre o si se inicia una conversación nueva. Hasta entonces cuentan como pendientes.</div>`}
+    <${Grid} rows=${rows} onOpen=${s => go({ p: 'sol', id: s.id })}
+      empty=${html`<b>No hay conversaciones en esta vista.</b>${pendView ? 'Todos los correos de esta vista tienen respuesta.' : ''}`}
+      cols=${[
+        { h: 'Primer correo', r: s => html`<span className="nowrap">${fdt(s.llegada)}</span>` },
+        { h: 'N.º', r: s => html`<span className="mono">${s.num}</span>` },
+        { h: 'Remitente', r: s => { const c = cli(s.clienteId); return c ? c.nombre : html`<span>${s.mails[0].de}</span> <${Chip} k="info">No registrado</${Chip}>`; } },
+        { h: 'Asunto', r: s => s.mails[0].asunto },
+        { h: 'Correos', num: true, r: s => s.mails.length },
+        { h: 'Oficial', r: s => s.asignado ? uname(s.asignado) : html`<span className="muted">Sin asignar</span>` },
+        { h: 'Estado', r: s => convChips(s, I(s)) },
+        { h: 'Sin respuesta desde / tiempo total', r: s => { const i = I(s); return since(s) && needsAttention(s, i) ? ageChip((now() - since(s)) / 60000) : i.total != null ? html`<span className="muted">Total</span> ${dur(i.total)}` : html`<span className="muted">—</span>`; } },
+      ]} />
+  </div>`;
+}
+
+/* ---------- Conversación ---------- */
+function SolicitudForm({ id }) {
+  const { db, mut, log, uid, isJefe, go, say, setModal } = useApp();
+  const s = db.solicitudes.find(x => x.id === id);
+  const [reply, setReply] = useState(null);
+  const [adj, setAdj] = useState([]);
+  const [imgs, setImgs] = useState([]);
+  if (!s) return html`<${NotFound} />`;
+  const addFiles = (files, asImage) => {
+    const ok = [], bad = [];
+    [...files].forEach(fl => {
+      const e = ext(fl.name);
+      if (BLOQUEADAS.includes(e)) bad.push(`${fl.name}: el tipo .${e} está bloqueado en el entorno`);
+      else if (asImage && !IMG_OK.includes(e)) bad.push(`${fl.name}: como imagen en el texto solo se admite PNG, JPG o GIF`);
+      else if (Math.ceil(fl.size / 3) * 4 > MAX_B64) bad.push(`${fl.name}: pesa ${fsize(fl.size)} y el máximo es unos 3,7 MB por archivo`);
+      else ok.push({ name: fl.name, size: fl.size, url: asImage ? URL.createObjectURL(fl) : null });
+    });
+    if (asImage) setImgs(x => [...x, ...ok]); else setAdj(x => [...x, ...ok]);
+    if (bad.length) say('No se agregó: ' + bad.join('; ') + '.', 'bad');
+  };
+  const closeEditor = () => { setReply(null); setAdj([]); setImgs([]); };
+  if (s.estado === 'Unida') { const t = db.solicitudes.find(x => x.id === s.unidaA); return html`<div className="content"><div className="note">Esta conversación se unió a <a href="#" onClick=${e => { e.preventDefault(); go({ p: 'sol', id: t.id }); }}>${t.num}</a>. Sus correos están ahí.</div></div>`; }
+  const i = convInfo(s);
+  const c = db.clientes.find(x => x.id === s.clienteId);
+  const abierta = s.estado === 'Abierta';
+  const arrs = db.arreglos.filter(a => a.solicitudId === s.id);
+  const sending = s.mails.some(m => m.estado === 'Pendiente de envío');
+  const otras = abierta ? db.solicitudes.filter(x => x.id !== s.id && x.estado === 'Abierta' && (x.mails[0].de === s.mails[0].de || (s.clienteId && x.clienteId === s.clienteId))) : [];
+  const roundBy = Object.fromEntries(i.rounds.map(r => [r.id, r.min]));
+
+  const tomar = () => {
+    if (s.carrera) {
+      mut(n => { const t = n.solicitudes.find(x => x.id === id); t.asignado = 'o2'; t.carrera = false; n.audit.push({ fecha: now(), uid: 'o2', ent: 'sol', id, texto: 'Tomó la conversación' }); });
+      say('Carlos Aráuz tomó esta conversación un instante antes. Se muestra su asignación; nadie pisó el cambio del otro.', 'bad'); return;
+    }
+    mut(n => { n.solicitudes.find(x => x.id === id).asignado = uid; log(n, 'sol', id, 'Tomó la conversación'); });
+    say('Conversación tomada. Todo el área ve que es suya.');
+  };
+  const enviar = texto => {
+    const mid = 'e' + Date.now(); const pendAt = i.pend; const a1 = adj.map(({ name, size }) => ({ name, size })), i1 = imgs.map(({ name, size, url }) => ({ name, size, url }));
+    mut(n => { const t = n.solicitudes.find(x => x.id === id); t.mails.push({ id: mid, dir: 'out', de: BUZON, para: t.mails[0].de, asunto: 'RE: ' + t.mails[0].asunto, cuerpo: texto, fecha: now(), estado: 'Pendiente de envío', por: uid, adjuntos: a1, imagenes: i1 }); });
+    closeEditor();
+    say('Respuesta en cola. Sale desde el buzón del área en el próximo ciclo de sincronización.', 'info');
+    setTimeout(() => {
+      mut(n => { const t = n.solicitudes.find(x => x.id === id); const m = t.mails.find(x => x.id === mid); m.estado = 'Enviado'; m.fecha = now(); log(n, 'sol', id, 'Respondió al cliente desde el buzón del área'); });
+      say(pendAt ? `Respuesta enviada en ${dur((now() - pendAt) / 60000)}. La conversación queda esperando al cliente.` : 'Respuesta enviada. La conversación queda esperando al cliente.');
+    }, 2600);
+  };
+  const reabrir = () => { mut(n => { const t = n.solicitudes.find(x => x.id === id); log(n, 'sol', id, `Reabrió la conversación (estaba finalizada: ${t.resultado})`); t.estado = 'Abierta'; t.resultado = null; t.fin = null; }); say('Conversación reabierta.'); };
+  const nueva = () => {
+    let nid;
+    mut(n => { const t = n.solicitudes.find(x => x.id === id); const k = ++n.seq.sol; nid = 's' + k; const moved = t.mails.filter(m => m.dir === 'in' && m.fecha > t.fin.fecha);
+      t.mails = t.mails.filter(m => !moved.includes(m));
+      n.solicitudes.push({ id: nid, num: 'SOL-0' + k, estado: 'Abierta', resultado: null, fin: null, asignado: t.asignado, clienteId: t.clienteId, carrera: false, unidaA: null, llegada: moved[0].fecha, mails: moved.map(m => ({ ...m, asunto: m.asunto.replace(/^RE: /, '') })) });
+      log(n, 'sol', id, `Movió el correo nuevo a la conversación ${'SOL-0' + k}`); log(n, 'sol', nid, `Conversación iniciada con un correo que llegó a ${t.num}`); });
+    say('Se inició una conversación nueva con ese correo. La anterior sigue finalizada.');
+    setTimeout(() => go({ p: 'sol', id: nid }), 0);
+  };
+
+  return html`<div>
+    <div className="cmdbar">
+      <button className="btn" onClick=${() => go({ p: 'bandeja', v: 'pendientes' })}><span className="ic">←</span> Conversaciones</button>
+      <button className="btn" disabled=${!abierta || !!s.asignado} onClick=${tomar}>Tomar</button>
+      <button className="btn" disabled=${!abierta || !isJefe} title=${isJefe ? '' : 'Solo la jefatura reasigna'} onClick=${() => setModal({ k: 'reasignar', id })}>Reasignar${!isJefe ? html` <span className="muted">(jefatura)</span>` : null}</button>
+      <button className="btn" disabled=${!abierta || reply !== null || sending} onClick=${() => setReply(`Estimado(a) ${c ? c.nombre.split(' ')[0] : 'cliente'}:\n\n`)}>Responder</button>
+      <button className="btn" disabled=${!abierta} onClick=${() => setModal({ k: 'finalizar', id })}>Finalizar</button>
+      <button className="btn" disabled=${!abierta} onClick=${() => setModal({ k: 'unir', id })}>Unir a otra conversación</button>
+      ${s.estado === 'Finalizada' && !i.nuevos.length && html`<button className="btn" onClick=${reabrir}>Reabrir</button>`}
+      <button className="btn" disabled=${!c} title=${c ? '' : 'Primero vincule o cree el cliente'} onClick=${() => go({ p: 'arregloNuevo', clienteId: c.id, solicitudId: s.id })}>Registrar arreglo</button>
+    </div>
+    <div className="content">
+      <div className="pagehead"><h1>${s.mails[0].asunto}</h1><span className="sub mono">${s.num}</span>${convChips(s, i)}</div>
+      ${i.nuevos.length > 0 && html`<div className="note bad"><b>Llegó un correo nuevo a esta conversación finalizada</b> (${fdt(i.nuevos[0].fecha)}). Decida qué hacer con él; mientras tanto cuenta como pendiente de respuesta.
+        <div className="chips" style=${{ marginTop: 8 }}><button className="btn outline" onClick=${reabrir}>Reabrir esta conversación</button><button className="btn outline" onClick=${nueva}>Iniciar conversación nueva con ese correo</button></div></div>`}
+      ${otras.length > 0 && html`<div className="note info">Este cliente tiene otra conversación abierta: ${otras.map((o, k) => html`<span key=${o.id}>${k ? ', ' : ''}<a href="#" onClick=${e => { e.preventDefault(); go({ p: 'sol', id: o.id }); }}>${o.num}</a> "${o.mails[0].asunto}"</span>`)}. Si es el mismo tema, únalas.
+        <div style=${{ marginTop: 8 }}><button className="btn outline" onClick=${() => setModal({ k: 'unir', id })}>Unir a otra conversación</button></div></div>`}
+      <div className="cols">
+        <div style=${{ display: 'grid', gap: 16, minWidth: 0 }}>
+          <div className="panel"><h3>Conversación</h3>
+            <div className="form">
+              <${Field} label="Primer correo"><div className="v">${fdt(s.llegada)}</div></${Field}>
+              <${Field} label="Oficial asignado"><div className="v">${s.asignado ? uname(s.asignado) : html`<span className="muted">Sin asignar</span>`}</div></${Field}>
+              ${i.pend && html`<${Field} label="Correo sin respuesta desde"><div className="v">${ageChip((now() - i.pend) / 60000)}</div></${Field}>`}
+              <${Field} label="Primera respuesta"><div className="v">${i.first != null ? dur(i.first) : html`<span className="muted">—</span>`}</div></${Field}>
+              <${Field} label="Respuestas enviadas"><div className="v">${i.rounds.length}${i.rounds.length ? html` <span className="muted">· promedio ${dur(avg(i.rounds.map(r => r.min)))}</span>` : ''}</div></${Field}>
+              ${s.fin && html`<${Field} label="Tiempo total"><div className="v">${dur(i.total)} <span className="muted">(del primer correo a la finalización)</span></div></${Field}>`}
+              ${s.fin && html`<${Field} label="Finalizada" wide><div className="v"><b>${s.resultado}</b>${s.fin.motivo ? ` · ${s.fin.motivo}. ${s.fin.detalle || ''}` : ''} <span className="muted">· ${uname(s.fin.uid)}, ${fdt(s.fin.fecha)}</span></div></${Field}>`}
+            </div>
+          </div>
+          <div className="panel"><h3>Cliente</h3>
+            ${c ? html`<div className="form">
+                <${Field} label="Nombre"><div className="v"><a href="#" onClick=${e => { e.preventDefault(); go({ p: 'cliente', id: c.id }); }}>${c.nombre}</a></div></${Field}>
+                <${Field} label="Cédula"><div className="v mono">${c.cedula}</div></${Field}>
+                <${Field} label="Correo"><div className="v">${c.correo}</div></${Field}>
+              </div>`
+            : html`<div className="note info">El remitente <b>${s.mails[0].de}</b> todavía no es cliente. La conversación se registró igual.</div>
+              <div className="chips" style=${{ marginTop: 10 }}>
+                <button className="btn outline" onClick=${() => setModal({ k: 'vincular', id })}>Vincular cliente existente</button>
+                <button className="btn outline" onClick=${() => go({ p: 'clienteNuevo', correo: s.mails[0].de, fromSol: s.id })}>Crear cliente</button>
+              </div>`}
+          </div>
+          <div className="panel"><h3>Arreglos de esta conversación</h3>
+            <${Grid} rows=${arrs} onOpen=${a => go({ p: 'arreglo', id: a.id })} empty=${html`<b>Sin arreglos.</b>Use "Registrar arreglo" para preparar un borrador.`}
+              cols=${[{ h: 'Producto', r: a => `${a.producto} ${a.numeroProducto}` }, { h: 'N.º', r: a => a.numeroArreglo ?? html`<span className="muted">—</span>` }, { h: 'Estado', r: estadoArrChip }]} />
+          </div>
+        </div>
+        <div className="panel"><h3>Correos (${s.mails.length}) <span className="muted" style=${{ textTransform: 'none', letterSpacing: 0, fontWeight: 400 }}>· más reciente arriba</span></h3>
+          <div className="timeline">
+            ${reply !== null && html`<div className="editor">
+              <div className="row"><span>De</span><span>Buzón Arreglos de Pago &lt;${BUZON}&gt;</span></div>
+              <div className="row"><span>Para</span><span>${s.mails[0].de}</span></div>
+              <div className="row"><span>Asunto</span><span>RE: ${s.mails[0].asunto}</span></div>
+              ${!s.asignado && html`<div className="note warn">La conversación no tiene oficial asignado. <${Ask} id="responder" /></div>`}
+              <textarea id="reply-body" value=${reply} onChange=${e => setReply(e.target.value)} aria-label="Texto de la respuesta"></textarea>
+              ${imgs.length > 0 && html`<div><div className="muted" style=${{ fontSize: 12 }}>Imágenes en el texto</div><div className="thumbs">${imgs.map((m, k) => html`<figure key=${k}><img src=${m.url} alt=${m.name} /><span>${m.name} · ${fsize(m.size)} <button className="btn" style=${{ padding: '0 4px' }} onClick=${() => setImgs(imgs.filter((_, j) => j !== k))} aria-label=${'Quitar ' + m.name}>✕</button></span></figure>`)}</div></div>`}
+              ${adj.length > 0 && html`<div className="atts">${adj.map((f, k) => html`<span key=${k} className="att"><span className="ext">${ext(f.name) || 'archivo'}</span>${f.name} <span className="sz">${fsize(f.size)}</span><button onClick=${() => setAdj(adj.filter((_, j) => j !== k))} aria-label=${'Quitar ' + f.name}>✕</button></span>`)}</div>`}
+              <div className="chips">
+                <label className="btn outline">Adjuntar archivos<input id="reply-files" type="file" multiple onChange=${e => { addFiles(e.target.files, false); e.target.value = ''; }} /></label>
+                <label className="btn outline">Insertar imagen<input id="reply-imgs" type="file" multiple accept=".png,.jpg,.jpeg,.gif" onChange=${e => { addFiles(e.target.files, true); e.target.value = ''; }} /></label>
+                <span className="muted" style=${{ fontSize: 12 }}>Hasta unos 3,7 MB por archivo. <${Ask} id="adjuntos" /></span>
+              </div>
+              <div className="chips"><button className="btn primary" disabled=${!reply.trim()} onClick=${() => enviar(reply)}>Enviar</button><button className="btn" onClick=${closeEditor}>Descartar</button>
+                <span className="muted" style=${{ fontSize: 12 }}>Sale desde el buzón del área, en el mismo hilo.</span></div>
+            </div>`}
+            ${[...i.ms].reverse().map(m => html`<div key=${m.id} className=${'mail' + (m.dir === 'out' ? ' out' : '')}>
+              <div className="mh"><span>${m.dir === 'in' ? 'Del cliente · ' + m.de : 'Respuesta de ' + uname(m.por) + ' · desde el buzón del área'}${roundBy[m.id] != null ? html` · <b>respondió en ${dur(roundBy[m.id])}</b>` : ''}</span>
+                <span className="chips">${m.estado === 'Pendiente de envío' ? html`<${Chip} k="info">Pendiente de envío</${Chip}>` : m.estado === 'Error de envío' ? html`<${Chip} k="bad">Error de envío</${Chip}>` : m.estado === 'Enviado' ? html`<${Chip} k="ok">Enviado</${Chip}>` : null}${fdt(m.fecha)}</span></div>
+              <div className="subj">${m.asunto}</div>
+              <div className="bodytext">${m.cuerpo}</div>
+              ${m.imagenes?.length > 0 && html`<div className="thumbs">${m.imagenes.map((g, k) => html`<figure key=${k}>${g.url ? html`<img src=${g.url} alt=${g.name} />` : html`<div className="ph">imagen</div>`}<span>${g.name}</span></figure>`)}</div>`}
+              ${m.adjuntos?.length > 0 && html`<div className="atts">${m.adjuntos.map((f, k) => html`<button key=${k} className="att" style=${{ cursor: 'pointer' }} onClick=${() => say(`En la app real, "${f.name}" se abre o se descarga desde el correo. Queda guardado en la solución junto con el correo y se borra con él a los 2 años.`, 'info')}><span className="ext">${ext(f.name) || 'archivo'}</span>${f.name} <span className="sz">${fsize(f.size)}</span></button>`)}</div>`}
+              ${m.unidoDe && html`<div className="muted" style=${{ fontSize: 12, marginTop: 6 }}>Unido desde ${m.unidoDe}</div>`}
+              ${m.estado === 'Error de envío' && html`<div className="note bad" style=${{ marginTop: 8 }}>El buzón rechazó el envío. El correo del cliente sigue sin respuesta y aparece en "Errores de envío". Responda de nuevo.</div>`}
+            </div>`)}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function FinalizarModal({ id, onClose }) {
+  const { db, mut, log, say } = useApp();
+  const s = db.solicitudes.find(x => x.id === id); const i = convInfo(s);
+  const [res, setRes] = useState(''); const [motivo, setMotivo] = useState(''); const [detalle, setDetalle] = useState('');
+  const formalizados = db.arreglos.filter(a => a.solicitudId === id && a.numeroArreglo != null);
+  const ok = res && (res !== 'Sin respuesta' || (motivo && detalle.trim()));
+  return html`<${Modal} title="Finalizar conversación" onClose=${onClose}
+    foot=${html`<button className="btn" onClick=${onClose}>Cancelar</button><button className="btn primary" disabled=${!ok} onClick=${() => { mut(n => { const t = n.solicitudes.find(x => x.id === id); t.estado = 'Finalizada'; t.resultado = res; t.fin = { uid: n._uid, fecha: now(), motivo: res === 'Sin respuesta' ? motivo : null, detalle: res === 'Sin respuesta' ? detalle : null }; log(n, 'sol', id, `Finalizó la conversación: ${res}${res === 'Sin respuesta' ? ' (' + motivo + ')' : ''}`); }); say('Conversación finalizada. Si el cliente vuelve a escribir en este hilo, se le pedirá decidir si reabrirla.'); onClose(); }}>Finalizar</button>`}>
+    <p style=${{ margin: 0 }}>Queda registrado el resultado, quién finalizó y cuándo. El tiempo total se mide desde el primer correo (${fdt(s.llegada)}) hasta ahora: <b>${dur((now() - s.llegada) / 60000)}</b>.</p>
+    <${Field} label=${html`Resultado <span className="req">*</span>`}><select id="fin-res" value=${res} onChange=${e => setRes(e.target.value)}><option value="">Elegir…</option>${['Con arreglo de pago', 'Sin arreglo de pago', 'Sin respuesta'].map(m => html`<option key=${m}>${m}</option>`)}</select></${Field}>
+    ${res === 'Con arreglo de pago' && !formalizados.length && html`<div className="note warn">Esta conversación no tiene un arreglo formalizado. <${Ask} id="con-arreglo" /></div>`}
+    ${i.pend && res && res !== 'Sin respuesta' && html`<div className="note warn">El último correo del cliente todavía no tiene respuesta.</div>`}
+    ${res === 'Sin respuesta' && html`
+      <${Field} label=${html`Motivo <span className="req">*</span>`}><select id="fin-motivo" value=${motivo} onChange=${e => setMotivo(e.target.value)}><option value="">Elegir…</option>${['Spam', 'Respuesta automática', 'El cliente no respondió', 'Otro'].map(m => html`<option key=${m}>${m}</option>`)}</select></${Field}>
+      <${Field} label=${html`Detalle <span className="req">*</span>`}><textarea id="fin-detalle" rows="3" value=${detalle} onChange=${e => setDetalle(e.target.value)}></textarea></${Field}>`}
+  </${Modal}>`;
+}
+function UnirModal({ id, onClose }) {
+  const { db, mut, log, go, say } = useApp();
+  const s = db.solicitudes.find(x => x.id === id);
+  const [q, setQ] = useState('');
+  const same = x => x.mails[0].de === s.mails[0].de || (s.clienteId && x.clienteId === s.clienteId);
+  const cands = db.solicitudes.filter(x => x.id !== id && x.estado === 'Abierta' && (same(x) || (q.length >= 2 && [x.num, x.mails[0].de, x.mails[0].asunto].some(f => norm(f).includes(norm(q))))))
+    .sort((a, b) => (same(b) - same(a)) || (b.llegada - a.llegada));
+  const unir = t => {
+    mut(n => { const src = n.solicitudes.find(x => x.id === id), dst = n.solicitudes.find(x => x.id === t.id);
+      dst.mails.push(...src.mails.map(m => ({ ...m, unidoDe: src.num }))); dst.llegada = mailsSorted(dst)[0].fecha;
+      if (!dst.clienteId && src.clienteId) dst.clienteId = src.clienteId; if (!dst.asignado && src.asignado) dst.asignado = src.asignado;
+      n.arreglos.filter(a => a.solicitudId === id).forEach(a => { a.solicitudId = t.id; });
+      src.estado = 'Unida'; src.unidaA = t.id; src.mails = [];
+      log(n, 'sol', id, `Unió esta conversación a ${dst.num}`); log(n, 'sol', t.id, `Recibió los correos de ${src.num}`); });
+    say(`Conversaciones unidas. Los correos quedaron en ${t.num}, ordenados por fecha.`); onClose(); setTimeout(() => go({ p: 'sol', id: t.id }), 0);
+  };
+  return html`<${Modal} title="Unir a otra conversación" onClose=${onClose}>
+    <p style=${{ margin: 0 }}>Los correos de <b>${s.num}</b> pasan a la conversación que elija. Primero se muestran las conversaciones abiertas del mismo cliente.</p>
+    <${Field} label="Buscar otra conversación abierta (n.º, remitente o asunto)"><input id="unir-q" value=${q} onChange=${e => setQ(e.target.value)} /></${Field}>
+    <${Grid} rows=${cands} onOpen=${unir} empty="No hay otras conversaciones abiertas de este cliente. Busque por número o asunto."
+      cols=${[{ h: 'N.º', r: x => html`<span className="mono">${x.num}</span>` }, { h: 'Asunto', r: x => x.mails[0].asunto }, { h: 'Primer correo', r: x => fdt(x.llegada) }, { h: '', r: x => same(x) ? html`<${Chip} k="acc">Mismo cliente</${Chip}>` : null }]} />
+  </${Modal}>`;
+}
+function ReasignarModal({ id, onClose }) {
+  const { db, mut, log, say } = useApp();
+  const s = db.solicitudes.find(x => x.id === id);
+  const [o, setO] = useState(s.asignado || '');
+  return html`<${Modal} title="Reasignar conversación" onClose=${onClose}
+    foot=${html`<button className="btn" onClick=${onClose}>Cancelar</button><button className="btn primary" onClick=${() => { mut(n => { n.solicitudes.find(x => x.id === id).asignado = o || null; log(n, 'sol', id, o ? `Reasignó la conversación a ${uname(o)}` : 'Dejó la conversación sin asignar'); }); say('Asignación actualizada.'); onClose(); }}>Guardar</button>`}>
+    <p style=${{ margin: 0 }}>Solo la jefatura reasigna. El sistema lo verifica en el servidor, no solo en esta pantalla.</p>
+    <${Field} label="Oficial"><select id="reasignar-oficial" value=${o} onChange=${e => setO(e.target.value)}><option value="">Sin asignar</option>${OFICIALES.map(x => html`<option key=${x} value=${x}>${uname(x)}</option>`)}</select></${Field}>
+  </${Modal}>`;
+}
+function VincularModal({ id, onClose }) {
+  const { db, mut, log, say } = useApp();
+  const [q, setQ] = useState('');
+  const res = q.length < 2 ? [] : db.clientes.filter(c => [c.nombre, c.cedula, c.correo, c.celular].some(f => norm(f).includes(norm(q))));
+  return html`<${Modal} title="Vincular cliente existente" onClose=${onClose}>
+    <${Field} label="Buscar por nombre, cédula, correo o celular"><input id="vincular-q" autoFocus value=${q} onChange=${e => setQ(e.target.value)} placeholder="Ej.: Rivas o 401-030779" /></${Field}>
+    <${Grid} rows=${res} empty=${q.length < 2 ? 'Escriba al menos 2 caracteres.' : 'Sin coincidencias. Puede crear el cliente desde la conversación.'}
+      onOpen=${c => { mut(n => { n.solicitudes.find(x => x.id === id).clienteId = c.id; log(n, 'sol', id, `Vinculó la conversación al cliente ${c.nombre}`); }); say('Cliente vinculado.'); onClose(); }}
+      cols=${[{ h: 'Nombre', r: c => c.nombre }, { h: 'Cédula', r: c => html`<span className="mono">${c.cedula}</span>` }, { h: 'Correo', r: c => c.correo }]} />
+  </${Modal}>`;
+}
+
+/* ---------- Clientes ---------- */
+function ClientesList() {
+  const { db, go } = useApp();
+  return html`<div><div className="cmdbar"><button className="btn" onClick=${() => go({ p: 'clienteNuevo' })}><span className="ic">+</span> Nuevo cliente</button></div>
+    <div className="content"><div className="pagehead"><h1>Clientes</h1><span className="sub">Tabla propia de la solución, separada de los contactos del CRM.</span></div>
+    <${Grid} rows=${[...db.clientes].sort((a, b) => a.nombre.localeCompare(b.nombre))} onOpen=${c => go({ p: 'cliente', id: c.id })}
+      cols=${[{ h: 'Nombre', r: c => c.nombre }, { h: 'Cédula', r: c => html`<span className="mono">${c.cedula}</span>` }, { h: 'Correo', r: c => c.correo }, { h: 'Celular', r: c => c.celular },
+        { h: 'Arreglos vigentes', num: true, r: c => db.arreglos.filter(a => a.clienteId === c.id && a.estado === 'Vigente').length },
+        { h: 'Históricos', num: true, r: c => db.arreglos.filter(a => a.clienteId === c.id && ['Terminado', 'Anulado'].includes(a.estado)).length }]} /></div></div>`;
+}
+function ClienteForm({ id, correo, fromSol }) {
+  const { db, mut, log, go, say } = useApp();
+  const ex = id && db.clientes.find(c => c.id === id);
+  const [f, setF] = useState(ex ? { ...ex } : { nombre: '', cedula: '', correo: correo || '', celular: '' });
+  const [errs, setErrs] = useState({});
+  if (id && !ex) return html`<${NotFound} />`;
+  const set = k => e => setF({ ...f, [k]: e.target.value });
+  const dirty = !ex || ['nombre', 'cedula', 'correo', 'celular'].some(k => f[k] !== ex[k]);
+  const save = () => {
+    const e = {};
+    ['nombre', 'cedula', 'correo', 'celular'].forEach(k => { if (!String(f[k]).trim()) e[k] = 'Obligatorio.'; });
+    const dup = db.clientes.find(c => norm(c.cedula) === norm(f.cedula) && c.id !== id);
+    if (dup) e.cedula = `Ya existe un cliente con esa cédula: ${dup.nombre}.`;
+    setErrs(e); if (Object.keys(e).length) return;
+    let nid = id;
+    mut(n => {
+      if (ex) { Object.assign(n.clientes.find(c => c.id === id), { nombre: f.nombre, cedula: f.cedula, correo: f.correo, celular: f.celular }); log(n, 'cli', id, 'Actualizó los datos del cliente'); }
+      else { nid = 'c' + (++n.seq.cli); n.clientes.push({ id: nid, ...f }); log(n, 'cli', nid, 'Creó el cliente');
+        if (fromSol) { n.solicitudes.find(x => x.id === fromSol).clienteId = nid; log(n, 'sol', fromSol, `Vinculó la conversación al cliente ${f.nombre}`); } }
+    });
+    say(ex ? 'Cliente actualizado.' : fromSol ? 'Cliente creado y vinculado a la conversación.' : 'Cliente creado.');
+    setTimeout(() => go(fromSol ? { p: 'sol', id: fromSol } : { p: 'cliente', id: nid }), 0);
+  };
+  const arrs = ex ? db.arreglos.filter(a => a.clienteId === id).sort((a, b) => b.fechaFormalizacion - a.fechaFormalizacion) : [];
+  const sols = ex ? db.solicitudes.filter(s => s.clienteId === id && s.estado !== 'Unida').sort((a, b) => b.llegada - a.llegada) : [];
+  const inp = (k, lbl, mono) => html`<${Field} label=${html`${lbl} <span className="req">*</span>`}><input id=${'cli-' + k} className=${mono ? 'mono' : ''} value=${f[k]} onChange=${set(k)} />${errs[k] && html`<div className="err">${errs[k]}</div>`}</${Field}>`;
+  return html`<div>
+    <div className="cmdbar">
+      <button className="btn" onClick=${() => go(fromSol ? { p: 'sol', id: fromSol } : { p: 'clientes' })}><span className="ic">←</span> ${fromSol ? 'Conversación' : 'Clientes'}</button>
+      <button className="btn primary" disabled=${!dirty} onClick=${save}>Guardar</button>
+      ${ex && html`<button className="btn" onClick=${() => go({ p: 'arregloNuevo', clienteId: id })}>Registrar arreglo</button>`}
+    </div>
+    <div className="content">
+      <div className="pagehead"><h1>${ex ? ex.nombre : 'Nuevo cliente'}</h1>${ex && html`<span className="sub mono">${ex.cedula}</span>`}</div>
+      <div className="panel"><h3>Datos del cliente</h3>
+        <div className="form">${inp('nombre', 'Nombre completo')}${inp('cedula', 'Cédula', true)}${inp('correo', 'Correo')}${inp('celular', 'Celular')}</div>
+        <p className="muted" style=${{ margin: '12px 0 0', fontSize: 13 }}>Dato clasificado Sensible: solo lo ve el área. El sistema no permite dos clientes con la misma cédula.</p>
+      </div>
+      ${ex && html`<div className="panel"><h3>Historial de arreglos</h3>
+        <${Grid} rows=${arrs} onOpen=${a => go({ p: 'arreglo', id: a.id })} empty=${html`<b>Sin arreglos.</b>`} cols=${ARR_COLS(db, false)} /></div>
+        <div className="panel"><h3>Conversaciones</h3>
+        <${Grid} rows=${sols} onOpen=${s => go({ p: 'sol', id: s.id })} empty="Sin conversaciones."
+          cols=${[{ h: 'Primer correo', r: s => fdt(s.llegada) }, { h: 'Asunto', r: s => s.mails[0].asunto }, { h: 'Correos', num: true, r: s => s.mails.length }, { h: 'Estado', r: s => convChips(s, convInfo(s)) }]} /></div>`}
+    </div></div>`;
+}
+
+/* ---------- Arreglos ---------- */
+const ARR_COLS = (db, withClient = true) => [
+  ...(withClient ? [{ h: 'Cliente', r: a => db.clientes.find(c => c.id === a.clienteId)?.nombre }] : []),
+  { h: 'Producto', r: a => html`<span>${a.producto}</span><br/><span className="mono">${a.numeroProducto}</span>` },
+  { h: 'N.º arreglo', num: true, r: a => a.numeroArreglo ?? html`<span className="muted">—</span>` },
+  { h: 'Tipo', r: a => a.tipo },
+  { h: 'Cuota', num: true, r: a => html`<span className="nowrap">${money(a.cuota)}</span>` },
+  { h: 'Pagadas', num: true, r: a => ['Borrador', 'Descartado'].includes(a.estado) ? html`<span className="muted">—</span>` : `${a.cuotas.filter(c => c.fechaPago).length}/${a.plazo}` },
+  { h: 'Estado', r: a => html`<div className="chips">${estadoArrChip(a)}${enRiesgo(a) ? html`<${Chip} k="bad">En riesgo</${Chip}>` : null}</div>` },
+  { h: 'Oficial', r: a => uname(a.oficial) },
+];
+const PRODS = [['Todos', 'Todos'], ['Préstamo', 'Préstamos'], ['Tarjeta', 'Tarjetas']];
+function ArreglosList({ v }) {
+  const { db, go } = useApp();
+  const [prod, setProd] = useState('Todos');
+  const pf = a => prod === 'Todos' || a.producto === prod;
+  const VIEWS = [['borradores', 'Borradores', a => a.estado === 'Borrador'], ['vigentes', 'Vigentes', a => a.estado === 'Vigente'], ['riesgo', 'En riesgo', enRiesgo], ['terminados', 'Terminados', a => a.estado === 'Terminado'], ['anulados', 'Anulados', a => a.estado === 'Anulado'], ['descartados', 'Descartados', a => a.estado === 'Descartado'], ['todos', 'Todos', () => true]];
+  const cur = VIEWS.find(x => x[0] === v) || VIEWS[1];
+  const rows = db.arreglos.filter(a => cur[2](a) && pf(a)).sort((a, b) => b.fechaFormalizacion - a.fechaFormalizacion);
+  const filters = html`<div style=${{ display: 'grid', gap: 8 }}>
+    <${ViewChips} views=${VIEWS} cur=${cur[0]} onPick=${k => go({ p: 'arreglos', v: k })} count=${x => db.arreglos.filter(a => x[2](a) && pf(a)).length} />
+    <div className="views" role="group" aria-label="Producto crediticio"><span className="muted" style=${{ fontSize: 13, alignSelf: 'center', marginRight: 4 }}>Producto crediticio:</span>
+      ${PRODS.map(([k, l]) => html`<button key=${k} className=${prod === k ? 'on' : ''} onClick=${() => setProd(k)}>${l} <span className="count">${db.arreglos.filter(a => cur[2](a) && (k === 'Todos' || a.producto === k)).length}</span></button>`)}</div></div>`;
+  if (cur[0] === 'riesgo') {
+    const rr = rows.map(a => ({ ...a, _v: vencidasSinPago(a) })).sort((a, b) => a._v[0].fecha - b._v[0].fecha);
+    return html`<div className="content">
+      <div className="pagehead"><h1>Arreglos en riesgo</h1><span className="sub">Arreglos vigentes con al menos una cuota vencida y sin pago registrado, desde el día siguiente al vencimiento.</span></div>
+      ${filters}
+      <div className="note">El sistema no avisa al cliente. Esta lista es para que el área revise. Un pago parcial registrado saca la cuota de la lista. <${Ask} id="parcial" /></div>
+      <${Grid} rows=${rr} onOpen=${a => go({ p: 'arreglo', id: a.id, tab: 'cuotas' })} empty=${html`<b>Ningún arreglo en riesgo.</b>Todas las cuotas vencidas tienen pago registrado.`}
+        cols=${[{ h: 'Cliente', r: a => db.clientes.find(c => c.id === a.clienteId)?.nombre },
+          { h: 'Producto', r: a => html`${a.producto} <span className="mono">${a.numeroProducto}</span>` },
+          { h: 'Cuotas vencidas sin pago', num: true, r: a => a._v.length },
+          { h: 'Primera vencida', r: a => fd(a._v[0].fecha) },
+          { h: 'Días de atraso', num: true, r: a => html`<${Chip} k="bad">${Math.round((day0(now()) - day0(a._v[0].fecha)) / 86400000)}</${Chip}>` },
+          { h: 'Monto vencido', num: true, r: a => money(a._v.reduce((t, c) => t + c.monto, 0)) },
+          { h: 'Oficial', r: a => uname(a.oficial) }]} />
+    </div>`;
+  }
+  return html`<div><div className="cmdbar"><button className="btn" onClick=${() => go({ p: 'arregloNuevo' })}><span className="ic">+</span> Nuevo arreglo</button></div>
+    <div className="content"><div className="pagehead"><h1>Arreglos</h1></div>
+    ${filters}
+    ${cur[0] === 'borradores' && html`<div className="note">Un borrador todavía no es un arreglo: no tiene número ni cuenta para la lista de riesgo. Pasa a vigente cuando el cliente firma y el oficial lo formaliza.</div>`}
+    <${Grid} rows=${rows} onOpen=${a => go({ p: 'arreglo', id: a.id })} empty="No hay arreglos en esta vista." cols=${ARR_COLS(db)} /></div></div>`;
+}
+
+const AFIELDS = ['producto', 'numeroProducto', 'tipo', 'saldoInicial', 'montoAbonado', 'saldoRemanente', 'plazo', 'cuota', 'totalPagar', 'fechaInicio', 'cuentaDebitar', 'oficial', 'fechaFormalizacion', 'comentarios'];
+function numericWarnings(f) {
+  const w = {}; const si = +f.saldoInicial, ab = +f.montoAbonado, re = +f.saldoRemanente, pl = +f.plazo, cu = +f.cuota, to = +f.totalPagar;
+  if (f.saldoInicial !== '' && f.montoAbonado !== '' && f.saldoRemanente !== '' && Math.abs(si - ab - re) > 0.01) w.saldoRemanente = `No coincide con saldo inicial − monto abonado (${money(si - ab)}).`;
+  if (f.plazo && f.cuota !== '' && f.totalPagar !== '' && Math.abs(pl * cu - to) > 1) w.totalPagar = `No coincide con cuota × plazo (${money(pl * cu)}).`;
+  return w;
+}
+function ArregloEditor({ f, setF, errs, readOnly, numPreview, verCap, lockProduct }) {
+  const set = k => e => setF({ ...f, [k]: e.target.value });
+  const w = numericWarnings(f);
+  const inp = (k, lbl, type = 'text', opts) => { const ro = readOnly || (opts?.product && lockProduct); return html`<${Field} label=${html`${lbl}${!ro ? html` <span className="req">*</span>` : ''}`} extra=${opts?.extra}>
+    ${opts?.select ? html`<select id=${'arr-' + k} disabled=${ro} value=${f[k]} onChange=${set(k)}>${opts.select.map(o => html`<option key=${o[0]} value=${o[0]}>${o[1]}</option>`)}</select>`
+      : html`<input id=${'arr-' + k} type=${type} className=${opts?.mono ? 'mono' : ''} readOnly=${ro} value=${f[k]} onChange=${set(k)} min=${type === 'number' ? 0 : null} step=${type === 'number' ? 'any' : null} />`}
+    ${errs[k] && html`<div className="err">${errs[k]}</div>`}${!ro && w[k] && html`<div className="warnmsg">${w[k]} <${Ask} id="numericas" /></div>`}</${Field}>`; };
+  const fin = f.fechaInicio && f.plazo > 0 ? addMonths(D(f.fechaInicio), Number(f.plazo) - 1) : null;
+  return html`<div className="form">
+    ${inp('producto', 'Producto crediticio', 'text', { product: true, select: [['Préstamo', 'Préstamo'], ['Tarjeta', 'Tarjeta de crédito']] })}
+    ${inp('numeroProducto', f.producto === 'Tarjeta' ? 'Número de tarjeta' : 'Número de préstamo', 'text', { product: true, mono: true })}
+    <${Field} label="Número de arreglo"><div className="v">${numPreview}</div></${Field}>
+    ${inp('tipo', 'Tipo de arreglo', 'text', { select: [['Temporal', 'Temporal'], ['Cancelación', 'Cancelación']] })}
+    ${inp('saldoInicial', 'Saldo inicial (C$)', 'number')}
+    ${inp('montoAbonado', 'Monto abonado a la fecha (C$)', 'number')}
+    ${inp('saldoRemanente', 'Saldo remanente por pagar (C$)', 'number')}
+    ${inp('plazo', `Plazo en cuotas (máx. ${verCap})`, 'number')}
+    ${inp('cuota', 'Cuota mensual (C$)', 'number')}
+    ${inp('totalPagar', 'Total a pagar (C$)', 'number')}
+    ${inp('fechaInicio', 'Fecha de la primera cuota', 'date')}
+    <${Field} label="Fecha de finalización" extra=${html`<${Ask} id="fechas" />`}><div className="v">${fin ? fd(fin) : html`<span className="muted">Se calcula con el plazo</span>`}</div></${Field}>
+    ${inp('cuentaDebitar', 'Cuenta a debitar', 'text', { mono: true, extra: html`<span className="lock" title="Seguridad por columna">Protegida</span>` })}
+    ${inp('oficial', 'Oficial de arreglo', 'text', { select: OFICIALES.map(o => [o, uname(o)]) })}
+    ${inp('fechaFormalizacion', 'Fecha de formalización', 'date')}
+    <${Field} label="Comentarios" wide><textarea id="arr-comentarios" rows="2" readOnly=${readOnly} value=${f.comentarios} onChange=${set('comentarios')}></textarea></${Field}>
+  </div>`;
+}
+function validateArreglo(f, cap) {
+  const e = {};
+  ['numeroProducto', 'saldoInicial', 'montoAbonado', 'saldoRemanente', 'plazo', 'cuota', 'totalPagar', 'fechaInicio', 'cuentaDebitar', 'fechaFormalizacion'].forEach(k => { if (String(f[k] ?? '').trim() === '') e[k] = 'Obligatorio.'; });
+  if (f.plazo !== '' && (!Number.isInteger(+f.plazo) || +f.plazo < 1)) e.plazo = 'Debe ser un número entero de cuotas.';
+  else if (+f.plazo > cap) e.plazo = `La plantilla vigente admite hasta ${cap} cuotas.`;
+  return e;
+}
+const provisionalTxt = (db, producto, numero) => { if (!String(numero || '').trim()) return html`<span className="muted">Se asigna al formalizar</span>`; const k = sigNumeroArreglo(db, producto, numero); return html`<b>${k}</b> <span className="muted">provisional · ${k === 1 ? 'primer arreglo de este crédito' : `este crédito ya tuvo ${k - 1}`}; se confirma al formalizar</span> <${Ask} id="numero-borrador" />`; };
+function ArregloNuevo({ clienteId, solicitudId }) {
+  const { db, mut, log, uid, isJefe, go, say } = useApp();
+  const ver = vigente(db);
+  const [cid, setCid] = useState(clienteId || '');
+  const [f, setF] = useState({ producto: 'Préstamo', numeroProducto: '', tipo: 'Temporal', saldoInicial: '', montoAbonado: '', saldoRemanente: '', plazo: '', cuota: '', totalPagar: '', fechaInicio: '', cuentaDebitar: '', oficial: isJefe ? 'o1' : uid, fechaFormalizacion: iso(now()), comentarios: '' });
+  const [errs, setErrs] = useState({});
+  const save = () => {
+    const e = validateArreglo(f, ver.capacidad); if (!cid) e.cliente = 'Elija el cliente.';
+    setErrs(e); if (Object.keys(e).length) { say('Revise los campos marcados.', 'bad'); return; }
+    let nid;
+    mut(n => {
+      nid = 'a' + (++n.seq.arr);
+      const a = { id: nid, estado: 'Borrador', numeroArreglo: null, numeroImpreso: null, clienteId: cid, solicitudId: solicitudId || null, producto: f.producto, numeroProducto: f.numeroProducto.trim(), tipo: f.tipo, saldoInicial: +f.saldoInicial, montoAbonado: +f.montoAbonado, saldoRemanente: +f.saldoRemanente, plazo: +f.plazo, cuota: +f.cuota, totalPagar: +f.totalPagar, fechaInicio: D(f.fechaInicio), cuentaDebitar: f.cuentaDebitar, oficial: f.oficial, fechaFormalizacion: D(f.fechaFormalizacion), comentarios: f.comentarios, version: vigente(n).id, congelado: null, instantanea: null, anulacion: null, descarte: null, reapertura: null, reaperturas: 0, fechaTermino: null, generaciones: [] };
+      a.cuotas = genCuotas(a.fechaInicio, a.plazo, a.cuota); a.fechaFin = a.cuotas[a.cuotas.length - 1].fecha;
+      n.arreglos.push(a); log(n, 'arr', nid, `Creó el arreglo en borrador; el sistema generó ${a.plazo} cuotas con la plantilla ${a.version}`);
+    });
+    say(`Borrador guardado con ${f.plazo} cuotas. Todavía no toma número de arreglo.`);
+    setTimeout(() => go({ p: 'arreglo', id: nid }), 0);
+  };
+  return html`<div>
+    <div className="cmdbar"><button className="btn" onClick=${() => go(solicitudId ? { p: 'sol', id: solicitudId } : { p: 'arreglos', v: 'borradores' })}><span className="ic">←</span> Volver</button><button className="btn primary" onClick=${save}>Guardar borrador</button></div>
+    <div className="content">
+      <div className="pagehead"><h1>Nuevo arreglo</h1><${Chip} k="warn">Borrador</${Chip}><span className="sub">Se registra con la plantilla vigente ${ver.num}.</span></div>
+      <div className="panel"><h3>Origen</h3><div className="form">
+        <${Field} label=${html`Cliente <span className="req">*</span>`}><select id="arr-cliente" value=${cid} onChange=${e => setCid(e.target.value)}><option value="">Elegir…</option>${db.clientes.map(c => html`<option key=${c.id} value=${c.id}>${c.nombre} · ${c.cedula}</option>`)}</select>${errs.cliente && html`<div className="err">${errs.cliente}</div>`}</${Field}>
+        <${Field} label="Conversación de origen" extra=${html`<${Ask} id="origen" />`}><div className="v">${solicitudId ? db.solicitudes.find(s => s.id === solicitudId)?.num : html`<span className="muted">Ninguna (otro canal)</span>`}</div></${Field}>
+      </div></div>
+      <div className="panel"><h3>Datos del formato F-NIC-0000052</h3><${ArregloEditor} f=${f} setF=${setF} errs=${errs} numPreview=${provisionalTxt(db, f.producto, f.numeroProducto)} verCap=${ver.capacidad} /></div>
+    </div></div>`;
+}
+
+function ArregloForm({ id, tab: tab0 }) {
+  const { db, mut, log, isJefe, go, say, setModal } = useApp();
+  const a = db.arreglos.find(x => x.id === id);
+  const [tab, setTab] = useState(tab0 || 'general');
+  const toForm = a => ({ ...Object.fromEntries(AFIELDS.map(k => [k, a[k]])), fechaInicio: iso(a.fechaInicio), fechaFormalizacion: iso(a.fechaFormalizacion), comentarios: a.comentarios || '' });
+  const [f, setF] = useState(a ? toForm(a) : null);
+  const [errs, setErrs] = useState({});
+  const [payRow, setPayRow] = useState(null);
+  useEffect(() => { if (a) setF(toForm(a)); }, [a && a.congelado, a && a.estado, a && a.reaperturas]);
+  useEffect(() => { if (tab0) setTab(tab0); }, [tab0, id]);
+  if (!a) return html`<${NotFound} />`;
+  const c = db.clientes.find(x => x.id === a.clienteId);
+  const ver = db.versiones.find(v => v.id === a.version);
+  const borr = a.estado === 'Borrador';
+  const editable = (borr || a.estado === 'Vigente') && !a.congelado;
+  const dirty = editable && AFIELDS.some(k => String(f[k] ?? '') !== String(toForm(a)[k] ?? ''));
+  const hasPagos = a.cuotas.some(x => x.fechaPago);
+  const save = () => {
+    const e = validateArreglo(f, ver.capacidad); setErrs(e); if (Object.keys(e).length) { say('Revise los campos marcados.', 'bad'); return; }
+    const sched = +f.plazo !== a.plazo || +f.cuota !== a.cuota || f.fechaInicio !== iso(a.fechaInicio);
+    if (sched && hasPagos) { say('Este arreglo ya tiene pagos: el plazo, la cuota y la fecha de inicio no se pueden cambiar.', 'bad'); return; }
+    mut(n => { const t = n.arreglos.find(x => x.id === id); Object.assign(t, { tipo: f.tipo, saldoInicial: +f.saldoInicial, montoAbonado: +f.montoAbonado, saldoRemanente: +f.saldoRemanente, plazo: +f.plazo, cuota: +f.cuota, totalPagar: +f.totalPagar, fechaInicio: D(f.fechaInicio), cuentaDebitar: f.cuentaDebitar, oficial: f.oficial, fechaFormalizacion: D(f.fechaFormalizacion), comentarios: f.comentarios });
+      if (borr) Object.assign(t, { producto: f.producto, numeroProducto: f.numeroProducto.trim() });
+      if (sched) { t.cuotas = genCuotas(t.fechaInicio, t.plazo, t.cuota); t.fechaFin = t.cuotas[t.cuotas.length - 1].fecha; }
+      log(n, 'arr', id, sched ? 'Modificó el arreglo; el sistema reemplazó el calendario de cuotas' : 'Modificó datos del arreglo'); });
+    say(sched ? 'Guardado. El calendario se regeneró con los nuevos datos.' : 'Guardado.');
+  };
+  const generar = () => {
+    if (dirty) { say('Guarde los cambios antes de generar el formato.', 'bad'); return; }
+    if (!a.congelado && (borr || a.estado === 'Vigente')) { setModal({ k: 'confirmFreeze', id }); return; }
+    mut(n => { const t = n.arreglos.find(x => x.id === id); t.generaciones.push({ fecha: now(), uid: n._uid, version: t.version }); log(n, 'arr', id, `Volvió a generar el formato con la plantilla ${t.version}`); });
+    setModal({ k: 'formato', id, ver: a.version });
+  };
+  const savePay = (n_, fecha, monto) => {
+    if (!fecha || monto === '' || +monto <= 0) { say('Indique la fecha y un monto mayor que cero.', 'bad'); return; }
+    let term = false;
+    mut(n => { const t = n.arreglos.find(x => x.id === id); const q = t.cuotas[n_ - 1]; q.fechaPago = D(fecha); q.montoPagado = +monto;
+      log(n, 'arr', id, `Registró el pago de la cuota ${n_} (${money(+monto)}${+monto < q.monto ? ', parcial' : ''})`);
+      if (t.cuotas.every(x => x.fechaPago)) { t.estado = 'Terminado'; t.fechaTermino = now(); term = true; log(n, 'arr', id, 'El arreglo pasó a Terminado: todas las cuotas tienen pago registrado'); } });
+    setPayRow(null); say(term ? 'Pago registrado. Todas las cuotas tienen pago: el arreglo pasó a Terminado.' : 'Pago registrado.');
+  };
+  const venc = vencidasSinPago(a);
+  const changed = a.instantanea && c ? ['nombre', 'cedula', 'correo', 'celular'].filter(k => a.instantanea[k] !== c[k]) : [];
+  const audit = db.audit.filter(x => x.ent === 'arr' && x.id === id).sort((x, y) => y.fecha - x.fecha);
+  const totM = a.cuotas.reduce((t, q) => t + q.monto, 0), totP = a.cuotas.reduce((t, q) => t + (q.montoPagado || 0), 0);
+  const numPreview = a.numeroArreglo != null ? html`<b>${a.numeroArreglo}</b>` : a.numeroImpreso ? html`<b>${a.numeroImpreso}</b> <span className="muted">impreso en el formato; se confirma al formalizar</span>` : borr ? provisionalTxt(db, f.producto, f.numeroProducto) : html`<span className="muted">Sin número: no se formalizó</span>`;
+  const title = `${a.producto} ${a.numeroProducto} · ${a.numeroArreglo != null ? 'arreglo N.º ' + a.numeroArreglo : a.estado === 'Descartado' ? 'borrador descartado' : 'borrador'}`;
+  return html`<div>
+    <div className="cmdbar">
+      <button className="btn" onClick=${() => go({ p: 'arreglos', v: borr ? 'borradores' : 'vigentes' })}><span className="ic">←</span> Arreglos</button>
+      ${editable && html`<button className="btn primary" disabled=${!dirty} onClick=${save}>Guardar</button>`}
+      <button className="btn" disabled=${['Anulado', 'Descartado'].includes(a.estado)} onClick=${generar}>${borr && !a.congelado ? 'Generar formato para firma' : 'Generar formato'}</button>
+      ${borr && html`<button className="btn primary" disabled=${!a.congelado} title=${a.congelado ? '' : 'Primero genere el formato para firma'} onClick=${() => setModal({ k: 'formalizar', id })}>Formalizar</button>`}
+      ${borr && a.congelado && html`<button className="btn" onClick=${() => setModal({ k: 'desbloquear', id })}>Desbloquear para corregir</button>`}
+      ${borr && html`<button className="btn danger" onClick=${() => setModal({ k: 'descartar', id })}>Descartar</button>`}
+      ${!borr && html`<button className="btn danger" disabled=${a.estado !== 'Vigente'} onClick=${() => setModal({ k: 'anular', id })}>Anular</button>`}
+      ${!borr && html`<button className="btn" disabled=${!isJefe || !['Vigente', 'Terminado'].includes(a.estado) || (a.estado === 'Vigente' && !a.congelado)} title=${isJefe ? '' : 'Solo la jefatura reabre'} onClick=${() => setModal({ k: 'reabrir', id })}>Reabrir${!isJefe ? html` <span className="muted">(jefatura)</span>` : null}</button>`}
+    </div>
+    <div className="content">
+      <div className="pagehead"><h1>${title}</h1>
+        <div className="chips">${estadoArrChip(a)}${enRiesgo(a) && html`<${Chip} k="bad">En riesgo · ${venc.length} vencida${venc.length > 1 ? 's' : ''}</${Chip}>`}${a.estado !== 'Borrador' && a.congelado && html`<${Chip} k="info">Congelado ${fd(a.congelado)}</${Chip}>`}<${Chip}>Plantilla ${a.version}</${Chip}></div></div>
+      <div className="muted">Cliente: <a href="#" onClick=${e => { e.preventDefault(); go({ p: 'cliente', id: c.id }); }}>${c.nombre}</a> · <span className="mono">${c.cedula}</span>${a.solicitudId ? html` · Conversación <a href="#" onClick=${e => { e.preventDefault(); go({ p: 'sol', id: a.solicitudId }); }}>${db.solicitudes.find(s => s.id === a.solicitudId)?.num}</a>` : ''}</div>
+      ${borr && !a.congelado && html`<div className="note warn"><b>Borrador.</b> Todavía no es un arreglo: no tiene número y sus cuotas no cuentan para la lista de riesgo. Cuando el cliente esté de acuerdo, genere el formato para firma. Si no se concreta, descártelo.</div>`}
+      ${borr && a.congelado && html`<div className="note info"><b>Pendiente de firma.</b> El formato se imprimió el ${fdt(a.congelado)} con el número provisional ${a.numeroImpreso}, y los datos quedaron bloqueados para que coincidan con lo que se firma. Cuando el cliente firme, use <b>Formalizar</b>. Si pide un cambio antes de firmar, use "Desbloquear para corregir" y vuelva a imprimir. <${Ask} id="firma-bloqueo" /></div>`}
+      ${a.estado === 'Descartado' && html`<div className="note"><b>Descartado</b> el ${fdt(a.descarte.fecha)} por ${uname(a.descarte.uid)}. Motivo: ${a.descarte.motivo} No consumió número de arreglo.</div>`}
+      ${a.estado === 'Vigente' && !a.congelado && html`<div className="note warn">Reabierto: los datos se pueden corregir. Al volver a generar el formato, quedan congelados de nuevo.</div>`}
+      ${a.estado === 'Vigente' && a.congelado && html`<div className="note">Formalizado. Los datos del acuerdo están congelados desde el formato firmado (${fdt(a.congelado)}). Solo cambian los pagos. Para corregir un dato, la jefatura usa "Reabrir" con motivo.</div>`}
+      ${a.estado === 'Anulado' && html`<div className="note bad"><b>Anulado</b> el ${fdt(a.anulacion.fecha)} por ${uname(a.anulacion.uid)}. Motivo: ${a.anulacion.motivo} Un arreglo anulado no se reactiva: se registra uno nuevo, que toma el siguiente número.</div>`}
+      ${a.estado === 'Terminado' && html`<div className="note">Terminado el ${fd(a.fechaTermino)}: todas las cuotas tienen pago registrado. <${Ask} id="terminado" /> Para corregir un pago, la jefatura lo reabre.</div>`}
+      ${a.reapertura && html`<div className="note warn">Reabierto ${a.reaperturas} ${a.reaperturas === 1 ? 'vez' : 'veces'}. Última: ${fdt(a.reapertura.fecha)} por ${uname(a.reapertura.uid)}. Motivo: ${a.reapertura.motivo}</div>`}
+      <div className="tabs" role="tablist">${[['general', 'General'], ['cuotas', `Cuotas (${a.plazo})`], ['formatos', `Formatos generados (${a.generaciones.length})`], ['auditoria', 'Auditoría']].map(t => html`<button key=${t[0]} role="tab" aria-selected=${tab === t[0]} className=${tab === t[0] ? 'on' : ''} onClick=${() => setTab(t[0])}>${t[1]}</button>`)}</div>
+      ${tab === 'general' && html`<div className="panel"><${ArregloEditor} f=${f} setF=${setF} errs=${errs} readOnly=${!editable} lockProduct=${!borr} verCap=${ver.capacidad} numPreview=${numPreview} /></div>
+        ${a.instantanea && html`<div className="panel"><h3>Datos del cliente impresos en el formato</h3>
+          <div className="form">${['nombre', 'cedula', 'correo', 'celular'].map(k => html`<${Field} key=${k} label=${{ nombre: 'Nombre', cedula: 'Cédula', correo: 'Correo', celular: 'Celular' }[k]}><div className="v">${a.instantanea[k]}${changed.includes(k) && html` <${Chip} k="warn">hoy: ${c[k]}</${Chip}>`}</div></${Field}>`)}</div>
+          ${changed.length > 0 && html`<p className="muted" style=${{ margin: '10px 0 0', fontSize: 13 }}>El cliente cambió datos después de firmar. Al regenerar, el formato muestra lo firmado. Si hay que corregirlo, la jefatura reabre y se vuelve a congelar con los datos actuales.</p>`}</div>`}`}
+      ${tab === 'cuotas' && html`<div style=${{ display: 'grid', gap: 10 }}>
+        <div className="muted" style=${{ fontSize: 13 }}>Vencen el mismo día de cada mes; si el mes no tiene ese día, el último. <${Ask} id="fechas" /> Un pago por cuota. <${Ask} id="unpago" /></div>
+        <${Grid} rows=${a.cuotas.map(q => ({ ...q, id: 'q' + q.n }))} empty=""
+          foot=${html`<tr className="tot"><td></td><td>Totales</td><td className="num">${money(totM)}</td><td></td><td className="num">${money(totP)}</td><td></td><td></td></tr>`}
+          cols=${[{ h: 'N°', num: true, r: q => q.n }, { h: 'Vence', r: q => fd(q.fecha) }, { h: 'Monto', num: true, r: q => money(q.monto) },
+            { h: 'Fecha de pago', r: q => payRow?.n === q.n ? html`<input id=${'pay-f-' + q.n} type="date" value=${payRow.fecha} onChange=${e => setPayRow({ ...payRow, fecha: e.target.value })} />` : fd(q.fechaPago) },
+            { h: 'Monto pagado', num: true, r: q => payRow?.n === q.n ? html`<input id=${'pay-m-' + q.n} type="number" min="0" step="any" style=${{ width: 120 }} value=${payRow.monto} onChange=${e => setPayRow({ ...payRow, monto: e.target.value })} />` : money(q.montoPagado) },
+            { h: 'Estado', r: q => { const [t, k] = estadoCuota(q, a); return html`<${Chip} k=${k}>${t}</${Chip}>`; } },
+            { h: '', r: q => a.estado !== 'Vigente' ? null : payRow?.n === q.n ? html`<div className="inline-pay"><button className="btn primary" onClick=${() => savePay(q.n, payRow.fecha, payRow.monto)}>Guardar</button><button className="btn" onClick=${() => setPayRow(null)}>Cancelar</button></div>`
+              : html`<button className="btn outline" onClick=${() => setPayRow({ n: q.n, fecha: iso(q.fechaPago || now()), monto: String(q.montoPagado ?? q.monto) })}>${q.fechaPago ? 'Corregir pago' : 'Registrar pago'}</button>` }]} />
+        ${borr && html`<div className="note">Calendario propuesto. Los pagos se registran cuando el arreglo está formalizado.</div>`}
+        ${['Terminado', 'Anulado', 'Descartado'].includes(a.estado) && html`<div className="note">Las cuotas de un arreglo ${a.estado.toLowerCase()} no se modifican.</div>`}
+      </div>`}
+      ${tab === 'formatos' && html`<div style=${{ display: 'grid', gap: 10 }}>
+        <div className="note">El archivo generado no se guarda en la solución: cada vez se vuelve a generar desde los datos y con la misma versión de plantilla. Esta bitácora registra quién lo generó y cuándo.</div>
+        <${Grid} rows=${[...a.generaciones].reverse().map((g, i) => ({ ...g, id: 'g' + i }))} empty=${html`<b>Nunca se generó.</b>Use "Generar formato" en la barra.`}
+          cols=${[{ h: 'Fecha', r: g => fdt(g.fecha) }, { h: 'Usuario', r: g => uname(g.uid) }, { h: 'Plantilla', r: g => g.version }]} /></div>`}
+      ${tab === 'auditoria' && html`<${Grid} rows=${audit.map((x, i) => ({ ...x, id: 'au' + i }))} empty="Sin eventos."
+        cols=${[{ h: 'Fecha', r: x => html`<span className="nowrap">${fdt(x.fecha)}</span>` }, { h: 'Usuario', r: x => uname(x.uid) }, { h: 'Evento', r: x => x.texto }]} />`}
+    </div></div>`;
+}
+
+function MotivoModal({ title, intro, cta, onOk, onClose }) {
+  const [m, setM] = useState('');
+  return html`<${Modal} title=${title} onClose=${onClose} foot=${html`<button className="btn" onClick=${onClose}>Cancelar</button><button className="btn primary" disabled=${!m.trim()} onClick=${() => { onOk(m.trim()); onClose(); }}>${cta}</button>`}>
+    <p style=${{ margin: 0 }}>${intro}</p>
+    <${Field} label=${html`Motivo <span className="req">*</span>`}><textarea id="motivo" rows="3" autoFocus value=${m} onChange=${e => setM(e.target.value)}></textarea></${Field}>
+  </${Modal}>`;
+}
+
+/* ---------- Vista previa del formato ---------- */
+function fieldVal(campo, d) {
+  const a = d.a, c = d.cli;
+  switch (campo) {
+    case 'fechaFormalizacion': return fd(a.fechaFormalizacion); case 'oficial': return uname(a.oficial);
+    case 'clienteNombre': return c.nombre; case 'clienteCedula': return c.cedula; case 'clienteCorreo': return c.correo; case 'clienteCelular': return c.celular;
+    case 'numeroProducto': return a.numeroProducto; case 'tipo': return a.tipo; case 'numeroArreglo': return String(a.numeroArreglo ?? a.numeroImpreso ?? d.provisional);
+    case 'saldoInicial': return n2(a.saldoInicial); case 'montoAbonado': return n2(a.montoAbonado); case 'saldoRemanente': return n2(a.saldoRemanente);
+    case 'plazo': return String(a.plazo); case 'cuota': return n2(a.cuota); case 'totalPagar': return n2(a.totalPagar);
+    case 'fechaInicio': return fd(a.fechaInicio); case 'fechaFin': return fd(a.fechaFin); case 'cuentaDebitar': return a.cuentaDebitar; case 'comentarios': return a.comentarios || '';
+    case 'total.montoCuotas': return n2(a.cuotas.reduce((t, q) => t + q.monto, 0)); case 'total.montoPagado': return n2(a.cuotas.reduce((t, q) => t + (q.montoPagado || 0), 0));
+    default: return '';
+  }
+}
+const blockVal = (campo, q) => ({ 'cuota.numero': String(q.n), 'cuota.fecha': fd(q.fecha), 'cuota.monto': n2(q.monto), 'cuota.fechaPago': fd(q.fechaPago), 'cuota.montoPagado': q.montoPagado != null ? n2(q.montoPagado) : '' })[campo] ?? '';
+function Sheet({ sheetKey, ver, data, coords }) {
+  const t = template(ver)[sheetKey]; const L = 'ABCDEF'.slice(0, t.cols).split('');
+  const cells = {};
+  for (const [k, v] of Object.entries(t.cells)) cells[k] = typeof v === 'string' ? { t: v, cls: 'lbl' } : { ...v };
+  for (const m of ver.mapeo.filter(m => m.hoja === sheetKey)) {
+    const p = parseCell(m.celda); if (!p) continue;
+    if (FIELD[m.campo]?.tipo === 'bloque') data.a.cuotas.forEach((q, i) => { cells[p.col + (p.row + i)] = { t: blockVal(m.campo, q), cls: 'val', coord: p.col + (p.row + i), num: m.campo !== 'cuota.fecha' && m.campo !== 'cuota.fechaPago' }; });
+    else cells[p.col + p.row] = { t: fieldVal(m.campo, data), cls: 'val', coord: p.col + p.row, span: m.campo === 'comentarios' ? t.cols : 1, h: m.campo === 'comentarios' ? 70 : null };
+  }
+  const rows = [...new Set(Object.keys(cells).map(k => parseCell(k).row))].sort((a, b) => a - b);
+  const out = []; let prev = null;
+  const blockEnd = t.block ? t.block[0] - 1 + data.a.cuotas.length : null;
+  rows.forEach(r => {
+    if (prev !== null && r - prev > 1) {
+      if (t.block && prev === blockEnd && r > t.block[1]) out.push(html`<tr key=${'clr' + r} className="cleared"><th className="rn"></th><td colSpan=${t.cols}>Filas ${blockEnd + 1} a ${t.block[1]} de la plantilla: vacías (el generador limpia las filas que el plazo no usa)</td></tr>`);
+      else out.push(html`<tr key=${'gap' + r} className="gap"><th className="rn"></th><td colSpan=${t.cols}></td></tr>`);
+    }
+    const tds = []; let skip = 0;
+    L.forEach((col, ci) => {
+      if (skip > 0) { skip--; return; }
+      const k = col + r, c = cells[k];
+      if (!c) { tds.push(html`<td key=${k}></td>`); return; }
+      const span = Math.min(c.span || 1, t.cols - ci); skip = span - 1;
+      tds.push(html`<td key=${k} colSpan=${span} className=${(c.cls || '') + (c.num ? ' num' : '')} style=${c.h ? { height: c.h } : null}>${coords && c.coord ? html`<span className="coord">${c.coord}</span>` : null}${c.t}</td>`);
+    });
+    out.push(html`<tr key=${r}><th className="rn">${r}</th>${tds}</tr>`); prev = r;
+  });
+  return html`<div className="paper"><table className=${'sheet' + (coords ? ' coords' : '')}><thead><tr><th className="rn"></th>${L.map(l => html`<th key=${l}>${l}</th>`)}</tr></thead><tbody>${out}</tbody></table></div>`;
+}
+function FormatoModal({ id, verId, preview, onClose }) {
+  const { db, say } = useApp();
+  const a = db.arreglos.find(x => x.id === id); const ver = db.versiones.find(v => v.id === verId);
+  const [hoja, setHoja] = useState('FORMATO'); const [coords, setCoords] = useState(!!preview);
+  const live = db.clientes.find(c => c.id === a.clienteId);
+  const data = { a, cli: a.instantanea || live, provisional: sigNumeroArreglo(db, a.producto, a.numeroProducto) };
+  return html`<${Modal} wide title=${preview ? `Vista previa con la plantilla ${ver.num} (${ver.estado})` : `F-NIC-0000052 · ${a.numeroArreglo != null ? 'arreglo N.º ' + a.numeroArreglo : 'borrador para firma'}`} onClose=${onClose}
+    foot=${html`<label style=${{ display: 'flex', gap: 6, alignItems: 'center', marginRight: 'auto', fontSize: 13 }}><input id="show-coords" type="checkbox" checked=${coords} onChange=${e => setCoords(e.target.checked)} /> Mostrar celdas del mapeo</label>
+      <button className="btn" onClick=${onClose}>Cerrar</button>
+      ${!preview && html`<button className="btn primary" onClick=${() => say('En la solución real se descarga el archivo .xlsx para imprimir y firmar; la solución no guarda copia. Este mockup no descarga archivos.', 'info')}>Descargar .xlsx</button>`}`}>
+    ${preview ? html`<div className="note warn">Vista previa con la versión ${ver.estado.toLowerCase()}: no bloquea el arreglo ni queda en su bitácora. Solo la ve la jefatura.</div>`
+      : html`<div className="note">Se generó desde la plantilla <b>${ver.num}</b> (huella verificada) y los datos ${a.instantanea ? 'bloqueados' : 'actuales'} del arreglo.${a.numeroArreglo == null ? ` El número de arreglo ${a.numeroImpreso} es provisional hasta formalizar.` : ''} Los totales los calcula el sistema; la fecha de formalización es un valor fijo, no =TODAY().</div>`}
+    <div className="tabs">${Object.entries(HOJAS).map(([k, v]) => html`<button key=${k} className=${hoja === k ? 'on' : ''} onClick=${() => setHoja(k)}>${v}</button>`)}</div>
+    <${Sheet} sheetKey=${hoja} ver=${ver} data=${data} coords=${coords} />
+  </${Modal}>`;
+}
+
+/* ---------- Búsqueda / historial ---------- */
+function Buscar({ q }) {
+  const { db, go } = useApp();
+  const nq = norm(q);
+  const byProd = nq.length >= 3 ? db.arreglos.filter(a => norm(a.numeroProducto).includes(nq)) : [];
+  const ids = new Set([...(nq.length >= 3 ? db.clientes.filter(c => [c.cedula, c.nombre, c.correo, c.celular].some(f => norm(f).includes(nq))).map(c => c.id) : []), ...byProd.map(a => a.clienteId)]);
+  const res = db.clientes.filter(c => ids.has(c.id));
+  return html`<div className="content">
+    <div className="pagehead"><h1>Historial por cliente</h1><span className="sub">Busque por cédula o por número de préstamo o tarjeta.</span></div>
+    ${!q ? html`<div className="note">Escriba en la barra de búsqueda de arriba. Pruebe con <a href="#" onClick=${e => { e.preventDefault(); go({ p: 'buscar', q: '001-120488' }); }}>001-120488</a> o con <a href="#" onClick=${e => { e.preventDefault(); go({ p: 'buscar', q: '10-2041-7710' }); }}>10-2041-7710</a>.</div>`
+      : !res.length ? html`<div className="gridwrap"><div className="empty"><b>Sin resultados para "${q}".</b>Los arreglos anteriores a la puesta en marcha no se migraron: se siguen consultando en SharePoint y en las notas del AS400.</div></div>`
+      : res.map(c => html`<div key=${c.id} className="panel"><h3><a href="#" style=${{ textTransform: 'none', letterSpacing: 0, fontSize: 15, color: 'var(--fg)' }} onClick=${e => { e.preventDefault(); go({ p: 'cliente', id: c.id }); }}>${c.nombre}</a><span className="mono" style=${{ textTransform: 'none' }}>${c.cedula}</span></h3>
+          <${Grid} rows=${db.arreglos.filter(a => a.clienteId === c.id).sort((a, b) => b.fechaFormalizacion - a.fechaFormalizacion)} onOpen=${a => go({ p: 'arreglo', id: a.id })} empty="Sin arreglos registrados." cols=${[{ h: 'Formalización', r: a => fd(a.fechaFormalizacion) }, ...ARR_COLS(db, false)]} /></div>`)}
+  </div>`;
+}
+
+/* ---------- Supervisión ---------- */
+function Panel() {
+  const { db, go } = useApp();
+  const conv = db.solicitudes.filter(s => s.estado !== 'Unida').map(s => ({ s, i: convInfo(s) }));
+  const since = x => x.i.pend || x.i.nuevos[0]?.fecha;
+  const pend = conv.filter(x => needsAttention(x.s, x.i)).sort((a, b) => since(a) - since(b));
+  const desde = new Date(now().getTime() - 30 * 86400000);
+  const rounds = conv.flatMap(x => x.i.rounds).filter(r => r.fecha >= desde);
+  const fins = conv.filter(x => x.s.fin && x.s.fin.fecha >= desde);
+  const finsT = fins.filter(x => x.s.resultado !== 'Sin respuesta');
+  const per = OFICIALES.map(o => { const r = rounds.filter(x => x.por === o); const f = finsT.filter(x => x.s.fin.uid === o); return { o, n: r.length, avg: avg(r.map(x => x.min)) || 0, nf: f.length, tot: avg(f.map(x => x.i.total)) }; });
+  const max = Math.max(60, ...per.map(p => p.avg));
+  const step = max > 240 ? 120 : 60; const top = Math.ceil(max / step) * step;
+  const W = 640, lw = 140, rw = 130, bh = 26, gap = 18, H = per.length * (bh + gap) + 30, x = v => lw + (W - lw - rw) * v / top;
+  const errores = conv.filter(x => x.i.error);
+  const decision = conv.filter(x => x.i.nuevos.length);
+  const oldest = pend[0] ? (now() - since(pend[0])) / 60000 : 0;
+  const totAvg = avg(finsT.map(x => x.i.total));
+  return html`<div className="content">
+    <div className="pagehead"><h1>Panel de supervisión</h1><span className="sub">Si "Correos sin respuesta" está en cero, todos los correos de los clientes tienen respuesta.</span></div>
+    <div className="tiles">
+      <div className=${'tile' + (pend.length ? ' alert' : '')}><div className="k">Correos sin respuesta</div><div className="n">${pend.length}</div></div>
+      <div className="tile"><div className="k">El más antiguo</div><div className="n">${pend.length ? dur(oldest) : '—'}</div></div>
+      <div className=${'tile' + (decision.length ? ' alert' : '')}><div className="k">Correo en finalizadas</div><div className="n">${decision.length}</div></div>
+      <div className=${'tile' + (errores.length ? ' alert' : '')}><div className="k">Errores de envío</div><div className="n">${errores.length}</div></div>
+      <div className="tile"><div className="k">Respuesta promedio, 30 días</div><div className="n">${rounds.length ? dur(avg(rounds.map(r => r.min))) : '—'}</div></div>
+      <div className="tile"><div className="k">Tiempo total promedio, 30 días <${Ask} id="tiempo-total" /></div><div className="n">${totAvg != null ? dur(totAvg) : '—'}</div></div>
+    </div>
+    <div className="cols">
+      <div className="panel"><h3>Sin respuesta, por antigüedad <${Ask} id="umbrales" /></h3>
+        <${Grid} rows=${pend.map(x => ({ ...x, id: x.s.id }))} onOpen=${x => go({ p: 'sol', id: x.s.id })} empty=${html`<b>Sin pendientes.</b>Todos los correos tienen respuesta.`}
+          cols=${[{ h: 'Desde', r: x => fdt(since(x)) }, { h: 'Asunto', r: x => x.s.mails[0].asunto }, { h: 'Oficial', r: x => x.s.asignado ? uname(x.s.asignado) : html`<${Chip} k="warn">Sin asignar</${Chip}>` }, { h: 'Antigüedad', r: x => html`<div className="chips">${ageChip((now() - since(x)) / 60000)}${x.i.nuevos.length ? html`<${Chip} k="bad">En finalizada</${Chip}>` : null}</div>` }]} /></div>
+      <div className="panel"><h3>Tiempo promedio de respuesta por oficial · 30 días</h3>
+        <div style=${{ overflowX: 'auto' }}><svg className="chart" viewBox=${`0 0 ${W} ${H}`} width="100%" style=${{ minWidth: 420 }} role="img" aria-label="Tiempo promedio de respuesta por oficial">
+          ${Array.from({ length: top / step + 1 }, (_, i) => i * step).map(v => html`<g key=${v}><line className="grid-l" x1=${x(v)} x2=${x(v)} y1="0" y2=${H - 22} /><text className="lbl" x=${x(v)} y=${H - 6} textAnchor="middle">${v / 60} h</text></g>`)}
+          ${per.map((p, i) => { const y = i * (bh + gap) + 4; return html`<g key=${p.o}><text x="0" y=${y + bh / 2 + 4}>${uname(p.o)}</text><rect className="bar" x=${lw} y=${y} width=${Math.max(2, x(p.avg) - lw)} height=${bh} rx="2" /><text x=${x(p.avg) + 8} y=${y + bh / 2 + 4}>${dur(p.avg)} · ${p.n} resp.</text></g>`; })}
+        </svg></div>
+        <p className="muted" style=${{ margin: '8px 0 10px', fontSize: 13 }}>Cada respuesta se mide desde el primer correo del cliente que la esperaba. Incluye la demora de sincronización de salida, así que sobrestima un poco.</p>
+        <${Grid} rows=${per.map(p => ({ ...p, id: p.o }))} cols=${[{ h: 'Oficial', r: p => uname(p.o) }, { h: 'Respuestas', num: true, r: p => p.n }, { h: 'Prom. por respuesta', num: true, r: p => p.n ? dur(p.avg) : '—' }, { h: 'Finalizadas', num: true, r: p => p.nf }, { h: 'Prom. tiempo total', num: true, r: p => p.tot != null ? dur(p.tot) : '—' }]} />
+      </div>
+    </div>
+  </div>`;
+}
+function Cierres() {
+  const { db, go } = useApp();
+  const rows = db.solicitudes.filter(s => s.estado === 'Finalizada' && s.resultado === 'Sin respuesta').sort((a, b) => b.fin.fecha - a.fin.fecha);
+  return html`<div className="content"><div className="pagehead"><h1>Finalizadas sin respuesta</h1><span className="sub">Para revisar que no se cierre como "spam" un correo que sí pedía respuesta.</span></div>
+    <${Grid} rows=${rows} onOpen=${s => go({ p: 'sol', id: s.id })} empty="Sin conversaciones finalizadas sin respuesta."
+      cols=${[{ h: 'Finalizada', r: s => fdt(s.fin.fecha) }, { h: 'Remitente', r: s => s.mails[0].de }, { h: 'Asunto', r: s => s.mails[0].asunto }, { h: 'Motivo', r: s => html`<b>${s.fin.motivo}</b><br/><span className="muted">${s.fin.detalle}</span>` }, { h: 'Finalizó', r: s => uname(s.fin.uid) }]} /></div>`;
+}
+function Errores() {
+  const { db, go } = useApp();
+  const rows = db.solicitudes.filter(s => convInfo(s).error);
+  return html`<div className="content"><div className="pagehead"><h1>Errores de envío</h1><span className="sub">Respuestas que el buzón no pudo enviar. El correo del cliente sigue sin respuesta.</span></div>
+    <${Grid} rows=${rows} onOpen=${s => go({ p: 'sol', id: s.id })} empty=${html`<b>Sin errores de envío.</b>`}
+      cols=${[{ h: 'Intento', r: s => fdt(s.mails.filter(m => m.estado === 'Error de envío').pop().fecha) }, { h: 'Destinatario', r: s => s.mails[0].de }, { h: 'Asunto', r: s => s.mails[0].asunto }, { h: 'Oficial', r: s => uname(s.asignado) }]} /></div>`;
+}
+
+/* ---------- Plantillas ---------- */
+function Plantillas() {
+  const { db, mut, log, go, say } = useApp();
+  const borrador = db.versiones.find(v => v.estado === 'Borrador');
+  const nueva = () => {
+    let nid;
+    mut(n => { const vg = vigente(n); const k = ++n.seq.ver; nid = 'v' + pad(k); n.versiones.push({ id: nid, num: nid, estado: 'Borrador', capacidad: vg.capacidad, archivo: vg.archivo, kb: vg.kb, huella: null, aprobador: null, aprobado: null, mapeo: vg.mapeo.map(m => ({ ...m, id: m.id + 'c' + k })) }); log(n, 'ver', nid, `Creó la versión ${nid} en Borrador clonando la ${vg.num}`); });
+    say('Versión en borrador creada a partir de la vigente.'); setTimeout(() => go({ p: 'version', id: nid }), 0);
+  };
+  const order = { Borrador: 0, Vigente: 1, Histórica: 2 };
+  return html`<div><div className="cmdbar"><button className="btn" disabled=${!!borrador} title=${borrador ? 'Ya hay un borrador: publíquelo o edítelo' : ''} onClick=${nueva}><span className="ic">+</span> Nueva versión</button></div>
+    <div className="content"><div className="pagehead"><h1>Plantillas del formato F-NIC-0000052</h1><span className="sub">La jefatura cambia el formato sin programación: sube la plantilla Excel e indica en qué celda va cada dato.</span></div>
+    <div className="note">Una versión publicada no se modifica. Cada arreglo queda atado a la versión con la que se registró, para que su documento se pueda regenerar igual al firmado. <${Ask} id="plantilla" /></div>
+    <${Grid} rows=${[...db.versiones].sort((a, b) => order[a.estado] - order[b.estado] || b.num.localeCompare(a.num))} onOpen=${v => go({ p: 'version', id: v.id })}
+      cols=${[{ h: 'Versión', r: v => html`<b>${v.num}</b>` }, { h: 'Estado', r: v => html`<${Chip} k=${v.estado === 'Vigente' ? 'ok' : v.estado === 'Borrador' ? 'warn' : ''}>${v.estado}</${Chip}>` },
+        { h: 'Archivo', r: v => v.archivo }, { h: 'Cuotas', num: true, r: v => v.capacidad }, { h: 'Celdas mapeadas', num: true, r: v => v.mapeo.length },
+        { h: 'Aprobada', r: v => v.aprobado ? `${uname(v.aprobador)}, ${fd(v.aprobado)}` : html`<span className="muted">—</span>` },
+        { h: 'Arreglos que la usan', num: true, r: v => db.arreglos.filter(a => a.version === v.id).length }]} /></div></div>`;
+}
+function validarVersion(v) {
+  const errs = []; const seen = {};
+  const occupy = (hoja, cell, who) => { const k = hoja + '!' + cell; if (seen[k]) errs.push(`${HOJAS[hoja]}, celda ${cell}: tiene dos campos ("${FIELD[seen[k]].label}" y "${FIELD[who].label}").`); else seen[k] = who; };
+  v.mapeo.forEach(m => {
+    const p = parseCell(m.celda);
+    if (!m.campo) { errs.push('Hay una fila de mapeo sin campo.'); return; }
+    if (!p) { errs.push(`"${m.celda}" no es una celda válida (ej.: B7).`); return; }
+    if (FIELD[m.campo].tipo === 'bloque') { for (let i = 0; i < v.capacidad; i++) occupy(m.hoja, p.col + (p.row + i), m.campo); }
+    else occupy(m.hoja, p.col + p.row, m.campo);
+  });
+  const blk = v.mapeo.filter(m => FIELD[m.campo]?.tipo === 'bloque');
+  const miss = FIELDS.filter(f => f[2] === 'bloque').map(f => f[0]).filter(r => !blk.some(m => m.campo === r));
+  if (miss.length) errs.push(`El bloque de cuotas está incompleto: falta ${miss.map(x => FIELD[x].label).join(', ')}.`);
+  if (new Set(blk.map(m => parseCell(m.celda)?.row)).size > 1) errs.push('Las columnas del bloque de cuotas no empiezan en la misma fila.');
+  if (v.capacidad < 1 || v.capacidad > 60) errs.push('La capacidad de cuotas debe estar entre 1 y 60.');
+  return errs;
+}
+function VersionForm({ id }) {
+  const { db, mut, log, isJefe, go, say, setModal } = useApp();
+  const v = db.versiones.find(x => x.id === id);
+  const [errs, setErrs] = useState(null);
+  const [prevArr, setPrevArr] = useState('a7');
+  if (!v) return html`<${NotFound} />`;
+  const edit = v.estado === 'Borrador' && isJefe;
+  const upd = (mid, k, val) => mut(n => { const m = n.versiones.find(x => x.id === id).mapeo.find(x => x.id === mid); m[k] = k === 'celda' ? val.toUpperCase() : val; });
+  const publicar = () => {
+    const e = validarVersion(v); setErrs(e);
+    if (e.length) { say('No se publicó: corrija los errores del mapeo.', 'bad'); return; }
+    mut(n => { n.versiones.forEach(x => { if (x.estado === 'Vigente') x.estado = 'Histórica'; }); const t = n.versiones.find(x => x.id === id); t.estado = 'Vigente'; t.huella = fakeHash(t.id + t.mapeo.map(m => m.celda).join()); t.aprobador = n._uid; t.aprobado = now(); log(n, 'ver', id, `Publicó la versión ${t.num}; la anterior pasó a Histórica`); });
+    say(`Versión ${v.num} publicada. Los arreglos nuevos la usan; los existentes conservan la suya.`);
+  };
+  const audit = db.audit.filter(x => x.ent === 'ver' && x.id === id).sort((a, b) => b.fecha - a.fecha);
+  const sorted = [...v.mapeo].sort((a, b) => a.hoja.localeCompare(b.hoja) || (parseCell(a.celda)?.row || 0) - (parseCell(b.celda)?.row || 0) || String(a.celda).localeCompare(String(b.celda)));
+  return html`<div>
+    <div className="cmdbar">
+      <button className="btn" onClick=${() => go({ p: 'plantillas' })}><span className="ic">←</span> Plantillas</button>
+      ${edit && html`<button className="btn primary" onClick=${publicar}>Validar y publicar</button>`}
+      <span style=${{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><button className="btn" onClick=${() => setModal({ k: 'formato', id: prevArr, ver: id, preview: true })}>Vista previa con</button>
+        <select id="prev-arr" value=${prevArr} onChange=${e => setPrevArr(e.target.value)} style=${{ padding: '5px 6px', border: '1px solid var(--line)', borderRadius: 4, background: 'var(--surface)', maxWidth: 220 }}>${db.arreglos.map(a => html`<option key=${a.id} value=${a.id}>${db.clientes.find(c => c.id === a.clienteId).nombre.split(' ').slice(0, 2).join(' ')} · ${a.plazo} cuotas</option>`)}</select></span>
+    </div>
+    <div className="content">
+      <div className="pagehead"><h1>Plantilla ${v.num}</h1><${Chip} k=${v.estado === 'Vigente' ? 'ok' : v.estado === 'Borrador' ? 'warn' : ''}>${v.estado}</${Chip}></div>
+      ${v.estado !== 'Borrador' && html`<div className="note">Versión publicada: no se puede modificar ni su archivo ni su mapeo. Para cambiar el formato, cree una versión nueva desde "Plantillas".</div>`}
+      ${v.estado === 'Borrador' && !isJefe && html`<div className="note">Solo la jefatura edita y publica plantillas.</div>`}
+      ${errs && errs.length ? html`<div className="note bad"><b>No se puede publicar:</b><ul className="list-errors">${errs.map((e, i) => html`<li key=${i}>${e}</li>`)}</ul></div>` : null}
+      <div className="panel"><h3>Archivo de la plantilla</h3><div className="form">
+        <${Field} label="Archivo Excel"><div className="v">${v.archivo} <span className="muted">· ${v.kb} KB</span></div>
+          ${edit && html`<input id="tpl-file" type="file" accept=".xlsx" onChange=${e => { const fl = e.target.files[0]; if (fl) { mut(n => { const t = n.versiones.find(x => x.id === id); t.archivo = fl.name; t.kb = Math.max(1, Math.round(fl.size / 1024)); }); say('Archivo reemplazado en el borrador. En el mockup no se lee su contenido.', 'info'); } }} />`}</${Field}>
+        <${Field} label="Capacidad del bloque de cuotas">${edit ? html`<input id="tpl-cap" type="number" min="1" max="60" value=${v.capacidad} onChange=${e => mut(n => { n.versiones.find(x => x.id === id).capacidad = Number(e.target.value); })} />` : html`<div className="v">${v.capacidad} filas</div>`}</${Field}>
+        <${Field} label="Huella SHA-256"><div className="v mono" style=${{ fontSize: 11 }}>${v.huella || html`<span className="muted">Se calcula al publicar</span>`}</div></${Field}>
+        <${Field} label="Aprobación"><div className="v">${v.aprobado ? `${uname(v.aprobador)}, ${fdt(v.aprobado)}` : html`<span className="muted">Pendiente</span>`}</div></${Field}>
+      </div></div>
+      <div className="panel"><h3>Mapeo: qué dato va en qué celda</h3>
+        <div className="gridwrap"><table className="grid"><thead><tr><th>Hoja</th><th>Celda</th><th>Campo</th><th>Tipo</th><th>Filas</th>${edit && html`<th></th>`}</tr></thead><tbody>
+          ${sorted.map(m => { const tp = FIELD[m.campo]?.tipo; return html`<tr key=${m.id} className="maprow">
+            <td>${edit ? html`<select value=${m.hoja} onChange=${e => upd(m.id, 'hoja', e.target.value)}>${Object.entries(HOJAS).map(([k, x]) => html`<option key=${k} value=${k}>${x}</option>`)}</select>` : HOJAS[m.hoja]}</td>
+            <td>${edit ? html`<input aria-label="Celda" value=${m.celda} onChange=${e => upd(m.id, 'celda', e.target.value)} />` : html`<span className="mono">${m.celda}</span>`}</td>
+            <td>${edit ? html`<select value=${m.campo} onChange=${e => upd(m.id, 'campo', e.target.value)}>${FIELDS.map(f => html`<option key=${f[0]} value=${f[0]}>${f[1]}</option>`)}</select>` : FIELD[m.campo]?.label}</td>
+            <td>${TIPO_MAP[tp]}</td><td className="num">${tp === 'bloque' ? `1 a ${v.capacidad}` : ''}</td>
+            ${edit && html`<td><button className="btn danger" onClick=${() => mut(n => { const t = n.versiones.find(x => x.id === id); t.mapeo = t.mapeo.filter(x => x.id !== m.id); })}>Quitar</button></td>`}</tr>`; })}
+        </tbody></table></div>
+        ${edit && html`<div style=${{ marginTop: 10 }}><button className="btn outline" onClick=${() => mut(n => { n.versiones.find(x => x.id === id).mapeo.push({ id: 'n' + Date.now(), hoja: 'FORMATO', celda: '', campo: 'comentarios' }); })}><span className="ic">+</span> Agregar celda</button></div>`}
+        <p className="muted" style=${{ margin: '10px 0 0', fontSize: 13 }}>La lista de campos la mantiene el equipo de automatización porque cada campo está programado en el generador. Si el formato necesita un dato nuevo, se pide al equipo.</p>
+      </div>
+      ${audit.length > 0 && html`<div className="panel"><h3>Auditoría</h3><${Grid} rows=${audit.map((x, i) => ({ ...x, id: 'va' + i }))} cols=${[{ h: 'Fecha', r: x => fdt(x.fecha) }, { h: 'Usuario', r: x => uname(x.uid) }, { h: 'Evento', r: x => x.texto }]} /></div>`}
+    </div></div>`;
+}
+
+/* ---------- Preguntas ---------- */
+function Preguntas({ focus }) {
+  const { go } = useApp();
+  useEffect(() => { if (focus) document.getElementById('q-' + focus)?.scrollIntoView({ block: 'center' }); }, [focus]);
+  return html`<div className="content">
+    <div className="pagehead"><h1>Preguntas para negocio</h1><span className="sub">Reglas que el diseño deja a confirmar. Cada una tiene un enlace a la pantalla donde se ve.</span></div>
+    <div className="note">Este es un <b>mockup descartable</b> con datos ficticios. Sirve para validar el flujo y las reglas antes de construir. La aplicación real es una app model-driven de Power Apps: la apariencia final sigue el estilo estándar de esa plataforma.</div>
+    <div className="qlist">${PREGUNTAS.map((q, i) => html`<div key=${q.id} id=${'q-' + q.id} className="q" style=${focus === q.id ? { borderColor: 'var(--info)', boxShadow: '0 0 0 2px var(--info-soft)' } : null}>
+      <div className="qt">${i + 1}. ${q.t}</div><div className="qd">${q.d}</div>
+      <div><button className="btn outline" onClick=${() => go(q.ver)}>${q.verTxt} <span className="ic">→</span></button></div></div>`)}</div>
+    <div className="panel"><h3>Ya confirmado por negocio · 08/10/2026</h3><ul style=${{ margin: 0, paddingLeft: 18, display: 'grid', gap: 4 }}>${CONFIRMADO.map((t, i) => html`<li key=${i}>${t}</li>`)}</ul></div>
+  </div>`;
+}
+function NotFound() { const { go } = useApp(); return html`<div className="content"><div className="empty"><b>No se encontró el registro.</b><button className="btn outline" onClick=${() => go({ p: 'bandeja', v: 'pendientes' })}>Ir a conversaciones</button></div></div>`; }
+
+/* ---------- Shell ---------- */
+const JEFE_PAGES = ['panel', 'cierres', 'errores', 'plantillas', 'version'];
+function App() {
+  const [db, setDb] = useState(seed);
+  const [uid, setUid] = useState('o1');
+  const [route, setRoute] = useState({ p: 'bandeja', v: 'mias' });
+  const [modal, setModal] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [navOpen, setNavOpen] = useState(false);
+  const [q, setQ] = useState('');
+  const [, tick] = useState(0);
+  useEffect(() => { const t = setInterval(() => tick(x => x + 1), 20000); return () => clearInterval(t); }, []);
+  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(null), 5500); return () => clearTimeout(t); }, [toast]);
+  const user = USERS[uid], isJefe = user.rol === 'Jefe';
+  useEffect(() => { if (!isJefe && JEFE_PAGES.includes(route.p)) setRoute({ p: 'bandeja', v: 'mias' }); }, [uid]);
+  const mut = fn => setDb(prev => { const n = structuredClone(prev); n._uid = uid; fn(n); delete n._uid; return n; });
+  const log = (n, ent, id, texto) => n.audit.push({ fecha: now(), uid, ent, id, texto });
+  const say = (msg, kind = 'ok') => setToast({ msg, kind, k: Date.now() });
+  const go = r => { setRoute(r); setNavOpen(false); setModal(null); if (r.p === 'buscar') setQ(r.q || ''); const m = document.querySelector('.main'); if (m) m.scrollTop = 0; };
+  const simular = () => {
+    const t = INCOMING[db.simIdx % INCOMING.length]; let sid;
+    mut(n => {
+      n.simIdx++;
+      const lleg = new Date(now().getTime() - 7 * 60000);
+      if (t.tipo === 'hilo') { let tg = n.solicitudes.find(x => x.id === t.target); while (tg.estado === 'Unida') tg = n.solicitudes.find(x => x.id === tg.unidaA); sid = tg.id; tg.mails.push({ id: 'e' + Date.now(), dir: 'in', de: tg.mails[0].de, para: BUZON, asunto: 'RE: ' + tg.mails[0].asunto, cuerpo: t.cuerpo, fecha: lleg }); return; }
+      const k = ++n.seq.sol; sid = 's' + k; const cl = n.clientes.find(c => c.correo === t.de);
+      n.solicitudes.push({ id: sid, num: 'SOL-0' + k, estado: 'Abierta', resultado: null, fin: null, asignado: null, clienteId: cl ? cl.id : null, carrera: false, unidaA: null, llegada: lleg, mails: [{ id: 'e' + Date.now(), dir: 'in', de: t.de, para: BUZON, asunto: t.asunto, cuerpo: t.cuerpo, fecha: lleg }] });
+    });
+    say(t.msg + ' (Demora típica de la sincronización: 5 a 15 minutos.)', 'info');
+    setTimeout(() => go({ p: 'sol', id: sid }), 0);
+  };
+  const ctx = { db, mut, log, uid, user, isJefe, go, say, setModal, route };
+  const attn = db.solicitudes.filter(s => needsAttention(s, convInfo(s)));
+  const riesgo = db.arreglos.filter(enRiesgo).length;
+  const NAV = [
+    ['Correo del área', [['bandeja', 'Conversaciones', { p: 'bandeja', v: 'mias' }, attn.length, false]]],
+    ['Clientes y arreglos', [['buscar', 'Buscar historial', { p: 'buscar', q }], ['clientes', 'Clientes', { p: 'clientes' }], ['arreglos', 'Arreglos', { p: 'arreglos', v: 'vigentes' }], ['riesgo', 'Arreglos en riesgo', { p: 'arreglos', v: 'riesgo' }, riesgo, true]]],
+    ...(isJefe ? [['Supervisión', [['panel', 'Panel de supervisión', { p: 'panel' }], ['cierres', 'Finalizadas sin respuesta', { p: 'cierres' }], ['errores', 'Errores de envío', { p: 'errores' }, db.solicitudes.filter(s => convInfo(s).error).length, true]]],
+      ['Administración del formato', [['plantillas', 'Plantillas del formato', { p: 'plantillas' }]]]] : []),
+    ['Validación del mockup', [['preguntas', 'Preguntas para negocio', { p: 'preguntas' }, PREGUNTAS.length, false]]],
+  ];
+  const active = k => {
+    const p = route.p;
+    if (k === 'bandeja') return p === 'bandeja' || p === 'sol'; if (k === 'riesgo') return p === 'arreglos' && route.v === 'riesgo';
+    if (k === 'arreglos') return (p === 'arreglos' && route.v !== 'riesgo') || p === 'arreglo' || p === 'arregloNuevo';
+    if (k === 'clientes') return p === 'clientes' || p === 'cliente' || p === 'clienteNuevo'; if (k === 'plantillas') return p === 'plantillas' || p === 'version';
+    return p === k;
+  };
+  const r = route;
+  const page = r.p === 'bandeja' ? html`<${Bandeja} v=${r.v} />` : r.p === 'sol' ? html`<${SolicitudForm} key=${r.id} id=${r.id} />`
+    : r.p === 'buscar' ? html`<${Buscar} q=${r.q || ''} />` : r.p === 'clientes' ? html`<${ClientesList} />`
+    : r.p === 'cliente' ? html`<${ClienteForm} key=${r.id} id=${r.id} />` : r.p === 'clienteNuevo' ? html`<${ClienteForm} key=${'new' + (r.fromSol || '')} correo=${r.correo} fromSol=${r.fromSol} />`
+    : r.p === 'arreglos' ? html`<${ArreglosList} v=${r.v} />` : r.p === 'arreglo' ? html`<${ArregloForm} key=${r.id} id=${r.id} tab=${r.tab} />`
+    : r.p === 'arregloNuevo' ? html`<${ArregloNuevo} key=${'n' + (r.clienteId || '') + (r.solicitudId || '')} clienteId=${r.clienteId} solicitudId=${r.solicitudId} />`
+    : r.p === 'panel' ? html`<${Panel} />` : r.p === 'cierres' ? html`<${Cierres} />` : r.p === 'errores' ? html`<${Errores} />`
+    : r.p === 'plantillas' ? html`<${Plantillas} />` : r.p === 'version' ? html`<${VersionForm} key=${r.id} id=${r.id} />`
+    : r.p === 'preguntas' ? html`<${Preguntas} focus=${r.focus} />` : html`<${NotFound} />`;
+  const close = () => setModal(null);
+  const M = modal;
+  const freezeNow = (n, id) => { const t = n.arreglos.find(x => x.id === id); const c = n.clientes.find(x => x.id === t.clienteId); t.congelado = now(); t.instantanea = { nombre: c.nombre, cedula: c.cedula, correo: c.correo, celular: c.celular }; if (t.estado === 'Borrador') t.numeroImpreso = sigNumeroArreglo(n, t.producto, t.numeroProducto); t.generaciones.push({ fecha: now(), uid, version: t.version }); return t; };
+  const modalEl = !M ? null
+    : M.k === 'finalizar' ? html`<${FinalizarModal} id=${M.id} onClose=${close} />`
+    : M.k === 'unir' ? html`<${UnirModal} id=${M.id} onClose=${close} />`
+    : M.k === 'reasignar' ? html`<${ReasignarModal} id=${M.id} onClose=${close} />`
+    : M.k === 'vincular' ? html`<${VincularModal} id=${M.id} onClose=${close} />`
+    : M.k === 'formato' ? html`<${FormatoModal} id=${M.id} verId=${M.ver} preview=${M.preview} onClose=${close} />`
+    : M.k === 'anular' ? html`<${MotivoModal} title="Anular arreglo" cta="Anular arreglo" intro="La anulación no se puede revertir. La gestión de cobro sigue por Cobranza. Si el cliente vuelve a negociar, se registra un arreglo nuevo con el siguiente número." onClose=${close}
+        onOk=${m => { mut(n => { const t = n.arreglos.find(x => x.id === M.id); t.estado = 'Anulado'; t.anulacion = { motivo: m, uid, fecha: now() }; t.fechaTermino = now(); log(n, 'arr', M.id, 'Anuló el arreglo. Motivo: ' + m); }); say('Arreglo anulado.'); }} />`
+    : M.k === 'descartar' ? html`<${MotivoModal} title="Descartar borrador" cta="Descartar" intro="El borrador queda como descartado en el historial del cliente, sin número de arreglo. No se puede recuperar: si el cliente vuelve, se crea un borrador nuevo." onClose=${close}
+        onOk=${m => { mut(n => { const t = n.arreglos.find(x => x.id === M.id); t.estado = 'Descartado'; t.descarte = { motivo: m, uid, fecha: now() }; t.numeroImpreso = null; log(n, 'arr', M.id, 'Descartó el borrador. Motivo: ' + m); }); say('Borrador descartado. No consumió número de arreglo.'); }} />`
+    : M.k === 'reabrir' ? html`<${MotivoModal} title="Reabrir arreglo" cta="Reabrir" intro="Reabrir vuelve el arreglo a Vigente y descongela sus datos para corregirlos. El próximo formato que se genere lo congela de nuevo con los datos actuales del cliente." onClose=${close}
+        onOk=${m => { mut(n => { const t = n.arreglos.find(x => x.id === M.id); t.estado = 'Vigente'; t.congelado = null; t.instantanea = null; t.fechaTermino = null; t.reaperturas = (t.reaperturas || 0) + 1; t.reapertura = { motivo: m, uid, fecha: now() }; log(n, 'arr', M.id, 'Reabrió el arreglo. Motivo: ' + m); }); say('Arreglo reabierto. Sus datos se pueden corregir.'); }} />`
+    : M.k === 'desbloquear' ? html`<${Modal} title="Desbloquear borrador" onClose=${close}
+        foot=${html`<button className="btn" onClick=${close}>Cancelar</button><button className="btn primary" onClick=${() => { mut(n => { const t = n.arreglos.find(x => x.id === M.id); t.congelado = null; t.instantanea = null; t.numeroImpreso = null; log(n, 'arr', M.id, 'Desbloqueó el borrador para corregirlo antes de la firma'); }); close(); say('Borrador desbloqueado. Después de corregir, vuelva a imprimir el formato.'); }}>Desbloquear</button>`}>
+        <p style=${{ margin: 0 }}>El formato que ya se imprimió deja de ser válido: no lo haga firmar. Después de corregir, genere el formato de nuevo. <${Ask} id="firma-bloqueo" /></p></${Modal}>`
+    : M.k === 'formalizar' ? (() => { const a = db.arreglos.find(x => x.id === M.id); const k = sigNumeroArreglo(db, a.producto, a.numeroProducto); const ok = k === a.numeroImpreso;
+        return html`<${Modal} title="Formalizar arreglo" onClose=${close}
+          foot=${html`<button className="btn" onClick=${close}>Cancelar</button><button className="btn primary" disabled=${!ok} onClick=${() => { mut(n => { const t = n.arreglos.find(x => x.id === M.id); t.numeroArreglo = sigNumeroArreglo(n, t.producto, t.numeroProducto); t.estado = 'Vigente'; log(n, 'arr', M.id, `Formalizó el arreglo con el N.º ${t.numeroArreglo}: el cliente firmó`); }); close(); say(`Arreglo formalizado con el N.º ${k}. Ya cuenta para el seguimiento de cuotas.`); }}>El cliente firmó: formalizar</button>`}>
+          ${ok ? html`<p style=${{ margin: 0 }}>Confirme que el cliente firmó el formato impreso el ${fdt(a.congelado)}. Al formalizar:</p>
+            <ul style=${{ margin: 0, paddingLeft: 18 }}><li>Toma el número de arreglo <b>${k}</b>, el mismo que se imprimió.</li><li>Pasa a Vigente y sus cuotas cuentan para la lista de riesgo.</li><li>Después, solo la jefatura puede reabrirlo, con motivo.</li></ul>`
+          : html`<div className="note bad">Mientras tanto se formalizó otro arreglo de este crédito. El formato impreso dice N.º ${a.numeroImpreso}, pero el número libre ahora es ${k}. Desbloquee el borrador, vuelva a imprimir y haga firmar el formato nuevo.</div>`}
+          <${Ask} id="numero-borrador" /></${Modal}>`; })()
+    : M.k === 'confirmFreeze' ? (() => { const a = db.arreglos.find(x => x.id === M.id); const b = a.estado === 'Borrador';
+        return html`<${Modal} title=${b ? 'Generar formato para firma' : 'Generar formato y congelar datos'} onClose=${close}
+        foot=${html`<button className="btn" onClick=${close}>Cancelar</button><button className="btn primary" onClick=${() => {
+          mut(n => { const t = freezeNow(n, M.id); log(n, 'arr', M.id, b ? `Generó el formato para firma con la plantilla ${t.version}; los datos quedaron bloqueados` : `Generó el formato con la plantilla ${t.version}; los datos quedaron congelados`); });
+          setModal({ k: 'formato', id: M.id, ver: a.version }); say(b ? 'Formato generado para firma. El borrador quedó bloqueado.' : 'Formato generado. Los datos quedaron congelados.'); }}>Generar</button>`}>
+        ${b ? html`<p style=${{ margin: 0 }}>Al generar el formato para firma:</p>
+          <ul style=${{ margin: 0, paddingLeft: 18 }}><li>Se imprime con el número de arreglo provisional <b>${sigNumeroArreglo(db, a.producto, a.numeroProducto)}</b>.</li><li>Los datos del borrador y del cliente se bloquean, para que coincidan con lo que se firma.</li><li>Cuando el cliente firme, use "Formalizar". Si pide un cambio antes, use "Desbloquear para corregir".</li></ul>`
+        : html`<p style=${{ margin: 0 }}>El arreglo fue reabierto. Al generar el formato, sus datos y los del cliente quedan congelados de nuevo.</p>`}
+        <${Ask} id=${b ? 'firma-bloqueo' : 'numero-borrador'} /></${Modal}>`; })()
+    : null;
+
+  return html`<${Ctx.Provider} value=${ctx}><div className="app">
+    <header className="top">
+      <button className="tbtn menu-btn" onClick=${() => setNavOpen(!navOpen)} aria-expanded=${navOpen}>Menú</button>
+      <span className="brand">Control de Arreglos de Pago</span><span className="sim">Mockup v3 · datos ficticios</span>
+      <span className="spacer"></span>
+      <span className="clock">Hoy simulado: ${fdt(now())}</span>
+      <button className="tbtn" onClick=${simular}>Simular correo entrante</button>
+      <label style=${{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><span className="clock">Ver como</span>
+        <select id="user-switch" value=${uid} onChange=${e => { setUid(e.target.value); setModal(null); }}>${Object.values(USERS).map(u => html`<option key=${u.id} value=${u.id}>${u.nombre} · ${u.rol === 'Jefe' ? 'Jefatura' : 'Oficial'}</option>`)}</select></label>
+    </header>
+    <form className="searchbar" onSubmit=${e => { e.preventDefault(); go({ p: 'buscar', q: q.trim() }); }}>
+      <input id="global-search" type="search" value=${q} onChange=${e => setQ(e.target.value)} placeholder="Buscar por cédula o número de préstamo o tarjeta" aria-label="Buscar historial" />
+      <button className="btn outline" type="submit">Buscar</button>
+    </form>
+    <div className="body">
+      <nav className=${'nav' + (navOpen ? ' open' : '')} aria-label="Navegación">
+        ${NAV.map(([g, items]) => html`<div key=${g}><h4>${g}</h4>${items.map(([k, lbl, to, cnt, bad]) => html`<button key=${k} className=${active(k) ? 'on' : ''} onClick=${() => go(to)}><span>${lbl}</span>${cnt ? html`<span className=${'count' + (bad ? ' bad' : '')}>${cnt}</span>` : null}</button>`)}</div>`)}
+      </nav>
+      <main className="main">${page}</main>
+    </div>
+    ${modalEl}
+    ${toast && html`<div key=${toast.k} className=${'toast ' + toast.kind} role="status">${toast.msg}</div>`}
+  </div></${Ctx.Provider}>`;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App} />`);
+
+</script>

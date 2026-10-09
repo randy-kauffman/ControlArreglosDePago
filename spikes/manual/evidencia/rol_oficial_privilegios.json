@@ -1,0 +1,11 @@
+{
+ "prvReadActivity": "Local",
+ "prvAppendToActivity": "Local",
+ "prvAppendToQueue": "Local",
+ "prvReadQueue": "Local",
+ "prvReadspk_conversacion": "Local",
+ "prvAppendTospk_conversacion": "Local",
+ "prvCreateActivity": "Basic",
+ "prvWriteActivity": "Basic",
+ "prvAppendActivity": "Basic"
+}

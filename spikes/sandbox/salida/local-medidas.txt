@@ -1,0 +1,4 @@
+Runtime: .NET 8.0.30; CPUs 8
+plazo 6: primera 514 ms | caliente mediana 14.4 ms, p95 53.5 ms, max 302.1 ms | 32276 bytes | base64 43036 chars
+plazo 30: primera 16 ms | caliente mediana 12.1 ms, p95 15.4 ms, max 31.3 ms | 32585 bytes | base64 43448 chars
+plazo 60: primera 12 ms | caliente mediana 12.3 ms, p95 16.5 ms, max 25.0 ms | 32813 bytes | base64 43752 chars

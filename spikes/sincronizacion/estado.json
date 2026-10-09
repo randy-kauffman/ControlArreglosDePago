@@ -1,0 +1,341 @@
+{
+ "tag": "133831",
+ "t0": "2026-10-08T19:38:31Z",
+ "caso1": {
+  "gid": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEPAAC9ZLU9TgbERr3wyKycax6aAAAG_IyuAAA=",
+  "internetMessageId": "<PH9PR06MB610612ADE5119E87B2EE64277ED1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+  "enviado_http": 202,
+  "t_envio_epoch": 1791488311.7835746,
+  "t_envio_utc": "2026-10-08T19:38:31Z",
+  "graph_recibido": "2026-10-08T19:38:33Z",
+  "graph_sent": "2026-10-08T19:38:31Z",
+  "dv_email_id": "b01009db-4fc3-f111-a05a-000d3a35abca",
+  "dv_createdon": "2026-10-08T19:38:38Z",
+  "n_emails_dv": 1,
+  "demora_envio_a_dv_s": 7,
+  "demora_graph_recibido_a_dv_s": 5,
+  "t_observado_utc": "2026-10-08T19:38:43Z"
+ },
+ "caso6a": {
+  "gid": "AAMkAGIzYzcwYzkxLTdkYzQtNDgxMS04OWNjLTE3ODQyYjQ4NTU2OQBGAAAAAADDbc10kWWnQYr980A02yeKBwBOIkPbwFaDQpiKFtH_UYljAAAAAAEPAABOIkPbwFaDQpiKFtH_UYljAAAHILfFAAA=",
+  "internetMessageId": "<BL0PR06MB467573581D7B319CC705861CD0932@BL0PR06MB4675.namprd06.prod.outlook.com>",
+  "enviado_http": 202,
+  "t_envio_epoch": 1791488312.4749503,
+  "t_envio_utc": "2026-10-08T19:38:32Z",
+  "graph_recibido": "2026-10-08T19:38:38Z",
+  "graph_sent": "2026-10-08T19:38:32Z",
+  "dv_email_id": "72bd9ae9-4fc3-f111-a05a-000d3a35abca",
+  "dv_createdon": "2026-10-08T19:39:06Z",
+  "n_emails_dv": 1,
+  "demora_envio_a_dv_s": 34,
+  "demora_graph_recibido_a_dv_s": 28,
+  "t_observado_utc": "2026-10-08T19:39:45Z"
+ },
+ "caso6b": {
+  "gid": "AAMkAGIzYzcwYzkxLTdkYzQtNDgxMS04OWNjLTE3ODQyYjQ4NTU2OQBGAAAAAADDbc10kWWnQYr980A02yeKBwBOIkPbwFaDQpiKFtH_UYljAAAAAAEPAABOIkPbwFaDQpiKFtH_UYljAAAHILfGAAA=",
+  "internetMessageId": "<BL0PR06MB4675E6BD2D29CF5245138036D0932@BL0PR06MB4675.namprd06.prod.outlook.com>",
+  "enviado_http": 202,
+  "t_envio_epoch": 1791488313.0215075,
+  "t_envio_utc": "2026-10-08T19:38:33Z",
+  "graph_recibido": "2026-10-08T19:38:38Z",
+  "graph_sent": "2026-10-08T19:38:33Z",
+  "dv_email_id": "8cbd9ae9-4fc3-f111-a05a-000d3a35abca",
+  "dv_createdon": "2026-10-08T19:39:07Z",
+  "n_emails_dv": 1,
+  "demora_envio_a_dv_s": 34,
+  "demora_graph_recibido_a_dv_s": 29,
+  "t_observado_utc": "2026-10-08T19:39:45Z"
+ },
+ "conversacion_id": "6386a075-50c3-f111-a05a-000d3a35abca",
+ "conv_email_orig_regarding": "6386a075-50c3-f111-a05a-000d3a35abca",
+ "resp_v1": {
+  "email_id": "6686a075-50c3-f111-a05a-000d3a35abca",
+  "post_http": 204,
+  "asunto": "RE: [SPIKE3] Caso 1 consulta arreglo de pago 133831",
+  "t_crea_utc": "2026-10-08T19:43:02Z",
+  "pre_envio": {
+   "statuscode@OData.Community.Display.V1.FormattedValue": "Draft",
+   "sender": "buzondevpp1@55xljh.onmicrosoft.com",
+   "torecipients": "buzondevpp2@55xljh.onmicrosoft.com;",
+   "_regardingobjectid_value": "6386a075-50c3-f111-a05a-000d3a35abca",
+   "_parentactivityid_value": "b01009db-4fc3-f111-a05a-000d3a35abca",
+   "_emailsender_value@OData.Community.Display.V1.FormattedValue": null,
+   "_ownerid_value@OData.Community.Display.V1.FormattedValue": "# PowerPlatform-Dev"
+  },
+  "sendemail_http": 200,
+  "t_sendemail_epoch": 1791488585.3732626,
+  "t_sendemail_utc": "2026-10-08T19:43:05Z",
+  "sendemail_resp": {
+   "Subject": "RE: [SPIKE3] Caso 1 consulta arreglo de pago 133831"
+  },
+  "obs": {
+   "transiciones": [
+    [
+     "2026-10-08T19:43:25Z",
+     "Sent",
+     "2026-10-08T19:43:23Z",
+     "2026-10-08T19:43:23Z"
+    ]
+   ],
+   "ultimo_estado": "Sent",
+   "senton": "2026-10-08T19:43:23Z",
+   "messageid": "<086B6D6E0E9D4923A09B27FE4EBECEF81DD575D3E1C4@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+   "actualend": "2026-10-08T19:43:07Z",
+   "inreplyto": "<PH9PR06MB610612ADE5119E87B2EE64277ED1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "conversationindex": "0101DD575C9992D43FBDBEFA994C924AB3B3FDAD107EDD575D3E1C",
+   "asunto_final_dv": "RE: [SPIKE3] Caso 1 consulta arreglo de pago 133831",
+   "demora_sendemail_a_senton_s": 18,
+   "graph_recibido": "2026-10-08T19:43:26Z",
+   "graph_msg_id": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEMAAC9ZLU9TgbERr3wyKycax6aAAAG_JhrAAA=",
+   "graph_asunto": "RE: [SPIKE3] Caso 1 consulta arreglo de pago 133831",
+   "graph_from": {
+    "emailAddress": {
+     "name": "Buzon Dev PP 1",
+     "address": "buzondevpp1@55xljh.onmicrosoft.com"
+    }
+   },
+   "graph_internetMessageId": "<086B6D6E0E9D4923A09B27FE4EBECEF81DD575D3E1C4@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+   "graph_headers": {
+    "From": "\"Buzon Dev PP 1\" <buzondevpp1@55xljh.onmicrosoft.com>",
+    "Thread-Topic": "[SPIKE3] Caso 1 consulta arreglo de pago 133831",
+    "Thread-Index": "AQHdV1yZktQ/vb76mUySSrOz/a0Qft1XXT4c",
+    "Message-ID": "<086B6D6E0E9D4923A09B27FE4EBECEF81DD575D3E1C4@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+    "In-Reply-To": "<PH9PR06MB610612ADE5119E87B2EE64277ED1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+    "X-MS-Exchange-Organization-AuthAs": "Internal",
+    "Return-Path": "buzondevpp1@55xljh.onmicrosoft.com",
+    "X-MS-Exchange-CrossTenant-Id": "7bcfee03-896e-4ad3-947b-8a2d9ce17974"
+   },
+   "graph_from_prop": {
+    "emailAddress": {
+     "name": "Buzon Dev PP 1",
+     "address": "buzondevpp1@55xljh.onmicrosoft.com"
+    }
+   },
+   "graph_sender_prop": {
+    "emailAddress": {
+     "name": "Buzon Dev PP 1",
+     "address": "buzondevpp1@55xljh.onmicrosoft.com"
+    }
+   },
+   "graph_conversationId": "AAQkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgAQAJLUP72__plMkkqzs-2tEH4=",
+   "graph_hasAttachments": false,
+   "graph_sentDateTime": "2026-10-08T19:43:22Z",
+   "demora_sendemail_a_llegada_s": 21,
+   "demora_sendemail_a_sentDateTime_s": 17
+  }
+ },
+ "resp_v2": {
+  "email_id": "6b86a075-50c3-f111-a05a-000d3a35abca",
+  "post_http": 204,
+  "asunto": "RE: [SPIKE3] Caso 1 consulta arreglo de pago 133831 [V2 solo Regarding]",
+  "t_crea_utc": "2026-10-08T19:43:04Z",
+  "pre_envio": {
+   "statuscode@OData.Community.Display.V1.FormattedValue": "Draft",
+   "sender": "buzondevpp1@55xljh.onmicrosoft.com",
+   "torecipients": "buzondevpp2@55xljh.onmicrosoft.com;",
+   "_regardingobjectid_value": "6386a075-50c3-f111-a05a-000d3a35abca",
+   "_parentactivityid_value": null,
+   "_emailsender_value@OData.Community.Display.V1.FormattedValue": null,
+   "_ownerid_value@OData.Community.Display.V1.FormattedValue": "# PowerPlatform-Dev"
+  },
+  "sendemail_http": 200,
+  "t_sendemail_epoch": 1791488589.1946497,
+  "t_sendemail_utc": "2026-10-08T19:43:09Z",
+  "sendemail_resp": {
+   "Subject": "RE: [SPIKE3] Caso 1 consulta arreglo de pago 133831 [V2 solo Regarding]"
+  },
+  "obs": {
+   "transiciones": [
+    [
+     "2026-10-08T19:43:26Z",
+     "Sent",
+     "2026-10-08T19:43:23Z",
+     "2026-10-08T19:43:23Z"
+    ]
+   ],
+   "ultimo_estado": "Sent",
+   "senton": "2026-10-08T19:43:23Z",
+   "messageid": "<68E3301F4EEE49BEA5BCFEA73063D1F81DD575D3F335@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+   "actualend": "2026-10-08T19:43:09Z",
+   "conversationindex": "0101109BD190F44201979708AF670976C0DD575D3F33",
+   "asunto_final_dv": "RE: [SPIKE3] Caso 1 consulta arreglo de pago 133831 [V2 solo Regarding]",
+   "graph_recibido": "2026-10-08T19:43:26Z",
+   "graph_msg_id": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEMAAC9ZLU9TgbERr3wyKycax6aAAAG_JhqAAA=",
+   "graph_asunto": "RE: [SPIKE3] Caso 1 consulta arreglo de pago 133831 [V2 solo Regarding]",
+   "graph_from": {
+    "emailAddress": {
+     "name": "Buzon Dev PP 1",
+     "address": "buzondevpp1@55xljh.onmicrosoft.com"
+    }
+   },
+   "graph_internetMessageId": "<68E3301F4EEE49BEA5BCFEA73063D1F81DD575D3F335@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+   "graph_headers": {
+    "From": "\"Buzon Dev PP 1\" <buzondevpp1@55xljh.onmicrosoft.com>",
+    "Thread-Topic": "[SPIKE3] Caso 1 consulta arreglo de pago 133831 [V2 solo Regarding]",
+    "Thread-Index": "AQEQm9GQ9EIBl5cIr2cJdsDdV10/Mw==",
+    "Message-ID": "<68E3301F4EEE49BEA5BCFEA73063D1F81DD575D3F335@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+    "X-MS-Exchange-Organization-AuthAs": "Internal",
+    "Return-Path": "buzondevpp1@55xljh.onmicrosoft.com",
+    "X-MS-Exchange-CrossTenant-Id": "7bcfee03-896e-4ad3-947b-8a2d9ce17974"
+   },
+   "graph_from_prop": {
+    "emailAddress": {
+     "name": "Buzon Dev PP 1",
+     "address": "buzondevpp1@55xljh.onmicrosoft.com"
+    }
+   },
+   "graph_sender_prop": {
+    "emailAddress": {
+     "name": "Buzon Dev PP 1",
+     "address": "buzondevpp1@55xljh.onmicrosoft.com"
+    }
+   },
+   "graph_conversationId": "AAQkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgAQAPRCAZeXCK9nCXbA3VddPzM=",
+   "graph_hasAttachments": false,
+   "graph_sentDateTime": "2026-10-08T19:43:22Z",
+   "demora_sendemail_a_senton_s": 14,
+   "demora_sendemail_a_llegada_s": 17,
+   "demora_sendemail_a_sentDateTime_s": 13
+  }
+ },
+ "t_clientes": "2026-10-08T19:45:04Z",
+ "caso3": {
+  "gid": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEPAAC9ZLU9TgbERr3wyKycax6aAAAG_IyvAAA=",
+  "internetMessageId": "<PH9PR06MB61061276724C53F7532466ADBDD1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+  "asunto": "RE: [SPIKE3] Caso 1 consulta arreglo de pago 133831",
+  "para": [
+   "buzondevpp1@55xljh.onmicrosoft.com"
+  ],
+  "enviado_http": 202,
+  "t_envio_epoch": 1791488705.0309668,
+  "t_envio_utc": "2026-10-08T19:45:05Z",
+  "graph_recibido": "2026-10-08T19:45:08Z",
+  "graph_sent": "2026-10-08T19:45:05Z",
+  "dv_email_id": "140a9dc5-50c3-f111-a05a-000d3a35abca",
+  "dv_createdon": "2026-10-08T19:45:11Z",
+  "n_emails_dv": 1,
+  "demora_envio_a_dv_s": 6,
+  "demora_graph_recibido_a_dv_s": 3,
+  "t_observado_utc": "2026-10-08T19:46:09Z"
+ },
+ "caso4": {
+  "gid": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEPAAC9ZLU9TgbERr3wyKycax6aAAAG_IywAAA=",
+  "internetMessageId": "<PH9PR06MB6106122927BF5EE977C9FF5AEED1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+  "asunto": "[SPIKE3] Caso 4 asunto distinto 133831",
+  "para": [
+   "buzondevpp1@55xljh.onmicrosoft.com"
+  ],
+  "enviado_http": 202,
+  "t_envio_epoch": 1791488705.8474975,
+  "t_envio_utc": "2026-10-08T19:45:05Z",
+  "graph_recibido": "2026-10-08T19:45:10Z",
+  "graph_sent": "2026-10-08T19:45:06Z",
+  "dv_email_id": "2a0a9dc5-50c3-f111-a05a-000d3a35abca",
+  "dv_createdon": "2026-10-08T19:45:12Z",
+  "n_emails_dv": 1,
+  "demora_envio_a_dv_s": 7,
+  "demora_graph_recibido_a_dv_s": 2,
+  "t_observado_utc": "2026-10-08T19:46:10Z"
+ },
+ "caso5": {
+  "gid": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEPAAC9ZLU9TgbERr3wyKycax6aAAAG_IyxAAA=",
+  "internetMessageId": "<PH9PR06MB6106121D366F736449544CD593D1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+  "enviado_http": 202,
+  "t_envio_epoch": 1791488795.4390893,
+  "t_envio_utc": "2026-10-08T19:46:35Z",
+  "graph_recibido": "2026-10-08T19:46:37Z",
+  "graph_sent": "2026-10-08T19:46:35Z",
+  "dv_email_id": "11853bfa-50c3-f111-a05a-000d3a35abca",
+  "dv_createdon": "2026-10-08T19:46:39Z",
+  "n_emails_dv": 1,
+  "demora_envio_a_dv_s": 4,
+  "demora_graph_recibido_a_dv_s": 2,
+  "t_observado_utc": "2026-10-08T19:47:37Z"
+ },
+ "caso7": {
+  "email_id": "d6263e26-51c3-f111-a05a-000d3a35abca",
+  "t_sendemail_epoch": 1791488876.0714731,
+  "t_sendemail_utc": "2026-10-08T19:47:56Z",
+  "sendemail_http": 200,
+  "bytes_enviados": {
+   "salida.pdf": 598,
+   "salida.png": 79
+  },
+  "obs": {
+   "transiciones": [
+    [
+     "2026-10-08T19:47:58Z",
+     "Pending Send",
+     "2026-10-08T19:47:57Z",
+     null
+    ],
+    [
+     "2026-10-08T19:48:29Z",
+     "Sent",
+     "2026-10-08T19:48:10Z",
+     "2026-10-08T19:48:10Z"
+    ]
+   ],
+   "ultimo_estado": "Sent",
+   "messageid": "<21582F6DC199470DBD68DE28ADEEF9541DD575DEA7A9@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+   "actualend": "2026-10-08T19:47:56Z",
+   "inreplyto": "<PH9PR06MB610612ADE5119E87B2EE64277ED1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "conversationindex": "01B5B854A2E9B745DD9DBCEE6D83C8046BDD575DEA7A",
+   "asunto_final_dv": "[SPIKE3] Caso 7 respuesta con adjunto 133831",
+   "senton": "2026-10-08T19:48:10Z",
+   "graph_recibido": "2026-10-08T19:48:12Z",
+   "graph_msg_id": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEMAAC9ZLU9TgbERr3wyKycax6aAAAG_JhsAAA=",
+   "graph_asunto": "[SPIKE3] Caso 7 respuesta con adjunto 133831",
+   "graph_from": {
+    "emailAddress": {
+     "name": "Buzon Dev PP 1",
+     "address": "buzondevpp1@55xljh.onmicrosoft.com"
+    }
+   },
+   "graph_internetMessageId": "<21582F6DC199470DBD68DE28ADEEF9541DD575DEA7A9@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+   "graph_headers": {
+    "From": "\"Buzon Dev PP 1\" <buzondevpp1@55xljh.onmicrosoft.com>",
+    "Thread-Topic": "[SPIKE3] Caso 7 respuesta con adjunto 133831",
+    "Thread-Index": "AQHdV13yodpJeXqGDEKCfz4dk4VjKQ==",
+    "Message-ID": "<21582F6DC199470DBD68DE28ADEEF9541DD575DEA7A9@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+    "In-Reply-To": "<PH9PR06MB610612ADE5119E87B2EE64277ED1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+    "X-MS-Exchange-Organization-AuthAs": "Internal",
+    "Return-Path": "buzondevpp1@55xljh.onmicrosoft.com",
+    "X-MS-Exchange-CrossTenant-Id": "7bcfee03-896e-4ad3-947b-8a2d9ce17974"
+   },
+   "graph_from_prop": {
+    "emailAddress": {
+     "name": "Buzon Dev PP 1",
+     "address": "buzondevpp1@55xljh.onmicrosoft.com"
+    }
+   },
+   "graph_sender_prop": {
+    "emailAddress": {
+     "name": "Buzon Dev PP 1",
+     "address": "buzondevpp1@55xljh.onmicrosoft.com"
+    }
+   },
+   "graph_conversationId": "AAQkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgAQAOvgqkwIdSRGnr9Fb82iAAQ=",
+   "graph_hasAttachments": true,
+   "graph_sentDateTime": "2026-10-08T19:48:10Z",
+   "demora_sendemail_a_senton_s": 14,
+   "demora_sendemail_a_llegada_s": 16,
+   "demora_sendemail_a_sentDateTime_s": 14
+  },
+  "graph_adjuntos": {
+   "salida.pdf": {
+    "size": 778,
+    "contentType": "application/pdf",
+    "isInline": false,
+    "sha256_igual": true
+   },
+   "salida.png": {
+    "size": 256,
+    "contentType": "image/png",
+    "isInline": false,
+    "sha256_igual": true
+   }
+  },
+  "graph_hasAttachments": true
+ }
+}

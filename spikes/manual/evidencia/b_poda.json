@@ -1,0 +1,178 @@
+[
+ {
+  "prueba": "prvSendAsUser",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "ENVIADO",
+  "paso_fallido": null,
+  "mensaje": null
+ },
+ {
+  "prueba": "prvWriteActivity",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "FALLO",
+  "paso_fallido": "SendEmail",
+  "mensaje": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=19, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvWriteActivity privilege (Id=0dc8f72c-57d5-4b4d-8892-fe6aac0e4b81) on OTC=4216 for entity 'socialactivity' (LocalizedName='Social Activity'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+ },
+ {
+  "prueba": "prvAppendToQueue",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "FALLO",
+  "paso_fallido": "crear Email (from queue, Regarding, parentactivityid)",
+  "mensaje": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=19, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvAppendToQueue privilege (Id=041fdb4c-bbb8-4792-90db-51c19d067ca2) on OTC=2020 for entity 'queue' (LocalizedName='Queue'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+ },
+ {
+  "prueba": "prvCreateActivity",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "FALLO",
+  "paso_fallido": "crear Email (from queue, Regarding, parentactivityid)",
+  "mensaje": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=19, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvCreateActivity privilege (Id=091df793-fe5e-44d4-b4ca-7e3f580c4664) on OTC=10418 for entity 'adx_inviteredemption' (LocalizedName='Invite Redemption'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+ },
+ {
+  "prueba": "prvReadActivity",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "FALLO",
+  "paso_fallido": "leer Email entrante",
+  "mensaje": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=19, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvReadActivity privilege (Id=650c14fe-3521-45fe-a000-84138688e45d) on OTC=4251 for entity 'recurringappointmentmaster' (LocalizedName='Recurring Appointment'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+ },
+ {
+  "prueba": "prvAppendActivity",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "FALLO",
+  "paso_fallido": "crear Email (from queue, Regarding, parentactivityid)",
+  "mensaje": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=19, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvAppendActivity privilege (Id=78777c10-09ab-4326-b4c8-cf5729702937) on OTC=4204 for entity 'fax' (LocalizedName='Fax'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+ },
+ {
+  "prueba": "prvAppendToActivity",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "FALLO",
+  "paso_fallido": "crear Email (from queue, Regarding, parentactivityid)",
+  "mensaje": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=19, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvAppendToActivity privilege (Id=6ec8e901-d770-44c0-8f12-d07425f638bd) on OTC=4204 for entity 'fax' (LocalizedName='Fax'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+ },
+ {
+  "prueba": "prvReadQueue",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "FALLO",
+  "paso_fallido": "leer Queue Spike",
+  "mensaje": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=19, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvReadQueue privilege (Id=b140e729-dfeb-4ba1-a33f-39ff830bac90) on OTC=2020 for entity 'queue' (LocalizedName='Queue'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+ },
+ {
+  "prueba": "prvReadspk_conversacion",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "ENVIADO",
+  "paso_fallido": "leer spk_conversacion",
+  "mensaje": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=19, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvReadspk_conversacion privilege (Id=1ce758d8-3920-45cd-ae65-1292e46bb503) on OTC=11192 for entity 'spk_conversacion' (LocalizedName='Conversacion spike'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+ },
+ {
+  "prueba": "prvAppendspk_conversacion",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "ENVIADO",
+  "paso_fallido": null,
+  "mensaje": null
+ },
+ {
+  "prueba": "prvAppendTospk_conversacion",
+  "cache": 19,
+  "esperado": 19,
+  "resultado": "FALLO",
+  "paso_fallido": "crear Email (from queue, Regarding, parentactivityid)",
+  "mensaje": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=19, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvAppendTospk_conversacion privilege (Id=83292252-00d5-4251-b7b2-de3ae8a8f7c4) on OTC=11192 for entity 'spk_conversacion' (LocalizedName='Conversacion spike'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+ },
+ {
+  "prueba": "prvReadActivity:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "FALLO",
+  "paso_fallido": "leer Email entrante",
+  "mensaje": "user with id 32122bbd-56c3-f111-a05a-000d3a35abca does not have ReadAccess right(s) for record with id f0fdbc70-57c3-f111-a05a-000d3a35abca of entity Activity. Consider assigning a role with the level BusinessUnitLevel to the user or team. For further troubleshooting, please work with a system administrator to use the Access Checker tool on this record: https://org36e60d9d.crm.dynamics.com/main.aspx?forceUCI=1&pagetype=entityrecord&etn=activitypointer&id=f0fdbc70-57c3-f111-a05a-000d3a35abca. More details: {\"CallerPrincipal\":{\"PrincipalId\":\"32122bbd-56c3-f111-a05a-000d3a35abca\",\"Type\":8,\"IsUserPrincipal\":true},\"OwnerPrincipal\":{\"PrincipalId\":\"8bccbe02-f1ee-f011-8406-7ced8d70b036\",\"Type\":8,\"IsUserPrincipal\":true},\"ObjectId\":\"f0fdbc70-57c3-f111-a05a-000d3a35abca\",\"ObjectTypeCode\":4200,\"EntityName\":\"activitypointer\",\"ObjectBusinessUnitId\":\"99c5be02-f1ee-f011-8406-7ced8d70b036\",\"RightsToCheck\":\"ReadAccess\",\"RoleAccessRights\":\"None\",\"PoaAccessRights\":\"None\",\"HsmAccessRights\":\"None\",\"GrantedAccessRights\":\"None\",\"RecordFilterAccessRights\":\"None\",\"RecordFilterAccessInfo\":null,\"MinimumDepth\":1,\"Messages\":[\"UserLevelMinimumPrivilegeDepthRequired = None\",\"EntityUserGroupRights = None\",\"BusinessUnitLevelMinimumPrivilegeDepthRequiredRights = ReadAccess\",\"SecLib::AccessCheckEx2 failed. Owner Data: roleCount=12, privilegeCount=8653, accessMode='0 Read-Write', AADObjectId='eab4619b-d1f6-475c-a392-69aa8cf30e4f', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036; Principal Data: roleCount=1, privilegeCount=20, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo\"],\"EntityOwnershipTypeMask\":1,\"CallerInfo\":{\"IsSystemUser\":false,\"IsSupportUser\":false,\"IsAdministrator\":false,\"IsCustomizer\":false,\"IsDisabled\":false,\"IsIntegrationUser\":false,\"Teams\":null,\"Roles\":null},\"ReadOnlyState\":\"UserAndOrgFullAccess\",\"IsHsmEnabled\":false,\"HsmInfo\":null,\"AccessOrigin\":null}"
+ },
+ {
+  "prueba": "prvAppendToActivity:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "FALLO",
+  "paso_fallido": "crear Email (from queue, Regarding, parentactivityid)",
+  "mensaje": "user with id 32122bbd-56c3-f111-a05a-000d3a35abca does not have AppendToAccess right(s) for record with id f0fdbc70-57c3-f111-a05a-000d3a35abca of entity Activity. Consider assigning a role with the level BusinessUnitLevel to the user or team. For further troubleshooting, please work with a system administrator to use the Access Checker tool on this record: https://org36e60d9d.crm.dynamics.com/main.aspx?forceUCI=1&pagetype=entityrecord&etn=activitypointer&id=f0fdbc70-57c3-f111-a05a-000d3a35abca. More details: {\"CallerPrincipal\":{\"PrincipalId\":\"32122bbd-56c3-f111-a05a-000d3a35abca\",\"Type\":8,\"IsUserPrincipal\":true},\"OwnerPrincipal\":{\"PrincipalId\":\"8bccbe02-f1ee-f011-8406-7ced8d70b036\",\"Type\":8,\"IsUserPrincipal\":true},\"ObjectId\":\"f0fdbc70-57c3-f111-a05a-000d3a35abca\",\"ObjectTypeCode\":4200,\"EntityName\":\"activitypointer\",\"ObjectBusinessUnitId\":\"99c5be02-f1ee-f011-8406-7ced8d70b036\",\"RightsToCheck\":\"AppendToAccess\",\"RoleAccessRights\":\"None\",\"PoaAccessRights\":\"None\",\"HsmAccessRights\":\"None\",\"GrantedAccessRights\":\"None\",\"RecordFilterAccessRights\":\"None\",\"RecordFilterAccessInfo\":null,\"MinimumDepth\":1,\"Messages\":[\"UserLevelMinimumPrivilegeDepthRequired = None\",\"EntityUserGroupRights = None\",\"BusinessUnitLevelMinimumPrivilegeDepthRequiredRights = AppendToAccess\",\"SecLib::AccessCheckEx2 failed. Owner Data: roleCount=12, privilegeCount=8653, accessMode='0 Read-Write', AADObjectId='eab4619b-d1f6-475c-a392-69aa8cf30e4f', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036; Principal Data: roleCount=1, privilegeCount=20, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo\"],\"EntityOwnershipTypeMask\":1,\"CallerInfo\":{\"IsSystemUser\":false,\"IsSupportUser\":false,\"IsAdministrator\":false,\"IsCustomizer\":false,\"IsDisabled\":false,\"IsIntegrationUser\":false,\"Teams\":null,\"Roles\":null},\"ReadOnlyState\":\"UserAndOrgFullAccess\",\"IsHsmEnabled\":false,\"HsmInfo\":null,\"AccessOrigin\":null}"
+ },
+ {
+  "prueba": "prvAppendToQueue:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "FALLO",
+  "paso_fallido": "crear Email (from queue, Regarding, parentactivityid)",
+  "mensaje": "user with id 32122bbd-56c3-f111-a05a-000d3a35abca does not have AppendToAccess right(s) for record with id 4411c78a-4ec3-f111-a05a-000d3a35abca of entity Queue. Consider assigning a role with the level BusinessUnitLevel to the user or team. For further troubleshooting, please work with a system administrator to use the Access Checker tool on this record: https://org36e60d9d.crm.dynamics.com/main.aspx?forceUCI=1&pagetype=entityrecord&etn=queue&id=4411c78a-4ec3-f111-a05a-000d3a35abca. More details: {\"CallerPrincipal\":{\"PrincipalId\":\"32122bbd-56c3-f111-a05a-000d3a35abca\",\"Type\":8,\"IsUserPrincipal\":true},\"OwnerPrincipal\":{\"PrincipalId\":\"8bccbe02-f1ee-f011-8406-7ced8d70b036\",\"Type\":8,\"IsUserPrincipal\":true},\"ObjectId\":\"4411c78a-4ec3-f111-a05a-000d3a35abca\",\"ObjectTypeCode\":2020,\"EntityName\":\"queue\",\"ObjectBusinessUnitId\":\"99c5be02-f1ee-f011-8406-7ced8d70b036\",\"RightsToCheck\":\"AppendToAccess\",\"RoleAccessRights\":\"None\",\"PoaAccessRights\":\"None\",\"HsmAccessRights\":\"None\",\"GrantedAccessRights\":\"None\",\"RecordFilterAccessRights\":\"None\",\"RecordFilterAccessInfo\":null,\"MinimumDepth\":1,\"Messages\":[\"UserLevelMinimumPrivilegeDepthRequired = None\",\"EntityUserGroupRights = None\",\"BusinessUnitLevelMinimumPrivilegeDepthRequiredRights = AppendToAccess\",\"SecLib::AccessCheckEx2 failed. Owner Data: roleCount=12, privilegeCount=8653, accessMode='0 Read-Write', AADObjectId='eab4619b-d1f6-475c-a392-69aa8cf30e4f', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036; Principal Data: roleCount=1, privilegeCount=20, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo\"],\"EntityOwnershipTypeMask\":1,\"CallerInfo\":{\"IsSystemUser\":false,\"IsSupportUser\":false,\"IsAdministrator\":false,\"IsCustomizer\":false,\"IsDisabled\":false,\"IsIntegrationUser\":false,\"Teams\":null,\"Roles\":null},\"ReadOnlyState\":\"UserAndOrgFullAccess\",\"IsHsmEnabled\":false,\"HsmInfo\":null,\"AccessOrigin\":null}"
+ },
+ {
+  "prueba": "prvReadQueue:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "FALLO",
+  "paso_fallido": "leer Queue Spike",
+  "mensaje": "user with id 32122bbd-56c3-f111-a05a-000d3a35abca does not have ReadAccess right(s) for record with id 4411c78a-4ec3-f111-a05a-000d3a35abca of entity Queue. Consider assigning a role with the level BusinessUnitLevel to the user or team. For further troubleshooting, please work with a system administrator to use the Access Checker tool on this record: https://org36e60d9d.crm.dynamics.com/main.aspx?forceUCI=1&pagetype=entityrecord&etn=queue&id=4411c78a-4ec3-f111-a05a-000d3a35abca. More details: {\"CallerPrincipal\":{\"PrincipalId\":\"32122bbd-56c3-f111-a05a-000d3a35abca\",\"Type\":8,\"IsUserPrincipal\":true},\"OwnerPrincipal\":{\"PrincipalId\":\"8bccbe02-f1ee-f011-8406-7ced8d70b036\",\"Type\":8,\"IsUserPrincipal\":true},\"ObjectId\":\"4411c78a-4ec3-f111-a05a-000d3a35abca\",\"ObjectTypeCode\":2020,\"EntityName\":\"queue\",\"ObjectBusinessUnitId\":\"99c5be02-f1ee-f011-8406-7ced8d70b036\",\"RightsToCheck\":\"ReadAccess\",\"RoleAccessRights\":\"None\",\"PoaAccessRights\":\"None\",\"HsmAccessRights\":\"None\",\"GrantedAccessRights\":\"None\",\"RecordFilterAccessRights\":\"None\",\"RecordFilterAccessInfo\":null,\"MinimumDepth\":1,\"Messages\":[\"UserLevelMinimumPrivilegeDepthRequired = None\",\"EntityUserGroupRights = None\",\"BusinessUnitLevelMinimumPrivilegeDepthRequiredRights = ReadAccess\",\"SecLib::AccessCheckEx2 failed. Owner Data: roleCount=12, privilegeCount=8653, accessMode='0 Read-Write', AADObjectId='eab4619b-d1f6-475c-a392-69aa8cf30e4f', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036; Principal Data: roleCount=1, privilegeCount=20, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo\"],\"EntityOwnershipTypeMask\":1,\"CallerInfo\":{\"IsSystemUser\":false,\"IsSupportUser\":false,\"IsAdministrator\":false,\"IsCustomizer\":false,\"IsDisabled\":false,\"IsIntegrationUser\":false,\"Teams\":null,\"Roles\":null},\"ReadOnlyState\":\"UserAndOrgFullAccess\",\"IsHsmEnabled\":false,\"HsmInfo\":null,\"AccessOrigin\":null}"
+ },
+ {
+  "prueba": "prvReadspk_conversacion:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "ENVIADO",
+  "paso_fallido": "leer spk_conversacion",
+  "mensaje": "user with id 32122bbd-56c3-f111-a05a-000d3a35abca does not have ReadAccess right(s) for record with id 01febc70-57c3-f111-a05a-000d3a35abca of entity Conversacion spike. Consider assigning a role with the level BusinessUnitLevel to the user or team. For further troubleshooting, please work with a system administrator to use the Access Checker tool on this record: https://org36e60d9d.crm.dynamics.com/main.aspx?forceUCI=1&pagetype=entityrecord&etn=spk_conversacion&id=01febc70-57c3-f111-a05a-000d3a35abca. More details: {\"CallerPrincipal\":{\"PrincipalId\":\"32122bbd-56c3-f111-a05a-000d3a35abca\",\"Type\":8,\"IsUserPrincipal\":true},\"OwnerPrincipal\":{\"PrincipalId\":\"ffc778df-d287-f111-8075-70a8a5af5a32\",\"Type\":8,\"IsUserPrincipal\":true},\"ObjectId\":\"01febc70-57c3-f111-a05a-000d3a35abca\",\"ObjectTypeCode\":11192,\"EntityName\":\"spk_conversacion\",\"ObjectBusinessUnitId\":\"99c5be02-f1ee-f011-8406-7ced8d70b036\",\"RightsToCheck\":\"ReadAccess\",\"RoleAccessRights\":\"None\",\"PoaAccessRights\":\"None\",\"HsmAccessRights\":\"None\",\"GrantedAccessRights\":\"None\",\"RecordFilterAccessRights\":\"None\",\"RecordFilterAccessInfo\":null,\"MinimumDepth\":1,\"Messages\":[\"UserLevelMinimumPrivilegeDepthRequired = None\",\"EntityUserGroupRights = None\",\"BusinessUnitLevelMinimumPrivilegeDepthRequiredRights = ReadAccess\",\"SecLib::AccessCheckEx2 failed. Owner Data: roleCount=2, privilegeCount=8653, accessMode='4 Non-interactive', AADObjectId='04a90922-79d2-485c-b884-cf21a4589c0d', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: 20a795ee-51b9-4c25-8ca4-9c854bc364f1/# PowerPlatform-Dev; Principal Data: roleCount=1, privilegeCount=20, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo\"],\"EntityOwnershipTypeMask\":1,\"CallerInfo\":{\"IsSystemUser\":false,\"IsSupportUser\":false,\"IsAdministrator\":false,\"IsCustomizer\":false,\"IsDisabled\":false,\"IsIntegrationUser\":false,\"Teams\":null,\"Roles\":null},\"ReadOnlyState\":\"UserAndOrgFullAccess\",\"IsHsmEnabled\":false,\"HsmInfo\":null,\"AccessOrigin\":null}"
+ },
+ {
+  "prueba": "prvAppendTospk_conversacion:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "FALLO",
+  "paso_fallido": "crear Email (from queue, Regarding, parentactivityid)",
+  "mensaje": "user with id 32122bbd-56c3-f111-a05a-000d3a35abca does not have AppendToAccess right(s) for record with id 01febc70-57c3-f111-a05a-000d3a35abca of entity Conversacion spike. Consider assigning a role with the level BusinessUnitLevel to the user or team. For further troubleshooting, please work with a system administrator to use the Access Checker tool on this record: https://org36e60d9d.crm.dynamics.com/main.aspx?forceUCI=1&pagetype=entityrecord&etn=spk_conversacion&id=01febc70-57c3-f111-a05a-000d3a35abca. More details: {\"CallerPrincipal\":{\"PrincipalId\":\"32122bbd-56c3-f111-a05a-000d3a35abca\",\"Type\":8,\"IsUserPrincipal\":true},\"OwnerPrincipal\":{\"PrincipalId\":\"ffc778df-d287-f111-8075-70a8a5af5a32\",\"Type\":8,\"IsUserPrincipal\":true},\"ObjectId\":\"01febc70-57c3-f111-a05a-000d3a35abca\",\"ObjectTypeCode\":11192,\"EntityName\":\"spk_conversacion\",\"ObjectBusinessUnitId\":\"99c5be02-f1ee-f011-8406-7ced8d70b036\",\"RightsToCheck\":\"AppendToAccess\",\"RoleAccessRights\":\"None\",\"PoaAccessRights\":\"None\",\"HsmAccessRights\":\"None\",\"GrantedAccessRights\":\"None\",\"RecordFilterAccessRights\":\"None\",\"RecordFilterAccessInfo\":null,\"MinimumDepth\":1,\"Messages\":[\"UserLevelMinimumPrivilegeDepthRequired = None\",\"EntityUserGroupRights = None\",\"BusinessUnitLevelMinimumPrivilegeDepthRequiredRights = AppendToAccess\",\"SecLib::AccessCheckEx2 failed. Owner Data: roleCount=2, privilegeCount=8653, accessMode='4 Non-interactive', AADObjectId='04a90922-79d2-485c-b884-cf21a4589c0d', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: 20a795ee-51b9-4c25-8ca4-9c854bc364f1/# PowerPlatform-Dev; Principal Data: roleCount=1, privilegeCount=20, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8655, businessUnitId=99c5be02-f1ee-f011-8406-7ced8d70b036, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo\"],\"EntityOwnershipTypeMask\":1,\"CallerInfo\":{\"IsSystemUser\":false,\"IsSupportUser\":false,\"IsAdministrator\":false,\"IsCustomizer\":false,\"IsDisabled\":false,\"IsIntegrationUser\":false,\"Teams\":null,\"Roles\":null},\"ReadOnlyState\":\"UserAndOrgFullAccess\",\"IsHsmEnabled\":false,\"HsmInfo\":null,\"AccessOrigin\":null}"
+ },
+ {
+  "prueba": "prvAppendspk_conversacion:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "ENVIADO",
+  "paso_fallido": null,
+  "mensaje": null
+ },
+ {
+  "prueba": "prvWriteActivity:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "ENVIADO",
+  "paso_fallido": null,
+  "mensaje": null
+ },
+ {
+  "prueba": "prvCreateActivity:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "ENVIADO",
+  "paso_fallido": null,
+  "mensaje": null
+ },
+ {
+  "prueba": "prvAppendActivity:Basic",
+  "cache": 20,
+  "esperado": 20,
+  "resultado": "ENVIADO",
+  "paso_fallido": null,
+  "mensaje": null
+ },
+ {
+  "prueba": "prvReadPluginAssembly+prvReadPluginType+prvReadSdkMessage+prvReadSdkMessageProcessingStep+prvReadSdkMessageProcessingStepImage+prvReadSharePointData+prvCreateSharePointData+prvReadSharePointDocument+prvWriteSharePointData",
+  "cache": 11,
+  "esperado": 11,
+  "resultado": "ENVIADO",
+  "paso_fallido": null,
+  "mensaje": null
+ }
+]

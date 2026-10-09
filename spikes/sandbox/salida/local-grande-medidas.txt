@@ -1,0 +1,4 @@
+Plantilla grande (v07 + 4,5 MB de relleno incompresible), generacion local net8.0, 20 corridas en caliente:
+plazo 6: primera 573 ms | caliente mediana 70.9 ms, p95 100.7 ms | 4533767 bytes | base64 6045024 chars
+plazo 30: primera 65 ms | caliente mediana 65.2 ms, p95 102.8 ms | 4534076 bytes | base64 6045436 chars
+plazo 60: primera 57 ms | caliente mediana 59.9 ms, p95 106.6 ms | 4534304 bytes | base64 6045740 chars

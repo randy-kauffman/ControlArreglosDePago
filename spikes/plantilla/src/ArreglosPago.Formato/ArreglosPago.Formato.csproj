@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- net462: los plugins de Dataverse corren en .NET Framework 4.6.2. net8.0: pruebas y herramientas locales. -->
+    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>ArreglosPago.Formato</AssemblyName>
+    <RootNamespace>ArreglosPago.Formato</RootNamespace>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 2.x y no 3.x: en net46 la 2.x no trae dependencias (usa System.IO.Packaging de WindowsBase);
+         la 3.x suma DocumentFormat.OpenXml.Framework y System.IO.Packaging 8 como ensamblados dependientes. -->
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <Reference Include="System.IO.Compression" />
+  </ItemGroup>
+
+</Project>

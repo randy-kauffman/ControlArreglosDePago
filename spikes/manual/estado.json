@@ -1,0 +1,57 @@
+{
+ "usuario_app_id": "32122bbd-56c3-f111-a05a-000d3a35abca",
+ "bu_raiz": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+ "rol_lector": "8fc49628-44c3-f111-a05a-000d3a35abca",
+ "perfil_cedula": "8a9eb54f-44c3-f111-a05a-000d3a35abca",
+ "B": {
+  "entrante": {
+   "gid": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEPAAC9ZLU9TgbERr3wyKycax6aAAAG_IyyAAA=",
+   "internetMessageId": "<PH9PR06MB610612AEB9D37B1419693490DFD1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "enviado_http": 202,
+   "t_envio_epoch": 1791491571.0520494,
+   "t_envio_utc": "2026-10-08T20:32:51Z",
+   "dv_email_id": "f0fdbc70-57c3-f111-a05a-000d3a35abca",
+   "asunto": "[SPIKE4] Tarea B correo entrante 143250"
+  },
+  "conversacion": "01febc70-57c3-f111-a05a-000d3a35abca",
+  "tag": "143250",
+  "email_enviado": "f4877047-5bc3-f111-a05a-000d3a35abca",
+  "t_sendemail_utc": "2026-10-08T21:00:28Z",
+  "t_sendemail_epoch": 1791493228.8400958
+ },
+ "rol_oficial": "fc47a380-57c3-f111-a05a-000d3a35abca",
+ "B_emails": [
+  "bd76c14e-58c3-f111-a05a-000d3a35abca",
+  "e715a899-58c3-f111-a05a-000d3a35abca",
+  "95c7faad-58c3-f111-a05a-000d3a35abca",
+  "09e06714-59c3-f111-a05a-000d3a35abca",
+  "54ee7a3a-59c3-f111-a05a-000d3a35abca",
+  "ba9edc93-59c3-f111-a05a-000d3a35abca",
+  "21fe66aa-59c3-f111-a05a-000d3a35abca",
+  "08b5f8d1-59c3-f111-a05a-000d3a35abca",
+  "3eb66be5-59c3-f111-a05a-000d3a35abca",
+  "d748f0f7-59c3-f111-a05a-000d3a35abca",
+  "6c8c4a0c-5ac3-f111-a05a-000d3a35abca",
+  "d2961c13-5bc3-f111-a05a-000d3a35abca",
+  "f4877047-5bc3-f111-a05a-000d3a35abca"
+ ],
+ "C": {
+  "formid": "df785489-761f-40a7-885a-b2f368c09723",
+  "appid": "8f8b7e54-59c3-f111-a05a-000d3a35abca",
+  "sitemapid": "a38b7e54-59c3-f111-a05a-000d3a35abca",
+  "app_unique": "spk_SpikesArreglosPago",
+  "import_job": "3277b57b-a62c-4569-863d-09275b2fa9ff",
+  "url_app": "https://org36e60d9d.crm.dynamics.com/main.aspx?appid=8f8b7e54-59c3-f111-a05a-000d3a35abca"
+ },
+ "D": {
+  "asunto": "[SPIKE4] Prueba manual",
+  "email_id": "80376bc1-5bc3-f111-a05a-000d3a35abca",
+  "conversacion": "8e376bc1-5bc3-f111-a05a-000d3a35abca",
+  "internetMessageId": "<PH9PR06MB610612F3BDBC73C83C2250AB58D1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+  "gid_buzon2": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEPAAC9ZLU9TgbERr3wyKycax6aAAAG_IyzAAA=",
+  "t_envio_utc": "2026-10-08T21:03:23Z",
+  "url_app": "https://org36e60d9d.crm.dynamics.com/main.aspx?appid=8f8b7e54-59c3-f111-a05a-000d3a35abca",
+  "url_conversacion": "https://org36e60d9d.crm.dynamics.com/main.aspx?appid=8f8b7e54-59c3-f111-a05a-000d3a35abca&pagetype=entityrecord&etn=spk_conversacion&id=8e376bc1-5bc3-f111-a05a-000d3a35abca",
+  "url_correo": "https://org36e60d9d.crm.dynamics.com/main.aspx?appid=8f8b7e54-59c3-f111-a05a-000d3a35abca&pagetype=entityrecord&etn=email&id=80376bc1-5bc3-f111-a05a-000d3a35abca"
+ }
+}

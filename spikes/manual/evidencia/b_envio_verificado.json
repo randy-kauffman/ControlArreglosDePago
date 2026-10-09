@@ -1,0 +1,52 @@
+{
+ "dataverse": {
+  "_regardingobjectid_value@OData.Community.Display.V1.FormattedValue": "[SPIKE4] Tarea B conversacion 143250",
+  "_regardingobjectid_value@Microsoft.Dynamics.CRM.lookuplogicalname": "spk_conversacion",
+  "_regardingobjectid_value": "01febc70-57c3-f111-a05a-000d3a35abca",
+  "activityid": "f4877047-5bc3-f111-a05a-000d3a35abca",
+  "actualend@OData.Community.Display.V1.FormattedValue": "10/8/2026",
+  "actualend": "2026-10-08T21:00:28Z",
+  "subject": "RE: [SPIKE4] Tarea B correo entrante 143250",
+  "statuscode@OData.Community.Display.V1.FormattedValue": "Pending Send",
+  "statuscode": 6,
+  "_createdby_value@OData.Community.Display.V1.FormattedValue": "SPIKE4 SP - DEV - Pruebas de Correo",
+  "_createdby_value@Microsoft.Dynamics.CRM.lookuplogicalname": "systemuser",
+  "_createdby_value": "32122bbd-56c3-f111-a05a-000d3a35abca",
+  "_ownerid_value@OData.Community.Display.V1.FormattedValue": "SPIKE4 SP - DEV - Pruebas de Correo",
+  "_ownerid_value@Microsoft.Dynamics.CRM.lookuplogicalname": "systemuser",
+  "_ownerid_value": "32122bbd-56c3-f111-a05a-000d3a35abca",
+  "torecipients": "buzondevpp2@55xljh.onmicrosoft.com;",
+  "inreplyto": "<PH9PR06MB610612AEB9D37B1419693490DFD1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+  "messageid": "<FF875D90D57D46D2A706B8B3EA907BF81DD57680C265@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+  "directioncode@OData.Community.Display.V1.FormattedValue": "Outgoing",
+  "directioncode": true,
+  "_parentactivityid_value@OData.Community.Display.V1.FormattedValue": "[SPIKE4] Tarea B correo entrante 143250",
+  "_parentactivityid_value@Microsoft.Dynamics.CRM.lookuplogicalname": "email",
+  "_parentactivityid_value": "f0fdbc70-57c3-f111-a05a-000d3a35abca",
+  "sender": "buzondevpp1@55xljh.onmicrosoft.com"
+ },
+ "graph": {
+  "from": {
+   "name": "Buzon Dev PP 1",
+   "address": "buzondevpp1@55xljh.onmicrosoft.com"
+  },
+  "sender": {
+   "name": "Buzon Dev PP 1",
+   "address": "buzondevpp1@55xljh.onmicrosoft.com"
+  },
+  "in_reply_to": "<PH9PR06MB610612AEB9D37B1419693490DFD1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+  "references": null,
+  "thread_index": "AQHdV2QwGRgghSev8keX/00lXScUpt1XaAwm",
+  "message_id": "<FF875D90D57D46D2A706B8B3EA907BF81DD57680C265@BUZONDEVPP1.55XLJH.ONMICROSOFT.COM>",
+  "llegada_utc": "2026-10-08T21:00:52Z",
+  "demora_sendemail_a_llegada_s": 23,
+  "original_message_id": "<PH9PR06MB610612AEB9D37B1419693490DFD1932@PH9PR06MB610612.namprd06.prod.outlook.com>",
+  "original_thread_index": "AQHdV2QwGRgghSev8keX/00lXScUpg==",
+  "in_reply_to_coincide_con_original": true,
+  "misma_raiz_thread_index": true,
+  "dataverse_estado_final": [
+   "Sent",
+   "2026-10-08T21:00:49Z"
+  ]
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "R1_borrado_directo": {
+  "email": "e4241299-51c3-f111-a05a-000d3a35abca",
+  "ama": "e7241299-51c3-f111-a05a-000d3a35abca",
+  "attachment": "e9241299-51c3-f111-a05a-000d3a35abca",
+  "final": [
+   false,
+   false,
+   false
+  ]
+ },
+ "R2_borrado_via_conversacion": {
+  "email": "ea241299-51c3-f111-a05a-000d3a35abca",
+  "ama": "ed241299-51c3-f111-a05a-000d3a35abca",
+  "attachment": "ef241299-51c3-f111-a05a-000d3a35abca",
+  "final": [
+   false,
+   false,
+   true
+  ]
+ }
+}

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>ArreglosPago.Formato.Tests</RootNamespace>
+    <NoWarn>$(NoWarn);xUnit1026</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ArreglosPago.Formato\ArreglosPago.Formato.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\F-NIC-0000052_v07_borrador.xlsx" Link="Fixtures\v07.xlsx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\base\F-NIC-0000052_v06_copia.xlsx" Link="Fixtures\v06.xlsx" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

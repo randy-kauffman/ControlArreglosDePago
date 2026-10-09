@@ -1,0 +1,35 @@
+# .NET
+bin/
+obj/
+*.user
+.vs/
+TestResults/
+*.nupkg
+
+# Power Platform
+*.zip
+!solution/**/*.zip
+.pac/
+
+# Datos reales de clientes: NUNCA al repositorio
+datos/reales/
+*.eml
+
+# Entorno local
+.env
+*.env
+*.local.json
+*secret*
+
+# Todo lo local: secretos y documentos de contexto. NUNCA al repositorio
+/local/
+
+# Python
+__pycache__/
+*.pyc
+
+# Salidas de ejecución
+*.log
+
+# Permisos locales de Claude Code (propios de cada máquina)
+.claude/settings.local.json

@@ -1,0 +1,24 @@
+{
+ "filas": {
+  "v07 borrador (huella correcta)": "96ff2cea-55c3-f111-a05a-000d3a35abca",
+  "v07 con huella incorrecta": "98ff2cea-55c3-f111-a05a-000d3a35abca",
+  "archivo que no es xlsx (huella correcta)": "9aff2cea-55c3-f111-a05a-000d3a35abca",
+  "sin archivo": "9cff2cea-55c3-f111-a05a-000d3a35abca",
+  "plantilla grande (4,5 MB de relleno)": "bb0ef621-57c3-f111-a05a-000d3a35abca"
+ },
+ "paquete": {
+  "id": "fb68ec4d-56c3-f111-a05a-000d3a35abca",
+  "tipos": {
+   "Spk.Plugins": [
+    "40aa5556-56c3-f111-a05a-000d3a35abca"
+   ]
+  },
+  "ensamblados": {
+   "Spk.Plugins": "3faa5556-56c3-f111-a05a-000d3a35abca"
+  }
+ },
+ "customapi": {
+  "id": "c7c25b76-56c3-f111-a05a-000d3a35abca",
+  "plugintypeid": "40aa5556-56c3-f111-a05a-000d3a35abca"
+ }
+}

@@ -1,0 +1,12 @@
+componentes en la solucion: 20
+tabla spk_versionplantilla en solucion: 1
+paquete spk_ArreglosPagoSandbox 1.0.0 2026-10-08T20:50:14Z en solucion: 10039
+ensamblados: [('Spk.Plugins', '1.0.4.0', '2026-10-08T20:50:15Z', 2)]
+custom api: spk_GenerarFormatoSpike isfunction False en solucion: 10036
+  fila: v07 borrador (huella correcta) | F-NIC-0000052_v07_borrador.xlsx | 8f6b4dd58f42
+  fila: v07 con huella incorrecta | F-NIC-0000052_v07_borrador.xlsx | 0f6b4dd58f42
+  fila: archivo que no es xlsx (huella correcta) | no_es_xlsx.xlsx | c597534144de
+  fila: sin archivo | None | 8f6b4dd58f42
+  fila: plantilla grande (4,5 MB de relleno) | plantilla_grande.xlsx | ce2555724bf5
+restos de la prueba de limpieza spk_TmpLimpiezaApi : 0
+restos de la prueba de limpieza spk_TmpLimpiezaPkg : 0
