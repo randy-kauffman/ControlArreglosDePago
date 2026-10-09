@@ -1,6 +1,6 @@
 # 02. Diccionario de datos
 
-Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **decidido por el usuario el 2026-10-09** (propuestas P-01 a P-21 aceptadas, con los cambios que fija la sección 11, más las decisiones de moneda y de cálculo del arreglo). Sigue abierta **una sola pregunta, para Héctor Romero** (P-22, sección 11.6), marcada como propuesta; las reglas de negocio que la definición mantiene abiertas están en la sección 11.4.
+Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **decidido por el usuario el 2026-10-09** (propuestas P-01 a P-21 aceptadas, con los cambios que fija la sección 11, más las decisiones de moneda, de cálculo del arreglo y de canal de origen). La pregunta P-22 (sección 11.6) quedó decidida el mismo día. Las reglas de negocio que la definición mantiene abiertas están en la sección 11.4.
 
 Convenciones en `01-convenciones.md` (estándar BP-PP-181 a BP-PP-197). Fuente de verdad del diseño: `definicion.md` §5 y §6 (D-01 a D-36), ya validado con los spikes de `spikes/*/RESULTADO.md`. El mockup validado (versión 3, `mockup/index.html`) se usó para ver campos y estados; donde difiere de la definición, manda la definición y se anota en la sección 12.
 
@@ -42,9 +42,10 @@ No son decisiones nuevas: son la lectura, columna por columna, de lo que la defi
 | DD-07 | **Columna primaria**: nunca texto libre (BP-PP-192). La forma que usa cada tabla está en la sección 4 y su formato exacto está decidido (P-02). Ninguna primaria lleva el número de producto, la cédula ni la cuenta: la primaria hereda la auditoría de la tabla y aparece en todos los lookups | BP-PP-192, D-20 |
 | DD-08 | **Un solo pago por cuota**: el pago es un par de columnas de la cuota, no una tabla. Confirmado por Héctor Romero, vía el usuario, el 2026-10-09 (R-01) | D-08, supuestos de §6 |
 | DD-09 | **Tablas estándar, no elásticas**: las elásticas no admiten claves alternas ni cascada | §6 Datos (Volumen) |
-| DD-10 | **Estado de los lookups**: un lookup "requerido" lo es porque la definición lo exige (cliente y versión de plantilla del arreglo, arreglo de la cuota y de la generación). El resto es opcional, en particular el cliente y el oficial de la conversación (remitentes desconocidos) y la conversación de origen del arreglo, porque un arreglo puede originarse por teléfono, presencial, en una sucursal o por correo (R-05, decidido el 2026-10-09) | RF-01, RF-06, §6 Supuestos |
+| DD-10 | **Estado de los lookups**: un lookup "requerido" lo es porque la definición lo exige (cliente y versión de plantilla del arreglo, arreglo de la cuota y de la generación). El resto es opcional, en particular el cliente y el oficial de la conversación (remitentes desconocidos) y la conversación de origen del arreglo, porque un arreglo puede originarse por teléfono, presencial, en una sucursal o por correo (R-05, decidido el 2026-10-09); ese origen queda registrado en `sanic_canalorigen` (DD-13) | RF-01, RF-06, §6 Supuestos |
 | DD-11 | **Moneda del arreglo**: una columna requerida `sanic_moneda` en Arreglo, con el choice global `sanic_carp_ch_moneda` (Cordobas, Dolares). Los montos siguen siendo `decimal(2)` (P-04) y se interpretan en la moneda del arreglo; las cuotas heredan la moneda de su arreglo y no llevan columna propia. No se usa el tipo Moneda de Dataverse: exige tipos de cambio y conversión a moneda base, que el área no necesita porque un arreglo nunca mezcla monedas | RF-06, RF-08, D-36, R-08 |
-| DD-12 | **Saldo remanente y total a pagar los calcula el sistema**: `sanic_saldoremanente` (= saldo inicial − monto abonado) y `sanic_totalpagar` (= cuota mensual × plazo) son requeridas y solo-sistema. Las escribe un plugin al crear el arreglo y al modificar el borrador, para que queden congeladas con el resto del acuerdo. No son columnas calculadas ni de fórmula de Dataverse | RF-06, §6 Lógica (ítem 7), D-30, R-04 |
+| DD-12 | **Saldo remanente y total a pagar los calcula el sistema**: `sanic_saldoremanente` (= saldo inicial − monto abonado) y `sanic_totalpagar` (= el menor entre cuota mensual × plazo y el saldo remanente) son requeridas y solo-sistema. Las escribe un plugin al crear el arreglo y al modificar el borrador, para que queden congeladas con el resto del acuerdo. No son columnas calculadas ni de fórmula de Dataverse. Reglas de montos (decisión del usuario, 2026-10-09): (1) si el monto abonado es mayor que el saldo inicial, el plugin rechaza el registro con un mensaje claro; (2) si cuota × plazo es mayor que el saldo remanente, la **última cuota se achica** a saldo remanente − cuota × (plazo − 1) y el total a pagar es el saldo remanente; (3) si cuota × plazo es menor o igual que el saldo remanente (alivio temporal), todas las cuotas son iguales y el total a pagar es cuota × plazo; (4) si con una cuota menos ya se cubre el saldo (la última cuota daría cero o negativa), el plugin rechaza con un mensaje que indica con cuántas cuotas se cubre. El generador del calendario crea la última cuota con su monto ajustado, y el formato imprime el monto de cada cuota tal como quedó | RF-06, RF-08, §6 Lógica (ítems 7 y 8), D-30, R-04 |
+| DD-13 | **Canal de origen del arreglo**: una columna requerida `sanic_canalorigen` en Arreglo, con el choice global `sanic_carp_ch_canalorigen` (Correo, Telefono, Presencial, Sucursal). Cuando el arreglo se registra desde una conversación, el plugin pre-create completa "Correo" si la columna viene vacía. Es un dato de control del arreglo y por eso se audita. No es solo-sistema: la elige el oficial. Decisión de negocio del usuario del 2026-10-09 | RF-06, R-05 |
 
 ## 2. Diagrama del modelo
 
@@ -87,6 +88,7 @@ erDiagram
         string sanic_nombre "autonumerica"
         choice sanic_producto UK
         choice sanic_moneda
+        choice sanic_canalorigen
         string sanic_numeroproducto UK
         int sanic_numeroarreglo UK
         string sanic_cuentadebitar "CSP"
@@ -129,7 +131,7 @@ erDiagram
 
 ## 3. Choices globales y motivos de estado
 
-### 3.1 Choices globales (8)
+### 3.1 Choices globales (9)
 
 Valor = `15946` × 10.000 + correlativo (BP-PP-193): `159460001`, `159460002`… Los correlativos son estables y no se reordenan; una opción que deja de usarse se retira de las vistas, no se borra. Etiqueta idéntica en 1033 y 3082 (español, sin tildes). Todos se construyen **antes** que las tablas que los usan.
 
@@ -180,6 +182,17 @@ Display name: `CH - CARP - Moneda`. Descripción: Moneda en la que se expresan l
 |---|---|---|
 | 159460001 | Cordobas | Córdobas nicaragüenses |
 | 159460002 | Dolares | Dólares estadounidenses |
+
+#### `sanic_carp_ch_canalorigen`
+
+Display name: `CH - CARP - Canal de origen`. Descripción: Canal por el que llegó el pedido que originó el arreglo. Lo usa `sanic_canalorigen` de Arreglo. Origen: RF-06, DD-13 (decisión de negocio del 2026-10-09).
+
+| Valor | Etiqueta (1033 y 3082) | Descripción |
+|---|---|---|
+| 159460001 | Correo | El cliente lo pidió por correo al buzón del área |
+| 159460002 | Telefono | El cliente lo pidió por teléfono |
+| 159460003 | Presencial | El cliente lo pidió en persona en el área de Arreglos de Pago |
+| 159460004 | Sucursal | El cliente lo pidió en una sucursal bancaria |
 
 #### `sanic_carp_ch_estadoversionplantilla`
 
@@ -355,12 +368,13 @@ Los valores de *Req* tomados del mockup v3 (el mockup valida como obligatorio ca
 | `sanic_numeroprovisional` | Numero provisional impreso | entero [1..9999] | No | No | No | **Sí** | Número que salió impreso en el formato para firma (`max+1` de los arreglos formalizados del crédito). El sistema lo compara al formalizar. Se vacía al desbloquear o reabrir. | RF-16, D-09, D-30 |
 | `sanic_tipo` | Tipo de arreglo | choice `sanic_carp_ch_tipoarreglo` | Sí | No | No | No | Tipo de arreglo: temporal o cancelación. | RF-06 |
 | `sanic_moneda` | Moneda | choice `sanic_carp_ch_moneda` | Sí | No | No | No | Moneda del arreglo: córdobas o dólares. Todos los montos del arreglo y de sus cuotas se interpretan en esta moneda; las cuotas la heredan y no llevan columna propia. Como dato del acuerdo, la bloquea el congelamiento (D-25). | RF-06, RF-08, D-25, D-36, R-08 |
+| `sanic_canalorigen` | Canal de origen | choice `sanic_carp_ch_canalorigen` | Sí | **Sí** | No | No | Canal por el que llegó el pedido. Si el arreglo se registra desde una conversación y viene vacío, el plugin pre-create completa "Correo". Dato del acuerdo: lo bloquea el congelamiento (D-25). | RF-06, DD-13 |
 | `sanic_saldoinicial` | Saldo inicial | decimal(2) [0..999999999.99] | Sí | No | No | No | Saldo inicial del crédito al momento del arreglo, en la moneda del arreglo. | RF-06 |
 | `sanic_montoabonado` | Monto abonado | decimal(2) [0..999999999.99] | Sí | No | No | No | Monto abonado a la fecha, en la moneda del arreglo. | RF-06 |
 | `sanic_saldoremanente` | Saldo remanente | decimal(2) [0..999999999.99] (P-04) | Sí | No | No | **Sí** | Saldo remanente por pagar = saldo inicial − monto abonado, en la moneda del arreglo. Lo calcula el plugin al crear el arreglo y al modificar el borrador, y queda congelado con el resto del acuerdo; nadie lo digita. No es una columna calculada ni de fórmula de Dataverse: el plugin escribe el valor. | RF-06, R-04, D-30 |
 | `sanic_plazo` | Plazo en cuotas | entero [1..60] | Sí | No | No | No | Cantidad de cuotas del arreglo, hasta 60 y sin superar la capacidad de la versión de plantilla. | RF-06, RF-08, ítem 7 |
 | `sanic_cuotamensual` | Cuota mensual | decimal(2) [0..999999999.99] | Sí | No | No | No | Monto de la cuota mensual, en la moneda del arreglo. | RF-06 |
-| `sanic_totalpagar` | Total a pagar | decimal(2) [0..999999999.99] (P-04) | Sí | No | No | **Sí** | Total a pagar del arreglo = cuota mensual × plazo, en la moneda del arreglo. Lo calcula el plugin al crear el arreglo y al modificar el borrador, y queda congelado con el resto del acuerdo; nadie lo digita. No es una columna calculada ni de fórmula de Dataverse: el plugin escribe el valor. | RF-06, R-04, D-30 |
+| `sanic_totalpagar` | Total a pagar | decimal(2) [0..999999999.99] (P-04) | Sí | No | No | **Sí** | Total a pagar del arreglo = el menor entre cuota mensual × plazo y el saldo remanente, en la moneda del arreglo (si cuota × plazo supera el saldo remanente, la última cuota se achica y el total es el saldo remanente). Lo calcula el plugin al crear el arreglo y al modificar el borrador, y queda congelado con el resto del acuerdo; nadie lo digita. No es una columna calculada ni de fórmula de Dataverse: el plugin escribe el valor. | RF-06, R-04, D-30 |
 | `sanic_fechainicio` | Fecha de inicio | **fecha DO** | Sí | No | No | No | Fecha de la primera cuota. Solo fecha porque representa un día de calendario, no un instante. | RF-06, DD-04 |
 | `sanic_fechafin` | Fecha de finalizacion | **fecha DO** | Sí | No | No | No | Fecha de la última cuota (el mockup la calcula con el plazo). Solo fecha por la misma razón. La regla de fechas de vencimiento está abierta (R-03). | RF-06, DD-04, R-03 |
 | `sanic_cuentadebitar` | Cuenta a debitar | texto T(20) | Sí | **No** | **Sí** | No | Cuenta desde la que se debitan las cuotas. Dato sensible protegido con seguridad por columna y sin auditoría. | RF-06, D-19, D-20 |
@@ -413,7 +427,7 @@ Estado: `statecode`/`statuscode` según la sección 3.2, ambos auditados. Los pa
 | `sanic_nombre` | Codigo | primaria calculada, texto T(30) | Sí | Sí (hereda) | No | No | Código de la cuota: el código interno del arreglo y el número de cuota. Lo calcula el plugin que crea el calendario. | BP-PP-192 |
 | `sanic_numero` | Numero de cuota | entero [1..60] | Sí | No | No | No | Número de orden de la cuota dentro del arreglo. | RF-06, RF-08 |
 | `sanic_fechavencimiento` | Fecha de vencimiento | **fecha DO** | Sí | No | No | No | Día en que vence la cuota. Solo fecha: la lista de riesgo compara por día (probado en el spike 2). La regla de cálculo de fechas de vencimiento está abierta (R-03). | RF-08, RF-11, D-11, DD-04 |
-| `sanic_monto` | Monto | decimal(2) [0..999999999.99] | Sí | No | No | No | Monto de la cuota, en la moneda del arreglo. | RF-08 |
+| `sanic_monto` | Monto | decimal(2) [0..999999999.99] | Sí | No | No | No | Monto de la cuota, en la moneda del arreglo. Todas las cuotas valen la cuota mensual, salvo la **última**, que se achica a lo que queda cuando cuota × plazo supera el saldo remanente: saldo remanente − cuota × (plazo − 1). Lo fija el plugin del calendario. | RF-08, R-04 |
 | `sanic_fechapago` | Fecha de pago | **fecha DO** | No | **Sí** | No | No | Día en que se registró el pago de la cuota. Solo fecha: el formato tiene un par fecha y monto por cuota. | RF-10, D-08, DD-04 |
 | `sanic_montopagado` | Monto pagado | decimal(2) [0..999999999.99] | No | **Sí** | No | No | Monto pagado de la cuota, en la moneda del arreglo; puede ser parcial. Un pago parcial saca la cuota de la lista de riesgo. | RF-10, RF-11, D-08 |
 
@@ -701,11 +715,11 @@ Estado al 2026-10-09. **R-01, R-02, R-04, R-05 y R-08 están decididas** (por el
 | R-01 | **Un solo pago por cuota** (supuesto de §6; D-08) | **Decidida (2026-10-09)**: basta un pago por cuota | Se confirma el modelo: `sanic_fechapago` y `sanic_montopagado` quedan en Cuota, sin tabla de pagos |
 | R-02 | **Cuándo pasa a Terminado** (supuesto de §6) | **Decidida (2026-10-09)**: un pago parcial registrado alcanza para que la cuota cuente como pagada a efectos de Terminado | Se confirma el modelo: Cuota no lleva un indicador `pagada` ni se compara `monto pagado` con `monto`; la lista de riesgo (RF-11, ítem 11) no cambia |
 | R-03 | **Regla de fechas de vencimiento** (mismo día de cada mes, fin de mes; §6 Lógica ítem 8, a confirmar con Héctor) | Abierta | No cambia columnas; fija cómo se calculan `sanic_fechavencimiento` y `sanic_fechafin` |
-| R-04 | **Validaciones numéricas del formato** (saldo remanente = saldo inicial − monto abonado; total = cuota × plazo; ítem 7) | **Decidida (2026-10-09)**: el sistema calcula el saldo remanente (= saldo inicial − monto abonado) y el total a pagar (= cuota mensual × plazo) | `sanic_saldoremanente` y `sanic_totalpagar` son requeridas y **solo-sistema**: un plugin las escribe al crear el arreglo y al modificar el borrador, y quedan congeladas con el resto del acuerdo. No son columnas calculadas ni de fórmula de Dataverse |
+| R-04 | **Validaciones numéricas del formato** (saldo remanente; total; ítem 7) | **Decidida (2026-10-09)**: el sistema calcula el saldo remanente (= saldo inicial − monto abonado) y el total a pagar (= el menor entre cuota mensual × plazo y el saldo remanente). Rechaza el registro si el monto abonado supera el saldo inicial. Si cuota × plazo supera el saldo remanente, la última cuota se achica a lo que queda; si con una cuota menos ya se cubre el saldo (la última cuota daría cero o negativa), rechaza indicando con cuántas cuotas se cubre | `sanic_saldoremanente` y `sanic_totalpagar` son requeridas y **solo-sistema**: un plugin las escribe al crear el arreglo y al modificar el borrador, y quedan congeladas con el resto del acuerdo. No son columnas calculadas ni de fórmula de Dataverse. El monto de la última cuota lo fija el plugin del calendario |
 | R-05 | **Conversación de origen opcional** (supuesto de §6) | **Decidida (2026-10-09)**: opcional, porque un arreglo puede originarse por teléfono, presencial, en una sucursal o por correo | `sanic_conversacionid` sigue opcional. No hay columna de canal de origen en el modelo: el usuario todavía no la confirmó |
 | R-06 | **"Con arreglo de pago" sin arreglo formalizado vinculado**: hoy solo avisa (ítem 6; supuesto de §6) | Abierta | No cambia el esquema; si se vuelve obligatorio, lo valida el plugin |
 | R-07 | **Más de un borrador del mismo crédito**: la clave K-02 no los impide (spike 2). La definición dice que el borrador "no consume número" pero no si se permiten dos borradores iguales | Abierta | Si no se permiten, es una regla del plugin; la clave no lo resuelve |
-| R-08 | **Moneda de los arreglos** (la definición no la mencionaba; el mockup y el formato muestran C$) | **Decidida (2026-10-09)**: hay arreglos en córdobas y en dólares | Choice global `sanic_carp_ch_moneda` (Cordobas, Dolares) y columna requerida `sanic_moneda` en Arreglo; montos `decimal(2)` en la moneda del arreglo; las cuotas heredan la moneda; sin tipo Moneda de Dataverse (DD-11, D-36). La opción "Moneda" (`159460027`) se agrega al choice de campos mapeables para que el formato la imprima. Queda abierta una pregunta, P-22 (11.6) |
+| R-08 | **Moneda de los arreglos** (la definición no la mencionaba; el mockup y el formato muestran C$) | **Decidida (2026-10-09)**: hay arreglos en córdobas y en dólares | Choice global `sanic_carp_ch_moneda` (Cordobas, Dolares) y columna requerida `sanic_moneda` en Arreglo; montos `decimal(2)` en la moneda del arreglo; las cuotas heredan la moneda; sin tipo Moneda de Dataverse (DD-11, D-36). La opción "Moneda" (`159460027`) se agrega al choice de campos mapeables para que el formato la imprima. P-22 (11.6) decidida: un solo arreglo en una sola moneda |
 | R-09 | **Número de tarjeta en claro** (D-29, pendiente de Cumplimiento, C-02) | Abierta | Si Cumplimiento exige el enmascarado, `sanic_numeroproducto` guarda el número enmascarado, se agrega una columna de huella SHA-256 y la clave K-02 pasa a usar la huella |
 
 ### 11.5 Huecos de la skill `power-platform-especificar`
@@ -721,11 +735,11 @@ No son huecos del diseño: son datos que el diseño sí trae pero para los que e
 
 ### 11.6 Decisión pendiente (la única)
 
-Es una pregunta para **Héctor Romero**. Mientras no responda, no se modela nada para ella: la propuesta no cambia el esquema.
+Pregunta para **Héctor Romero**, respondida por el usuario el 2026-10-09.
 
-| ID | Qué falta decidir | Propuesta (no decidida) | Motivo | Efecto de la respuesta |
+| ID | Pregunta | Decisión | Motivo | Efecto en el modelo |
 |---|---|---|---|---|
-| P-22 | **Una tarjeta con saldo en las dos monedas, ¿lleva un arreglo por moneda?** | **Sí**: un arreglo por moneda. El número de arreglo sigue siendo consecutivo por crédito **sin importar la moneda**: la clave alterna K-02 (producto, número de producto, número de arreglo) no cambia | Un arreglo nunca mezcla monedas (D-36), así que cada saldo en su moneda es un arreglo propio, y el consecutivo de RF-07 sigue contando cuántas veces ese crédito tuvo arreglo | Con la propuesta no cambia ni el esquema ni la clave. Si la respuesta fuera que un solo arreglo cubre las dos monedas, contradiría D-36 y habría que decidir de nuevo el modelo de moneda |
+| P-22 | **Una tarjeta con saldo en las dos monedas, ¿lleva un arreglo por moneda?** | **No: un solo arreglo, en una sola moneda.** El saldo se lleva a una moneda (se cordobiza o se dolariza) antes de registrar el arreglo | Decisión de negocio del 2026-10-09. Coincide con D-36: un arreglo nunca mezcla monedas | Ninguno: el esquema y la clave alterna K-02 no cambian. La conversión de moneda la hace el oficial fuera del sistema, igual que la consulta de saldos en el AS400 |
 
 ## 12. Diferencias entre el mockup v3 y la definición
 
@@ -759,5 +773,5 @@ Comprobado con una expresión regular sobre este mismo documento antes de entreg
 
 **Una excepción conocida, no es un nombre de este proyecto:** `sanic_carp_tbl_conversacion_Emails`, el nombre de la relación Regarding que **genera la plataforma** al habilitar actividades en Conversación (sección 6.3). Lleva una mayúscula porque no la elige el proyecto; BP-PP-184 admite que manda la plataforma cuando impone su propio formato. Se confirma al construir.
 
-Conteo del diccionario: 7 tablas propias con 72 columnas (las 7 primarias incluidas) y 18 lookups, más 2 columnas sobre `email` (una de ellas lookup); 8 choices globales con 46 opciones; 19 relaciones 1:N que se crean y 1 nativa; 3 claves alternativas decididas; 1 perfil de seguridad de columna con 3 columnas; 8 motivos de estado.
+Conteo del diccionario: 7 tablas propias con 73 columnas (las 7 primarias incluidas) y 18 lookups, más 2 columnas sobre `email` (una de ellas lookup); 9 choices globales con 50 opciones; 19 relaciones 1:N que se crean y 1 nativa; 3 claves alternativas decididas; 1 perfil de seguridad de columna con 3 columnas; 8 motivos de estado.
 

@@ -69,16 +69,18 @@ La definición usa nombres de negocio. Al construir mandan estos:
 | Rol "ARP Purga" | `SR - CARP - Purga` |
 | Tablas Cliente, Conversación, Arreglo, Cuota, Versión de plantilla, Mapeo de celda, Generación de formato | `sanic_carp_tbl_cliente`, `_conversacion`, `_arreglo`, `_cuota`, `_versionplantilla`, `_mapeocelda`, `_generacionformato`. Los definitivos, con sus display names, los fija el diccionario de datos (`02-diccionario-datos.md`) |
 
-### Fuera de la tabla de tipos (pendiente de aprobación)
+### Fuera de la tabla de tipos (aprobados el 2026-10-09)
 
-La business unit, los teams, la queue y el mailbox **no son componentes de solución**: son datos de configuración por entorno (definición §6, Entornos y despliegue), y el estándar no les da `TIPO`. Por la regla del estándar, no se improvisa un tipo dentro del proyecto. Propuesta para aprobar:
+La business unit, los teams, la queue y el mailbox **no son componentes de solución**: son datos de configuración por entorno (definición §6, Entornos y despliegue), y el estándar no les da `TIPO`. Por la regla del estándar, no se improvisa un tipo dentro del proyecto. Nombres aprobados por el usuario el 2026-10-09:
 
-| Elemento | Propuesta de nombre | Motivo |
+| Elemento | Nombre | Motivo |
 |---|---|---|
 | Business unit hija | `Arreglos de Pago` | Es el nombre del área; lo ven los administradores del entorno compartido |
-| Team propietario (grupo de Entra) | `Arreglos de Pago` | Lo resuelven los plugins por nombre (environment variable), así que tiene que ser estable |
-| Team de jefatura (grupo de Entra) | `Arreglos de Pago - Jefatura` | Ídem |
+| Team propietario de los registros | **Pendiente de decisión.** Al crear una business unit, Dataverse crea solo un team propietario con su mismo nombre (`Arreglos de Pago`), cuya membresía administra el sistema: todos los usuarios de la business unit. El nombre de un team es único dentro de su business unit, así que no puede existir otro `Arreglos de Pago` en ella (Learn, *Teams in Dataverse*, verificado el 2026-10-09). Opción propuesta: usar ese team del sistema como propietario | Ver decisión pendiente |
+| Team de jefatura | `Arreglos de Pago - Jefatura` | Lo resuelven los plugins por nombre (environment variable), así que tiene que ser estable |
 | Queue | `Arreglos de Pago` | Es lo que ve el cliente como nombre del remitente en algunos clientes de correo |
+
+**Tipo de team por entorno.** En el entorno de desarrollo del estudio, el team de jefatura es un team normal (propietario), para probar. En los entornos de BAC es un team de grupo de Entra ID, como pide la definición (D-18).
 
 ## 3. Versionado de la solución
 
@@ -142,4 +144,4 @@ Prefijo de opciones del publisher más correlativo de 4 dígitos: `159460001`, `
 | El `uniquename` de un parámetro de Custom API no exige prefijo y puede repetirse entre APIs | Verificado en el proyecto 2026-001 |
 | Cloud flows sin `uniquename` | Verificado en el proyecto 2026-001: se identifican solo por display name |
 | La solución existe en Dev | **Pendiente**: se crea con su playbook, primer componente del inventario |
-| Nombres de la business unit, los teams y la queue | **Pendiente de aprobación** (sección 2) |
+| Nombres de la business unit, los teams y la queue | Aprobados el 2026-10-09 (sección 2), salvo el team propietario, pendiente de decisión. En Dev (`org36e60d9d`) se crearon el 2026-10-09 la business unit `Arreglos de Pago` (hija de la raíz) y el team `Arreglos de Pago - Jefatura` (propietario, en esa business unit); el team `Arreglos de Pago` lo creó la plataforma con la business unit. Verificado releyendo |
