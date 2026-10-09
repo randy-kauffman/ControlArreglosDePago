@@ -1,0 +1,47 @@
+<optionset Name="sanic_carp_ch_estadoversionplantilla" localizedName="CH - CARP - Estado de version de plantilla" description="Estado de una versión de la plantilla del formato. Hay una sola versión Vigente a la vez.">
+      <OptionSetType>picklist</OptionSetType>
+      <IsGlobal>1</IsGlobal>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <displaynames>
+        <displayname description="CH - CARP - Estado de version de plantilla" languagecode="1033" />
+        <displayname description="CH - CARP - Estado de version de plantilla" languagecode="3082" />
+      </displaynames>
+      <Descriptions>
+        <Description description="Estado de una versión de la plantilla del formato. Hay una sola versión Vigente a la vez." languagecode="1033" />
+        <Description description="Estado de una versión de la plantilla del formato. Hay una sola versión Vigente a la vez." languagecode="3082" />
+      </Descriptions>
+      <options>
+        <option value="159460001" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Borrador" languagecode="1033" />
+            <label description="Borrador" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Se edita libremente; admite vista previa del jefe" languagecode="1033" />
+            <Description description="Se edita libremente; admite vista previa del jefe" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460002" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Vigente" languagecode="1033" />
+            <label description="Vigente" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="La que toman los arreglos nuevos; inmutable" languagecode="1033" />
+            <Description description="La que toman los arreglos nuevos; inmutable" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460003" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Historica" languagecode="1033" />
+            <label description="Historica" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Reemplazada por otra Vigente; inmutable" languagecode="1033" />
+            <Description description="Reemplazada por otra Vigente; inmutable" languagecode="3082" />
+          </Descriptions>
+        </option>
+      </options>
+    </optionset>
+    

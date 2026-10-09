@@ -1,0 +1,37 @@
+<optionset Name="sanic_carp_ch_productocrediticio" localizedName="CH - CARP - Producto crediticio" description="Producto sobre el que se hace el arreglo: préstamo o tarjeta.">
+      <OptionSetType>picklist</OptionSetType>
+      <IsGlobal>1</IsGlobal>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <displaynames>
+        <displayname description="CH - CARP - Producto crediticio" languagecode="1033" />
+        <displayname description="CH - CARP - Producto crediticio" languagecode="3082" />
+      </displaynames>
+      <Descriptions>
+        <Description description="Producto sobre el que se hace el arreglo: préstamo o tarjeta." languagecode="1033" />
+        <Description description="Producto sobre el que se hace el arreglo: préstamo o tarjeta." languagecode="3082" />
+      </Descriptions>
+      <options>
+        <option value="159460001" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Prestamo" languagecode="1033" />
+            <label description="Prestamo" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Préstamo" languagecode="1033" />
+            <Description description="Préstamo" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460002" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Tarjeta" languagecode="1033" />
+            <label description="Tarjeta" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Tarjeta de crédito" languagecode="1033" />
+            <Description description="Tarjeta de crédito" languagecode="3082" />
+          </Descriptions>
+        </option>
+      </options>
+    </optionset>
+    

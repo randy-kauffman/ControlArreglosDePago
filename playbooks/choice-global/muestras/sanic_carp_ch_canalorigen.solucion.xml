@@ -1,0 +1,57 @@
+<optionset Name="sanic_carp_ch_canalorigen" localizedName="CH - CARP - Canal de origen" description="Canal por el que llegó el pedido que originó el arreglo.">
+      <OptionSetType>picklist</OptionSetType>
+      <IsGlobal>1</IsGlobal>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <displaynames>
+        <displayname description="CH - CARP - Canal de origen" languagecode="1033" />
+        <displayname description="CH - CARP - Canal de origen" languagecode="3082" />
+      </displaynames>
+      <Descriptions>
+        <Description description="Canal por el que llegó el pedido que originó el arreglo." languagecode="1033" />
+        <Description description="Canal por el que llegó el pedido que originó el arreglo." languagecode="3082" />
+      </Descriptions>
+      <options>
+        <option value="159460001" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Correo" languagecode="1033" />
+            <label description="Correo" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="El cliente lo pidió por correo al buzón del área" languagecode="1033" />
+            <Description description="El cliente lo pidió por correo al buzón del área" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460002" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Telefono" languagecode="1033" />
+            <label description="Telefono" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="El cliente lo pidió por teléfono" languagecode="1033" />
+            <Description description="El cliente lo pidió por teléfono" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460003" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Presencial" languagecode="1033" />
+            <label description="Presencial" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="El cliente lo pidió en persona en el área de Arreglos de Pago" languagecode="1033" />
+            <Description description="El cliente lo pidió en persona en el área de Arreglos de Pago" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460004" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Sucursal" languagecode="1033" />
+            <label description="Sucursal" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="El cliente lo pidió en una sucursal bancaria" languagecode="1033" />
+            <Description description="El cliente lo pidió en una sucursal bancaria" languagecode="3082" />
+          </Descriptions>
+        </option>
+      </options>
+    </optionset>
+    

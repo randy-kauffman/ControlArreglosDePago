@@ -1,0 +1,47 @@
+<optionset Name="sanic_carp_ch_tipomapeo" localizedName="CH - CARP - Tipo de mapeo" description="Tipo de una fila del mapeo celda → campo.">
+      <OptionSetType>picklist</OptionSetType>
+      <IsGlobal>1</IsGlobal>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <displaynames>
+        <displayname description="CH - CARP - Tipo de mapeo" languagecode="1033" />
+        <displayname description="CH - CARP - Tipo de mapeo" languagecode="3082" />
+      </displaynames>
+      <Descriptions>
+        <Description description="Tipo de una fila del mapeo celda → campo." languagecode="1033" />
+        <Description description="Tipo de una fila del mapeo celda → campo." languagecode="3082" />
+      </Descriptions>
+      <options>
+        <option value="159460001" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Valor simple" languagecode="1033" />
+            <label description="Valor simple" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Reemplaza el contenido de la celda, incluida una fórmula" languagecode="1033" />
+            <Description description="Reemplaza el contenido de la celda, incluida una fórmula" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460002" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Total calculado" languagecode="1033" />
+            <label description="Total calculado" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Total que calcula el generador desde los datos" languagecode="1033" />
+            <Description description="Total que calcula el generador desde los datos" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460003" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Columna de bloque de cuotas" languagecode="1033" />
+            <label description="Columna de bloque de cuotas" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Columna del bloque repetido de cuotas; la celda es la de la primera cuota" languagecode="1033" />
+            <Description description="Columna del bloque repetido de cuotas; la celda es la de la primera cuota" languagecode="3082" />
+          </Descriptions>
+        </option>
+      </options>
+    </optionset>
+  

@@ -1,0 +1,37 @@
+<optionset Name="sanic_carp_ch_tipoarreglo" localizedName="CH - CARP - Tipo de arreglo" description="Tipo de arreglo según el formato F-NIC-0000052.">
+      <OptionSetType>picklist</OptionSetType>
+      <IsGlobal>1</IsGlobal>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <displaynames>
+        <displayname description="CH - CARP - Tipo de arreglo" languagecode="1033" />
+        <displayname description="CH - CARP - Tipo de arreglo" languagecode="3082" />
+      </displaynames>
+      <Descriptions>
+        <Description description="Tipo de arreglo según el formato F-NIC-0000052." languagecode="1033" />
+        <Description description="Tipo de arreglo según el formato F-NIC-0000052." languagecode="3082" />
+      </Descriptions>
+      <options>
+        <option value="159460001" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Temporal" languagecode="1033" />
+            <label description="Temporal" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Arreglo temporal" languagecode="1033" />
+            <Description description="Arreglo temporal" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460002" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cancelacion" languagecode="1033" />
+            <label description="Cancelacion" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Arreglo de cancelación del saldo" languagecode="1033" />
+            <Description description="Arreglo de cancelación del saldo" languagecode="3082" />
+          </Descriptions>
+        </option>
+      </options>
+    </optionset>
+    

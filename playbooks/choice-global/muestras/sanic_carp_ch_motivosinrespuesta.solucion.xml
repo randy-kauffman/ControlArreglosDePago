@@ -1,0 +1,57 @@
+<optionset Name="sanic_carp_ch_motivosinrespuesta" localizedName="CH - CARP - Motivo de sin respuesta" description="Motivo obligatorio cuando una conversación se finaliza con el resultado &quot;Sin respuesta&quot;.">
+      <OptionSetType>picklist</OptionSetType>
+      <IsGlobal>1</IsGlobal>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <displaynames>
+        <displayname description="CH - CARP - Motivo de sin respuesta" languagecode="1033" />
+        <displayname description="CH - CARP - Motivo de sin respuesta" languagecode="3082" />
+      </displaynames>
+      <Descriptions>
+        <Description description="Motivo obligatorio cuando una conversación se finaliza con el resultado &quot;Sin respuesta&quot;." languagecode="1033" />
+        <Description description="Motivo obligatorio cuando una conversación se finaliza con el resultado &quot;Sin respuesta&quot;." languagecode="3082" />
+      </Descriptions>
+      <options>
+        <option value="159460001" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Spam" languagecode="1033" />
+            <label description="Spam" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Correo no deseado" languagecode="1033" />
+            <Description description="Correo no deseado" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460002" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Respuesta automatica" languagecode="1033" />
+            <label description="Respuesta automatica" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Respuesta automática de otro sistema" languagecode="1033" />
+            <Description description="Respuesta automática de otro sistema" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460003" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="El cliente no volvio a escribir" languagecode="1033" />
+            <label description="El cliente no volvio a escribir" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="El cliente dejó de responder" languagecode="1033" />
+            <Description description="El cliente dejó de responder" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460004" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Otro" languagecode="1033" />
+            <label description="Otro" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Cualquier otro motivo, que se explica en el detalle" languagecode="1033" />
+            <Description description="Cualquier otro motivo, que se explica en el detalle" languagecode="3082" />
+          </Descriptions>
+        </option>
+      </options>
+    </optionset>
+    

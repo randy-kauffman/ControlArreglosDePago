@@ -1,0 +1,287 @@
+<optionset Name="sanic_carp_ch_campomapeable" localizedName="CH - CARP - Campo mapeable" description="Campos que el generador del formato sabe escribir en una celda. La lista está acoplada al código del generador y la mantiene el equipo de la solución, no el negocio.">
+      <OptionSetType>picklist</OptionSetType>
+      <IsGlobal>1</IsGlobal>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <displaynames>
+        <displayname description="CH - CARP - Campo mapeable" languagecode="1033" />
+        <displayname description="CH - CARP - Campo mapeable" languagecode="3082" />
+      </displaynames>
+      <Descriptions>
+        <Description description="Campos que el generador del formato sabe escribir en una celda. La lista está acoplada al código del generador y la mantiene el equipo de la solución, no el negocio." languagecode="1033" />
+        <Description description="Campos que el generador del formato sabe escribir en una celda. La lista está acoplada al código del generador y la mantiene el equipo de la solución, no el negocio." languagecode="3082" />
+      </Descriptions>
+      <options>
+        <option value="159460001" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Fecha de formalizacion" languagecode="1033" />
+            <label description="Fecha de formalizacion" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: fechaFormalizacion. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: fechaFormalizacion. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460002" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Oficial de arreglo" languagecode="1033" />
+            <label description="Oficial de arreglo" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: oficial. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: oficial. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460003" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Nombre del cliente" languagecode="1033" />
+            <label description="Nombre del cliente" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: clienteNombre. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: clienteNombre. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460004" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cedula del cliente" languagecode="1033" />
+            <label description="Cedula del cliente" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: clienteCedula. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: clienteCedula. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460005" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Correo del cliente" languagecode="1033" />
+            <label description="Correo del cliente" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: clienteCorreo. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: clienteCorreo. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460006" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Celular del cliente" languagecode="1033" />
+            <label description="Celular del cliente" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: clienteCelular. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: clienteCelular. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460007" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Numero de prestamo o tarjeta" languagecode="1033" />
+            <label description="Numero de prestamo o tarjeta" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: numeroProducto. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: numeroProducto. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460008" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Tipo de arreglo" languagecode="1033" />
+            <label description="Tipo de arreglo" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: tipo. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: tipo. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460009" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Numero de arreglo" languagecode="1033" />
+            <label description="Numero de arreglo" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: numeroArreglo. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: numeroArreglo. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460010" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Saldo inicial" languagecode="1033" />
+            <label description="Saldo inicial" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: saldoInicial. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: saldoInicial. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460011" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Monto abonado" languagecode="1033" />
+            <label description="Monto abonado" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: montoAbonado. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: montoAbonado. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460012" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Saldo remanente" languagecode="1033" />
+            <label description="Saldo remanente" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: saldoRemanente. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: saldoRemanente. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460013" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Plazo en cuotas" languagecode="1033" />
+            <label description="Plazo en cuotas" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: plazo. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: plazo. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460014" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cuota mensual" languagecode="1033" />
+            <label description="Cuota mensual" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: cuota. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: cuota. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460015" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Total a pagar" languagecode="1033" />
+            <label description="Total a pagar" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: totalPagar. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: totalPagar. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460016" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Fecha de inicio" languagecode="1033" />
+            <label description="Fecha de inicio" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: fechaInicio. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: fechaInicio. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460017" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Fecha de finalizacion" languagecode="1033" />
+            <label description="Fecha de finalizacion" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: fechaFin. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: fechaFin. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460018" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cuenta a debitar" languagecode="1033" />
+            <label description="Cuenta a debitar" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: cuentaDebitar. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: cuentaDebitar. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460019" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Comentarios" languagecode="1033" />
+            <label description="Comentarios" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: comentarios. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: comentarios. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460020" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cuota: numero" languagecode="1033" />
+            <label description="Cuota: numero" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: cuota.numero. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="1033" />
+            <Description description="Clave del generador: cuota.numero. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460021" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cuota: fecha de vencimiento" languagecode="1033" />
+            <label description="Cuota: fecha de vencimiento" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: cuota.fecha. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="1033" />
+            <Description description="Clave del generador: cuota.fecha. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460022" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cuota: monto" languagecode="1033" />
+            <label description="Cuota: monto" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: cuota.monto. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="1033" />
+            <Description description="Clave del generador: cuota.monto. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460023" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cuota: fecha de pago" languagecode="1033" />
+            <label description="Cuota: fecha de pago" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: cuota.fechaPago. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="1033" />
+            <Description description="Clave del generador: cuota.fechaPago. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460024" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cuota: monto pagado" languagecode="1033" />
+            <label description="Cuota: monto pagado" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: cuota.montoPagado. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="1033" />
+            <Description description="Clave del generador: cuota.montoPagado. Tipo de mapeo que admite: Columna de bloque de cuotas" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460025" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Total: montos de cuota" languagecode="1033" />
+            <label description="Total: montos de cuota" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: total.montoCuotas. Tipo de mapeo que admite: Total calculado" languagecode="1033" />
+            <Description description="Clave del generador: total.montoCuotas. Tipo de mapeo que admite: Total calculado" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460026" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Total: montos pagados" languagecode="1033" />
+            <label description="Total: montos pagados" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: total.montoPagado. Tipo de mapeo que admite: Total calculado" languagecode="1033" />
+            <Description description="Clave del generador: total.montoPagado. Tipo de mapeo que admite: Total calculado" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460027" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Moneda" languagecode="1033" />
+            <label description="Moneda" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Clave del generador: moneda. Tipo de mapeo que admite: Valor simple" languagecode="1033" />
+            <Description description="Clave del generador: moneda. Tipo de mapeo que admite: Valor simple" languagecode="3082" />
+          </Descriptions>
+        </option>
+      </options>
+    </optionset>
+    
