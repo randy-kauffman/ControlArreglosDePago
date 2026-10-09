@@ -76,11 +76,11 @@ La business unit, los teams, la queue y el mailbox **no son componentes de soluc
 | Elemento | Nombre | Motivo |
 |---|---|---|
 | Business unit hija | `Arreglos de Pago` | Es el nombre del área; lo ven los administradores del entorno compartido |
-| Team propietario de los registros | **Pendiente de decisión.** Al crear una business unit, Dataverse crea solo un team propietario con su mismo nombre (`Arreglos de Pago`), cuya membresía administra el sistema: todos los usuarios de la business unit. El nombre de un team es único dentro de su business unit, así que no puede existir otro `Arreglos de Pago` en ella (Learn, *Teams in Dataverse*, verificado el 2026-10-09). Opción propuesta: usar ese team del sistema como propietario | Ver decisión pendiente |
+| Team propietario de los registros | `Arreglos de Pago`: **el team del sistema de la business unit**, que Dataverse crea solo con ella (`teamtype` 0 propietario, `isdefault` verdadero; verificado en Dev el 2026-10-09). No lo elegimos ni lo creamos: su nombre sigue al de la business unit y su membresía la administra la plataforma (todos los usuarios de la business unit). Los plugins lo resuelven como el team con `isdefault` verdadero de la business unit, no por nombre | Decisión del usuario del 2026-10-09 (opción A). Un nombre propio no es posible: el nombre de un team es único dentro de su business unit (Learn, *Teams in Dataverse*) |
 | Team de jefatura | `Arreglos de Pago - Jefatura` | Lo resuelven los plugins por nombre (environment variable), así que tiene que ser estable |
 | Queue | `Arreglos de Pago` | Es lo que ve el cliente como nombre del remitente en algunos clientes de correo |
 
-**Tipo de team por entorno.** En el entorno de desarrollo del estudio, el team de jefatura es un team normal (propietario), para probar. En los entornos de BAC es un team de grupo de Entra ID, como pide la definición (D-18).
+**Tipo de team por entorno.** En el entorno de desarrollo del estudio, el team de jefatura es un team normal (propietario), para probar. En los entornos de BAC es un team de grupo de Entra ID, como pide la definición (D-18). El team propietario es el del sistema en todos los entornos: no lleva grupo de Entra, porque su membresía son los usuarios que el administrador pone en la business unit.
 
 ## 3. Versionado de la solución
 
@@ -144,4 +144,4 @@ Prefijo de opciones del publisher más correlativo de 4 dígitos: `159460001`, `
 | El `uniquename` de un parámetro de Custom API no exige prefijo y puede repetirse entre APIs | Verificado en el proyecto 2026-001 |
 | Cloud flows sin `uniquename` | Verificado en el proyecto 2026-001: se identifican solo por display name |
 | La solución existe en Dev | **Pendiente**: se crea con su playbook, primer componente del inventario |
-| Nombres de la business unit, los teams y la queue | Aprobados el 2026-10-09 (sección 2), salvo el team propietario, pendiente de decisión. En Dev (`org36e60d9d`) se crearon el 2026-10-09 la business unit `Arreglos de Pago` (hija de la raíz) y el team `Arreglos de Pago - Jefatura` (propietario, en esa business unit); el team `Arreglos de Pago` lo creó la plataforma con la business unit. Verificado releyendo |
+| Nombres de la business unit, los teams y la queue | Aprobados el 2026-10-09 (sección 2); el team propietario es el del sistema de la business unit (opción A, 2026-10-09). En Dev (`org36e60d9d`) se crearon el 2026-10-09 la business unit `Arreglos de Pago` (hija de la raíz) y el team `Arreglos de Pago - Jefatura` (propietario, en esa business unit); el team `Arreglos de Pago` lo creó la plataforma con la business unit. Verificado releyendo |
