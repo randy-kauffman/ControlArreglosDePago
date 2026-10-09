@@ -1,0 +1,46 @@
+<optionset Name="sanic_carp_ch_resultadoconversacion" localizedName="CH - CARP - Resultado de conversacion" description="Resultado con el que el oficial finaliza una conversación. Lo usa la columna sanic_resultado de Conversación.">
+      <OptionSetType>picklist</OptionSetType>
+      <IsGlobal>1</IsGlobal>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <displaynames>
+        <displayname description="CH - CARP - Resultado de conversacion" languagecode="1033" />
+        <displayname description="CH - CARP - Resultado de conversacion" languagecode="3082" />
+      </displaynames>
+      <Descriptions>
+        <Description description="Resultado con el que el oficial finaliza una conversación. Lo usa la columna sanic_resultado de Conversación." languagecode="1033" />
+        <Description description="Resultado con el que el oficial finaliza una conversación. Lo usa la columna sanic_resultado de Conversación." languagecode="3082" />
+      </Descriptions>
+      <options>
+        <option value="159460001" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Con arreglo de pago" languagecode="1033" />
+            <label description="Con arreglo de pago" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="La conversación terminó en un arreglo de pago" languagecode="1033" />
+            <Description description="La conversación terminó en un arreglo de pago" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460002" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Sin arreglo de pago" languagecode="1033" />
+            <label description="Sin arreglo de pago" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="" languagecode="1033" />
+            <Description description="" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460003" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Sin respuesta" languagecode="1033" />
+            <label description="Sin respuesta" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="No hubo conversación real: exige motivo y detalle" languagecode="1033" />
+            <Description description="No hubo conversación real: exige motivo y detalle" languagecode="3082" />
+          </Descriptions>
+        </option>
+      </options>
+    </optionset>

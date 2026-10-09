@@ -1,0 +1,1 @@
+Formas de exportación derivadas del proyecto anterior y transformadas al dominio de CARP; NO son una exportación real de este proyecto: reemplazarlas por la exportación real en el primer ciclo (muestra_choice.py --guardar).

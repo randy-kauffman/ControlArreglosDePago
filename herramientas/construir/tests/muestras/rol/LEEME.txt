@@ -1,0 +1,1 @@
+Forma de exportacion derivada del proyecto anterior (transformada al dominio de CARP), no una exportacion real de este proyecto: reemplazar por la exportacion real en el primer ciclo (herramienta muestra_rol.py --guardar).

@@ -1,0 +1,22 @@
+<FieldSecurityProfiles>
+    <FieldSecurityProfile name="CSP - CARP - ZZ Ensayo" description="Perfil descartable de ensayo." fieldsecurityprofileid="{c7289e9d-cbb5-f111-aaad-000d3a350099}">
+      <FieldPermissions>
+        <FieldPermission>
+          <EntityName>sanic_carp_tbl_arreglo</EntityName>
+          <AttributeName>sanic_cuentadebitar</AttributeName>
+          <CanRead>4</CanRead>
+          <CanUpdate>0</CanUpdate>
+          <CanCreate>0</CanCreate>
+          <CanReadUnmasked>0</CanReadUnmasked>
+        </FieldPermission>
+        <FieldPermission>
+          <EntityName>sanic_carp_tbl_arreglo</EntityName>
+          <AttributeName>sanic_instantaneacedula</AttributeName>
+          <CanRead>4</CanRead>
+          <CanUpdate>0</CanUpdate>
+          <CanCreate>0</CanCreate>
+          <CanReadUnmasked>0</CanReadUnmasked>
+        </FieldPermission>
+      </FieldPermissions>
+    </FieldSecurityProfile>
+  </FieldSecurityProfiles>

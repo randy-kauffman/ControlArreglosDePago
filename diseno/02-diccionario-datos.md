@@ -501,12 +501,12 @@ Los cuatro valores del playbook de relación (`relacion.md`) y las siete cascada
 
 | Comportamiento | Assign | Delete | Merge | Reparent | Share | Unshare | RollupView |
 |---|---|---|---|---|---|---|---|
-| `parental` (Cascade All) | Cascade | Cascade | Cascade | Cascade | Cascade | Cascade | Cascade |
+| `parental` | Cascade | Cascade | NoCascade | Cascade | Cascade | Cascade | NoCascade |
 | `restringido` | NoCascade | **Restrict** | NoCascade | NoCascade | NoCascade | NoCascade | NoCascade |
 | `quitar_vinculo` | NoCascade | **RemoveLink** | NoCascade | NoCascade | NoCascade | NoCascade | NoCascade |
 | Regarding nativa (Email → Conversación; valores observados en el spike 3) | Cascade | Cascade | NoCascade | Cascade | Cascade | Cascade | NoCascade |
 
-Una tabla hija admite una sola relación parental: Cuota, Generación y Mapeo tienen exactamente una (`relacion.md`). Una relación cuyo padre es `systemuser` nunca es parental.
+Merge y RollupView en NoCascade para `parental` es lo que fija la receta de `power-platform-construir` (`modelo-datos/patrones.md`, comportamientos de relación), ensayada contra la plataforma el 2026-09-20; corregido el 2026-10-09 (decía Cascade en las siete). Una tabla hija admite una sola relación parental: Cuota, Generación y Mapeo tienen exactamente una (`relacion.md`). Una relación cuyo padre es `systemuser` nunca es parental.
 
 ### 6.2 Relaciones que se crean (19)
 

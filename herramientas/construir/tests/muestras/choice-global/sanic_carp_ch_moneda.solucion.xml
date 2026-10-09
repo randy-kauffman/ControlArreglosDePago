@@ -1,0 +1,36 @@
+<optionset Name="sanic_carp_ch_moneda" localizedName="CH - CARP - Moneda" description="Moneda en la que se expresan los montos de un arreglo y de sus cuotas: córdobas o dólares.">
+      <OptionSetType>picklist</OptionSetType>
+      <IsGlobal>1</IsGlobal>
+      <IntroducedVersion>1.0.0.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <displaynames>
+        <displayname description="CH - CARP - Moneda" languagecode="1033" />
+        <displayname description="CH - CARP - Moneda" languagecode="3082" />
+      </displaynames>
+      <Descriptions>
+        <Description description="Moneda en la que se expresan los montos de un arreglo y de sus cuotas: córdobas o dólares." languagecode="1033" />
+        <Description description="Moneda en la que se expresan los montos de un arreglo y de sus cuotas: córdobas o dólares." languagecode="3082" />
+      </Descriptions>
+      <options>
+        <option value="159460001" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Cordobas" languagecode="1033" />
+            <label description="Cordobas" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Córdobas nicaragüenses" languagecode="1033" />
+            <Description description="Córdobas nicaragüenses" languagecode="3082" />
+          </Descriptions>
+        </option>
+        <option value="159460002" ExternalValue="" IsHidden="0">
+          <labels>
+            <label description="Dolares" languagecode="1033" />
+            <label description="Dolares" languagecode="3082" />
+          </labels>
+          <Descriptions>
+            <Description description="Dólares estadounidenses" languagecode="1033" />
+            <Description description="Dólares estadounidenses" languagecode="3082" />
+          </Descriptions>
+        </option>
+      </options>
+    </optionset>

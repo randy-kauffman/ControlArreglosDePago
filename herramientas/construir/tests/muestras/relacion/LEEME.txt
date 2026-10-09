@@ -1,0 +1,1 @@
+Formas de exportacion de relaciones (customizations.xml) derivadas mecanicamente de las muestras del proyecto anterior (M-PPP); NO son exportaciones reales de este proyecto: reemplazarlas por la exportacion real en el primer ciclo (herramienta muestra_relacion.py --guardar). La autorreferida es un clon de una relacion comun con ReferencedEntityName igual a ReferencingEntityName.

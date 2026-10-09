@@ -1,0 +1,1 @@
+Formas de exportacion derivadas de las exportaciones reales del proyecto 2026-001 (nombres renombrados al dominio de este proyecto y una etiqueta 3082 gemela por cada 1033); reemplazar por la exportacion real de este proyecto en el primer ciclo (muestra_tabla.py --guardar).

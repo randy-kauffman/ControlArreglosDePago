@@ -1,0 +1,5 @@
+{
+ "decision": "Este proyecto no tiene excepciones de nombres visibles heredadas (2026-10-09). Una excepcion futura la aprueba el aprobador, se agrega aca con su motivo y se fija en tests/test_sin_tildes.py: no se amplia sola. La unica excepcion de NOMBRES LOGICOS del proyecto (lookups de evento terminados en 'porid', diseno/01-convenciones.md seccion 0) no afecta a los nombres visibles.",
+ "nombres_visibles": [],
+ "optionset_si_no": {}
+}

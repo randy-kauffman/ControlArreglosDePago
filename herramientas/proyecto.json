@@ -1,0 +1,12 @@
+{
+  "descripcion": "Configuracion versionada de las herramientas de este proyecto. SIN secretos: solo dice DONDE estan. Los datos del proyecto (solucion, publisher, prefijo, abreviatura, idiomas, entorno) NO van aca: salen del bloque json de '## 1. Identidad' de cada playbook.",
+  "credenciales": {
+    "variable_entorno": "PP_SECRETS_FILE",
+    "rutas_por_defecto": ["~/projects/pp_secrets.env", "local/pp_secrets.env"]
+  },
+  "playbooks": "playbooks",
+  "codigo": {
+    "enums_destino": "src/Sanic.Carp.Plugins/Dominio/Choices.g.cs",
+    "enums_namespace": "Sanic.Carp.Plugins.Dominio"
+  }
+}
