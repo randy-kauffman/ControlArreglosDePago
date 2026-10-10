@@ -197,3 +197,7 @@ Orden, y por qué: la tabla hija primero (con ella se van sus relaciones y looku
 | `s10_q6_q7.py`, `s11_q6.py`, `s12_q6_privilegios.py` | Preguntas 6 y 7 (solo lectura) |
 | `s70_exportar.py`, `s98_inventario.py` | Verificación independiente por exportación e inventario |
 | `s99_limpieza.py` | Limpieza (no se ejecuta sola) |
+
+## Limpieza ejecutada (2026-10-09)
+
+Se corrieron, en orden, las limpiezas de `sincronizacion/`, `manual/`, `sandbox/` y `plataforma/` con `--si-borrar`, y se borró a mano la queue `Spike` (primero su único queue item; el mailbox se fue con la queue), que dejó libre el buzón 1 para la queue real del área. `plataforma/s99_limpieza.py` no pudo borrar `spk_cuota` ni `spk_arreglo` en la primera pasada: la vista `SPK Arreglos en riesgo` (sobre `spk_arreglo`, con vínculo a `spk_cuota`) y la relación `spk_arreglo_spk_cuota` las referenciaban (`RetrieveDependenciesForDelete`, tipos 26 y 10). Se borró la vista y después las dos tablas, hija primero. Releído: sin tablas `spk_*`, sin roles `SPK`, sin la solución `SpikesArreglosPago` ni su publisher. El usuario de aplicación de correo quedó deshabilitado y sin roles. Queda en el entorno el correo automático "Your mailbox is now connected to Dynamics 365", que el spike 3 conservó a propósito.
