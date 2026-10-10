@@ -170,7 +170,7 @@ SISTEMA = [
 def cuerpo_formula(c, **cambios):
     """Lo que devuelve `GET …/Attributes(LogicalName='<fórmula>')?$select=…` de una fórmula bien creada (observado en el spike 2:
     SourceType 3, SourceTypeMask 1, IsValidForCreate/Update false). La forma de FormulaDefinition de una columna creada en el
-    editor de Power Apps es un pendiente de la skill: el doble repite lo declarado."""
+    editor de Power Apps (ensayo del 2026-10-09) es EXACTAMENTE la expresión tipeada, sin `=` ni envoltorio: el doble la repite."""
     cuerpo = {"LogicalName": c["nombre"], "AttributeTypeName": {"Value": tipo_plataforma(c)}, "SourceType": 3, "SourceTypeMask": 1,
               "FormulaDefinition": c["expresion"], "IsValidForCreate": False, "IsValidForUpdate": False, "IsSecured": False,
               "IsAuditEnabled": aud(False), "RequiredLevel": rl("None"), "DisplayName": label(c["displayname"]), "Description": label(c["descripcion"])}

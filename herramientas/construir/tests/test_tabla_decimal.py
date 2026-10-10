@@ -156,7 +156,7 @@ class DecimalVerificado(Base):
         self.assertNotIn("decimal:precision0", tb.VERIFICADAS_EN_PLATAFORMA)
         self.assertIn("decimal:precision0", tb.SIN_ENSAYAR)
         self.assertIn("decimal:precision0", tb.PENDIENTE_DE_VERIFICAR)
-        self.assertEqual(frozenset({"decimal:precision0", "tipo:formula"}), tb.SIN_ENSAYAR)  # lo único que queda sin ensayar
+        self.assertEqual(frozenset({"decimal:precision0"}), tb.SIN_ENSAYAR)  # lo único que queda sin ensayar (la fórmula se ensayó el 2026-10-09)
 
     def test_un_playbook_con_decimales_no_se_bloquea_por_el_decimal_con_las_verificadas_por_defecto(self):
         cliente = tt.armar(ClienteSimulado(), CUOTA)

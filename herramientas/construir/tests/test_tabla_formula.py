@@ -51,7 +51,8 @@ CONVERSACION = {
     ],
 }
 POS = 1  # índice de la fórmula en CONVERSACION["columnas"]
-SIN_FORMULA = frozenset(tb.CARACTERISTICAS) - {"tipo:formula"}
+FIN_DEL_PASO_MANUAL = ("después correr esta herramienta con --corregir-nombres para completar las etiquetas y la descripción en todos los idiomas "
+                       "(el editor solo deja el idioma del usuario)")
 TODO_MENOS_FORMULA_ENTORNO = [g for g in tt.genericas_de(CONVERSACION) if g["LogicalName"] != "sanic_antiguedad"]
 
 
@@ -137,7 +138,7 @@ class ValidacionDeLaFormula(Base):
         datos["columnas"][0] = col("sanic_sinrespuestadesde", "fecha")
         datos["columnas"][POS]["expresion"] = "DateDiff(sanic_sinrespuestadesde, sanic_sinrespuestadesde, TimeUnit.Days)"
         cliente = tt.armar(ClienteSimulado(), datos)
-        estado, _, detalle = self.con_cliente(cliente, datos, verificadas=SIN_FORMULA, permitir=True)
+        estado, _, detalle = self.con_cliente(cliente, datos)
         self.assertEqual(estado, "ya_existia", detalle)
 
     def test_ciclos_entre_formulas_se_rechazan(self):
@@ -167,7 +168,7 @@ class ValidacionDeLaFormula(Base):
         self.assertIn("profundidad", detalle)
         ok = cadena(10)
         cliente = tt.armar(ClienteSimulado(), ok)
-        estado, _, detalle = self.con_cliente(cliente, ok, verificadas=SIN_FORMULA, permitir=True)
+        estado, _, detalle = self.con_cliente(cliente, ok)
         self.assertEqual(estado, "ya_existia", detalle)
 
     def test_una_dependencia_que_no_esta_en_el_playbook_se_acepta_y_se_comprueba_contra_el_entorno(self):
@@ -178,40 +179,74 @@ class ValidacionDeLaFormula(Base):
         cliente = tt.armar(ClienteSimulado(), datos, por_tipo=dict(tt.filas_por_tipo(datos), DateTime=[
             {"LogicalName": "sanic_sinrespuestadesde", "Format": "DateAndTime", "DateTimeBehavior": {"Value": "UserLocal"}},
             {"LogicalName": "createdon", "Format": "DateAndTime", "DateTimeBehavior": {"Value": "UserLocal"}}]))
-        estado, _, detalle = self.con_cliente(cliente, datos, verificadas=SIN_FORMULA, permitir=True)
+        estado, _, detalle = self.con_cliente(cliente, datos)
         self.assertEqual(estado, "ya_existia", detalle)
 
 
-class FormulaSinEnsayar(Base):
-    def test_sin_el_flag_es_bloqueado_sin_tocar_la_red(self):
-        centinela = FabricaCentinela()
-        estado, _, detalle = self.correr(centinela, CONVERSACION, verificadas=SIN_FORMULA)
-        self.assertEqual(estado, "bloqueado", detalle)
-        self.assertIn("tipo:formula", detalle)
-        self.assertIn("--permitir-no-verificadas", detalle)
-        self.assertFalse(centinela.llamada)
+class FormulaVerificada(Base):
+    """Ensayo del 2026-10-09 (Dev, `sanic_carp_tbl_zzensayo`): una persona creó la fórmula en el editor de Power Apps y la herramienta la leyó: `FormulaDefinition`
+    es EXACTAMENTE la expresión tipeada (sin `=` ni envoltorio), `SourceType` 3, `IsValidForCreate/Update` false, `RequiredLevel` None, `IsSecured` y
+    `IsAuditEnabled` false. La fórmula SIGUE siendo un paso manual: la herramienta no la crea."""
 
-    def test_es_una_caracteristica_del_formato_todavia_no_verificada(self):
+    def test_es_una_caracteristica_verificada_y_ya_no_esta_sin_ensayar(self):
         self.assertIn("tipo:formula", tb.CARACTERISTICAS)
-        self.assertNotIn("tipo:formula", tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertIn("tipo:formula", tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertNotIn("tipo:formula", tb.SIN_ENSAYAR)
+        self.assertNotIn("tipo:formula", tb.PENDIENTE_DE_VERIFICAR)
         self.assertIn("tipo:formula", tb.caracteristicas_usadas(CONVERSACION))
+        self.assertEqual(frozenset({"decimal:precision0"}), tb.SIN_ENSAYAR)  # lo único que queda sin ensayar
 
-    def test_el_ensayo_solo_vale_sobre_una_tabla_descartable(self):
+    def test_una_formula_no_bloquea_por_no_verificada_ni_pide_el_flag_ni_exige_una_tabla_descartable(self):
         real = dict(copy.deepcopy(CONVERSACION), nombre="sanic_carp_tbl_conversacion")
-        estado, _, detalle = self.correr(FabricaCentinela(), real, verificadas=SIN_FORMULA, permitir=True)
+        cliente = tt.armar(ClienteSimulado(), real)
+        estado, _, detalle = self.con_cliente(cliente, real, verificadas=tb.VERIFICADAS_EN_PLATAFORMA)
+        self.assertEqual(estado, "ya_existia", detalle)
+        self.assertNotIn("--permitir-no-verificadas", detalle)
+        self.assertNotIn("no verificadas", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_una_formula_ausente_sigue_siendo_paso_manual_con_las_verificadas_por_defecto(self):
+        real = dict(copy.deepcopy(CONVERSACION), nombre="sanic_carp_tbl_conversacion")
+        sin = [g for g in tt.genericas_de(real) if g["LogicalName"] != "sanic_antiguedad"]
+        cliente = tt.armar(ClienteSimulado(), real, genericas=sin)
+        estado, _, detalle = self.con_cliente(cliente, real, verificadas=tb.VERIFICADAS_EN_PLATAFORMA)
         self.assertEqual(estado, "bloqueado", detalle)
-        self.assertIn("_tbl_zz", detalle)
+        self.assertIn("paso manual", detalle)
+        self.assertFalse(cliente.hubo_escritura())
 
 
 class PasoManual(Base):
     """Si la fórmula no existe: `bloqueado` con la instrucción, NUNCA un intento de crearla por API."""
 
     def kw(self, **extra):
-        return dict(verificadas=SIN_FORMULA, permitir=True, **extra)
+        return dict(**extra)
 
     def assertInstruccion(self, detalle):
         for pieza in ("paso manual", "sanic_antiguedad", "Power Apps", "Nueva columna", "Fórmula", EXPRESION, "precisión 2", "publicar", "sanic_sinrespuestadesde"):
             self.assertIn(pieza, detalle)
+
+    def test_la_instruccion_termina_pidiendo_corregir_nombres_para_completar_los_idiomas(self):
+        """El editor deja el nombre visible y la descripción SOLO en el idioma del usuario: lo que sigue al paso manual es `--corregir-nombres`."""
+        cliente = tt.armar(ClienteSimulado(), CONVERSACION, **entorno_sin_formula())
+        estado, _, detalle = self.con_cliente(cliente, CONVERSACION, **self.kw())
+        self.assertEqual(estado, "bloqueado", detalle)
+        self.assertTrue(detalle.endswith(FIN_DEL_PASO_MANUAL), detalle)
+        self.assertEqual(1, detalle.count("--corregir-nombres"))
+        self.assertNotIn("Después se vuelve a correr", detalle)
+
+    def test_con_dos_formulas_el_cierre_va_una_sola_vez_al_final(self):
+        datos = copy.deepcopy(CONVERSACION)
+        datos["columnas"].insert(POS + 1, formula("sanic_antiguedadmin", expresion="DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Minutes)",
+                                                  resultado="entero", depende_de=["sanic_sinrespuestadesde"]))
+        del datos["columnas"][POS + 1]["precision"]
+        sin = [g for g in tt.genericas_de(datos) if g["LogicalName"] not in ("sanic_antiguedad", "sanic_antiguedadmin")]
+        cliente = tt.armar(ClienteSimulado(), datos, genericas=sin)
+        estado, _, detalle = self.con_cliente(cliente, datos, **self.kw())
+        self.assertEqual(estado, "bloqueado", detalle)
+        self.assertIn("sanic_antiguedadmin", detalle)
+        self.assertIn("resultado entero", detalle)
+        self.assertTrue(detalle.endswith(FIN_DEL_PASO_MANUAL), detalle)
+        self.assertEqual(1, detalle.count("--corregir-nombres"))
 
     def test_la_tabla_existe_y_falta_la_formula_es_bloqueado_con_la_instruccion_y_no_escribe(self):
         cliente = tt.armar(ClienteSimulado(), CONVERSACION, **entorno_sin_formula())
@@ -266,15 +301,64 @@ class PasoManual(Base):
 
 class VerificacionDeLaFormula(Base):
     def kw(self, **extra):
-        return dict(verificadas=SIN_FORMULA, permitir=True, **extra)
+        return dict(**extra)
 
-    def test_la_formula_correcta_es_ya_existia_y_dice_que_la_expresion_no_se_comparo(self):
+    def test_la_formula_correcta_es_ya_existia_y_no_deja_nada_sin_comparar(self):
         cliente = tt.armar(ClienteSimulado(), CONVERSACION)
         estado, _, detalle = self.con_cliente(cliente, CONVERSACION, **self.kw())
         self.assertEqual(estado, "ya_existia", detalle)
         self.assertFalse(cliente.hubo_escritura())
-        self.assertIn("expresión", detalle)
-        self.assertIn("export", detalle)  # la comparación fuerte es el export de la solución: pendiente de verificar
+        self.assertNotIn("Sin comparar", detalle)
+        self.assertNotIn("NO se comparó", detalle)
+        self.assertNotIn("pendiente de verificar", detalle)
+
+    def armar_con_definicion(self, definicion, datos=CONVERSACION):
+        f = datos["columnas"][POS]
+        return tt.armar(ClienteSimulado(), datos, formulas={f["nombre"]: cuerpo_formula(f, FormulaDefinition=definicion)})
+
+    def test_la_expresion_se_compara_con_formula_definition_normalizando_espacios(self):
+        espaciadas = ["  DateDiff(sanic_sinrespuestadesde,   Now(),\tTimeUnit.Minutes)\n/  60 ", EXPRESION.replace(" ", "   "), "\n" + EXPRESION + "\n"]
+        for definicion in espaciadas:
+            with self.subTest(entorno=definicion):
+                cliente = self.armar_con_definicion(definicion)
+                estado, _, detalle = self.con_cliente(cliente, CONVERSACION, **self.kw())
+                self.assertEqual(estado, "ya_existia", detalle)
+                self.assertNotIn("FormulaDefinition", detalle)
+        # y al revés: el espaciado raro está en el playbook
+        raro = copy.deepcopy(CONVERSACION)
+        raro["columnas"][POS]["expresion"] = "DateDiff(sanic_sinrespuestadesde,   Now(),  TimeUnit.Minutes)   /    60"
+        cliente = self.armar_con_definicion(EXPRESION, raro)
+        estado, _, detalle = self.con_cliente(cliente, raro, **self.kw())
+        self.assertEqual(estado, "ya_existia", detalle)
+
+    def test_una_expresion_distinta_es_una_diferencia_con_las_dos_expresiones_normalizadas(self):
+        casos = [
+            ("otra unidad", "DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Hours) / 60", "'DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Hours) / 60'"),
+            ("otro divisor", "DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Minutes) / 24", "'DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Minutes) / 24'"),
+            ("sin espacio donde el playbook lo lleva", "DateDiff(sanic_sinrespuestadesde,Now(),TimeUnit.Minutes)/60",
+             "'DateDiff(sanic_sinrespuestadesde,Now(),TimeUnit.Minutes)/60'"),
+            ("el editor la guardó con un signo igual", "=" + EXPRESION, f"{('=' + EXPRESION)!r}"),
+            ("vacía", "", "''"),
+            ("sin definición", None, "None"),
+        ]
+        for nombre, definicion, mostrada in casos:
+            with self.subTest(nombre):
+                cliente = self.armar_con_definicion(definicion)
+                estado, _, detalle = self.con_cliente(cliente, CONVERSACION, **self.kw())
+                self.assertEqual(estado, "difiere", detalle)
+                self.assertIn(f"sanic_antiguedad.FormulaDefinition: entorno={mostrada} playbook={EXPRESION!r}", detalle)
+                self.assertFalse(cliente.hubo_escritura())
+
+    def test_una_expresion_distinta_en_una_formula_entera_tambien(self):
+        datos = copy.deepcopy(CONVERSACION)
+        f = datos["columnas"][POS]
+        f.update(resultado="entero", expresion="DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Minutes)")
+        del f["precision"]
+        cliente = self.armar_con_definicion("DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Days)", datos)
+        estado, _, detalle = self.con_cliente(cliente, datos, **self.kw())
+        self.assertEqual(estado, "difiere", detalle)
+        self.assertIn("sanic_antiguedad.FormulaDefinition: entorno='DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Days)' "
+                      "playbook='DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Minutes)'", detalle)
 
     def test_lee_con_los_select_de_la_receta_y_no_escribe_nada(self):
         cliente = tt.armar(ClienteSimulado(), CONVERSACION)
@@ -406,15 +490,171 @@ class VerificacionDeLaFormula(Base):
         self.assertIn("sanic_antiguedad", detalle)
         self.assertFalse(cliente.hubo_escritura())
 
-    def test_corregir_nombres_no_toca_una_formula_porque_no_esta_ensayado(self):
-        gen = tt.genericas_de(CONVERSACION)
-        i = next(k for k, g in enumerate(gen) if g["LogicalName"] == "sanic_antiguedad")
-        gen = con_cambio(gen, [i, "DisplayName"], label("Viejo"))
-        cliente = tt.armar(ClienteSimulado(), CONVERSACION, genericas=gen)
-        estado, _, detalle = self.con_cliente(cliente, CONVERSACION, **self.kw(corregir_nombres=True))
-        self.assertEqual(estado, "difiere", detalle)
-        self.assertIn("sanic_antiguedad.DisplayName", detalle)
-        self.assertFalse(cliente.hubo_escritura())
+
+RUTA_FORMULA = f"EntityDefinitions(LogicalName='{TABLA}')/Attributes(LogicalName='sanic_antiguedad')"
+RUTA_ENTERO = f"EntityDefinitions(LogicalName='{TABLA}')/Attributes(LogicalName='sanic_cantidadrespuestas')"
+
+
+def textos(etiqueta):
+    return {ll["LanguageCode"]: ll["Label"] for ll in etiqueta["LocalizedLabels"]}
+
+
+def genericas_del_editor(datos, nombre="sanic_antiguedad", visible=True, descripcion=True, nombre_viejo=None):
+    """Las genéricas del entorno con la columna `nombre` como la deja el editor de Power Apps: nombre visible y descripción SOLO en el idioma del usuario
+    (1033), y la descripción vacía. `visible` / `descripcion` eligen qué se deja así; `nombre_viejo` cambia además el texto del nombre visible."""
+    gen = tt.genericas_de(datos)
+    i = next(k for k, g in enumerate(gen) if g["LogicalName"] == nombre)
+    c = next(c for c in datos["columnas"] if c["nombre"] == nombre)
+    if visible:
+        gen = con_cambio(gen, [i, "DisplayName"], label(nombre_viejo or c["displayname"]["1033"], idiomas=[1033]))
+    if descripcion:
+        gen = con_cambio(gen, [i, "Description"], label("", idiomas=[1033]))
+    return gen
+
+
+def cliente_de_correccion(datos, viejas, cast="Decimal", columnas_enteras=(), put=(204, None, {}), **armar_kw):
+    """Un entorno que devuelve `viejas` hasta que alguien hace un PUT y las conformes (`genericas_de`) después. Responde la lectura completa de la fórmula
+    (con el cast de su resultado) y el PUT; `columnas_enteras`: columnas enteras que también se pueden corregir; `put`: la respuesta al PUT de la fórmula."""
+    cliente = ClienteSimulado()
+    f = next(c for c in datos["columnas"] if c["tipo"] == "formula")
+    completa = {"@odata.context": "https://x/$metadata#EntityDefinitions", "LogicalName": f["nombre"], "SchemaName": f["nombre"], "AttributeType": cast,
+                "SourceType": 3, "FormulaDefinition": f["expresion"], "Precision": f.get("precision"), "DisplayName": label(f["displayname"]["1033"], idiomas=[1033]),
+                "Description": label("", idiomas=[1033]), "Conservado": 7}
+    cliente.responder("GET", f"{RUTA_FORMULA}/Microsoft.Dynamics.CRM.{cast}AttributeMetadata", (200, completa, {}))
+    cliente.responder("PUT", RUTA_FORMULA, put)
+    for n in columnas_enteras:
+        ruta = f"EntityDefinitions(LogicalName='{TABLA}')/Attributes(LogicalName='{n}')"
+        cliente.responder("GET", f"{ruta}/Microsoft.Dynamics.CRM.IntegerAttributeMetadata",
+                          (200, {"LogicalName": n, "SchemaName": n, "DisplayName": label("Viejo"), "Description": label("Vieja"), "Conservado": 9}, {}))
+        cliente.responder("PUT", ruta, (204, None, {}))
+    conformes = tt.genericas_de(datos)
+    cliente.responder("GET", lambda r: "/Attributes?" in r,
+                      lambda r, cuerpo, sol: (200, {"value": conformes if any(l["metodo"] == "PUT" for l in cliente.llamadas) else viejas}, {}))
+    return tt.armar(cliente, datos, **armar_kw)
+
+
+def escrituras(cliente):
+    return [(l["metodo"], l["ruta"]) for l in cliente.llamadas if l["metodo"] != "GET"]
+
+
+class CorregirNombresDeUnaFormula(Base):
+    """`--corregir-nombres` sobre una columna de fórmula. Ensayo del 2026-10-09: el editor de Power Apps deja el nombre visible SOLO en 1033 y la descripción
+    vacía (solo 1033 con ""); la reparación que funcionó es el GET de la definición completa con el cast del resultado (`DecimalAttributeMetadata`),
+    `@odata.type`, `DisplayName` y `Description` en los dos idiomas, y PUT con `MSCRM.MergeLabels` y `MSCRM.SolutionUniqueName`; después PublishXml.
+    `FormulaDefinition`, `SourceType` y `Precision` quedaron intactos. Solo se repara el nombre visible y la descripción de una fórmula: la descripción de
+    cualquier otra columna sigue siendo una diferencia que no se toca."""
+
+    def test_lo_que_deja_el_editor_se_completa_en_los_dos_idiomas_con_el_cast_decimal(self):
+        cliente = cliente_de_correccion(CONVERSACION, genericas_del_editor(CONVERSACION))
+        estado, _, detalle = self.con_cliente(cliente, CONVERSACION, corregir_nombres=True)
+        self.assertEqual("ya_existia", estado, detalle)
+        self.assertIn("se corrigieron 1", detalle)
+        self.assertEqual([("PUT", RUTA_FORMULA), ("POST", "PublishXml")], escrituras(cliente))
+        lecturas = [l for l in cliente.llamadas if l["ruta"] == f"{RUTA_FORMULA}/Microsoft.Dynamics.CRM.DecimalAttributeMetadata"]
+        self.assertEqual(1, len(lecturas))
+        put = next(l for l in cliente.llamadas if l["metodo"] == "PUT")
+        cuerpo = put["cuerpo"]
+        self.assertEqual("Microsoft.Dynamics.CRM.DecimalAttributeMetadata", cuerpo["@odata.type"])
+        self.assertEqual({1033: "Antiguedad", 3082: "Antiguedad"}, textos(cuerpo["DisplayName"]))
+        self.assertEqual({1033: "Descripción de sanic_antiguedad.", 3082: "Descripción de sanic_antiguedad."}, textos(cuerpo["Description"]))
+        self.assertEqual((EXPRESION, 3, 2, 7), (cuerpo["FormulaDefinition"], cuerpo["SourceType"], cuerpo["Precision"], cuerpo["Conservado"]))  # lo demás se conserva
+        self.assertNotIn("@odata.context", cuerpo)
+        self.assertEqual(({"MSCRM.MergeLabels": "true"}, tt.IDENT["solucion"]), (put["cabeceras"], put["solucion"]))
+        # y se relee: ya no hay nada pendiente de la fórmula
+        self.assertNotIn("sanic_antiguedad.DisplayName", detalle)
+
+    def test_una_formula_de_resultado_entero_usa_el_cast_integer(self):
+        datos = copy.deepcopy(CONVERSACION)
+        f = datos["columnas"][POS]
+        f.update(resultado="entero", expresion="DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Minutes)")
+        del f["precision"]
+        cliente = cliente_de_correccion(datos, genericas_del_editor(datos), cast="Integer")
+        estado, _, detalle = self.con_cliente(cliente, datos, corregir_nombres=True)
+        self.assertEqual("ya_existia", estado, detalle)
+        self.assertEqual([("PUT", RUTA_FORMULA), ("POST", "PublishXml")], escrituras(cliente))
+        put = next(l for l in cliente.llamadas if l["metodo"] == "PUT")
+        self.assertEqual("Microsoft.Dynamics.CRM.IntegerAttributeMetadata", put["cuerpo"]["@odata.type"])
+        self.assertEqual({1033: "Descripción de sanic_antiguedad.", 3082: "Descripción de sanic_antiguedad."}, textos(put["cuerpo"]["Description"]))
+        self.assertEqual([], [l for l in cliente.llamadas if l["ruta"].startswith(f"{RUTA_FORMULA}/Microsoft.Dynamics.CRM.DecimalAttributeMetadata")
+                              and "?" not in l["ruta"]])
+
+    def test_una_diferencia_de_solo_la_descripcion_o_de_solo_el_nombre_de_una_formula_es_reparable(self):
+        casos = [
+            ("solo la descripcion", genericas_del_editor(CONVERSACION, visible=False)),
+            ("solo el nombre visible", genericas_del_editor(CONVERSACION, descripcion=False)),
+            ("el nombre visible con otro texto", genericas_del_editor(CONVERSACION, descripcion=False, nombre_viejo="Viejo")),
+        ]
+        for nombre, viejas in casos:
+            with self.subTest(nombre):
+                cliente = cliente_de_correccion(CONVERSACION, viejas)
+                estado, _, detalle = self.con_cliente(cliente, CONVERSACION, corregir_nombres=True)
+                self.assertEqual("ya_existia", estado, detalle)
+                self.assertEqual([("PUT", RUTA_FORMULA), ("POST", "PublishXml")], escrituras(cliente))
+
+    def test_el_plan_incluye_la_formula_solo_por_descripcion_y_solo_a_ella(self):
+        formula_desc = "sanic_antiguedad.Description[3082]: entorno=None playbook='x'"
+        self.assertEqual({"tabla": False, "columnas": ["sanic_antiguedad"], "si_no": []}, tb._nombres_que_difieren(CONVERSACION, [formula_desc]))
+        # varias diferencias de la misma fórmula (nombre y descripción, por idioma) la agregan una sola vez
+        varias = ["sanic_antiguedad.DisplayName[3082]: entorno=None playbook='x'", "sanic_antiguedad.Description[1033]: entorno='' playbook='x'", formula_desc]
+        self.assertEqual({"tabla": False, "columnas": ["sanic_antiguedad"], "si_no": []}, tb._nombres_que_difieren(CONVERSACION, varias))
+        # la descripción de CUALQUIER OTRA columna (o de la primaria) sigue sin ser reparable
+        for otra in ("sanic_cantidadrespuestas", "sanic_sinrespuestadesde", "sanic_nombre"):
+            with self.subTest(otra):
+                self.assertIsNone(tb._nombres_que_difieren(CONVERSACION, [f"{otra}.Description[3082]: entorno=None playbook='x'"]))
+                self.assertIsNone(tb._nombres_que_difieren(CONVERSACION, [formula_desc, f"{otra}.Description[3082]: entorno=None playbook='x'"]))
+        self.assertIsNone(tb._nombres_que_difieren(CONVERSACION, [formula_desc, "Description[3082]: entorno=None playbook='x'"]))  # la de la tabla tampoco
+
+    def test_junto_con_otra_columna_se_corrigen_las_dos_con_un_solo_publicar(self):
+        viejas = genericas_del_editor(CONVERSACION)
+        viejas = con_cambio(viejas, [next(k for k, g in enumerate(viejas) if g["LogicalName"] == "sanic_cantidadrespuestas"), "DisplayName"], label("Viejo"))
+        cliente = cliente_de_correccion(CONVERSACION, viejas, columnas_enteras=("sanic_cantidadrespuestas",))
+        estado, _, detalle = self.con_cliente(cliente, CONVERSACION, corregir_nombres=True)
+        self.assertEqual("ya_existia", estado, detalle)
+        self.assertIn("se corrigieron 2", detalle)
+        self.assertEqual([("PUT", RUTA_FORMULA), ("PUT", RUTA_ENTERO), ("POST", "PublishXml")], escrituras(cliente))
+        entero = next(l for l in cliente.llamadas if l["metodo"] == "PUT" and l["ruta"] == RUTA_ENTERO)["cuerpo"]
+        self.assertEqual("Microsoft.Dynamics.CRM.IntegerAttributeMetadata", entero["@odata.type"])
+        # a la columna que no es fórmula NO se le toca la descripción
+        self.assertEqual({1033: "Vieja", 3082: "Vieja"}, textos(entero["Description"]))
+
+    def test_con_otra_diferencia_ademas_no_toca_nada(self):
+        f = CONVERSACION["columnas"][POS]
+        viejas = genericas_del_editor(CONVERSACION)
+        descripcion_ajena = con_cambio(viejas, [next(k for k, g in enumerate(viejas) if g["LogicalName"] == "sanic_cantidadrespuestas"), "Description"], label("Otra"))
+        casos = [
+            ("la descripcion de otra columna", dict(viejas=descripcion_ajena)),
+            ("la expresion de la formula", dict(viejas=viejas, formulas={"sanic_antiguedad": cuerpo_formula(f, FormulaDefinition="DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Hours)")})),
+            ("el SourceType de la formula", dict(viejas=viejas, formulas={"sanic_antiguedad": cuerpo_formula(f, SourceType=0)})),
+            ("la auditoria de la formula", dict(viejas=viejas, formulas={"sanic_antiguedad": cuerpo_formula(f, IsAuditEnabled=aud(True))})),
+            ("una etiqueta en un idioma que el playbook no declara", dict(viejas=con_cambio(viejas, [next(k for k, g in enumerate(viejas) if g["LogicalName"] == "sanic_antiguedad"), "DisplayName"],
+                                                                                        label("Antiguedad", otros_idiomas=[(1046, "Idade")]))),),
+        ]
+        for nombre, kw in casos:
+            with self.subTest(nombre):
+                viejas_caso = kw.pop("viejas")
+                cliente = cliente_de_correccion(CONVERSACION, viejas_caso, **kw)
+                estado, _, detalle = self.con_cliente(cliente, CONVERSACION, corregir_nombres=True)
+                self.assertEqual("difiere", estado, detalle)
+                self.assertFalse(cliente.hubo_escritura())
+
+    def test_sin_el_flag_o_con_solo_verificar_difiere_y_no_escribe(self):
+        for kw in ({}, dict(corregir_nombres=True, solo_verificar=True)):
+            with self.subTest(kw):
+                cliente = cliente_de_correccion(CONVERSACION, genericas_del_editor(CONVERSACION))
+                estado, _, detalle = self.con_cliente(cliente, CONVERSACION, **kw)
+                self.assertEqual("difiere", estado, detalle)
+                self.assertIn("sanic_antiguedad.Description[1033]", detalle)
+                self.assertIn("sanic_antiguedad.DisplayName[3082]", detalle)
+                self.assertFalse(cliente.hubo_escritura())
+
+    def test_si_el_put_de_la_formula_falla_es_error_y_dice_cual(self):
+        cliente = cliente_de_correccion(CONVERSACION, genericas_del_editor(CONVERSACION), put=(400, {"error": "boom"}, {}))
+        estado, _, detalle = self.con_cliente(cliente, CONVERSACION, corregir_nombres=True)
+        self.assertEqual("error", estado, detalle)
+        self.assertIn("HTTP 400", detalle)
+        self.assertIn("sanic_antiguedad", detalle)
+        self.assertIn("fórmula", detalle)
+        self.assertNotIn(("POST", "PublishXml"), escrituras(cliente))
 
 
 if __name__ == "__main__":

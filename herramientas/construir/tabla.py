@@ -86,7 +86,7 @@ CLAVES_POR_TIPO = {
     "memo": {"largo": int},
     "entero": {"minimo": int, "maximo": int},
     "decimal": {"precision": int, "minimo": "numero", "maximo": "numero"},
-    # La fórmula la crea una persona (la plataforma no soporta definirla por código); la herramienta solo la lee.
+    # La fórmula la crea una persona en el editor de Power Apps (la plataforma no soporta definirla por código); la herramienta solo la lee (ensayada 2026-10-09).
     # `precision` se suma solo cuando `resultado` es decimal (ver `_claves_de_columna`).
     "formula": {"expresion": str, "resultado": str, "depende_de": list},
     "choice": {"choice": str},
@@ -113,9 +113,8 @@ SIN_ENSAYAR_DE_LA_VARIANTE = frozenset()
 CARACTERISTICAS = frozenset({f"tipo:{t}" for t in CLAVES_POR_TIPO} | {"tabla:auditoria", "columna:auditoria", "columna:protegida", "primaria:autonumerica",
                                                                        "decimal:precision0", "motivos_estado"})
 # …lo que la skill 0.2.0 agregó y NO tiene ciclo completo contra la plataforma (`tabla.md` y la receta de `construir`, 2.2:
-# «Características que el playbook ya admite y la herramienta aún no ensayó»). Quedan la precisión 0 de un decimal y la fórmula (que además
-# crea una persona, no la herramienta)…
-SIN_ENSAYAR = frozenset({"decimal:precision0", "tipo:formula"})
+# «Características que el playbook ya admite y la herramienta aún no ensayó»). Queda la precisión 0 de un decimal…
+SIN_ENSAYAR = frozenset({"decimal:precision0"})
 # …y lo que ya se comprobó contra la plataforma real. Un playbook que usa algo
 # que no está acá se bloquea: primero se ensaya sobre una tabla descartable
 # (`…_tbl_zz…`, con --permitir-no-verificadas) y recién después se mueve de SIN_ENSAYAR a acá, con la fecha del ensayo.
@@ -130,13 +129,21 @@ SIN_ENSAYAR = frozenset({"decimal:precision0", "tipo:formula"})
 #   el `Value` explícito (159460001..3) con su `State`; `$expand=OptionSet` sobre `StatusAttributeMetadata` devuelve las opciones con `State`; un alta
 #   sin statuscode toma statecode 0 / statuscode 1; un PATCH de statecode 0 con un statuscode del estado 1 lo rechaza la plataforma (400); statecode y
 #   statuscode nacen con `IsAuditEnabled = true` si la tabla es auditada. En el XML: `<attribute PhysicalName="statuscode">` con `<statuses><status value state>`.
+# `tipo:formula` se ensayó el 2026-10-09 (Dev, org36e60d9d, misma tabla descartable): una persona creó la columna en el editor de Power Apps (dentro de la
+# solución; la herramienta NO la crea y eso no cambia) y la herramienta la leyó y la exportó:
+# - `FormulaDefinition` es EXACTAMENTE la expresión tipeada (sin `=` ni envoltorio), `SourceType` 3, `Precision`, `MinValue`/`MaxValue` ±100.000.000.000
+#   (los fija la plataforma), `IsValidForCreate`/`IsValidForUpdate` false, `RequiredLevel` None, `IsSecured` y `IsAuditEnabled` false.
+# - El editor deja `DisplayName` SOLO en 1033 y `Description` vacía (solo 1033 con ""): `--corregir-nombres` lo completa. La reparación que funcionó es el
+#   GET de la definición completa con el cast del resultado (`DecimalAttributeMetadata`), `@odata.type`, `DisplayName` y `Description` en los dos idiomas y
+#   PUT con `MSCRM.MergeLabels` y `MSCRM.SolutionUniqueName` (204) + PublishXml; `FormulaDefinition`, `SourceType` y `Precision` quedaron intactos.
+# - Pertenencia: la tabla está en la solución con rootcomponentbehavior 0 y la columna no tiene fila propia en solutioncomponents (como las demás).
+# - En el XML exportado: `<Type>decimal</Type>`, `<SourceType>3</SourceType>`, `<Accuracy>` y `<FormulaDefinitionFileName>`; la expresión va en el yaml
+#   `Formulas/<tabla>-FormulaDefinitions.yaml` del zip (`muestra_tabla.py` la compara).
 VERIFICADAS_EN_PLATAFORMA = frozenset(CARACTERISTICAS - SIN_ENSAYAR) | (CARACTERISTICAS_DE_LA_VARIANTE - SIN_ENSAYAR_DE_LA_VARIANTE)
-# Qué está pendiente de cada característica sin ensayar (receta de `construir`, 2.2): se dice en el mensaje, nunca se supone.
+# Qué está pendiente de cada característica sin ensayar (receta de `construir`, 2.2): se dice en el mensaje, nunca se supone. Hoy solo la precisión 0.
 PENDIENTE_DE_VERIFICAR = {
     "decimal:precision0": "Learn documenta la precisión de 1 a 10: el 0 en una columna decimal común está pendiente de verificar "
                           "(si el diseño pide cero decimales, la columna es un `entero`)",
-    "tipo:formula": "la fórmula no se crea por código (paso manual); falta comprobar cómo guarda FormulaDefinition el editor, "
-                    "con qué IsAuditEnabled nace y si deja las etiquetas de los demás idiomas",
 }
 FORMULA_RESULTADOS = ("decimal", "entero")  # los dos tipos de resultado creados y leídos en el entorno (spike 2, 2026-10-08)
 FORMULA_LARGO_MAXIMO = 1000
@@ -694,8 +701,8 @@ def _verificar(dv, datos, identidad, solution_id):
 
 
 def _opciones_de(cuerpo, consulta, con_estado):
-    """Las opciones de un `OptionSet` expandido: `{valor: (estado o None, Label)}`, con la forma de CADA nivel validada. La forma de esta
-    lectura (`$expand=OptionSet($select=Options)` sobre StatusAttributeMetadata / StateAttributeMetadata) es un pendiente de la skill."""
+    """Las opciones de un `OptionSet` expandido: `{valor: (estado o None, Label)}`, con la forma de CADA nivel validada. Esta lectura
+    (`$expand=OptionSet($select=Options)` sobre StatusAttributeMetadata / StateAttributeMetadata) devuelve las opciones con `State` (ensayo del 2026-10-09)."""
     os_ = exigir_forma(cuerpo.get("OptionSet"), dict, consulta, "OptionSet")
     opciones = exigir_forma(os_.get("Options"), [dict], consulta, "OptionSet.Options", no_vacio=True)
     resultado = {}
@@ -751,8 +758,8 @@ SOURCE_TYPE_FORMULA = 3
 
 def _verificar_formula(dv, tabla, c, idiomas, en_entorno, por_familia, difs, notas):
     """Punto 8 de la verificación de la skill, por lectura de metadata (no escribe nada). El nombre visible y la descripción ya los
-    comparó la lectura genérica de columnas. La EXPRESIÓN no se compara contra `FormulaDefinition`: cómo la guarda el editor de
-    Power Apps está pendiente de verificar (la comparación fuerte es el export de la solución); se dice en `notas`, nunca se calla."""
+    comparó la lectura genérica de columnas. La EXPRESIÓN del playbook se compara con `FormulaDefinition` normalizando los espacios: el editor de
+    Power Apps la guarda EXACTAMENTE como se tipeó, sin `=` ni envoltorio (ensayo del 2026-10-09). `notas` ya no lleva nada de la fórmula."""
     n = c["nombre"]
     consulta = f"la lectura de la fórmula '{n}' (GET EntityDefinitions '{tabla}' /Attributes '{n}')"
     ruta = f"EntityDefinitions(LogicalName='{tabla}')/Attributes(LogicalName='{n}')"
@@ -798,9 +805,10 @@ def _verificar_formula(dv, tabla, c, idiomas, en_entorno, por_familia, difs, not
             comportamiento = _administrada(fila.get("DateTimeBehavior"), str, cf, f"value[{i}].DateTimeBehavior")
             if comportamiento != "UserLocal":
                 difs.append(f"{n}.depende_de: {base} tiene comportamiento de fecha {comportamiento!r} y la expresión usa Now(): tiene que ser 'UserLocal'")
-    leida = "" if definicion is None or " ".join(definicion.split()) == " ".join(c["expresion"].split()) else f" (FormulaDefinition leída: {definicion!r})"
-    notas.append(f"{n}: la expresión NO se comparó con FormulaDefinition (cómo la guarda el editor está pendiente de verificar): "
-                 f"comparar contra el export de la solución (Formulas/{tabla}-FormulaDefinitions.yaml){leida}")
+    esperada = " ".join(c["expresion"].split())
+    if definicion is None or " ".join(definicion.split()) != esperada:
+        mostrada = definicion if definicion is None else " ".join(definicion.split())
+        difs.append(f"{n}.FormulaDefinition: entorno={mostrada!r} playbook={esperada!r}")
 
 
 def _comparar_familia(c, f, i, consulta, idiomas, difs, tabla_nombre):
@@ -923,24 +931,31 @@ def optionset_exceptuado(tabla, columna, textos_reales):
 
 CAST_DE_TIPO = {"texto": "String", "autonumerico": "String", "memo": "Memo", "entero": "Integer", "decimal": "Decimal", "choice": "Picklist", "sino": "Boolean",
                 "fecha": "DateTime", "fechahora": "DateTime", "archivo": "File"}
+CAST_DE_RESULTADO = {"decimal": "Decimal", "entero": "Integer"}  # una fórmula es del tipo de su resultado
 
 
 def _nombres_que_difieren(datos, diffs):
     """Si TODAS las diferencias son de nombres visibles, devuelve qué hay que
     corregir: {"tabla": bool, "columnas": [nombres], "si_no": [(columna, valor, clave)]};
-    si hay cualquier otra diferencia, `None`: no se toca nada."""
+    si hay cualquier otra diferencia, `None`: no se toca nada.
+    Una columna de fórmula es la excepción en lo que se repara: el editor de Power Apps la deja con el nombre visible y la descripción SOLO en el
+    idioma del usuario (ensayo del 2026-10-09), así que en ella también una diferencia de DESCRIPCIÓN por idioma es reparable (se corrige junto con el
+    nombre, en un solo PUT). La descripción de cualquier otra columna no lo es: no la deja a medias ninguna herramienta."""
     plan = {"tabla": False, "columnas": [], "si_no": []}
-    columnas = [datos["primaria"]["nombre"]] + [c["nombre"] for c in datos["columnas"] if c["tipo"] != "formula"]
-    # Una fórmula no se renombra con esta herramienta: el PUT sobre una columna de fórmula no se ensayó (receta de `construir`, 2.2). Si
-    # lo que difiere es el nombre de una fórmula, no está en `columnas`, cae en el `else` y no se toca nada.
+    formulas = {c["nombre"] for c in datos["columnas"] if c["tipo"] == "formula"}
+    columnas = [datos["primaria"]["nombre"]] + [c["nombre"] for c in datos["columnas"]]
     for d in diffs:
         que = re.sub(r"\[\d+\]$", "", d.split(": entorno=", 1)[0]) if ": entorno=" in d else None
+        nombre_de_columna = que[: que.rindex(".")] if que and "." in que else None
         if que in ("DisplayName", "DisplayCollectionName"):
             plan["tabla"] = True
-        elif que and que.endswith(".DisplayName") and que[: -len(".DisplayName")] in columnas:
+        elif que and que.endswith(".DisplayName") and nombre_de_columna in columnas:
             # Hay una diferencia por idioma: la columna se corrige UNA vez, con las etiquetas de todos los idiomas.
-            if que[: -len(".DisplayName")] not in plan["columnas"]:
-                plan["columnas"].append(que[: -len(".DisplayName")])
+            if nombre_de_columna not in plan["columnas"]:
+                plan["columnas"].append(nombre_de_columna)
+        elif que and que.endswith(".Description") and nombre_de_columna in formulas:
+            if nombre_de_columna not in plan["columnas"]:
+                plan["columnas"].append(nombre_de_columna)
         elif que and que.rsplit(".", 1)[-1] in ("etiqueta_si", "etiqueta_no") and que.rsplit(".", 1)[0] in columnas:
             item = (que.rsplit(".", 1)[0], 1 if que.endswith("etiqueta_si") else 0, que.rsplit(".", 1)[-1])
             if item not in plan["si_no"]:
@@ -954,7 +969,10 @@ def corregir_nombres(dv, datos, identidad, plan):
     """Ensayado contra la plataforma el 2026-09-21 con todos los tipos de
     columna: PUT de la definición completa (con '@odata.type', que el GET no
     trae) para la tabla y para cada columna; `UpdateOptionValue` para las
-    etiquetas de un sí/no; y publicar. No cambia nada más. Devuelve `None` o el problema."""
+    etiquetas de un sí/no; y publicar. No cambia nada más. Devuelve `None` o el problema.
+    Una columna de fórmula (ensayado el 2026-10-09) se lee y se reescribe con el cast de su resultado (`decimal` → Decimal, `entero` → Integer) y se le
+    corrige también la `Description`: el editor la deja en un solo idioma. Lo demás de su definición (`FormulaDefinition`, `SourceType`, `Precision`) viaja
+    intacto, porque el PUT parte de la definición completa que devolvió el entorno."""
     tabla, solucion, idiomas = datos["nombre"], identidad["solucion"], identidad["idiomas"]
     fusion = {"MSCRM.MergeLabels": "true"}
 
@@ -975,14 +993,19 @@ def corregir_nombres(dv, datos, identidad, plan):
     por_nombre = {c["nombre"]: c for c in datos["columnas"]}
     por_nombre[datos["primaria"]["nombre"]] = {**datos["primaria"], "tipo": "texto"}
     for n in plan["columnas"]:
-        cast = f"Microsoft.Dynamics.CRM.{CAST_DE_TIPO[por_nombre[n]['tipo']]}AttributeMetadata"
+        c = por_nombre[n]
+        es_formula = c["tipo"] == "formula"
+        cast = f"Microsoft.Dynamics.CRM.{CAST_DE_RESULTADO[c['resultado']] if es_formula else CAST_DE_TIPO[c['tipo']]}AttributeMetadata"
         ruta = f"EntityDefinitions(LogicalName='{tabla}')/Attributes(LogicalName='{n}')"
         definicion = leer(f"{ruta}/{cast}", f"la columna {n}")
         definicion["@odata.type"] = cast
-        definicion["DisplayName"] = etiqueta_web_api(por_nombre[n]["displayname"], idiomas)
+        definicion["DisplayName"] = etiqueta_web_api(c["displayname"], idiomas)
+        if es_formula:
+            definicion["Description"] = etiqueta_uniforme(c["descripcion"], idiomas)
         est, resp, _ = escribir_metadatos(dv, "PUT", ruta, definicion, solucion=solucion, cabeceras=fusion)
         if est != 204:
-            return f"falló cambiar el nombre visible de la columna {n}: HTTP {est} {resp}"
+            return (f"falló cambiar el nombre visible y la descripción de la columna de fórmula {n}: HTTP {est} {resp}" if es_formula
+                    else f"falló cambiar el nombre visible de la columna {n}: HTTP {est} {resp}")
     for n, valor, clave in plan["si_no"]:
         cuerpo = {"EntityLogicalName": tabla, "AttributeLogicalName": n, "Value": valor, "Label": etiqueta_web_api(por_nombre[n][clave], idiomas), "MergeLabels": True, "SolutionUniqueName": solucion}
         est, resp, _ = escribir_metadatos(dv, "POST", "UpdateOptionValue", cuerpo)
@@ -1032,9 +1055,9 @@ def _paso_manual_de_renombre(datos, m, idiomas):
 
 def _escribir_motivos(dv, datos, identidad):
     """Alta de los motivos de estado, en el orden del playbook, y publicar la tabla una vez. Devuelve `None` si salió bien o
-    `(estado, detalle)`. Lo que la skill marca como pendiente de verificar NO se supone: si la plataforma no acepta el renombre
-    (`UpdateOptionValue` sobre `statuscode`) o no respeta el `Value` explícito (`InsertStatusValue`), es `bloqueado` y se dice qué falta
-    (un 4xx es la plataforma diciendo que no lo admite); un 5xx, el 429 sin resolver o cualquier otra cosa es `error`."""
+    `(estado, detalle)`. Ensayado el 2026-10-09: `UpdateOptionValue` sobre `statuscode` SÍ renombra los motivos por defecto e `InsertStatusValue` respeta el
+    `Value` explícito con su `State`. Si un entorno no lo hiciera, la herramienta NO lo supone y se detiene como salvaguarda: un 4xx (la plataforma dice
+    que no lo admite) o un valor asignado distinto es `bloqueado` y se dice qué pasó; un 5xx, el 429 sin resolver o cualquier otra cosa es `error`."""
     tabla, solucion, idiomas, hechos = datos["nombre"], identidad["solucion"], identidad["idiomas"], []
 
     def incompleta():
@@ -1056,19 +1079,21 @@ def _escribir_motivos(dv, datos, identidad):
         etiqueta = m["etiqueta"][str(idiomas[0])]
         if est == (200 if agregar else 204):
             if agregar:
-                # La plataforma debe respetar el valor que se le manda: si asigna otro, no se acepta (pendiente de verificar en la receta).
+                # La plataforma respeta el valor que se le manda (ensayado el 2026-10-09): si asignara otro, no se acepta (salvaguarda).
                 asignado = exigir_forma(resp.get("NewOptionValue") if isinstance(resp, dict) else None, int,
                                         f"la respuesta de InsertStatusValue del motivo {m['valor']}", "NewOptionValue")
                 if asignado != m["valor"]:
-                    return "bloqueado", (f"InsertStatusValue asignó el valor {asignado} al motivo {etiqueta!r} y el playbook pide {m['valor']}: que la plataforma respete "
-                                         f"un Value explícito está pendiente de verificar (Microsoft recomienda dejar que el sistema lo asigne) y la herramienta no acepta otro valor. {incompleta()}")
+                    return "bloqueado", (f"InsertStatusValue asignó el valor {asignado} al motivo {etiqueta!r} y el playbook pide {m['valor']}: la plataforma respeta "
+                                         "un Value explícito (ensayado el 2026-10-09), así que esto no es lo esperado; la herramienta no acepta otro valor y se detiene "
+                                         f"como salvaguarda. {incompleta()}")
             hechos.append(m["valor"])
             continue
         if 400 <= est < 500 and est != 429:
-            pendiente = ("que UpdateOptionValue acepte statuscode está pendiente de verificar (la documentación habla de un choice global o de la columna "
-                         f"choice de una tabla, no del status); si no lo acepta, renombrar es un paso manual: {_paso_manual_de_renombre(datos, m, idiomas)}"
-                         if not agregar else "que InsertStatusValue admita este alta está pendiente de verificar")
-            return "bloqueado", f"la plataforma rechazó {accion} sobre statuscode para el motivo {m['valor']} ({etiqueta!r}) con HTTP {est}: {resp}. {pendiente}. {incompleta()}"
+            salvaguarda = ("UpdateOptionValue sobre statuscode funcionó en el ensayo del 2026-10-09 (renombró los motivos 1 y 2); este rechazo no es lo esperado y la "
+                           f"herramienta se detiene como salvaguarda. Si persiste, renombrar es un paso manual: {_paso_manual_de_renombre(datos, m, idiomas)}"
+                           if not agregar else "InsertStatusValue funcionó en el ensayo del 2026-10-09 (respeta el Value y el State); este rechazo no es lo esperado "
+                                               "y la herramienta se detiene como salvaguarda")
+            return "bloqueado", f"la plataforma rechazó {accion} sobre statuscode para el motivo {m['valor']} ({etiqueta!r}) con HTTP {est}: {resp}. {salvaguarda}. {incompleta()}"
         return "error", f"falló {accion} sobre statuscode para el motivo {m['valor']} ({etiqueta!r}): HTTP {est} {resp}. {incompleta()}"
     xml = f"<importexportxml><entities><entity>{tabla}</entity></entities></importexportxml>"
     est, resp, _ = escribir_metadatos(dv, "POST", "PublishXml", {"ParameterXml": xml})
@@ -1077,8 +1102,15 @@ def _escribir_motivos(dv, datos, identidad):
     return None
 
 
+CIERRE_DEL_PASO_MANUAL = ("después correr esta herramienta con --corregir-nombres para completar las etiquetas y la descripción en todos los idiomas "
+                          "(el editor solo deja el idioma del usuario)")
+CIERRE_DEL_PASO_MANUAL_DE_LA_VARIANTE = "después se vuelve a correr esta herramienta"  # la variante no admite --corregir-nombres
+
+
 def _instruccion_paso_manual(datos, formulas, idiomas):
-    """El paso manual de cada fórmula, literal y para una persona (`tabla.md`, «Cómo se crea: paso manual»)."""
+    """El paso manual de cada fórmula, literal y para una persona (`tabla.md`, «Cómo se crea: paso manual»). Cierra UNA vez, al final: el editor de Power Apps
+    deja el nombre visible y la descripción solo en el idioma del usuario (ensayo del 2026-10-09), y `--corregir-nombres` los completa en todos. En una
+    tabla estándar (`columnas-estandar`) esa bandera no aplica y el cierre es solo volver a correr."""
     nombre_tabla = datos.get("nombre") or datos.get("tabla")  # la variante sobre una estándar no tiene `nombre`
     pasos = []
     for c in formulas:
@@ -1088,9 +1120,10 @@ def _instruccion_paso_manual(datos, formulas, idiomas):
             f"{c['nombre']}: en Power Apps, Soluciones > la solución del playbook > tabla {nombre_tabla} > Columnas > Nueva columna; "
             f"tipo de datos Fórmula; nombre lógico exactamente {c['nombre']}; nombre para mostrar ({nombres}) y descripción como el playbook; "
             f"expresión: {c['expresion']}; {resultado}; guardar y publicar. Se hace después de que existan las columnas base "
-            f"({', '.join(c['depende_de'])}): con una base ausente la fórmula queda inválida. Después se vuelve a correr esta herramienta"
+            f"({', '.join(c['depende_de'])}): con una base ausente la fórmula queda inválida"
         )
-    return " | ".join(pasos)
+    cierre = CIERRE_DEL_PASO_MANUAL if "nombre" in datos else CIERRE_DEL_PASO_MANUAL_DE_LA_VARIANTE
+    return " | ".join(pasos) + f"; {cierre}"
 
 
 def _con_pendientes(estado, componente, detalle, actual, datos, identidad):
@@ -1140,7 +1173,7 @@ def _flujo(dv, datos, identidad, solo_verificar, componente, contexto, corregir_
             actual = ver()
             if not actual["diffs"]:
                 cuantos = int(plan["tabla"]) + len(plan["columnas"]) + len(plan["si_no"])
-                return "ya_existia", componente, (f"MetadataId {actual['metadata_id']}; la tabla existía y solo diferían nombres visibles; se corrigieron {cuantos} "
+                return "ya_existia", componente, (f"MetadataId {actual['metadata_id']}; la tabla existía y solo diferían nombres visibles (o la descripción de una fórmula); se corrigieron {cuantos} "
                                                   f"y ahora coincide en todo; pertenece a '{solucion}'")
     if actual["existe"] and agregar and not solo_verificar:
         faltan = _columnas_que_faltan(datos, actual["diffs"])

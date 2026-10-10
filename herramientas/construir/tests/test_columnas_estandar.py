@@ -408,6 +408,9 @@ class Verificacion(Base):
         self.assertIn("paso manual", detalle)
         self.assertIn("sanic_zzantiguedad", detalle)
         self.assertIn("email", detalle)
+        # la variante no admite --corregir-nombres (una columna que difiere no se toca): el cierre del paso manual no lo pide
+        self.assertNotIn("--corregir-nombres", detalle)
+        self.assertTrue(detalle.endswith("después se vuelve a correr esta herramienta"), detalle)
 
     def test_cuando_la_pertenencia_esta_verificada_se_exige_la_tabla_en_la_solucion_con_comportamiento_distinto_de_0(self):
         verificadas = VERIFICADAS_TODO
@@ -553,15 +556,24 @@ class VarianteVerificada(Base):
         self.assertIn("pertenencia a la solución", detalle)
 
     def test_el_resto_del_gate_sigue_valiendo(self):
-        # una característica NO verificada de la tabla (la fórmula) sigue bloqueando aunque la variante esté verificada
-        formula = col("sanic_antiguedad", "formula", expresion="DateDiff(createdon, Now(), TimeUnit.Minutes) / 60", resultado="decimal", precision=2,
-                      depende_de=["createdon"])
-        datos = dict(copy.deepcopy(REAL), columnas=REAL["columnas"] + [formula])
+        # una característica NO verificada de la tabla (la precisión 0 de un decimal) sigue bloqueando aunque la variante esté verificada
+        sin_decimales = col("sanic_monto", "decimal", precision=0, minimo=0, maximo=100)
+        datos = dict(copy.deepcopy(REAL), columnas=REAL["columnas"] + [sin_decimales])
         centinela = FabricaCentinela()
         estado, _, detalle = self.por_defecto(centinela, datos)
         self.assertEqual(estado, "bloqueado", detalle)
-        self.assertIn("tipo:formula", detalle)
+        self.assertIn("decimal:precision0", detalle)
         self.assertFalse(centinela.llamada)
+
+    def test_la_formula_ya_no_bloquea_por_no_verificada(self):
+        # ensayada el 2026-10-09: una columna fórmula sobre una tabla estándar pasa el gate sin --permitir-no-verificadas
+        formula = col("sanic_antiguedad", "formula", expresion="sanic_tiemporespuesta * 2", resultado="entero", depende_de=["sanic_tiemporespuesta"])
+        datos = dict(copy.deepcopy(REAL), columnas=REAL["columnas"] + [formula])
+        cliente = armar(ClienteSimulado(), datos)
+        estado, _, detalle = self.por_defecto(cliente, datos)
+        self.assertEqual(estado, "ya_existia", detalle)
+        self.assertNotIn("tipo:formula", detalle)
+        self.assertNotIn("no verificadas", detalle)
 
 
 if __name__ == "__main__":

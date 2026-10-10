@@ -2,3 +2,10 @@ Formas de exportacion derivadas de las exportaciones reales del proyecto 2026-00
 
 
 sanic_carp_tbl_zzensayo_decimal_motivos.solucion.xml y .md: EXPORTACION REAL (ExportSolution) del ensayo del 2026-10-09 en Dev (org36e60d9d), tabla descartable sanic_carp_tbl_zzensayo con columnas decimal y motivos de estado; el .md es el playbook que la creo (playbooks/tabla/ensayos/). No es una forma derivada.
+
+
+sanic_carp_tbl_zzensayo_formula.solucion.xml, .solution.xml, .formulas.yaml y .md: EXPORTACION REAL (ExportSolution unmanaged) del 2026-10-09 en Dev (org36e60d9d) de la misma tabla descartable sanic_carp_tbl_zzensayo con la columna de formula que una persona creo en el editor de Power Apps (dentro de la solucion); el .md es el playbook de ensayo (copia de playbooks/tabla/ensayos/sanic_carp_tbl_zzensayo.md). No es una forma derivada.
+- .solucion.xml: el fragmento <Entity> de customizations.xml (lo que guarda muestra_tabla.py --guardar); el atributo de la formula trae <Type>decimal</Type>, <SourceType>3</SourceType>, <Accuracy>2</Accuracy>, <MinValue>/<MaxValue> de la plataforma y <FormulaDefinitionFileName>/Formulas/sanic_carp_tbl_zzensayo-FormulaDefinitions.yaml</FormulaDefinitionFileName>.
+- .formulas.yaml: Formulas/sanic_carp_tbl_zzensayo-FormulaDefinitions.yaml del zip, una linea por columna (<columna>: =<expresion>); se lee con utf-8-sig.
+- .solution.xml: el solution.xml completo del zip (los RootComponent).
+- UNICO CAMBIO respecto de la exportacion: la persona tipeo por error el nombre sanic_antiguedadq; en estas copias (xml y yaml) se renombro a sanic_antiguedad, el nombre del playbook de ensayo. Todo lo demas es el contenido de la exportacion (el fragmento <Entity> sale de ElementTree, como en --guardar).

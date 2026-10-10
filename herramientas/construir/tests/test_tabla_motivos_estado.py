@@ -255,7 +255,8 @@ class CreacionDeLosMotivos(Base):
         self.assertEqual(estado, "creado", detalle)
         self.assertEqual([], [l for l in cliente.llamadas if l["ruta"] in ("InsertStatusValue", "UpdateOptionValue")])
 
-    def test_si_la_plataforma_asigna_otro_valor_no_se_acepta_y_es_bloqueado_porque_esta_pendiente_de_verificar(self):
+    def test_si_la_plataforma_asigna_otro_valor_no_se_acepta_y_es_bloqueado_como_salvaguarda(self):
+        """Ensayado el 2026-10-09: `InsertStatusValue` respeta el `Value` explícito. Ya no es un pendiente, pero la herramienta sigue sin aceptar otro valor."""
         cliente = ClienteSimulado()
         cliente.responder("POST", "InsertStatusValue", lambda ruta, cuerpo, sol: (200, {"NewOptionValue": cuerpo["Value"] + 7}, {}))
         tt.armar(cliente, ARREGLO, existe=False)
@@ -263,7 +264,9 @@ class CreacionDeLosMotivos(Base):
         self.assertEqual(estado, "bloqueado", detalle)
         self.assertIn("159460001", detalle)
         self.assertIn("159460008", detalle)
-        self.assertIn("pendiente de verificar", detalle)
+        self.assertIn("respeta un Value explícito (ensayado el 2026-10-09)", detalle)
+        self.assertIn("salvaguarda", detalle)
+        self.assertNotIn("pendiente", detalle)
         self.assertEqual(1, len([l for l in cliente.llamadas if l["ruta"] == "InsertStatusValue"]))  # se detiene en el primero
 
     def test_la_respuesta_de_un_alta_con_forma_inesperada_es_error(self):
@@ -278,8 +281,8 @@ class CreacionDeLosMotivos(Base):
                 self.assertIn("NewOptionValue", detalle)
 
     def test_si_la_plataforma_rechaza_el_renombre_del_motivo_por_defecto_es_bloqueado_y_explica_el_paso_manual(self):
-        """Pendiente de la receta: que `UpdateOptionValue` acepte `statuscode`. Si no lo acepta, renombrar los dos motivos por
-        defecto es un paso manual (como la fórmula). La herramienta no supone: lo dice y se detiene."""
+        """Ensayado el 2026-10-09: `UpdateOptionValue` SÍ renombra los motivos por defecto de `statuscode`. Si un entorno lo rechazara, no es lo esperado:
+        la herramienta se detiene como salvaguarda y da el paso manual de renombre (como la fórmula); no supone."""
         for estado_http in (400, 404, 405):
             with self.subTest(estado_http):
                 cliente = ClienteSimulado()
@@ -290,9 +293,26 @@ class CreacionDeLosMotivos(Base):
                 self.assertIn(f"HTTP {estado_http}", detalle)
                 self.assertIn("UpdateOptionValue", detalle)
                 self.assertIn("statuscode", detalle)
-                self.assertIn("pendiente de verificar", detalle)
+                self.assertIn("funcionó en el ensayo del 2026-10-09", detalle)
+                self.assertIn("salvaguarda", detalle)
+                self.assertNotIn("pendiente", detalle)
                 self.assertIn("paso manual", detalle)
                 self.assertIn("Borrador", detalle)
+
+    def test_si_la_plataforma_rechaza_el_alta_de_un_motivo_es_bloqueado_como_salvaguarda(self):
+        """Ensayado el 2026-10-09: `InsertStatusValue` acepta el alta con su `Value` y su `State`. Un 4xx no es lo esperado: se detiene sin suponer."""
+        cliente = ClienteSimulado()
+        cliente.responder("POST", "InsertStatusValue", (400, {"error": "no se admite"}, {}))
+        tt.armar(cliente, ARREGLO, existe=False)
+        estado, _, detalle = self.con_cliente(cliente, ARREGLO, **self.kw())
+        self.assertEqual(estado, "bloqueado", detalle)
+        self.assertIn("HTTP 400", detalle)
+        self.assertIn("InsertStatusValue", detalle)
+        self.assertIn("159460001", detalle)
+        self.assertIn("funcionó en el ensayo del 2026-10-09", detalle)
+        self.assertIn("salvaguarda", detalle)
+        self.assertNotIn("pendiente", detalle)
+        self.assertIn("incompleta", detalle)
 
     def test_un_error_de_servidor_al_escribir_un_motivo_es_error_no_bloqueado(self):
         for ruta in ("UpdateOptionValue", "InsertStatusValue"):
