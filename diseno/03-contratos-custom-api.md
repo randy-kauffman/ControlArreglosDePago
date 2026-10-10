@@ -1,0 +1,1807 @@
+# 03. Contratos de Custom API, plugins y máquinas de estado
+
+Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **borrador del arquitecto para revisión del aprobador** (2026-10-09)
+
+Fuentes y forma de citar: `def.` = `definicion.md` (con línea `L###` o `ítem N` de §6 Lógica); `D-xx` = decisión de la definición; `dicc.` = `diseno/02-diccionario-datos.md` (con sección, `P-xx`, `R-xx`, `DD-xx`); `matriz` = `diseno/04-matriz-privilegios.md`; `inv.` = `diseno/06-inventario-componentes.md`; `conv.` = `diseno/01-convenciones.md`; `spike N` = `spikes/*/RESULTADO.md` (1 plantilla, 1b sandbox, 2 plataforma, 3 sincronización, 4 manual, roles). `M-PPP` = `/home/gmaker/projects/M-PPP/diseno/03-contratos-custom-api.md`, solo como modelo de forma.
+
+Recetas respetadas: `power-platform-construir/references/dataverse/` `patrones.md` (Custom API, steps, elevación a SYSTEM), `seguridad.md`, `pruebas.md` (sin FakeXrmEasy, BP-PP-159) y `rendimiento.md` (sin N+1, sin `ColumnSet(true)`, sin `ExecuteMultiple` dentro de un plugin).
+
+## Para qué sirve este documento
+
+Un constructor escribe el C# con TDD estricto **sin tomar decisiones de diseño**. Por eso cada pieza trae: el contrato (qué entra, qué sale, qué escribe, con qué identidad), los errores con código y mensaje, las pruebas de aceptación numeradas (`PA-…`, Dado/Cuando/Entonces) y, en la sección 4, las firmas y la estructura de carpetas. El ciclo es el de `herramientas/agentes/orden_constructor_codigo.md`: el arquitecto convierte las pruebas `PA-…` en `src/Sanic.Carp.Plugins.Tests/Aceptacion/` y deja firmas que lanzan `NotImplementedException`; el constructor implementa hasta ponerlas en verde.
+
+Lo que este documento **no** decide: reglas de negocio que las fuentes dejan abiertas. Esas van a la sección 6 ("Decisiones abiertas"), y donde el código necesita un comportamiento mientras tanto se usa el **comportamiento provisional** que ahí se indica, marcado `[ABIERTA OA-n]`. Lo que sí fija este documento, y que las fuentes no traían, está en 0.8 ("Decisiones de diseño de este documento", `DC-nn`): son decisiones técnicas reversibles, cada una con su motivo.
+
+## Mapa de piezas
+
+| Inventario | Pieza | Sección |
+|---|---|---|
+| 7.2 a 7.7 | Dominio puro: estados, normalización, huella, montos, calendario, consecutivo, tiempos, validación de publicación | 2.0 y 3 |
+| 7.8 | Generador Open XML (portado del spike 1) | 4.3 |
+| 7.9 | Doble de `IOrganizationService` en memoria y apoyos de prueba | 4.5 |
+| 7.10 | Datos (repositorios) | 4.2 |
+| 7.11 | Steps de Email y entrada de correo | 2.9 a 2.11 |
+| 7.12 | Steps de Conversación | 2.3 y 2.4 |
+| 7.13 | Steps de Cliente | 2.2 |
+| 7.14 | Steps de Arreglo | 2.5 y 2.6 |
+| 7.15 | Steps de Cuota | 2.7 |
+| 7.16 | Steps de Versión de plantilla y Mapeo | 2.8 |
+| 7.17 | Propietario | 2.1 |
+| 7.18 / 8.2 | Custom API `generarformato` | 1.1 |
+| 7.19 / 8.3 | Custom API `reconciliarcorreos` | 1.2 |
+| 7.20 / 8.4 | Custom API `tomarconversacion` | 1.3 |
+| 7.21 / 8.5 | Custom API `unirconversaciones` | 1.4 |
+| 7.22 / 8.6 | Custom API `iniciarconversacionnueva` | 1.5 |
+| 8.7 | Lista cerrada de steps | 5 |
+
+---
+
+## 0. Reglas comunes
+
+### 0.1 Todas las Custom API
+
+| Propiedad | Valor | Fuente |
+|---|---|---|
+| Tipo | **Action** (`IsFunction = false`). Todas escriben algo o dependen de la identidad; una Function se puede cachear y su `IsFunction` es inmutable | def. L506; spike 1b §2; `patrones.md` |
+| Binding | **Global** (unbound, `BindingType = 0`) | def. L145-150 |
+| `AllowedCustomProcessingStepType` | `None` (nadie registra steps sobre ellas) | M-PPP cabecera |
+| `IsPrivate` | **`false`**. Con `true` el conector de Dataverse no resuelve la acción y el flujo de salud (inv. 11.2) no se podría activar. No es una medida de seguridad: la seguridad es el privilegio de ejecución | M-PPP cabecera (corrección del 2026-09-22); `seguridad.md` §3 |
+| Plugin de respaldo | una clase `IPlugin` por API, en el paquete `sanic_carp_pkg_plugins`, namespace `Sanic.Carp.Plugins.Api` | conv. §5 |
+| Nombres | API: `sanic_carp_capi_<nombre>`, display `CAPI - CARP - <Nombre>`. Parámetro de entrada: `uniquename` corto, `name` = `sanic_carp_capiip_<api>_<uniquename>`, display `CAPI_IP - CARP - <Nombre>`. Parámetro de salida: ídem con `capiop`/`CAPI_OP` | conv. §2 |
+| Tipos de parámetro | Guid (12), String (10), Integer (7), Boolean (0). Ningún parámetro es `EntityReference`: los ids viajan como Guid, para que el JS y el flujo los armen sin tipos de entidad | decisión DC-24 |
+| Parámetro opcional | Una **Action** no recibe la clave en `InputParameters` si el llamador la omite (a diferencia de una Function, M-PPP §2). El código distingue "ausente" (`!Contains`) de "presente y vacío". Aun así, un Guid o un texto vacío se tratan como ausentes | `patrones.md` (Function vs Action) |
+| Respuesta | Los parámetros de salida se escriben **todos** siempre que la llamada termina bien (con valor por defecto si no aplican) | M-PPP §1b |
+| Errores | `InvalidPluginExecutionException` con mensaje `CARP-<ÁREA>-<NNN>: <texto en español>`; ver 0.5 | DC-25 |
+
+**Privilegio de ejecución** (`ExecutePrivilegeName`; solo puede nombrar un privilegio que ya exista; D-17, def. L402):
+
+| API | `ExecutePrivilegeName` | Quién lo tiene (matriz §2) |
+|---|---|---|
+| `generarformato` | `prvReadsanic_carp_tbl_generacionformato` | Oficial (L), Purga (L). Jefe y Servicio por el Oficial |
+| `reconciliarcorreos` | `prvCreatesanic_carp_tbl_conversacion` | Servicio (L). El Oficial no lo tiene |
+| `tomarconversacion`, `unirconversaciones`, `iniciarconversacionnueva` | `prvWritesanic_carp_tbl_conversacion` | Oficial (L); Jefe y Servicio por el Oficial |
+
+Observación para el aprobador (no se resuelve acá): la matriz asigna el rol Oficial al team del sistema de la BU, y las cuentas de servicio están en la BU. Por eso Servicio y Purga también ejecutan `generarformato`, `tomar…`, `unir…` e `iniciar…`. Ver Inconsistencias, punto 11.
+
+### 0.2 Identidad y elevación (quién lee, quién escribe, quién es el actor)
+
+Regla de la definición (def. L228, L241-247, D-26): el sistema hace solo lo que el oficial no puede; la lectura de datos de negocio y los gestos van con la identidad del llamador; cuando se eleva a SYSTEM, **el actor se captura antes de elevar y viaja explícito en el `Target`**, porque bajo SYSTEM `UserId` e `InitiatingUserId` valen SYSTEM en toda la cadena y las `SharedVariables` no llegan (`patrones.md`; spike roles; M-PPP §4).
+
+| Pieza | Lee con | Escribe con | Actor y dónde queda |
+|---|---|---|---|
+| `generarformato` | llamador (arreglo, cuotas, cliente); SYSTEM (versión, mapeo, archivo) | SYSTEM (congelamiento, instantánea, número provisional, bitácora) | `InitiatingUserId` capturado al inicio → `sanic_generadoporid` |
+| `reconciliarcorreos` | SYSTEM | SYSTEM | No hay actor humano. La cuenta de servicio que llama no se registra |
+| `tomarconversacion` | llamador | **llamador** (sin elevar) | `InitiatingUserId` → `sanic_oficialasignadoid` |
+| `unirconversaciones` | llamador (valida acceso) | SYSTEM | `InitiatingUserId` capturado → `sanic_finalizadoporid` del origen |
+| `iniciarconversacionnueva` | llamador (valida acceso) | SYSTEM | No hay columna de actor (ver 1.5) |
+| Steps de gestos (2.3 a 2.8) | `IOrganizationService` del llamador | el mismo `Target` (PreOperation) y SYSTEM para efectos laterales | `InitiatingUserId` del contexto, **nunca** un lookup de negocio como proxy (`patrones.md`, D-60 de M-PPP) |
+| Steps asíncronos de Email (2.10, 2.11) | SYSTEM | SYSTEM | `sanic_respondidoporid` = `createdby` del Email (DC-12) |
+
+### 0.3 `IIdentidadDeEjecucion`: cómo un step distingue "sistema" de "persona"
+
+Supuesto de arquitectura de la def. (L523, L548: "las escrituras anidadas del sistema se distinguen por la identidad de ejecución", confianza media). Contrato único, usado por todos los steps:
+
+- `ActorId`: `InitiatingUserId` del contexto.
+- `EsSistema`: `ActorId` es el usuario SYSTEM. El id de SYSTEM se obtiene **una vez por ejecución** con `WhoAmIRequest` sobre un servicio creado con `CreateOrganizationService(null)`. No se cachea entre ejecuciones (los plugins son sin estado, `rendimiento.md`).
+- `EsCuentaDeServicio`: el `systemuser` de `ActorId` tiene `applicationid` igual al valor de la variable de entorno `sanic_carp_ev_appidcuentaservicio` (10.7). Variable ausente, vacía o que no es un Guid ⇒ `false` (cierra; nunca tumba el guardado de otro).
+- `EsEscrituraDelSistema` = `EsSistema` **o** `EsCuentaDeServicio`.
+- `EsJefatura()`: `ActorId` figura en `teammembership` del team de jefatura (nombre en `sanic_carp_ev_nombreteamjefatura`, dentro de la BU). Consulta perezosa, una vez por ejecución. Las tablas intersect devuelven `Guid` crudo, no `EntityReference` (`patrones.md` §3).
+- **Perezosa**: un step primero revisa, en memoria, si el `Target` toca columnas vigiladas. Si no las toca, no consulta identidad (camino barato).
+
+### 0.4 Configuración del área
+
+Variables de entorno que los plugins leen (def. L418; `seguridad.md` §2). Los nombres *(prov.)* del inventario quedan **fijados** acá:
+
+| Variable | Inventario | Uso |
+|---|---|---|
+| `sanic_carp_ev_nombrebu` | 10.1 | Nombre de la BU ARP |
+| `sanic_carp_ev_nombreteamjefatura` | 10.2 | Nombre del team de jefatura, buscado dentro de la BU |
+| `sanic_carp_ev_appidcuentaservicio` | 10.7 | Application ID de la cuenta de servicio (0.3) |
+| `sanic_carp_ev_buzonarea` | 10.8 | Dirección del buzón del área; resuelve la queue remitente |
+
+`IConfiguracionDelArea` (una instancia por ejecución, todo con servicio SYSTEM y memoizado dentro de la ejecución):
+
+1. Valor de cada variable: `environmentvariablevalue.value`, si no `environmentvariabledefinition.defaultvalue`, si no `CARP-CFG-006`.
+2. BU: `businessunit` con `name` igual al valor, no deshabilitada. Debe haber exactamente una (`CARP-CFG-001`).
+3. Team propietario: `team` con `businessunitid` = la BU e `isdefault = true`. Exactamente uno (`CARP-CFG-002`). **No se busca por nombre** (conv. §2).
+4. Team de jefatura: `team` con `name` = valor y `businessunitid` = la BU (`CARP-CFG-003`).
+5. Queue remitente: `queue` con `emailaddress` igual (sin distinguir mayúsculas) al buzón, no inactiva. Cero ⇒ `CARP-CFG-004`; más de una ⇒ `CARP-CFG-005` (el spike 3 vio dos queues sobre un buzón: indefine el propietario del Email).
+
+Los mensajes `CARP-CFG-*` nombran la variable o el elemento que falta, nunca un valor.
+
+### 0.5 Errores
+
+- Formato: `CARP-<ÁREA>-<NNN>: <texto>`. El texto está en español con ortografía completa, sin datos sensibles (cédula, cuenta, cuerpo de correo) y sin traza de pila (def. L412; `seguridad.md`).
+- `001` a `899`: fallo de negocio o de configuración. **No se reintenta**; se corrige la causa.
+- `900` a `999`: transitorio (concurrencia, tiempo). **Quien llama puede reintentar**.
+- Un error de la plataforma que el código no previó se relanza como `CARP-<ÁREA>-900` con el mensaje de la plataforma recortado a 300 caracteres; la traza completa va a `ITracingService` (sin datos sensibles).
+- Dentro de un plugin una operación de datos que falla **revierte toda la transacción** aunque el código la atrape (`patrones.md` §3). Por eso: se valida en memoria antes de escribir, y el código no "sigue adelante" tras un fallo de escritura. Las excepciones esperables de negocio son resultados, no excepciones (patrón `Resultado<T>` de `patrones.md`).
+- Excepción: la clave alterna K-01 en la creación de una conversación (`ErrorCode` de duplicado). Se evita preguntando primero; el reintento del job asíncrono es la red (ver 2.10).
+
+### 0.6 Números, fechas y reloj
+
+- Dinero: `decimal`, dos decimales, nunca `double` (spike 1, M01). Sin redondeos propios: las entradas ya tienen dos decimales y la suma, resta y producto por entero conservan dos.
+- Minutos: entero, **truncado hacia abajo**, mínimo 0 (DC-11).
+- `fecha DO` (vencimiento, pago, inicio, fin, formalización): el generador recibe la fecha tal cual está guardada, sin conversión de zona (spike 1 §6, última fila; dicc. DD-04).
+- El dominio no lee el reloj. `IReloj.AhoraUtc` entra por parámetro; en producción es `DateTime.UtcNow`, en pruebas es fijo.
+- Comparaciones de texto: `StringComparison.Ordinal`/`OrdinalIgnoreCase`; formato con `CultureInfo.InvariantCulture` (orden del constructor).
+
+### 0.7 Constantes de choices y de plataforma
+
+Los choices se usan por los `enum` de `Dominio/Choices.g.cs` (generado, no se edita): `ResultadoDeConversacion`, `MotivoDeSinRespuesta`, `ProductoCrediticio`, `TipoDeArreglo`, `Moneda`, `CanalDeOrigen`, `EstadoDeVersionDePlantilla`, `TipoDeMapeo`, `CampoMapeable`. Nunca el literal numérico (conv. §6).
+
+`statecode`/`statuscode` (dicc. §3.2) se modelan en `Dominio/Estados`:
+
+| Tabla | Estado | statecode | statuscode |
+|---|---|---|---|
+| Conversación | Abierta | 0 | 1 |
+| Conversación | Finalizada | 1 | 2 |
+| Conversación | Unida | 1 | 159460001 |
+| Arreglo | Borrador | 0 | 1 |
+| Arreglo | Vigente | 0 | 159460001 |
+| Arreglo | Terminado | 1 | 2 |
+| Arreglo | Anulado | 1 | 159460002 |
+| Arreglo | Descartado | 1 | 159460003 |
+
+Estado por defecto de un `statecode` sin `statuscode` en el `Target` (DC-06): Activo ⇒ 1, Inactivo ⇒ 2. La plataforma rechaza combinaciones inválidas con 400 (hecho verificado, dicc. §3.2).
+
+Email (tabla estándar, valores de Learn, **a confirmar con una muestra real exportada** antes de fijar los dobles; ver 0.9): `directioncode` falso = entrante, verdadero = saliente; `statuscode` Received = 4, Sent = 3.
+
+### 0.8 Decisiones de diseño de este documento (`DC-nn`)
+
+No estaban en las fuentes. Son técnicas, reversibles y se pueden vetar sin tocar reglas de negocio. Las que rozan una regla de negocio se repiten en la sección 6 con opciones.
+
+| ID | Decisión | Motivo |
+|---|---|---|
+| DC-01 | Una columna solo-sistema "cambió" si está en el `Target` **y** su valor difiere del de la pre-imagen. Estar presente con el mismo valor no es un cambio | Un cliente que reenvía la fila completa no debe fallar sin motivo. D-30 dice "cambio" |
+| DC-02 | "Sistema" = SYSTEM por `WhoAmI` elevado, o la cuenta de servicio por Application ID (0.3) | Supuesto de def. L523 y L548; variable 10.7 |
+| DC-03 | Si `EsEscrituraDelSistema`, el step deja pasar el `Target` sin revalidar reglas de gesto. Solo aplica normalización y el atajo de propietario | Riesgo residual aceptado en M-PPP §4: otro plugin SYSTEM del entorno. Mantiene baratas las 60 altas de cuotas |
+| DC-04 | En Arreglo, un **gesto** es una transición de estado o una columna disparadora, y no admite otros cambios en el mismo `Update` | Evita mezclar "formalizar" con editar datos. Hace cada gesto verificable |
+| DC-05 | **Desbloquear** = `Update` con `sanic_fechacongelamiento = null`. **Reabrir un Vigente congelado** = `Update` con `sanic_motivoreapertura` | El diccionario no da columnas de gesto para estos dos (inv. 12.24: "el mecanismo no está definido") |
+| DC-06 | Estado efectivo = el del `Target`, y si falta `statuscode`, el por defecto del `statecode` | Los botones nativos de desactivar y activar mandan solo `statecode` |
+| DC-07 | Remitente: se **reemplaza** por la queue si falta o es el usuario que crea; se **rechaza** cualquier otro | def. L270 pide "fijar" y "rechazar cualquier otro", pero el remitente por defecto del formulario es el usuario (spike 4) |
+| DC-08 | Al registrar un correo entrante sin Regarding se busca primero por `In-Reply-To` el correo al que responde, y se usa su conversación | Plan B de def. L430 aplicado como segunda red; la correlación puede llegar en un `Update` posterior (spike 3) |
+| DC-09 | Un correo correlacionado a una conversación **Unida** se redirige a la conversación de `sanic_unidaaid` | Si no, queda invisible y rompe el 100 % (criterio 1, RF-01). Las fuentes no lo cubren |
+| DC-10 | Finalizar vacía `sanic_sinrespuestadesde`; el correo nuevo en finalizada la completa con su fecha (P-09); Reabrir **no** la vacía; Iniciar conversación nueva la vacía en la anterior | D-06: spam y automáticos no deben inflar pendientes. Ver Inconsistencias, punto 3 |
+| DC-11 | Tiempo de respuesta = minutos truncados entre `senton` y `sanic_sinrespuestadesde`, mínimo 0. "Primera respuesta" = la primera respuesta con tiempo. Si el correo pendiente llegó **después** del envío, no se vacía nada | Diccionario: "primera respuesta enviada"; evita borrar un pendiente real |
+| DC-12 | `sanic_respondidoporid` = `createdby` del Email saliente | Quien envía es quien creó el borrador: el rol solo da Write Basic sobre Email (matriz §3) |
+| DC-13 | Huella: Message-ID sin espacios, sin `<` `>` de los extremos y en minúscula; SHA-256 de UTF-8 en hex minúscula. Sin Message-ID: `sin-messageid:` + id del Email | def. L168; spike 3 (dominio en mayúsculas en salientes). El respaldo da idempotencia a un correo raro |
+| DC-14 | Vincular al cliente solo si **exactamente un** `Cliente` activo tiene ese correo | Dos clientes con el mismo correo no se desempatan en el servidor |
+| DC-15 | `tomarconversacion` no recibe versión de fila del cliente: lee, valida y escribe con `IfRowVersionMatches` | La garantía de D-04 es la misma; menos parámetros |
+| DC-16 | Unir: el destino se recalcula desde sus correos; se rechazan cadenas; tope de 1.000 correos | def. ítem 5 dice "recalcula" sin fórmula; M-PPP usa topes explícitos |
+| DC-17 | Iniciar conversación nueva: mueve solo correos **entrantes** posteriores a la finalización; copia el cliente; no copia el oficial | def. ítem 6 dice "llegados después" |
+| DC-18 | La vista previa no escribe nada (ni bitácora ni congelamiento). La generación normal escribe la bitácora siempre | def. ítem 14: "la vista previa… no congela" |
+| DC-19 | Una versión nace siempre en Borrador (también por API) y se publica por el gesto normal. Al publicar se hace además una **generación de prueba** con datos sintéticos | Atrapa hoja inexistente (spike 1, hallazgo 1). Habilita la promoción Test→Prod (6, OA-4) |
+| DC-20 | Las cuotas se crean con `Create` individual (no `ExecuteMultiple`) y con propietario explícito; el step de propietario deja pasar una escritura del sistema que ya trae team | `rendimiento.md`; evita 120 consultas por calendario |
+| DC-21 | "Pago registrado" = `sanic_fechapago` no nulo `[ABIERTA OA-8]` | D-11 usa `fechapago` nulo (spike 2) |
+| DC-22 | La unicidad de la cédula se valida también al cambiarla, y la consulta corre con SYSTEM | Sin SYSTEM, un usuario sin perfil de columna ve `null` y la duplicada pasa en silencio (spike 4, tarea A) |
+| DC-23 | Nombre de step: `STEP - CARP - <tabla> - <mensaje> - <etapa> - <clase>` | conv. §2 no distingue dos steps del mismo mensaje y etapa; el playbook rechaza nombres repetidos |
+| DC-24 | Parámetros de Custom API siempre Guid, nunca `EntityReference` | JS y flujos más simples |
+| DC-25 | Códigos `CARP-<ÁREA>-<NNN>`; 900+ reintentable | M-PPP §3 (códigos para que quien llama decida) |
+| DC-26 | Las listas de columnas por categoría (libre, de gesto, solo-sistema, bloqueada por congelamiento) viven en `Dominio/Columnas` y una prueba las contrasta con el diccionario | Defecto D-63 de M-PPP (`patrones.md` §3) |
+| DC-27 | Un step por (clase, mensaje, tabla); sin post-imágenes; filtro de atributos solo en `Update`; asíncrono solo en PostOperation | Restricciones de `herramientas/construir/step.py` |
+
+### 0.9 Supuestos de plataforma que se verifican en Dev antes de dar la pieza por buena
+
+No se deducen de las fuentes. Cada uno tiene su prueba de humo en Dev (no en las unitarias). Si alguno falla, se escala; no se adapta el código.
+
+| # | Supuesto | Qué rompe si es falso |
+|---|---|---|
+| V-1 | Un `Update` con `statecode`/`statuscode` dispara los steps de `Update` con esos filtros, venga del formulario, de `Xrm.WebApi` o de `SetStateRequest` | Los gestos de estado (2.3, 2.5). Plan: registrar además un step `SetState` por tabla |
+| V-2 | El código (SYSTEM) puede hacer `Update` sobre una fila **inactiva** de Conversación y Arreglo (columnas que no son el estado) | RF-15: marcar el indicador sobre una Finalizada; limpiar el indicador; repuntar arreglos terminados al unir |
+| V-3 | Valores de `email.statuscode`: Received = 4, Sent = 3; `directioncode` falso = entrante | Entrada de correo (2.10) y respuesta enviada (2.11) |
+| V-4 | Existe `sdkmessagefilter` para `CommitFileBlocksUpload` sobre `sanic_carp_tbl_versionplantilla` | El step S-27 (inmutabilidad por subida de archivo). La huella de cada generación es la barrera de respaldo (D-15, def. L536) |
+| V-5 | El `statecode` Activo→Inactivo y la reapertura Terminado→Vigente son aceptados por la plataforma como un único `Update` con ambas columnas | Reabrir un Terminado (2.5) |
+| V-6 | Una pre-imagen incluye columnas con seguridad por columna (cuenta, cédula) con su valor real para el usuario del perfil | Detección de cambios en Arreglo (DC-01) |
+| V-7 | `RetrievePrincipalAccess` responde `WriteAccess` para el llamador sobre una versión (def. L342) | Vista previa (1.1) |
+
+---
+
+## 1. Custom API
+
+Cinco, las que nombran def. L145-150 e inv. 8.2 a 8.6. Los nombres *(prov.)* del inventario quedan fijados tal como están. Convenciones comunes en 0.1.
+
+### 1.1 `sanic_carp_capi_generarformato` (inv. 8.2, 7.18)
+
+Genera el F-NIC-0000052 en Excel para un arreglo, lo devuelve en Base64 y, si el arreglo no estaba congelado, lo congela. Quién la llama: el comando "Generar formato para firma" del web resource (def. L151, D-17) y la **vista previa** del jefe. Fuente: def. ítem 14 (L326-337), ítem 10 (L305-312), ítem 15 (L342), D-13, D-15, D-16, D-25, spikes 1 y 1b.
+
+**Registro**: Action, global (unbound), `IsPrivate = false`. **Privilegio de ejecución**: `prvReadsanic_carp_tbl_generacionformato`. **Identidad**: lee con el llamador y escribe con SYSTEM, con el actor capturado (0.2).
+
+| Parámetro | Dir. | Tipo | Req | Nota |
+|---|---|---|---|---|
+| `arregloid` | entrada | Guid | sí | Arreglo a imprimir |
+| `versionpreviaid` | entrada | Guid | no | Si viene, es **vista previa** con esa versión (debe estar en Borrador). No congela y no escribe nada (DC-18) |
+| `archivo` | salida | String | | El `.xlsx` en Base64 (43,7 mil caracteres con 60 cuotas; spike 1b) |
+| `nombrearchivo` | salida | String | | `F-NIC-0000052-<primaria del arreglo>.xlsx`, por ejemplo `F-NIC-0000052-ARR-000123.xlsx`. No lleva datos del cliente |
+| `numeroprovisional` | salida | Integer | | Número impreso para un Borrador; `0` si no aplica (Vigente, Terminado, etc.) |
+| `congelado` | salida | Boolean | | `true` si, al terminar, el arreglo está congelado (por esta llamada o antes). En vista previa es el estado que ya tenía |
+| `advertencias` | salida | String | | Avisos del generador (por ejemplo, fecha escrita en una celda con formato de moneda; spike 1, hallazgo 4), uno por línea. Vacío si no hay |
+
+**Datos del generador** (clave de `CampoMapeable` ⇒ clave del generador ⇒ origen). El generador exige **todas** las claves simples, aunque el valor sea `null` (spike 1, hallazgo 3):
+
+| Opción de `CampoMapeable` | Clave | Origen |
+|---|---|---|
+| FechaDeFormalizacion | `fechaFormalizacion` | `sanic_fechaformalizacion` (DateTime tal cual) |
+| OficialDeArreglo | `oficial` | `fullname` del usuario `sanic_oficialid` |
+| NombreDelCliente / CedulaDelCliente / CorreoDelCliente / CelularDelCliente | `clienteNombre` / `clienteCedula` / `clienteCorreo` / `clienteCelular` | Si el arreglo está **congelado**: `sanic_instantaneanombre` / `…cedula` / `…correo` / `…celular`. Si no: `sanic_nombrecompleto`, `sanic_cedula`, `sanic_correo`, `sanic_celular` del Cliente (def. ítem 14) |
+| NumeroDePrestamoOTarjeta | `numeroProducto` | `sanic_numeroproducto` |
+| TipoDeArreglo | `tipo` | texto de la opción `[ABIERTA OA-7]`; provisional: "Temporal" / "Cancelación" |
+| NumeroDeArreglo | `numeroArreglo` | Borrador: el número provisional (el guardado, o el calculado si aún no hay). Otros estados: `sanic_numeroarreglo` (def. ítem 14: "en un borrador, imprime el número provisional") |
+| SaldoInicial, MontoAbonado, SaldoRemanente, CuotaMensual, TotalAPagar | `saldoInicial`, `montoAbonado`, `saldoRemanente`, `cuota`, `totalPagar` | columnas del arreglo (decimal) |
+| PlazoEnCuotas | `plazo` | `sanic_plazo` (int) |
+| FechaDeInicio, FechaDeFinalizacion | `fechaInicio`, `fechaFin` | columnas del arreglo (DateTime sin conversión) |
+| CuentaADebitar | `cuentaDebitar` | `sanic_cuentadebitar` |
+| Comentarios | `comentarios` | `sanic_comentarios` (`null` si vacío) |
+| Moneda | `moneda` | texto de la opción `[ABIERTA OA-7]`; provisional: "Córdobas" / "Dólares". **El generador del spike 1 todavía no tiene esta clave**: se agrega (dicc. §3.1, opción 27) |
+| Cuota: numero, fecha, monto, fecha de pago, monto pagado | `cuota.*` | una `CuotaDato` por cuota, orden por número |
+| Total: montos de cuota, montos pagados | `total.*` | los calcula el generador |
+
+La tabla "opción ⇒ clave" vive en `Formato/ClavesDelGenerador`. Una prueba verifica que cubre las 27 opciones del enum `CampoMapeable` (si se agrega una opción y falta acá, la prueba falla). `TipoDeMapeo` ⇒ `TipoMapeo` del generador: ValorSimple ⇒ Simple, TotalCalculado ⇒ Total, ColumnaDeBloqueDeCuotas ⇒ Bloque.
+
+**Comportamiento paso a paso**
+
+1. Leer parámetros. `arregloid` ausente o vacío ⇒ `CARP-GEN-001`. Capturar `actor = InitiatingUserId` y `ahora`.
+2. Crear dos servicios: `llamador` (`CreateOrganizationService(context.UserId)`) y `sistema` (`CreateOrganizationService(null)`).
+3. Leer el arreglo con `llamador` (columnas nombradas, sin `ColumnSet(true)`). No existe **o** no se puede leer ⇒ `CARP-GEN-002`, el mismo mensaje en los dos casos (no revelar existencia).
+4. Leer las cuotas del arreglo con `llamador`, orden `sanic_numero`. Deben ser exactamente `sanic_plazo`, numeradas 1..plazo ⇒ si no, `CARP-GEN-005` (un arreglo sin calendario no puede existir, def. ítem 8).
+5. Datos del cliente: instantánea si `sanic_fechacongelamiento` no es nulo; si no, leer el Cliente con `llamador` (necesita el perfil de columna para la cédula; un usuario sin perfil vería `null`, spike 4).
+6. Versión: con `versionpreviaid`, esa (debe estar en Borrador, `CARP-GEN-006`; el llamador debe tener escritura sobre la versión, comprobada con `RetrievePrincipalAccess` ⇒ `WriteAccess`, `CARP-GEN-007`; def. L342). Sin él, la `sanic_versionplantillaid` del arreglo (cualquier estado: una Histórica es válida para un arreglo antiguo).
+7. Con `sistema`: leer la versión (`sanic_estado`, `sanic_huella`, `sanic_capacidad`) y su archivo con `InitializeFileBlocksDownloadRequest` + `DownloadBlockRequest` en bloques de 4 MB (spike 1b). Sin archivo ⇒ `CARP-GEN-003`. Leer las filas de mapeo activas de la versión.
+8. `plazo` mayor que `sanic_capacidad` ⇒ `CARP-GEN-004`.
+9. Armar `DatosArreglo` y la lista `MapeoCelda`; llamar a `IGeneradorDeFormato.Generar(plantilla, huellaEsperada, mapeo, datos)`. En vista previa la versión es Borrador y puede no tener huella: se pasa la huella calculada del propio archivo (sin verificar). Traducción de excepciones del generador (spike 1 §5, hallazgo 6): `HuellaNoCoincideException` ⇒ `CARP-GEN-008`; `PlantillaInvalidaException` ⇒ `CARP-GEN-009`; `MapeoInvalidoException` ⇒ `CARP-GEN-010`; `DatosInvalidosException` ⇒ `CARP-GEN-011`. Se traza `InnerException` (tipo y mensaje, sin datos) antes de convertir.
+10. Si **no** es vista previa, y el arreglo está activo, escribir con `sistema`, en este orden:
+    a. Si no está congelado: `Update` del arreglo con `sanic_fechacongelamiento = ahora`, las cuatro `sanic_instantanea*` copiadas del Cliente y, **solo si es Borrador**, `sanic_numeroprovisional` = `max+1` (2.0.5).
+    b. `Create` de `sanic_carp_tbl_generacionformato`: `sanic_arregloid`, `sanic_versionplantillaid`, `sanic_generadoporid = actor` (explícito, 0.2), `sanic_fechageneracion = ahora`, `ownerid` = team del área.
+    Arreglo inactivo (Terminado, Anulado, Descartado): no se congela; solo se escribe la bitácora `[ABIERTA OA-9]`.
+11. Escribir las salidas.
+
+**Todo en una transacción** (la API corre dentro de la transacción de la plataforma): si algo falla, no queda congelamiento ni bitácora (def. ítem 14: "si falla, error sin archivo parcial y sin congelar"). El archivo se genera **antes** de escribir.
+
+**Errores**
+
+| Código | Mensaje | Reintentar |
+|---|---|---|
+| `CARP-GEN-001` | Falta el arreglo que se quiere imprimir. | no |
+| `CARP-GEN-002` | No se encontró el arreglo o no tiene acceso a él. | no |
+| `CARP-GEN-003` | La versión de plantilla no tiene archivo cargado. | no |
+| `CARP-GEN-004` | El plazo del arreglo ({plazo}) supera la capacidad de la plantilla ({capacidad} cuotas). | no |
+| `CARP-GEN-005` | El calendario del arreglo está incompleto: hay {n} cuotas y el plazo es {plazo}. | no |
+| `CARP-GEN-006` | La vista previa solo admite una versión en estado Borrador. | no |
+| `CARP-GEN-007` | No tiene permiso para previsualizar versiones de plantilla. | no |
+| `CARP-GEN-008` | La plantilla no coincide con la huella guardada al publicar la versión. Fue alterada o no es la versión publicada. | no |
+| `CARP-GEN-009` | El archivo de la plantilla no es un libro de Excel válido. | no |
+| `CARP-GEN-010` | El mapeo de la versión es inválido: {detalle}. | no |
+| `CARP-GEN-011` | Los datos del arreglo no sirven para esta plantilla: {detalle}. | no |
+| `CARP-GEN-900` | No se pudo generar el formato. No se guardó ningún cambio. Intente de nuevo. | sí |
+
+`{detalle}` lista los errores del generador (hoja, celda y campo); no incluye valores de datos del cliente. Los errores de forma de la llamada (parámetro de tipo equivocado) los devuelve la capa OData antes del plugin con texto técnico (spike 1b §6): el web resource no lo muestra tal cual.
+
+**Concurrencia.** Dos generaciones simultáneas del mismo borrador no congelado calculan el mismo provisional y escriben los mismos valores; el resultado final es el mismo. Dos formalizaciones concurrentes las resuelve la clave K-02 (2.6).
+
+**Rendimiento.** 72 ms en caliente, 0,5 a 1 s en frío (spike 1b). Tras publicar una versión del paquete, las 2 o 3 primeras llamadas tardan ~1,5 s: la pantalla muestra "generando…". Las consultas son un número fijo: arreglo, cuotas, cliente, usuario, versión, mapeo, bloques de archivo.
+
+**Pruebas de aceptación** (`Aceptacion/GenerarFormatoAceptacion.cs`; generador sustituido por `GeneradorFalso`, salvo donde dice "real")
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-GEN-01 | Borrador sin congelar, plazo 6, sin otros arreglos del crédito; cliente con nombre, cédula, correo y celular | Un Oficial llama con `arregloid` | `archivo` no vacío, `congelado = true`, `numeroprovisional = 1`; el arreglo queda con `fechacongelamiento = ahora`, las cuatro instantáneas iguales al Cliente y `numeroprovisional = 1`; hay una fila de Generación con `arregloid`, `versionplantillaid`, `generadoporid = Oficial`, `fechageneracion = ahora` y `ownerid` = team; las escrituras salieron del servicio de SYSTEM y las lecturas del servicio del llamador |
+| PA-GEN-02 | Borrador del crédito X; ya existen del mismo crédito un arreglo con número 1, otro con 2 (Terminado) y otro con 3 (Anulado), más un Borrador y un Descartado sin número | Se genera el formato | `numeroprovisional = 4` (los sin número no cuentan; los inactivos con número sí) |
+| PA-GEN-03 | Borrador ya congelado (provisional 2), y el Cliente cambió de nombre después | Se genera de nuevo | El arreglo no se escribe; el generador recibió el nombre de la instantánea, no el nuevo; se crea una fila de Generación más; `numeroprovisional = 2` |
+| PA-GEN-04 | Vigente congelado con `numeroarreglo = 3` | Se genera | No se escribe el arreglo; `numeroArreglo = 3` en los datos; `numeroprovisional = 0`; hay bitácora |
+| PA-GEN-05 | Vigente reabierto (sin congelar, instantánea vacía) | Se genera | Se congela con la instantánea actual del Cliente; `sanic_numeroprovisional` queda vacío |
+| PA-GEN-06 | Parámetro `arregloid` ausente | Se llama | `CARP-GEN-001`; ninguna escritura |
+| PA-GEN-07 | `arregloid` de un arreglo que no existe | Se llama | `CARP-GEN-002` |
+| PA-GEN-08 | El arreglo existe pero el doble niega la lectura al llamador | Se llama | `CARP-GEN-002` con el mismo texto que PA-GEN-07 |
+| PA-GEN-09 | Plazo 6 y solo 5 cuotas | Se llama | `CARP-GEN-005`; sin escrituras |
+| PA-GEN-10 | Cuotas numeradas 1,2,3,3,5,6 | Se llama | `CARP-GEN-005` |
+| PA-GEN-11 | Plazo 12 y capacidad 6 | Se llama | `CARP-GEN-004` con 12 y 6 en el mensaje |
+| PA-GEN-12 | La versión no tiene archivo | Se llama | `CARP-GEN-003` |
+| PA-GEN-13 | El generador falso lanza `HuellaNoCoincideException` | Se llama | `CARP-GEN-008`; el arreglo no se congela y no hay bitácora |
+| PA-GEN-14 | El generador falso lanza `PlantillaInvalidaException`, `MapeoInvalidoException` y `DatosInvalidosException` (tres casos) | Se llama | `CARP-GEN-009`, `-010` y `-011`; sin escrituras |
+| PA-GEN-15 | Vista previa: `versionpreviaid` de una versión Borrador, llamador con `WriteAccess` | Se llama | Archivo generado con esa versión; **ninguna** escritura (ni arreglo ni Generación); `congelado` refleja el estado previo |
+| PA-GEN-16 | `versionpreviaid` de una versión Vigente | Se llama | `CARP-GEN-006` |
+| PA-GEN-17 | Vista previa y el llamador no tiene `WriteAccess` sobre la versión | Se llama | `CARP-GEN-007` |
+| PA-GEN-18 | Vista previa de un Borrador sin congelar | Se llama | `numeroprovisional` = lo que se imprimió (`max+1`), sin guardarse |
+| PA-GEN-19 | Arreglo en dólares | Se llama | `moneda` recibe el texto provisional de Dólares |
+| PA-GEN-20 | Cliente sin correo ni celular; sin comentarios | Se llama | `Valores` contiene las claves `clienteCorreo`, `clienteCelular` y `comentarios` con valor `null` (no ausentes) |
+| PA-GEN-21 | `fechainicio` guardada 2026-11-05 | Se llama | El generador recibe `DateTime` 2026-11-05 sin cambio de zona |
+| PA-GEN-22 | Arreglo Terminado | Se llama | Se genera sin congelar y se escribe la bitácora `[ABIERTA OA-9]` |
+| PA-GEN-23 | Una escritura falla a mitad (fallo inyectado al crear la Generación) | Se llama | `CARP-GEN-900`; al restaurar la transacción del doble, el arreglo no está congelado |
+| PA-GEN-24 | El generador devuelve dos advertencias | Se llama | `advertencias` las trae separadas por salto de línea |
+| PA-GEN-25 | Arreglo con cédula en el Cliente | Se llama | Ninguna línea de traza contiene la cédula, la cuenta ni el nombre |
+| PA-GEN-26 | Test de cobertura | — | `ClavesDelGenerador` tiene una clave para cada una de las 27 opciones de `CampoMapeable` y el generador real acepta `moneda` |
+| PA-GEN-27 (real) | Plantilla v07 (fixture) con 60 cuotas y el mapeo del diccionario más la celda de moneda | Se genera con el generador real | Salida idéntica byte a byte a la del spike 1b para 6, 30 y 60 cuotas (las 205 pruebas del spike se portan, 4.3) |
+
+### 1.2 `sanic_carp_capi_reconciliarcorreos` (inv. 8.3, 7.19)
+
+Red de seguridad de la entrada de correo (D-03, def. L262): registra los correos entrantes que quedaron sin conversación porque el plugin asíncrono falló. Reutiliza la misma lógica de 2.10. Quién la llama: el flujo de salud del buzón (inv. 11.2) con la cuenta de servicio. **Registro**: Action, global (unbound), `IsPrivate = false`. **Privilegio de ejecución**: `prvCreatesanic_carp_tbl_conversacion` (solo Servicio). **Identidad**: todo con SYSTEM; el llamador es la cuenta de servicio.
+
+| Parámetro | Dir. | Tipo | Req | Nota |
+|---|---|---|---|---|
+| `emailid` | entrada | Guid | no | Si viene, reconcilia solo ese correo (reintento dirigido) |
+| `maximo` | entrada | Integer | no | Cuántos correos como máximo. Ausente o `0` ⇒ 20; tope 100 (más se recorta, sin error); negativo ⇒ `CARP-REC-001` |
+| `minutosminimos` | entrada | Integer | no | Solo correos creados hace al menos esos minutos (da tiempo al plugin asíncrono). Ausente ⇒ 10; `0` explícito ⇒ sin espera; negativo ⇒ `CARP-REC-002` |
+| `encontrados` | salida | Integer | | Candidatos leídos en este lote |
+| `registrados` | salida | Integer | | Los que quedaron con conversación (creada o existente) |
+| `conerror` | salida | Integer | | Los que se omitieron con un código |
+| `haymas` | salida | Boolean | | Hay más candidatos fuera del lote |
+| `detalle` | salida | String | | JSON: `[{"emailid":"…","resultado":"creada\|unida\|yatenia\|omitido","conversacionid":"…","codigo":null}]`. Solo ids y códigos, nunca asunto ni remitente |
+
+**Comportamiento**
+
+1. Validar `maximo` y `minutosminimos`. Resolver `IConfiguracionDelArea` (0.4); cualquier `CARP-CFG-*` aborta la llamada.
+2. Candidatos (servicio SYSTEM): `email` con `directioncode = falso`, `statuscode = Received`, `regardingobjectid` nulo, `owningbusinessunit` = la BU, `createdon <= ahora − minutosminimos`; orden `createdon` ascendente; `TopCount = maximo + 1`. Con `emailid`: solo ese correo, sin el filtro de antigüedad (`CARP-REC-003` si no existe o no es entrante).
+3. Por cada candidato, `RegistradorDeCorreo.Registrar(emailId)` (2.10). Un resultado de negocio negativo (el correo no es entrante, etc.) se anota en `detalle` con su `CARP-ENT-*` y sigue. Un **fallo de la plataforma** (excepción de datos) no se atrapa: aborta la llamada con `CARP-REC-900` y revierte el lote entero. El flujo reintenta; el candidato "venenoso" repetido lo detecta el aviso del flujo.
+4. `haymas = (candidatos > maximo)`; se procesan los primeros `maximo`.
+
+Idempotente (BP-PP-055): un correo que ya tiene conversación no es candidato; dos correos con el mismo Message-ID comparten conversación (K-01).
+
+**Concurrencia.** Si el plugin asíncrono y la reconciliación procesan el mismo correo a la vez, la clave K-01 rechaza la segunda creación; esa llamada falla con `CARP-REC-900` y la siguiente corrida ya lo encuentra registrado.
+
+| Código | Mensaje | Reintentar |
+|---|---|---|
+| `CARP-REC-001` | El máximo de correos no puede ser negativo. | no |
+| `CARP-REC-002` | Los minutos mínimos no pueden ser negativos. | no |
+| `CARP-REC-003` | El correo indicado no existe o no es un correo entrante sin conversación. | no |
+| `CARP-REC-900` | No se pudo completar la reconciliación. No se guardó ningún cambio del lote. | sí |
+
+**Pruebas de aceptación** (`Aceptacion/ReconciliarCorreosAceptacion.cs`)
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-REC-01 | No hay candidatos | Se llama sin parámetros | Todos los contadores en 0, `haymas = false`, `detalle = []`; ninguna escritura |
+| PA-REC-02 | Dos correos entrantes sin Regarding, con Message-ID distintos, creados hace 30 min, de la BU | Se llama | Dos conversaciones nuevas; cada Email con `regardingobjectid` y `ownerid` = team; `registrados = 2`; `detalle` con `resultado = creada` |
+| PA-REC-03 | Un correo creado hace 3 minutos | Se llama con el valor por defecto (10) | No es candidato; `encontrados = 0` |
+| PA-REC-04 | El mismo correo | Se llama con `minutosminimos = 0` | Se registra |
+| PA-REC-05 | Un correo saliente sin Regarding, otro entrante con Regarding a una conversación, otro entrante de otra BU | Se llama | Ninguno es candidato |
+| PA-REC-06 | Tres candidatos | `maximo = 1` | Procesa el más antiguo; `registrados = 1`, `haymas = true` |
+| PA-REC-07 | — | `maximo = -1` y, en otra llamada, `minutosminimos = -5` | `CARP-REC-001` y `CARP-REC-002`, sin escrituras |
+| PA-REC-08 | `maximo = 500` y 150 candidatos | Se llama | Procesa 100 (tope), `haymas = true` |
+| PA-REC-09 | `emailid` de un correo que ya tiene conversación | Se llama | `resultado = yatenia`, sin escrituras |
+| PA-REC-10 | `emailid` inexistente, y otro de un correo saliente | Se llama | `CARP-REC-003` en ambos |
+| PA-REC-11 | Dos correos con el mismo Message-ID | Se llama dos veces seguidas | Una sola conversación; la segunda llamada encuentra 0 |
+| PA-REC-12 | Un correo con `inreplyto` igual al `messageid` de un Email ya registrado en la conversación C | Se llama | `resultado = unida`; el correo queda con Regarding C; no se crea conversación (DC-08) |
+| PA-REC-13 | La variable `sanic_carp_ev_nombrebu` no tiene valor | Se llama | `CARP-CFG-006`; sin escrituras |
+| PA-REC-14 | Llamada hecha por la cuenta de servicio | Se llama | Lecturas y escrituras con el servicio de SYSTEM |
+| PA-REC-15 | Fallo de datos inyectado al crear la segunda conversación | Se llama | `CARP-REC-900`; al restaurar, tampoco existe la primera |
+
+### 1.3 `sanic_carp_capi_tomarconversacion` (inv. 8.4, 7.20)
+
+Asigna la conversación al oficial que llama, con concurrencia optimista. Fuente: def. ítem 2 (L263-266), D-04, spike 2 (pregunta 3). **Registro**: Action, global (unbound), `IsPrivate = false`. **Privilegio de ejecución**: `prvWritesanic_carp_tbl_conversacion`. **Identidad**: lee y escribe con la identidad del llamador, sin elevar (def. L244).
+
+| Parámetro | Dir. | Tipo | Req | Nota |
+|---|---|---|---|---|
+| `conversacionid` | entrada | Guid | sí | |
+| `oficialasignadoid` | salida | Guid | | Quien quedó asignado (el llamador) |
+| `oficialnombre` | salida | String | | Nombre completo de ese usuario |
+| `yaasignada` | salida | Boolean | | `true` si ya estaba asignada al propio llamador y no se cambió nada |
+
+**Comportamiento**
+
+1. `conversacionid` ausente ⇒ `CARP-TOM-001`. `actor = InitiatingUserId`. Servicio del llamador.
+2. Leer la conversación (`statecode`, `statuscode`, `sanic_oficialasignadoid`, `RowVersion`). No existe o sin acceso ⇒ `CARP-TOM-002` (mismo texto).
+3. No está Abierta ⇒ `CARP-TOM-003`.
+4. `sanic_oficialasignadoid` igual al actor ⇒ salida con `yaasignada = true`, sin escribir (idempotente).
+5. Asignada a otro ⇒ `CARP-TOM-004` con el nombre de ese oficial (si no se puede leer, "otro oficial"). Sin escrituras.
+6. `Update` de `sanic_oficialasignadoid = actor` con `RowVersion` leído y `ConcurrencyBehavior = IfRowVersionMatches`. Éxito ⇒ salidas.
+7. Si la plataforma responde "versión de fila no coincide" (el Web API la muestra como 412, spike 2), **no se reintenta dentro del plugin** (la transacción ya no es confiable tras una falla de datos): se lanza `CARP-TOM-900`. El web resource vuelve a llamar; la segunda llamada ve la asignación del otro y responde `CARP-TOM-004` con su nombre. El **primero** gana (spike 2: "dos Tomar con el mismo ETag: 204 y 412").
+
+El step de asignación (2.4) acepta este `Update` porque es de vacío a uno mismo (def. ítem 2).
+
+| Código | Mensaje | Reintentar |
+|---|---|---|
+| `CARP-TOM-001` | Falta la conversación que se quiere tomar. | no |
+| `CARP-TOM-002` | No se encontró la conversación o no tiene acceso a ella. | no |
+| `CARP-TOM-003` | Solo se puede tomar una conversación abierta. | no |
+| `CARP-TOM-004` | La conversación ya fue tomada por {oficial}. | no |
+| `CARP-TOM-900` | La conversación cambió en este instante. Actualice la pantalla y vuelva a intentar. | sí |
+
+**Pruebas de aceptación** (`Aceptacion/TomarConversacionAceptacion.cs`)
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-TOM-01 | Conversación Abierta sin oficial | El oficial A llama | `sanic_oficialasignadoid = A`; `yaasignada = false`; `oficialnombre` = nombre de A; el `Update` salió del servicio de A, con `IfRowVersionMatches`, y solo trae esa columna |
+| PA-TOM-02 | Ya asignada a A | A llama otra vez | `yaasignada = true`; ninguna escritura |
+| PA-TOM-03 | Asignada a B | A llama | `CARP-TOM-004` con el nombre de B; ninguna escritura |
+| PA-TOM-04 | B tiene el nombre ilegible para A | A llama | El mensaje dice "otro oficial" |
+| PA-TOM-05 | El doble lanza "versión de fila no coincide" en el `Update` | A llama | `CARP-TOM-900`; la conversación no cambió |
+| PA-TOM-06 | Dos llamadas intercaladas: A y B leen; A escribe; B escribe con la versión vieja | Se ejecutan en ese orden | A queda asignado; B recibe `CARP-TOM-900`; una nueva llamada de B da `CARP-TOM-004` |
+| PA-TOM-07 | Conversación Finalizada, y otra Unida | A llama | `CARP-TOM-003` en ambas |
+| PA-TOM-08 | `conversacionid` ausente; luego inexistente; luego sin acceso | Se llama | `CARP-TOM-001`, `-002`, `-002` (mismo texto) |
+| PA-TOM-09 | Cadena (pipeline simulado): llamador sin pertenencia a Jefatura | Se llama | El step `ConversacionAsignacionStep` deja pasar el `Update` (vacío → uno mismo) |
+
+### 1.4 `sanic_carp_capi_unirconversaciones` (inv. 8.5, 7.21)
+
+Mueve los correos de una conversación de origen a una de destino. Fuente: def. ítem 5 (L280-282), D-32, RF-14, spike 3 (REL-09 permite autorreferencia y ciclos). **Registro**: Action, global (unbound), `IsPrivate = false`. **Privilegio de ejecución**: `prvWritesanic_carp_tbl_conversacion`. **Identidad**: valida con el llamador y escribe como SYSTEM, con el actor capturado (def. L247).
+
+| Parámetro | Dir. | Tipo | Req | Nota |
+|---|---|---|---|---|
+| `origenid` | entrada | Guid | sí | La que desaparece como conversación activa |
+| `destinoid` | entrada | Guid | sí | La que recibe |
+| `destinoid` | salida | Guid | | Eco del destino |
+| `correosmovidos` | salida | Integer | | Correos cuyo Regarding pasó al destino |
+| `arreglosrepunteados` | salida | Integer | | Arreglos activos que apuntan ahora al destino |
+
+(El nombre `destinoid` en entrada y salida es legal: son tablas distintas, `patrones.md`.)
+
+**Comportamiento**
+
+1. Ids ausentes ⇒ `CARP-UNI-001`. Iguales ⇒ `CARP-UNI-002` (REL-09 permite que un registro se apunte a sí mismo; la API no).
+2. Leer origen y destino con el servicio del llamador. Alguno inexistente o sin acceso ⇒ `CARP-UNI-003`.
+3. Origen no Abierta ⇒ `CARP-UNI-004` `[ABIERTA OA-11]`. Destino no Abierta ⇒ `CARP-UNI-005` (def. ítem 5).
+4. Cadenas y ciclos, **en este orden**:
+   - Ciclo: seguir `sanic_unidaaid` desde el destino, hasta 10 saltos. Si se llega al origen, si se vuelve a una conversación ya visitada (incluido el destino apuntándose a sí mismo) o si no termina en 10 saltos ⇒ `CARP-UNI-007`.
+   - Cadena: `origen.sanic_unidaaid` o `destino.sanic_unidaaid` no nulos (aunque el estado diga Abierta: dato corrupto) ⇒ `CARP-UNI-006`.
+   - Alguna conversación tiene `sanic_unidaaid = origen` (el origen ya recibió uniones; sería una cadena) ⇒ `CARP-UNI-008`.
+5. Contar los correos del origen con SYSTEM. Más de 1.000 ⇒ `CARP-UNI-009` (DC-16). Todavía no se escribió nada.
+6. Con el servicio SYSTEM, en este orden:
+   a. Cada Email del origen: `regardingobjectid = destino`. No se tocan dueño ni `parentactivityid`.
+   b. Cada Arreglo **activo** con `sanic_conversacionid = origen`: `= destino`. Los inactivos no se tocan (V-2); `arreglosrepunteados` solo cuenta los actualizados.
+   c. Destino: `sanic_clienteid` y `sanic_oficialasignadoid` del origen **solo si** el destino los tiene vacíos; y el recálculo (2.0.6): `sanic_fechaprimercorreo` y `sanic_sinrespuestadesde` = el mínimo de los no nulos; `sanic_cantidadrespuestas` = respuestas salientes procesadas entre los correos del destino (`sanic_respondidoporid` no nulo); `sanic_tiempoprimerarespuesta` = el tiempo de la respuesta procesada más antigua que tenga tiempo.
+   d. Origen, con `RowVersion` leído en el paso 2 y `IfRowVersionMatches`: `statecode = 1`, `statuscode = 159460001` (Unida), `sanic_unidaaid = destino`, `sanic_fechafinalizacion = ahora` (P-08), `sanic_finalizadoporid = actor` (explícito: bajo SYSTEM la auditoría solo mostraría SYSTEM, def. L247), `sanic_sinrespuestadesde = null`.
+7. Salidas.
+
+**Concurrencia.** Dos uniones simultáneas sobre el mismo origen leen ambas "Abierta". La escritura del origen es condicional a la versión de fila: la perdedora recibe `CARP-UNI-900` y la plataforma revierte su transacción entera (los correos movidos vuelven). Toda la operación es una transacción (def. ítem 5: "todo en una transacción"). Los steps de Conversación (2.3) aceptan estas escrituras por ser del sistema (DC-03).
+
+| Código | Mensaje | Reintentar |
+|---|---|---|
+| `CARP-UNI-001` | Faltan la conversación de origen o la de destino. | no |
+| `CARP-UNI-002` | No se puede unir una conversación consigo misma. | no |
+| `CARP-UNI-003` | No se encontró alguna de las conversaciones o no tiene acceso a ella. | no |
+| `CARP-UNI-004` | La conversación de origen debe estar abierta. | no |
+| `CARP-UNI-005` | La conversación de destino debe estar abierta. | no |
+| `CARP-UNI-006` | Una de las conversaciones ya está unida a otra. No se permiten uniones encadenadas. | no |
+| `CARP-UNI-007` | La unión formaría un ciclo entre conversaciones. | no |
+| `CARP-UNI-008` | La conversación de origen ya recibió otras conversaciones. Una unión sobre otra unión no está permitida: una el destino sobre el origen o elija otro destino. | no |
+| `CARP-UNI-009` | La conversación de origen tiene más de 1.000 correos y no se puede unir en una sola operación. | no |
+| `CARP-UNI-900` | No se pudo unir. No se guardó ningún cambio. Intente de nuevo. | sí |
+
+**Pruebas de aceptación** (`Aceptacion/UnirConversacionesAceptacion.cs`)
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-UNI-01 | Origen A (3 correos, 1 arreglo Borrador) y destino B (2 correos), ambas Abiertas | El Oficial llama | Los 5 correos con Regarding B; el arreglo con `conversacionid` B; A en Unida (1/159460001) con `unidaaid` B, `fechafinalizacion` = ahora y `finalizadoporid` = Oficial; salidas 3 y 1; toda escritura con el servicio de SYSTEM |
+| PA-UNI-02 | A tiene cliente y oficial; B no | Se llama | B recibe cliente y oficial de A |
+| PA-UNI-03 | A y B tienen cliente y oficial distintos | Se llama | B conserva los suyos |
+| PA-UNI-04 | A con `fechaprimercorreo` 10:00 y `sinrespuestadesde` 10:00; B con 09:00 y `sinrespuestadesde` vacío | Se llama | B queda con `fechaprimercorreo` 09:00 y `sinrespuestadesde` 10:00; A con `sinrespuestadesde` vacío |
+| PA-UNI-05 | Correos del destino: 2 salientes procesados (tiempos 40 y 15, el de 40 enviado antes) y 1 del origen: 1 saliente procesado (tiempo 5) enviado después | Se llama | `cantidadrespuestas = 3`; `tiempoprimerarespuesta = 40` |
+| PA-UNI-06 | `origenid = destinoid` | Se llama | `CARP-UNI-002` |
+| PA-UNI-07 | Ids ausentes (dos casos) | Se llama | `CARP-UNI-001` |
+| PA-UNI-08 | Una de las conversaciones no existe; otra que el llamador no puede leer | Se llama | `CARP-UNI-003` |
+| PA-UNI-09 | Origen Finalizada; origen Unida `[ABIERTA OA-11]` | Se llama | `CARP-UNI-004` |
+| PA-UNI-10 | Destino Finalizada; destino Unida | Se llama | `CARP-UNI-005` |
+| PA-UNI-11 | Destino Abierta con `unidaaid` apuntando a una tercera conversación (cadena que termina); origen con `unidaaid` no nulo | Se llama (dos casos) | `CARP-UNI-006` |
+| PA-UNI-12 | Destino con `unidaaid` = origen; destino apuntándose a sí mismo; cadena de 11 saltos que no termina | Se llama (tres casos) | `CARP-UNI-007` |
+| PA-UNI-13 | La conversación C tiene `unidaaid` = origen | Se llama | `CARP-UNI-008`; sin escrituras |
+| PA-UNI-14 | 1.001 correos en el origen | Se llama | `CARP-UNI-009`; sin escrituras |
+| PA-UNI-15 | Un Arreglo Terminado apunta al origen | Se llama | No se modifica; `arreglosrepunteados` no lo cuenta |
+| PA-UNI-16 | Fallo inyectado al actualizar el origen (último paso) | Se llama | `CARP-UNI-900`; al restaurar, ningún correo cambió de Regarding |
+| PA-UNI-17 | `UserId` del contexto distinto de `InitiatingUserId` | Se llama | `finalizadoporid = InitiatingUserId` |
+| PA-UNI-18 | Los correos del origen tienen dueños y `parentactivityid` | Se llama | Siguen iguales tras el movimiento |
+| PA-UNI-19 | Clientes distintos en origen y destino `[ABIERTA OA-11]` | Se llama | Se une sin error (comportamiento provisional) |
+| PA-UNI-21 | Entre la lectura del origen y su escritura, otro proceso lo modificó (el doble sube la versión de fila) | Se llama | `CARP-UNI-900`; al restaurar, ningún correo cambió de Regarding |
+| PA-UNI-20 | Cadena (pipeline simulado): se ejecuta la API y luego los steps de Conversación con identidad SYSTEM | Se llama | `ConversacionActualizarStep` acepta Unida, `unidaaid` y `finalizadoporid` (escritura del sistema); un Oficial que intente lo mismo por `Update` directo recibe `CARP-CNV-006` |
+
+### 1.5 `sanic_carp_capi_iniciarconversacionnueva` (inv. 8.6, 7.22)
+
+Cuando llegó un correo a una conversación Finalizada, el oficial puede abrir una conversación nueva con él. Fuente: def. ítem 6 (L283-287), D-32, RF-15, dicc. P-09. **Registro**: Action, global (unbound), `IsPrivate = false`. **Privilegio de ejecución**: `prvWritesanic_carp_tbl_conversacion`. **Identidad**: valida con el llamador; escribe como SYSTEM.
+
+| Parámetro | Dir. | Tipo | Req | Nota |
+|---|---|---|---|---|
+| `conversacionid` | entrada | Guid | sí | La Finalizada con el indicador |
+| `nuevaconversacionid` | salida | Guid | | |
+| `correosmovidos` | salida | Integer | | |
+
+**Comportamiento**
+
+1. Id ausente ⇒ `CARP-INI-001`. Leer la conversación con el llamador; no existe o sin acceso ⇒ `CARP-INI-002`.
+2. Debe estar Finalizada (1/2) **y** con `sanic_correonuevoenfinalizada = sí` ⇒ si no, `CARP-INI-003`.
+3. Con SYSTEM: correos de esa conversación con `directioncode = falso` y fecha de llegada (`actualend`, si es nula `createdon`) **posterior** a `sanic_fechafinalizacion`, orden ascendente por esa fecha (DC-17). Ninguno ⇒ `CARP-INI-004` (el indicador está inconsistente; no se limpia solo). Más de 1.000 ⇒ `CARP-INI-006`.
+4. El primero (`E1`): huella de su Message-ID (DC-13). Si ya existe una conversación con esa huella ⇒ `CARP-INI-005`.
+5. Escribir con SYSTEM:
+   a. `Create` de la conversación nueva, con los mismos campos que la entrada de correo (2.10): huella, `sanic_fechaprimercorreo` = llegada de `E1`, `sanic_asunto` y `sanic_remitente` de `E1`, `sanic_sinrespuestadesde` = llegada de `E1`, `sanic_cantidadrespuestas = 0`, `sanic_correonuevoenfinalizada = no`, `sanic_clienteid` de la anterior, **sin** oficial, `ownerid` = team.
+   b. Cada correo movido: `regardingobjectid = nueva`.
+   c. La anterior: `sanic_correonuevoenfinalizada = no`, `sanic_sinrespuestadesde = null`. Sigue Finalizada.
+6. Salidas.
+
+**Concurrencia.** Dos llamadas simultáneas sobre la misma conversación crean la misma huella: K-01 rechaza la segunda, que falla con `CARP-INI-900`. La primera deja el indicador limpio, y un reintento ve `CARP-INI-003`.
+
+No hay columna de actor para esta acción; la fila nueva y los movimientos quedan atribuidos al sistema. Las respuestas salientes posteriores a la finalización se quedan en la anterior.
+
+| Código | Mensaje | Reintentar |
+|---|---|---|
+| `CARP-INI-001` | Falta la conversación. | no |
+| `CARP-INI-002` | No se encontró la conversación o no tiene acceso a ella. | no |
+| `CARP-INI-003` | Solo una conversación finalizada con correos nuevos puede iniciar una conversación nueva. | no |
+| `CARP-INI-004` | La conversación está marcada con correos nuevos, pero no se encontró ninguno posterior a la finalización. Avise al equipo de soporte. | no |
+| `CARP-INI-005` | Ya existe una conversación para ese correo. | no |
+| `CARP-INI-006` | Hay más de 1.000 correos nuevos y no se pueden mover en una sola operación. | no |
+| `CARP-INI-900` | No se pudo iniciar la conversación nueva. No se guardó ningún cambio. Intente de nuevo. | sí |
+
+**Pruebas de aceptación** (`Aceptacion/IniciarConversacionNuevaAceptacion.cs`)
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-INI-01 | Finalizada en T con indicador; entrantes `e1` (antes de T), `e2` (T+1 h), `e3` (T+2 h); saliente `s1` (T+30 min); cliente C, oficial O | Se llama | Nueva conversación Abierta con huella de `e2`, `fechaprimercorreo` y `sinrespuestadesde` = llegada de `e2`, asunto y remitente de `e2`, cliente C, **sin** oficial, `ownerid` = team, `cantidadrespuestas = 0`; `e2` y `e3` con Regarding nueva; `e1` y `s1` siguen en la anterior; la anterior con indicador `no` y `sinrespuestadesde` vacío; salidas `correosmovidos = 2` |
+| PA-INI-02 | Conversación Abierta; Finalizada sin indicador; Unida | Se llama | `CARP-INI-003` en los tres |
+| PA-INI-03 | Indicador `sí` pero sin entrantes posteriores | Se llama | `CARP-INI-004`; sin escrituras |
+| PA-INI-04 | Ya existe una conversación con la huella de `e2` | Se llama | `CARP-INI-005` |
+| PA-INI-05 | 1.001 entrantes posteriores | Se llama | `CARP-INI-006` |
+| PA-INI-06 | Id ausente; inexistente; sin acceso | Se llama | `CARP-INI-001`, `-002`, `-002` |
+| PA-INI-07 | `e2` sin `actualend` | Se llama | Usa `createdon` para ordenar y como fecha |
+| PA-INI-08 | `e2` sin `messageid` | Se llama | Huella de respaldo `sin-messageid:<id del Email>` (DC-13) |
+| PA-INI-09 | Fallo inyectado al mover `e3` | Se llama | `CARP-INI-900`; al restaurar, no existe la conversación nueva |
+| PA-INI-10 | Anterior sin cliente | Se llama | La nueva queda sin cliente |
+| PA-INI-11 | Se llama dos veces seguidas | Segunda llamada | `CARP-INI-003` (el indicador ya se limpió) |
+| PA-INI-12 | Escrituras | Se llama | Todas con el servicio de SYSTEM; lecturas de la conversación con el del llamador |
+| PA-INI-13 | La anterior está inactiva (Finalizada) | Se llama | El `Update` de sus dos columnas se hace (V-2); el estado sigue Finalizada |
+| PA-INI-15 | El doble lanza la falla de clave duplicada al crear la conversación nueva | Se llama | `CARP-INI-900`; sin cambios |
+| PA-INI-14 | Cadena (pipeline simulado) | Se llama | Los steps de propietario y de Conversación aceptan la creación y la actualización como escrituras del sistema, sin consultar la BU por cada una (contar llamadas del doble) |
+
+---
+
+## 2. Plugins y steps
+
+### Reglas comunes de todo step
+
+- Cada step es una clase `IPlugin` con **constructor sin parámetros** (el que usa Dataverse) y un constructor `internal` que recibe los puertos (servicio, reloj, configuración, identidad) para las pruebas (`patrones.md`, "Refactor seguro"). Nunca se renombra la clase ni el namespace tras el primer registro (conv. §5).
+- La clase del step solo arma el contexto y delega. La regla vive en `Dominio` (puro) o en una clase de `Steps/` con puertos. Un step no cachea nada en campos de instancia entre ejecuciones.
+- Los steps de gestos y de columnas solo-sistema siguen el esquema: (1) calcular en memoria las columnas **vigiladas que cambiaron** (DC-01); (2) si no hay ninguna, terminar; (3) recién entonces consultar identidad; (4) si es escritura del sistema, terminar (DC-03); (5) evaluar; (6) escribir en el `Target` las columnas que el sistema fija.
+- `ColumnSet` siempre con nombres. Nunca `ColumnSet(true)`.
+- Errores: `InvalidPluginExecutionException("CARP-…")` para negocio; cualquier otra excepción se traza y se relanza como `CARP-<ÁREA>-900` (0.5).
+- No se usa `Depth` para saltarse reglas. Sí se usa para la protección contra recursión donde un step escribe sobre su propia tabla (2.7).
+- Trazas: prefijo `[NombreDelStep]`, entrada y salida, solo ids. Nunca cédula, cuenta, nombre ni cuerpo.
+
+### 2.0 Piezas de dominio puro (inv. 7.2 a 7.7)
+
+Sin `Microsoft.Xrm.Sdk`. Se prueban con pruebas unitarias puras. Firmas en 4.4.
+
+#### 2.0.1 Normalización (P-06; inv. 7.3)
+
+| Dato | Regla |
+|---|---|
+| Número de producto | Sin ningún espacio en blanco, mayúscula. **Los guiones se conservan** |
+| Cédula | Igual que el número de producto |
+| Correo | Sin espacios en blanco, minúscula |
+| Nombre completo | Recortado; las secuencias de espacios internos pasan a un solo espacio. Conserva tildes |
+| Celular | Recortado |
+| Cualquier texto | `null` se queda `null`; una cadena solo de espacios pasa a `null`; normalizar dos veces da lo mismo que una. Siempre con cultura invariante |
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-NOR-01 | `"5412 7500 1234 8890"` | Normalizar número de producto | `"5412750012348890"` |
+| PA-NOR-02 | `" 10-2033-4471 "` y `"ab-12 c"` | Normalizar número de producto | `"10-2033-4471"` y `"AB-12C"` |
+| PA-NOR-03 | `" 001 -000000- 0001a"` | Normalizar cédula | `"001-000000-0001A"` |
+| PA-NOR-04 | `"  Ana.Perez@Banco.COM "` | Normalizar correo | `"ana.perez@banco.com"` |
+| PA-NOR-05 | `"  Ana   María\tPérez "` | Normalizar nombre | `"Ana María Pérez"` |
+| PA-NOR-06 | `null`, `""`, `"   "` | Normalizar cualquiera | `null` |
+| PA-NOR-07 | Cultura del hilo `tr-TR` | Normalizar `"id-1"` | `"ID-1"` (no `"İD-1"`) |
+| PA-NOR-08 | Cualquier valor ya normalizado | Normalizar de nuevo | Mismo valor |
+
+#### 2.0.2 Huella del Message-ID (D-03, DC-13; inv. 7.3)
+
+Normalizar: quitar todo espacio en blanco, quitar **un** `<` inicial y **un** `>` final, pasar a minúscula. Huella = SHA-256 de los bytes UTF-8 en hexadecimal minúscula (64 caracteres). Si el Message-ID es nulo, vacío o queda vacío tras normalizar: huella de `"sin-messageid:" + id del Email en formato "D" minúscula`.
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-HUE-01 | `"<CAF+abc123@mail.example.com>"` | Calcular huella | `093f09291642088a9522c5833b491aa367f7d28c10544c960eff9d3a8dd05d1d` |
+| PA-HUE-02 | `" <caf+ABC123@Mail.Example.com> "` y `"caf+abc123@mail.example.com"` | Calcular huella | La misma del caso anterior |
+| PA-HUE-03 | `"<ab c@x>"` | Normalizar | `"abc@x"` |
+| PA-HUE-04 | Message-ID `null`, `""`, `"<>"` y el Email `11111111-1111-1111-1111-111111111111` | Calcular huella | `bdc7ce0b320a83847a51efaa9e521460ec45b9a52d14d77914a562c933b99340` en los tres casos |
+| PA-HUE-05 | Cualquier entrada | Calcular huella | 64 caracteres, solo `[0-9a-f]` |
+
+#### 2.0.3 Montos del arreglo (D-30; dicc. DD-12, R-04; def. ítem 7; inv. 7.4)
+
+`ReglasDeMontos.Calcular(saldoInicial, montoAbonado, cuotaMensual, plazo)`. Todo en `decimal`. Orden de validación:
+
+1. `cuotaMensual <= 0` ⇒ error `CARP-ARR-007`.
+2. `montoAbonado > saldoInicial` ⇒ `CARP-ARR-004`.
+3. `saldoRemanente = saldoInicial − montoAbonado`.
+4. Si `cuotaMensual × (plazo − 1) >= saldoRemanente` ⇒ `CARP-ARR-005`: con una cuota menos ya se cubre el saldo. El mensaje indica con cuántas cuotas se cubre: `N = ceil(saldoRemanente / cuotaMensual)`. Si `saldoRemanente = 0`, el mensaje dice que no hay saldo por pagar.
+5. Si `cuotaMensual × plazo > saldoRemanente`: `totalPagar = saldoRemanente`; `montoUltimaCuota = saldoRemanente − cuotaMensual × (plazo − 1)` (siempre mayor que cero por la regla 4).
+6. Si no (alivio temporal): `totalPagar = cuotaMensual × plazo`; `montoUltimaCuota = cuotaMensual`.
+
+Resultado: `SaldoRemanente`, `TotalPagar`, `MontoUltimaCuota`, o el error con su código y texto.
+
+| ID | Dado (inicial, abonado, cuota, plazo) | Cuando | Entonces |
+|---|---|---|---|
+| PA-MON-01 | 10000, 2000, 1000, 8 | Calcular | remanente 8000, total 8000, última 1000 |
+| PA-MON-02 | 10000, 2000, 1000, 9 | Calcular | `CARP-ARR-005`, "con 8 cuotas" |
+| PA-MON-03 | 1000, 0, 300, 4 | Calcular | remanente 1000, total 1000, última 100 |
+| PA-MON-04 | 10000, 0, 500, 6 | Calcular | total 3000 (alivio temporal), última 500 |
+| PA-MON-05 | 1000, 1500, 100, 5 | Calcular | `CARP-ARR-004` |
+| PA-MON-06 | 1000, 1000, 100, 5 | Calcular | `CARP-ARR-005`, sin saldo por pagar |
+| PA-MON-07 | 1000, 0, 0 y 1000, 0, −5, 3 | Calcular | `CARP-ARR-007` en ambos |
+| PA-MON-08 | 500, 0, 800, 1 | Calcular | total 500, última 500 |
+| PA-MON-09 | 1000, 0, 200, 1 | Calcular | total 200, última 200 |
+| PA-MON-10 | 1000.10, 0.05, 333.35, 3 | Calcular | remanente 1000.05, total 1000.05, última 333.35 |
+| PA-MON-11 | 0.30, 0.10, 0.10, 2 | Calcular | remanente 0.20 exacto, total 0.20 (la prueba compara con `decimal`; detecta una versión basada en `double`) |
+| PA-MON-12 | 999999999.99, 0.01, 16666666.67, 60 | Calcular | remanente 999999999.98, total 999999999.98, última 16666666.45 |
+| PA-MON-13 | 1000, 0, 1000, 2 | Calcular | `CARP-ARR-005` con el texto en singular: "con 1 cuota" |
+| PA-MON-14 | Cualquier caso válido | Listar los montos de las cuotas | `plazo − 1` cuotas de `cuotaMensual` y la última igual a `MontoUltimaCuota`; la suma de las cuotas es `totalPagar` |
+
+#### 2.0.4 Calendario de cuotas (def. ítem 8; inv. 7.4)
+
+`GeneradorDeCalendario.Generar(fechaInicio, plazo, cuotaMensual, montoUltimaCuota)` devuelve `plazo` cuotas con `Numero` (1..plazo), `FechaVencimiento` y `Monto`. **Regla de fechas provisional `[ABIERTA OA-5]`**: la cuota `n` vence en `fechaInicio.Date.AddMonths(n − 1)`, calculado siempre desde la fecha original, con el día ajustado al último día del mes si no existe. La cuota 1 vence en `fechaInicio` (dicc. §4.3: "fecha de la primera cuota"). `fechaFin` = vencimiento de la última cuota. Toda la regla queda en este único método (def. ítem 8: "centralizada en el plugin").
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-FEC-01 | Inicio 2026-11-05, plazo 3 | Generar | 2026-11-05, 2026-12-05, 2027-01-05 |
+| PA-FEC-02 | Inicio 2026-01-31, plazo 4 | Generar | 01-31, 02-28, 03-31, 04-30 (no encadenado: marzo vuelve a 31) |
+| PA-FEC-03 | Inicio 2027-12-31, plazo 3 | Generar | 2027-12-31, 2028-01-31, 2028-02-29 |
+| PA-FEC-04 | Plazo 60 | Generar | 60 cuotas, números 1 a 60, fechas estrictamente crecientes |
+| PA-FEC-05 | Cuota 300, última 100, plazo 4 | Generar | montos 300, 300, 300, 100 |
+| PA-FEC-06 | Plazo 0 y plazo 61 | Generar | `ArgumentOutOfRangeException` (el plugin ya rechazó antes con `CARP-ARR-003`) |
+| PA-FEC-07 | Inicio con hora 2026-11-05 14:30 | Generar | Usa solo la fecha |
+
+#### 2.0.5 Consecutivo por crédito (D-09, RF-07; inv. 7.5)
+
+`ConsecutivoDeCredito.Siguiente(numerosExistentes)`: máximo de los no nulos más uno; `1` si no hay ninguno. Los números existentes son los de **todos** los arreglos del mismo (producto, número de producto) con `sanic_numeroarreglo` no nulo, en cualquier estado (un Anulado conserva su número y cuenta; un Borrador o Descartado no tiene). Si el siguiente supera 9999 (rango del dicc. §11.3) ⇒ `CARP-ARR-023`.
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-CON-01 | Sin números | Siguiente | 1 |
+| PA-CON-02 | 1, 2, 3 | Siguiente | 4 |
+| PA-CON-03 | `null`, 2 | Siguiente | 3 |
+| PA-CON-04 | 1, 3 (hueco en 2) | Siguiente | 4 (no se rellenan huecos) |
+| PA-CON-05 | 9999 | Siguiente | `CARP-ARR-023` |
+
+#### 2.0.6 Tiempos y recálculo de la conversación (RF-03, RF-04; dicc. DD-05; inv. 7.6)
+
+- `MinutosEntre(desde, hasta)`: parte entera de los minutos (truncada hacia abajo); si `hasta < desde`, 0 (DC-11).
+- `AplicarRespuestaEnviada(estado, sinRespuestaDesde, cantidad, primeraRespuesta, enviadoEn)` devuelve: `TiempoDeEstaRespuesta` (o nulo), `NuevoSinRespuestaDesde`, `NuevaCantidad`, `NuevaPrimeraRespuesta`.
+  - Conversación Abierta y `sinRespuestaDesde` no nulo y `sinRespuestaDesde <= enviadoEn`: tiempo = minutos entre ambos; `NuevoSinRespuestaDesde = null`; si `primeraRespuesta` es nula, pasa a ser ese tiempo.
+  - Abierta y `sinRespuestaDesde` nulo: sin tiempo; nada más cambia.
+  - Abierta y `sinRespuestaDesde > enviadoEn` (el pendiente llegó después): sin tiempo; `sinRespuestaDesde` se mantiene.
+  - Finalizada `[ABIERTA OA-10]`: sin tiempo y sin cambios en `sinRespuestaDesde`.
+  - En todos los casos `NuevaCantidad = cantidad + 1`.
+- `Recalcular` para la unión: ver PA-TIE-10 y 1.4 paso 6c.
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-TIE-01 | 10:00 y 10:45 | Minutos | 45 |
+| PA-TIE-02 | 10:00:00 y 10:45:59 | Minutos | 45 |
+| PA-TIE-03 | 10:45 y 10:00 | Minutos | 0 |
+| PA-TIE-04 | 10:00 de un día y 10:00 del siguiente | Minutos | 1440 |
+| PA-TIE-05 | Abierta, pendiente 10:00, enviado 10:45, cantidad 0, primera nula | Aplicar | tiempo 45, pendiente nulo, cantidad 1, primera 45 |
+| PA-TIE-06 | Igual pero primera ya 30 y cantidad 3 | Aplicar | primera 30, cantidad 4 |
+| PA-TIE-07 | Abierta, pendiente nulo | Aplicar | tiempo nulo, cantidad +1, primera sin cambio |
+| PA-TIE-08 | Abierta, pendiente 10:50, enviado 10:45 | Aplicar | tiempo nulo, pendiente 10:50, cantidad +1 |
+| PA-TIE-09 | Finalizada, pendiente 10:00, enviado 10:45 | Aplicar | tiempo nulo, pendiente 10:00, cantidad +1 |
+| PA-TIE-10 | Dos conversaciones con `fechaprimercorreo` 10:00 y 09:00, pendientes 10:00 y nulo, y los correos salientes procesados con (enviado, tiempo) = (11:00, 40), (12:00, 15), (13:00, 5) | Recalcular | `fechaprimercorreo` 09:00, pendiente 10:00, cantidad 3, `primera` 40 |
+
+#### 2.0.7 Validación de publicación del mapeo (D-15, ítem 15; inv. 7.7)
+
+`ValidadorDePublicacion.Validar(capacidad, filasDeMapeo)` devuelve **todos** los errores, no solo el primero (spike 1, `ValidarMapeo`). Cada error trae código y texto. Reglas:
+
+1. El mapeo no está vacío ⇒ `CARP-VER-007`.
+2. Las reglas del generador (`ValidarMapeo` portado del spike 1): celda A1 bien formada (A1 a XFD1048576), sin dos campos en la misma celda de la misma hoja, bloque de cuotas completo (las cinco columnas), campo coherente con el tipo ⇒ `CARP-VER-007` con la lista.
+3. Tabla "tipo de mapeo que admite" de dicc. §3.1 (columna 4): las 19 primeras opciones y `Moneda` solo con ValorSimple; `Cuota: …` (5) solo con ColumnaDeBloqueDeCuotas; `Total: …` (2) solo con TotalCalculado ⇒ `CARP-VER-007`.
+4. Todas las columnas del bloque tienen `sanic_filasmaximas` igual a `capacidad` ⇒ si no, `CARP-VER-008`.
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-PUB-01 | El mapeo v07 completo (27 filas del fixture) con capacidad 60 | Validar | Sin errores |
+| PA-PUB-02 | Mapeo vacío | Validar | `CARP-VER-007` |
+| PA-PUB-03 | Celdas `B0`, `7B`, `XFE1` | Validar | Un error por celda, los tres en la misma respuesta |
+| PA-PUB-04 | `B7` usada por dos campos de la misma hoja; y la misma celda en dos hojas distintas | Validar | Error solo en el primer caso |
+| PA-PUB-05 | Bloque sin `Cuota: monto pagado` | Validar | `CARP-VER-007` |
+| PA-PUB-06 | `Cuota: monto` con ValorSimple; `Numero de arreglo` con Bloque; `Total: montos de cuota` con Bloque; `Moneda` con Total | Validar | Un error por cada uno |
+| PA-PUB-07 | Capacidad 60, bloque con filas máximas 59 en una columna | Validar | `CARP-VER-008` |
+| PA-PUB-08 | Capacidad 48, bloque con 60 | Validar | `CARP-VER-008` |
+| PA-PUB-09 | Hoja `" FORMATO ARP ELECTRONICO"` (espacio inicial) | Validar | Sin error; el nombre se conserva tal cual (spike 1, hallazgo 1) |
+
+#### 2.0.8 Columnas por categoría (DC-26)
+
+Viven en `Dominio/Columnas`. La prueba `CatalogoDeColumnasAceptacion` lee `diseno/02-diccionario-datos.md` (busca el archivo subiendo desde el directorio de la prueba; falla si no lo encuentra) y exige que **cada columna de cada tabla propia** esté en exactamente una categoría de su tabla, y que cada categoría solo nombre columnas que existen. Así una columna nueva no queda fuera de la regla en silencio (`patrones.md` §3, D-63 de M-PPP). Además toma de ese documento las columnas con *Sis* = Sí y verifica que son exactamente la unión de las categorías "solo-sistema".
+
+| Tabla | Solo-sistema | De gesto | Datos del acuerdo (se bloquean al congelar) | Libres |
+|---|---|---|---|---|
+| Conversación | `sanic_huellamessageid`, `sanic_fechaprimercorreo`, `sanic_asunto`, `sanic_remitente`, `sanic_sinrespuestadesde`, `sanic_correonuevoenfinalizada`, `sanic_fechafinalizacion`, `sanic_tiempoprimerarespuesta`, `sanic_tiempototal`, `sanic_cantidadrespuestas`, `sanic_unidaaid`, `sanic_finalizadoporid` | `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta` | — | `sanic_clienteid`, `sanic_nombre` (autonumérica). Aparte: `sanic_oficialasignadoid` (2.4), `ownerid` (2.1), `statecode`/`statuscode` (3.1), `sanic_antiguedad` (fórmula, no escribible) |
+| Arreglo | `sanic_numeroarreglo`, `sanic_numeroprovisional`, `sanic_saldoremanente`, `sanic_totalpagar`, `sanic_fechacongelamiento` (salvo el gesto Desbloquear), `sanic_instantaneanombre`, `sanic_instantaneacedula`, `sanic_instantaneacorreo`, `sanic_instantaneacelular`, `sanic_fechaformalizado`, `sanic_formalizadoporid`, `sanic_fechadescarte`, `sanic_descartadoporid`, `sanic_fechaanulacion`, `sanic_anuladoporid`, `sanic_fechareapertura`, `sanic_reabiertoporid`, `sanic_cantidadreaperturas`, `sanic_fechatermino`, `sanic_versionplantillaid` | `sanic_motivodescarte`, `sanic_motivoanulacion`, `sanic_motivoreapertura` | `sanic_producto`, `sanic_numeroproducto`, `sanic_tipo`, `sanic_moneda`, `sanic_canalorigen`, `sanic_saldoinicial`, `sanic_montoabonado`, `sanic_plazo`, `sanic_cuotamensual`, `sanic_fechainicio`, `sanic_fechafin`, `sanic_cuentadebitar`, `sanic_fechaformalizacion`, `sanic_comentarios`, `sanic_clienteid`, `sanic_oficialid` | `sanic_conversacionid`, `sanic_nombre`. Aparte: `ownerid`, `statecode`/`statuscode` |
+| Cuota | `sanic_nombre`, `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_arregloid` | — | — | de pago: `sanic_fechapago`, `sanic_montopagado` |
+| Versión de plantilla | `sanic_huella`, `sanic_fechaaprobacion`, `sanic_aprobadoporid` | `sanic_estado` (gesto Publicar) | — | `sanic_nombre`, `sanic_archivo`, `sanic_capacidad` (solo en Borrador) |
+| Mapeo de celda | `sanic_nombre` (calculada), `sanic_versionplantillaid` | — | — | `sanic_hoja`, `sanic_celda`, `sanic_tipo`, `sanic_campo`, `sanic_filasmaximas` (solo en versión Borrador) |
+| Email (columnas propias) | `sanic_tiemporespuesta`, `sanic_respondidoporid` | — | — | — |
+
+"Datos del acuerdo" incluye `sanic_clienteid` y `sanic_oficialid` porque la instantánea y el formato los imprimen (DC-26 los deriva de dicc. §4.3 y def. ítem 10). `sanic_conversacionid` no se imprime: queda libre. Cliente, Generación de formato y la columna `sanic_nombre` de Cliente no tienen categorías: Cliente se rige por 2.2; Generación no la escribe ningún humano.
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-COL-01 | El diccionario de datos | Contrastar | Cada columna de Conversación, Arreglo, Cuota, Versión, Mapeo y Email está en exactamente una categoría; ninguna categoría nombra una columna inexistente |
+| PA-COL-02 | Las columnas con Sis = Sí del diccionario | Contrastar | Coinciden con la unión de "solo-sistema" de cada tabla (más `sanic_finalizadoporid` y `sanic_unidaaid`, que el diccionario marca en la nota de lookups) |
+
+### 2.1 Propietario (inv. 7.17; D-31, P-11)
+
+Un plugin pre-create fija el team del área como propietario de **las siete tablas propias**; un pre-update rechaza otro propietario. No hace falta Assign: crear con el team como dueño no lo exige, pero el team debe tener Read sobre la tabla (spike roles, matriz §1.2). Ningún rol humano tiene Assign.
+
+**`PropietarioAlCrearStep`** — Create · PreOperation · síncrono · orden 5 · sin filtro · sin imagen, en cada una de las 7 tablas.
+1. Si `EsEscrituraDelSistema` y el `Target` ya trae `ownerid` de tipo `team`: terminar (atajo, DC-20; el calendario crea hasta 60 cuotas y no debe consultar la BU 60 veces).
+2. Si no: resolver el team del área (0.4) y poner `Target["ownerid"] = EntityReference("team", teamId)`, **reemplazando** cualquier valor (el creador, otro team).
+
+**`PropietarioAlActualizarStep`** — Update · PreOperation · síncrono · orden 5 · filtro `ownerid` · sin imagen, en las 7 tablas.
+1. Si `EsEscrituraDelSistema`: terminar.
+2. Si `Target["ownerid"]` no es el team del área ⇒ `CARP-PRO-001`.
+
+| Código | Mensaje |
+|---|---|
+| `CARP-PRO-001` | Los registros de esta solución pertenecen siempre al equipo del área. No se puede cambiar el propietario. |
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-PRO-01 | Alta de Cliente por un Oficial sin `ownerid` | Create | `Target.ownerid` = team del área (EntityReference `team`) |
+| PA-PRO-02 | Alta con `ownerid` = el propio Oficial; y con `ownerid` = otro team | Create | Se reemplaza por el team del área |
+| PA-PRO-03 | Las 7 tablas (una prueba parametrizada) | Create | Todas quedan con el team del área |
+| PA-PRO-04 | Alta por el sistema con `ownerid` = team | Create | No se consulta BU ni team (el doble cuenta 0 consultas de BU); `ownerid` igual |
+| PA-PRO-05 | Alta por el sistema sin `ownerid` | Create | Se fija el team |
+| PA-PRO-06 | Update con `ownerid` = el team | Update | Pasa |
+| PA-PRO-07 | Update de un Oficial con `ownerid` = un usuario o un team ajeno | Update | `CARP-PRO-001` |
+| PA-PRO-08 | Update del sistema con `ownerid` ajeno | Update | Pasa (DC-03) |
+| PA-PRO-09 | La BU no existe, o hay dos | Create | `CARP-CFG-001`; el alta falla |
+| PA-PRO-10 | Dos teams `isdefault` en la BU | Create | `CARP-CFG-002` |
+| PA-PRO-11 | La BU tiene un team llamado igual que el team de jefatura de otra BU | Create | El team del área es el `isdefault` de **la BU configurada** |
+
+### 2.2 Cliente (inv. 7.13; D-07, P-05, P-06)
+
+**`ClienteStep`** — registrado dos veces: Create · PreOperation · síncrono · orden 10; Update · PreOperation · síncrono · orden 10 · filtro `sanic_nombrecompleto,sanic_cedula,sanic_correo,sanic_celular`. Sin imagen.
+
+Create:
+1. Normalizar nombre completo, cédula, correo, celular (2.0.1) y escribir los valores normalizados en el `Target`.
+2. Nombre completo vacío ⇒ `CARP-CLI-001`. Cédula vacía ⇒ `CARP-CLI-002` (la unicidad necesita que exista, P-05).
+3. `sanic_nombre` = nombre completo normalizado (primaria calculada, dicc. §11.2).
+4. Unicidad de la cédula con servicio **SYSTEM** (DC-22): `Cliente` con esa cédula, **activo o inactivo**, ⇒ `CARP-CLI-003`. La consulta con el servicio del llamador no sirve: sin el perfil de columna la cédula llega vacía y el duplicado pasaría en silencio (spike 4, tarea A).
+
+Update (solo las columnas presentes en el `Target`):
+1. Normalizar las presentes. Si trae nombre completo: vacío ⇒ `CARP-CLI-001`; si cambió, recalcular `sanic_nombre`.
+2. Si trae cédula: vacía ⇒ `CARP-CLI-002`; unicidad igual que en Create **excluyendo el propio registro** ⇒ `CARP-CLI-003`. Si la cédula normalizada no cambió, no se consulta.
+
+Vincular conversaciones al cliente **no** lo hace este step: lo hace la entrada de correo al crear la conversación (2.10) y el oficial a mano (def. L163). Ver Inconsistencias, punto 4.
+
+| Código | Mensaje |
+|---|---|
+| `CARP-CLI-001` | El nombre completo del cliente es obligatorio. |
+| `CARP-CLI-002` | La cédula del cliente es obligatoria. |
+| `CARP-CLI-003` | Ya existe un cliente con esa cédula. |
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-CLI-01 | Alta con `" Ana  Pérez "`, cédula `" 001-000000-0001a"`, correo `"ANA@X.COM "`, celular `" 8888-0000"` | Create | Target: nombre `"Ana Pérez"`, cédula `"001-000000-0001A"`, correo `"ana@x.com"`, celular `"8888-0000"`, `sanic_nombre = "Ana Pérez"` |
+| PA-CLI-02 | Nombre vacío; cédula vacía | Create | `CARP-CLI-001` y `CARP-CLI-002` |
+| PA-CLI-03 | Existe un cliente con cédula `001-000000-0001A` | Alta con `001-000000-0001a ` | `CARP-CLI-003`; el mensaje no nombra al otro cliente |
+| PA-CLI-04 | El duplicado está inactivo | Alta | `CARP-CLI-003` |
+| PA-CLI-05 | El doble simula seguridad por columna: para el llamador la cédula del existente llega `null`, para SYSTEM no | Alta con la misma cédula | `CARP-CLI-003` (la consulta usó el servicio de SYSTEM) |
+| PA-CLI-06 | Alta sin correo ni celular | Create | Pasa; esas columnas quedan sin valor |
+| PA-CLI-07 | Update de la cédula a la de otro cliente | Update | `CARP-CLI-003` |
+| PA-CLI-08 | Update que reescribe la propia cédula con otro formato (`…0001a` vs `…0001A`) | Update | Pasa sin consulta de unicidad (no cambió) |
+| PA-CLI-09 | Update del nombre completo | Update | Se recalcula `sanic_nombre` |
+| PA-CLI-10 | Update del celular | Update | No se consulta la unicidad |
+| PA-CLI-11 | Update con cédula vacía | Update | `CARP-CLI-002` |
+
+### 2.3 Conversación: columnas solo-sistema y gestos Finalizar y Reabrir (inv. 7.12; D-30; def. ítem 6)
+
+**`ConversacionActualizarStep`** — Update · PreOperation · síncrono · orden 10 · **sin filtro** (a propósito: filtrar dejaría pasar justo las columnas que nadie declaró, M-PPP §5.1) · pre-imagen `PreImagen` con: `statecode`, `statuscode`, `sanic_huellamessageid`, `sanic_fechaprimercorreo`, `sanic_asunto`, `sanic_remitente`, `sanic_sinrespuestadesde`, `sanic_correonuevoenfinalizada`, `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`, `sanic_fechafinalizacion`, `sanic_tiempoprimerarespuesta`, `sanic_tiempototal`, `sanic_cantidadrespuestas`, `sanic_unidaaid`, `sanic_finalizadoporid`.
+
+Algoritmo (esquema común de los steps de gestos):
+1. Calcular las columnas vigiladas que cambiaron (solo-sistema, de gesto, `statecode`, `statuscode`), con DC-01 y el estado efectivo de DC-06. Ninguna ⇒ terminar.
+2. `EsEscrituraDelSistema` ⇒ terminar (DC-03).
+3. Si cambió alguna solo-sistema ⇒ `CARP-CNV-001` (nombra las columnas). Un usuario no puede fijar `finalizadoporid`, `fechafinalizacion` ni los tiempos ni siquiera dentro de un gesto.
+4. Estado: sea `de` el de la pre-imagen y `a` el efectivo.
+   - `Abierta → Finalizada`: **Finalizar**. Exige `sanic_resultado` ⇒ `CARP-CNV-003`. Si es `SinRespuesta`, exige motivo y detalle no vacíos (recortados) ⇒ `CARP-CNV-004`. Si es otro resultado, se ponen en `null` motivo y detalle del `Target`.
+   - `Finalizada → Abierta`: **Reabrir**. Si el `Target` trae resultado, motivo o detalle con valor distinto del actual ⇒ `CARP-CNV-005`.
+   - `* → Unida` ⇒ `CARP-CNV-006` (solo la API de unir).
+   - `Unida → *` ⇒ `CARP-CNV-002`.
+   - Cualquier otra combinación con cambio de estado ⇒ `CARP-CNV-002`.
+   - Sin cambio de estado pero con resultado, motivo o detalle cambiados ⇒ `CARP-CNV-005`.
+5. Efectos escritos en el `Target`:
+   - **Finalizar**: `sanic_finalizadoporid = InitiatingUserId`; `sanic_fechafinalizacion = ahora`; `sanic_tiempototal = MinutosEntre(sanic_fechaprimercorreo, ahora)` (si la fecha del primer correo es nula, no se escribe); `sanic_sinrespuestadesde = null` (DC-10); `sanic_correonuevoenfinalizada` queda como está.
+   - **Reabrir**: `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`, `sanic_fechafinalizacion`, `sanic_finalizadoporid`, `sanic_tiempototal` = `null`; `sanic_correonuevoenfinalizada = no`. **No** se toca `sanic_sinrespuestadesde`: si había un correo nuevo sin responder, sigue pendiente en la conversación ya abierta (DC-10; Inconsistencias, punto 3). `sanic_tiempoprimerarespuesta` y `sanic_cantidadrespuestas` no cambian.
+
+Quién: cualquier usuario del área con Write sobre Conversación (Oficial; el Jefe también). El step no pide jefatura.
+
+| Código | Mensaje |
+|---|---|
+| `CARP-CNV-001` | Estas columnas las gestiona el sistema y no se pueden modificar: {columnas}. |
+| `CARP-CNV-002` | Esa transición de estado no está permitida. |
+| `CARP-CNV-003` | Para finalizar la conversación hay que indicar el resultado. |
+| `CARP-CNV-004` | Si el resultado es "Sin respuesta", el motivo y el detalle son obligatorios. |
+| `CARP-CNV-005` | El resultado, el motivo y el detalle solo se registran al finalizar la conversación. |
+| `CARP-CNV-006` | Una conversación solo pasa a Unida con la acción "Unir conversaciones". |
+| `CARP-CNV-008` | Solo la jefatura puede reasignar una conversación o dejarla sin asignar. (Ver 2.4.) |
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-CNV-01 | Abierta, `fechaprimercorreo` 10:00; `ahora` 12:30; actor Oficial | `statecode=1, statuscode=2, resultado=ConArregloDePago` | Target recibe `finalizadoporid = Oficial`, `fechafinalizacion = 12:30`, `tiempototal = 150`, `sinrespuestadesde = null`; motivo y detalle `null` |
+| PA-CNV-02 | Igual, solo con `statecode=1` | Update | Se trata como Finalizada (DC-06) con los mismos efectos |
+| PA-CNV-03 | Finalizar sin resultado | Update | `CARP-CNV-003` |
+| PA-CNV-04 | Resultado Sin respuesta sin motivo; con motivo pero detalle `"   "` | Update | `CARP-CNV-004` en ambos |
+| PA-CNV-05 | Resultado Sin respuesta, motivo Spam, detalle "correo masivo" | Update | Pasa; conserva motivo y detalle |
+| PA-CNV-06 | Resultado SinArregloDePago con motivo Spam presente | Update | Target con motivo y detalle `null` |
+| PA-CNV-07 | Abierta con `sinrespuestadesde` 09:00 | Finalizar | `sinrespuestadesde = null` |
+| PA-CNV-08 | Finalizada con resultado, motivo, detalle, fecha, finalizador, tiempo y `sinrespuestadesde` 11:00 | `statecode=0, statuscode=1` | Esas seis columnas pasan a `null` y el indicador a `no`; `sinrespuestadesde` queda 11:00 |
+| PA-CNV-09 | Reabrir con `resultado` distinto en el Target | Update | `CARP-CNV-005` |
+| PA-CNV-10 | Un Oficial manda `statecode=1, statuscode=159460001` | Update | `CARP-CNV-006` |
+| PA-CNV-11 | Unida → Abierta; Unida → Finalizada | Update | `CARP-CNV-002` |
+| PA-CNV-12 | Abierta sin cambio de estado, `resultado=ConArregloDePago` | Update | `CARP-CNV-005` |
+| PA-CNV-13 | Una prueba parametrizada por cada columna solo-sistema (12) con valor distinto | Update de un Oficial | `CARP-CNV-001` nombrando esa columna |
+| PA-CNV-14 | El Target trae `sanic_cantidadrespuestas` con el mismo valor de la pre-imagen | Update | Pasa (no es un cambio, DC-01) |
+| PA-CNV-15 | Update solo de `sanic_clienteid` | Update | Pasa y **no** se consulta identidad (0 llamadas a `WhoAmI`) |
+| PA-CNV-16 | Update del sistema (`InitiatingUserId` = SYSTEM) que cambia columnas solo-sistema y pasa a Unida | Update | Pasa sin modificar el `Target` |
+| PA-CNV-17 | Update de la cuenta de servicio (Application ID igual al de la variable) que cambia `sinrespuestadesde` | Update | Pasa |
+| PA-CNV-18 | La variable del Application ID está vacía y el actor tiene `applicationid` | Update | Se trata como persona: `CARP-CNV-001` |
+| PA-CNV-19 | Finalizar con `fechaprimercorreo` nula | Update | No se escribe `tiempototal`; el resto sí |
+| PA-CNV-20 | Finalizar y Reabrir hechos por un Oficial y por un Jefe | Update | Ambos pasan |
+| PA-CNV-21 | `UserId` ≠ `InitiatingUserId` | Finalizar | `finalizadoporid = InitiatingUserId` |
+| PA-CNV-22 | Un Oficial intenta escribir `finalizadoporid` y `fechafinalizacion` dentro de Finalizar | Update | `CARP-CNV-001` |
+| PA-CNV-23 | Finalizar | Update | Como máximo 1 `WhoAmI` y ninguna consulta de BU |
+
+### 2.4 Conversación: asignación (inv. 7.12; D-04; def. ítem 2)
+
+**`ConversacionAsignacionStep`** — Update · PreOperation · síncrono · orden 20 · filtro `sanic_oficialasignadoid` · pre-imagen `PreImagen` con `sanic_oficialasignadoid`.
+
+1. Valor nuevo igual al actual ⇒ terminar.
+2. `EsEscrituraDelSistema` ⇒ terminar (la unión traslada el oficial al destino, 1.4).
+3. Actual vacío y nuevo = `InitiatingUserId` ("Tomar") ⇒ pasa, sin consultar jefatura.
+4. Cualquier otro cambio (de uno a otro, a un tercero, a vacío) exige `EsJefatura()` ⇒ si no, `CARP-CNV-008`.
+
+La pertenencia al team de jefatura se consulta en `teammembership` (dicc. de supuestos: confianza media; plan B team de pertenencia manual, def. L502).
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-ASG-01 | Sin oficial | El Oficial A se asigna a sí mismo | Pasa; 0 consultas de jefatura |
+| PA-ASG-02 | Sin oficial | El Oficial A asigna a B | `CARP-CNV-008` |
+| PA-ASG-03 | Sin oficial | Un Jefe (miembro de Jefatura) asigna a B | Pasa |
+| PA-ASG-04 | Asignada a A | B (Oficial) se asigna; y el Jefe reasigna a B | `CARP-CNV-008` y pasa, respectivamente |
+| PA-ASG-05 | Asignada a A | Un Oficial la deja vacía; un Jefe la deja vacía | `CARP-CNV-008` y pasa |
+| PA-ASG-06 | Asignada a A | Update con A otra vez | Pasa |
+| PA-ASG-07 | Unir (sistema) asigna el oficial del origen al destino vacío | Update | Pasa |
+| PA-ASG-08 | Un usuario está en un team llamado como el de jefatura pero de otra BU | Reasignar | `CARP-CNV-008` (el team se busca dentro de la BU configurada) |
+| PA-ASG-09 | Dos cambios en la misma ejecución que consultan jefatura | Evaluar | Una sola consulta de pertenencia |
+| PA-ASG-10 | El team de jefatura no existe en la BU | Reasignar | `CARP-CFG-003` |
+
+### 2.5 Arreglo: alta y calendario de cuotas (inv. 7.14; def. ítems 7 y 8; D-08, D-33, D-36)
+
+#### `ArregloCrearStep` — Create · PreOperation · síncrono · orden 10 · sin filtro · sin imagen
+
+Un `EsEscrituraDelSistema` termina el step sin reglas (DC-03). Para una persona:
+
+1. Estado: si el `Target` trae `statecode`/`statuscode` y el efectivo no es Borrador ⇒ `CARP-ARR-008`. El alta sin `statuscode` toma el motivo 1 = Borrador (hecho verificado, dicc. §3.2).
+2. Si el `Target` trae alguna columna solo-sistema del Arreglo (2.0.8) ⇒ `CARP-ARR-009` (nombra las columnas). El formulario no debe someter esas columnas; las que muestre calculadas son solo de pantalla.
+3. Obligatorias para poder calcular: `sanic_numeroproducto` (tras normalizar), `sanic_saldoinicial`, `sanic_montoabonado`, `sanic_cuotamensual`, `sanic_plazo`, `sanic_fechainicio` ⇒ si falta alguna, `CARP-ARR-006` con la lista. (Que el resto de las columnas "requeridas" las exige la app, no el servicio, dicc. §0.)
+4. Normalizar `sanic_numeroproducto` (2.0.1) y escribirlo en el `Target`.
+5. Versión: buscar con SYSTEM las versiones con `sanic_estado = Vigente` y `statecode = 0`. Ninguna ⇒ `CARP-ARR-001`. Más de una ⇒ `CARP-ARR-002`. Escribir `sanic_versionplantillaid` en el `Target`.
+6. Plazo: debe estar entre 1 y 60 **y** no superar `sanic_capacidad` de esa versión ⇒ `CARP-ARR-003`.
+7. Canal de origen: si `sanic_conversacionid` viene informado y `sanic_canalorigen` está vacío ⇒ poner `Correo` (DD-13). Sin conversación no se completa nada.
+8. Montos: `ReglasDeMontos.Calcular` ⇒ errores `CARP-ARR-004/005/007`; si va bien, escribir `sanic_saldoremanente` y `sanic_totalpagar`.
+9. `sanic_fechafin` = vencimiento de la última cuota, calculado con `GeneradorDeCalendario` `[ABIERTA OA-5]`.
+10. `sanic_cantidadreaperturas = 0`.
+
+No se valida si ya hay otro Borrador del mismo crédito `[ABIERTA OA-6]`: la clave K-02 admite varios con número vacío (spike 2).
+
+#### `ArregloCalendarioStep` — Create · PostOperation · **síncrono** · orden 10 · sin filtro; y Update · PostOperation · síncrono · orden 10 · filtro `sanic_plazo,sanic_cuotamensual,sanic_fechainicio,sanic_saldoinicial,sanic_montoabonado`
+
+Una sola clase, dos registros. Corre como SYSTEM (el Oficial no tiene Create ni Delete sobre Cuota, D-26).
+
+1. Leer el arreglo (con SYSTEM): `sanic_nombre`, `statecode`, `statuscode`, `sanic_fechacongelamiento`, `sanic_plazo`, `sanic_cuotamensual`, `sanic_fechainicio`, `sanic_saldoinicial`, `sanic_montoabonado`, `ownerid`.
+2. En **Update**: si el arreglo está inactivo o congelado ⇒ terminar (el pre-update ya lo rechazó si lo cambiaron un usuario). Si alguna cuota tiene `sanic_fechapago` ⇒ `CARP-ARR-021` (defensa; el pre-update ya lo valida).
+3. Recalcular montos con `ReglasDeMontos` y el calendario con `GeneradorDeCalendario`.
+4. En **Update**: borrar las cuotas existentes (consulta con `ColumnSet(false)`, un `Delete` por cuota).
+5. Crear las cuotas con `Create` **individual** (DC-20, `rendimiento.md`): `sanic_nombre = <sanic_nombre del arreglo>-C<NN>` (NN de dos dígitos, `ARR-000123-C07`), `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_arregloid`, `ownerid` = el propietario del arreglo. `sanic_fechapago` y `sanic_montopagado` vacíos.
+6. Cualquier fallo revierte la transacción, incluido el arreglo (def. ítem 8: "un arreglo sin calendario no puede existir").
+
+El tiempo de 60 altas individuales dentro de la misma transacción se mide en Dev antes de dar el step por bueno (límite de 2 minutos, BP-PP-053).
+
+| Código | Mensaje |
+|---|---|
+| `CARP-ARR-001` | No hay una versión vigente de la plantilla. Publique una versión antes de registrar arreglos. |
+| `CARP-ARR-002` | Hay más de una versión vigente de la plantilla. Avise al equipo de soporte. |
+| `CARP-ARR-003` | El plazo debe estar entre 1 y {máximo} cuotas (la plantilla vigente admite {capacidad}). |
+| `CARP-ARR-004` | El monto abonado no puede ser mayor que el saldo inicial. |
+| `CARP-ARR-005` | Con una cuota menos ya se cubre el saldo remanente. El saldo se cubre con {n} cuotas. (Si no hay saldo: "El saldo remanente es cero; no hay cuotas que pagar.") |
+| `CARP-ARR-006` | Faltan datos para calcular el arreglo: {columnas}. |
+| `CARP-ARR-007` | La cuota mensual debe ser mayor que cero. |
+| `CARP-ARR-008` | Un arreglo siempre se registra en estado Borrador. |
+| `CARP-ARR-009` | Estas columnas las gestiona el sistema y no se pueden modificar: {columnas}. |
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-ARR-01 | Versión Vigente con capacidad 60; alta de un Oficial con conversación, sin canal, número `" 5412 7500 "`, inicial 1000, abonado 0, cuota 300, plazo 4, inicio 2026-11-05 | Create | Target: `versionplantillaid` = la Vigente, canal Correo, número `"54127500"`, remanente 1000, total 1000, `fechafin` 2027-02-05, `cantidadreaperturas` 0 |
+| PA-ARR-02 | Igual, sin conversación y sin canal | Create | `canalorigen` no se completa |
+| PA-ARR-03 | Con conversación y canal Telefono | Create | Conserva Telefono |
+| PA-ARR-04 | Ninguna versión Vigente; luego dos | Create | `CARP-ARR-001`; `CARP-ARR-002` |
+| PA-ARR-05 | Plazo 0, 61, y 13 con capacidad 12 | Create | `CARP-ARR-003` en los tres |
+| PA-ARR-06 | Abonado 1500 con inicial 1000; cuota 0; cuota que cubre con una menos | Create | `CARP-ARR-004`; `-007`; `-005` con el N correcto |
+| PA-ARR-07 | Falta el saldo inicial y la fecha de inicio | Create | `CARP-ARR-006` nombrando ambos |
+| PA-ARR-08 | `statuscode = Vigente`; `statuscode = Borrador`; sin estado | Create | `CARP-ARR-008`; pasa; pasa |
+| PA-ARR-09 | Una prueba parametrizada con cada columna solo-sistema (20) con valor | Create de un Oficial | `CARP-ARR-009` nombrándola |
+| PA-ARR-10 | Ya existe un Borrador del mismo crédito | Create | Pasa (comportamiento provisional OA-6) |
+| PA-ARR-11 | Alta del sistema con columnas solo-sistema | Create | Pasa sin cambios en el `Target` |
+| PA-CAL-01 | Arreglo recién creado `ARR-000123`, plazo 3, cuota 300, remanente 900, inicio 2026-11-05 | Post-create | 3 cuotas `ARR-000123-C01…C03`; números 1 a 3; fechas 11-05, 12-05, 01-05; montos 300; `arregloid`; `ownerid` = el del arreglo; pagos vacíos |
+| PA-CAL-02 | Remanente 1000, cuota 300, plazo 4 | Post-create | Montos 300, 300, 300, 100 |
+| PA-CAL-03 | Plazo 60 | Post-create | 60 cuotas, últimas `…-C59`, `…-C60`; 60 `Create` individuales y 0 `ExecuteMultiple`/`ExecuteTransaction` en el registro del doble |
+| PA-CAL-04 | Borrador sin congelar con 6 cuotas; cambia el plazo a 4 | Post-update | Las 6 se borran y se crean 4 |
+| PA-CAL-05 | Borrador con una cuota con `fechapago` | Post-update con cambio de cuota | `CARP-ARR-021` |
+| PA-CAL-06 | Arreglo congelado | Post-update | No toca cuotas |
+| PA-CAL-07 | Fallo inyectado al crear la cuota 5 | Post-create | La excepción sube; al restaurar la transacción del doble no queda el arreglo ni cuotas |
+| PA-CAL-08 | Post-update cuyo `Target` no trae ninguna columna del filtro | Ejecutar | No hace nada |
+| PA-CAL-09 | Escrituras | Post-create | Todas con el servicio de SYSTEM |
+
+### 2.6 Arreglo: edición, congelamiento y gestos (inv. 7.14; D-10, D-25, D-30; def. ítems 9, 10, 12)
+
+#### `ArregloActualizarStep` — Update · PreOperation · síncrono · orden 10 · **sin filtro** · pre-imagen `PreImagen`
+
+Columnas de la pre-imagen: `statecode`, `statuscode`, `sanic_producto`, `sanic_numeroproducto`, `sanic_numeroarreglo`, `sanic_numeroprovisional`, `sanic_tipo`, `sanic_moneda`, `sanic_canalorigen`, `sanic_saldoinicial`, `sanic_montoabonado`, `sanic_saldoremanente`, `sanic_plazo`, `sanic_cuotamensual`, `sanic_totalpagar`, `sanic_fechainicio`, `sanic_fechafin`, `sanic_cuentadebitar`, `sanic_fechaformalizacion`, `sanic_comentarios`, `sanic_fechacongelamiento`, `sanic_instantaneanombre`, `sanic_instantaneacedula`, `sanic_instantaneacorreo`, `sanic_instantaneacelular`, `sanic_fechaformalizado`, `sanic_formalizadoporid`, `sanic_motivodescarte`, `sanic_fechadescarte`, `sanic_descartadoporid`, `sanic_motivoanulacion`, `sanic_fechaanulacion`, `sanic_anuladoporid`, `sanic_motivoreapertura`, `sanic_fechareapertura`, `sanic_reabiertoporid`, `sanic_cantidadreaperturas`, `sanic_fechatermino`, `sanic_versionplantillaid`, `sanic_clienteid`, `sanic_conversacionid`, `sanic_oficialid` (V-6: la pre-imagen trae también las columnas protegidas).
+
+La lógica vive en `ReglasDeArreglo.EvaluarActualizacion(pedido)` (pura; los puertos `IConsecutivos` y `IJefatura` los implementa `Steps/`), que devuelve permitido/rechazado y las columnas a escribir.
+
+**Paso 0.** Calcular las columnas cambiadas entre todas las categorías excepto "libres" (DC-01). Ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar (DC-03; así pasan la generación del formato, el paso a Terminado y la unión).
+
+**Paso 1: estados inactivos.** Si el arreglo es Anulado o Descartado, cualquier cambio ⇒ `CARP-ARR-022` ("no se reactiva"). Si es Terminado, solo se acepta el gesto Reabrir; todo lo demás ⇒ `CARP-ARR-022`.
+
+**Paso 2: identificar el gesto** (DC-04, DC-05). Hay a lo sumo uno. Si hay dos ⇒ `CARP-ARR-012`.
+
+| Gesto | Cómo se reconoce |
+|---|---|
+| Formalizar | estado efectivo `Vigente` y pre-estado `Borrador` |
+| Descartar | estado efectivo `Descartado` y pre-estado `Borrador` |
+| Anular | estado efectivo `Anulado` y pre-estado `Vigente` |
+| Reabrir un Terminado | estado efectivo `Vigente` y pre-estado `Terminado` |
+| Reabrir un Vigente congelado | `sanic_motivoreapertura` cambió y el estado no cambió |
+| Desbloquear | `sanic_fechacongelamiento` pasa a `null` y el estado no cambió |
+| Edición | ningún cambio de estado, ni motivos, ni desbloqueo |
+
+Cualquier otro cambio de estado (por ejemplo Vigente→Terminado, Vigente→Borrador, Terminado→Anulado, Borrador→Anulado, Borrador→Terminado) ⇒ `CARP-ARR-010`.
+
+**Paso 3: reglas de cada gesto.** Cada gesto admite **solo** sus columnas (`statecode`, `statuscode` y su motivo); otra columna cambiada ⇒ `CARP-ARR-012`. El actor es `InitiatingUserId`; `ahora` del reloj.
+
+| Gesto | Precondiciones | Columnas que escribe el sistema en el `Target` |
+|---|---|---|
+| Formalizar | Congelado y con `numeroprovisional` ⇒ si no, `CARP-ARR-019`. Se recalcula `Siguiente(números del crédito)` (consulta con SYSTEM, todos los estados). Si es distinto del provisional ⇒ `CARP-ARR-020`. Si supera 9999 ⇒ `CARP-ARR-023` | `sanic_numeroarreglo = numeroprovisional`; `sanic_formalizadoporid = actor`; `sanic_fechaformalizado = ahora`. `sanic_numeroprovisional` se conserva (evidencia de lo impreso); `sanic_fechaformalizacion` (la impresa) no se toca (P-07) |
+| Descartar | `sanic_motivodescarte` no vacío (recortado) ⇒ si no, `CARP-ARR-013`. Vale congelado o no | `sanic_descartadoporid`, `sanic_fechadescarte`, `sanic_fechatermino = ahora` |
+| Anular | `sanic_motivoanulacion` no vacío ⇒ `CARP-ARR-014` | `sanic_anuladoporid`, `sanic_fechaanulacion`, `sanic_fechatermino = ahora` |
+| Reabrir un Terminado | `sanic_motivoreapertura` no vacío ⇒ `CARP-ARR-015`; `EsJefatura()` ⇒ si no, `CARP-ARR-016` | Estado a Vigente (si el `Target` no lo trae, `statecode = 0` y `statuscode = Vigente`); `sanic_reabiertoporid = actor`; `sanic_fechareapertura = ahora`; `sanic_cantidadreaperturas = anterior + 1`; `sanic_fechatermino`, `sanic_fechacongelamiento`, las cuatro `sanic_instantanea*` y `sanic_numeroprovisional` = `null` |
+| Reabrir un Vigente congelado | Pre-estado Vigente **congelado** ⇒ si no está congelado, `CARP-ARR-017`; motivo no vacío (`-015`); jefatura (`-016`) | Lo mismo, sin cambio de estado |
+| Desbloquear | Pre-estado Borrador **congelado**. Vigente congelado ⇒ `CARP-ARR-018` (solo la jefatura reabre). Borrador sin congelar ⇒ `CARP-ARR-017`. Cualquier usuario del área | Las cuatro `sanic_instantanea*` y `sanic_numeroprovisional` = `null` (la fecha ya viene `null` del `Target`) |
+
+La reapertura de un arreglo Terminado sobre un registro inactivo depende de V-5.
+
+**Paso 4: edición (sin gesto).**
+1. Si cambió alguna columna solo-sistema ⇒ `CARP-ARR-009`. Si cambió un motivo (descarte, anulación, reapertura) ⇒ `CARP-ARR-024`.
+2. Si el arreglo está congelado y cambió alguna columna de "datos del acuerdo" ⇒ `CARP-ARR-011` (nombra la columna). Un valor igual al de la pre-imagen no cuenta.
+3. Normalizar `sanic_numeroproducto` si viene.
+4. Con los valores efectivos (pre-imagen + `Target`): si cambió `saldoinicial`, `montoabonado`, `cuotamensual` o `plazo` ⇒ validar el plazo (`CARP-ARR-003`, la capacidad se lee de la versión del arreglo con SYSTEM) y recalcular montos (`CARP-ARR-004/005/007`), escribiendo `sanic_saldoremanente` y `sanic_totalpagar`.
+5. Si cambió `plazo` o `fechainicio`, recalcular `sanic_fechafin` `[ABIERTA OA-5]`.
+6. Si cambió algo que altera el calendario (`plazo`, `cuotamensual`, `fechainicio`, `saldoinicial`, `montoabonado`) y existe una cuota con `sanic_fechapago` ⇒ `CARP-ARR-021` (def. ítem 8: solo se reemplaza "mientras no esté congelado ni tenga pagos").
+
+| Código | Mensaje |
+|---|---|
+| `CARP-ARR-010` | Esa transición de estado no está permitida. |
+| `CARP-ARR-011` | El arreglo está congelado: no se puede modificar {columna}. Si el formato no se ha firmado, desbloquéelo; si ya está vigente, solo la jefatura puede reabrirlo. |
+| `CARP-ARR-012` | Esta acción no admite otros cambios en el mismo guardado: {columnas}. |
+| `CARP-ARR-013` | Para descartar el borrador hay que indicar el motivo. |
+| `CARP-ARR-014` | Para anular el arreglo hay que indicar el motivo. |
+| `CARP-ARR-015` | Para reabrir el arreglo hay que indicar el motivo. |
+| `CARP-ARR-016` | Solo la jefatura puede reabrir un arreglo. |
+| `CARP-ARR-017` | El arreglo no está congelado: no hay nada que desbloquear o reabrir. |
+| `CARP-ARR-018` | Un arreglo vigente no se desbloquea. Solo la jefatura puede reabrirlo. |
+| `CARP-ARR-019` | Para formalizar, primero hay que generar el formato para firma. |
+| `CARP-ARR-020` | Otro arreglo del mismo crédito se formalizó después de imprimir este formato. Desbloquee el borrador y vuelva a generar el formato. |
+| `CARP-ARR-021` | No se puede cambiar el calendario porque el arreglo ya tiene pagos registrados. |
+| `CARP-ARR-022` | Un arreglo terminado, anulado o descartado no se puede modificar. Un terminado solo se reabre por la jefatura. |
+| `CARP-ARR-023` | Este crédito alcanzó el máximo de 9.999 arreglos. |
+| `CARP-ARR-024` | El motivo solo se registra junto con su acción (descartar, anular o reabrir). |
+
+La clave K-02 es la última barrera ante dos formalizaciones simultáneas: la plataforma rechaza la segunda (412 en el Web API, spike 2) y el oficial reintenta. Esa rama no se prueba en unitarias sino en Dev (V-1 a V-7 más la prueba de humo de formalización concurrente).
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-ARR-12 | Borrador sin congelar | Update de `sanic_comentarios` | Pasa; el `Target` no cambia (sin recálculos) |
+| PA-ARR-13 | Borrador (inicial 1000, abonado 0, cuota 300, plazo 4) | Update de la cuota a 250 | Target con remanente 1000, total 1000, `fechafin` recalculada |
+| PA-ARR-14 | Borrador | Update de abonado a 2000 | `CARP-ARR-004` |
+| PA-ARR-15 | Borrador | Update de `numeroproducto` a `" ab 12"` | Target `"AB12"` |
+| PA-ARR-16 | Borrador congelado | Update de cada columna de datos del acuerdo (16, parametrizada) con valor distinto | `CARP-ARR-011` nombrando la columna |
+| PA-ARR-17 | Borrador congelado | Update de `sanic_conversacionid` | Pasa |
+| PA-ARR-18 | Borrador congelado | Update con los mismos valores de la pre-imagen | Pasa |
+| PA-ARR-19 | Borrador | Update del plazo a 61, y a 13 con capacidad 12 | `CARP-ARR-003` |
+| PA-ARR-20 | Vigente reabierto con una cuota pagada | Update de `sanic_cuotamensual` | `CARP-ARR-021` |
+| PA-ARR-21 | Borrador | Update de `numeroarreglo` y de `saldoremanente` (dos casos) | `CARP-ARR-009` |
+| PA-ARR-22 | Borrador | Update de `sanic_motivoanulacion` sin cambio de estado | `CARP-ARR-024` |
+| PA-ARR-23 | Borrador congelado, provisional 3, existentes 1 y 2 | Formalizar (`statuscode = Vigente`) | Target con `numeroarreglo = 3`, `formalizadoporid = actor`, `fechaformalizado = ahora`; `numeroprovisional` sigue en 3 |
+| PA-ARR-24 | Borrador sin congelar | Formalizar | `CARP-ARR-019` |
+| PA-ARR-25 | Borrador congelado, provisional 3, y entretanto otro arreglo del crédito se formalizó con 3 | Formalizar | `CARP-ARR-020` |
+| PA-ARR-26 | Formalizar con `sanic_comentarios` en el mismo guardado | Update | `CARP-ARR-012` |
+| PA-ARR-27 | Borrador (congelado y sin congelar) | Descartar con motivo; luego con motivo `"  "` | Pasa con `descartadoporid`, `fechadescarte`, `fechatermino`; y `CARP-ARR-013` |
+| PA-ARR-28 | Vigente | Anular con motivo; sin motivo | Pasa con los tres campos; `CARP-ARR-014` |
+| PA-ARR-29 | Borrador, Terminado | Anular | `CARP-ARR-010` y `CARP-ARR-022` |
+| PA-ARR-30 | Borrador congelado | Desbloquear | Target con las cuatro instantáneas y `numeroprovisional` en `null` |
+| PA-ARR-31 | Vigente congelado; Borrador sin congelar | Desbloquear | `CARP-ARR-018`; `CARP-ARR-017` |
+| PA-ARR-32 | Terminado con congelamiento e instantánea | Jefatura reabre con motivo | Estado Vigente; `reabiertoporid`, `fechareapertura`, contador +1; `fechatermino`, congelamiento, instantáneas y provisional en `null` |
+| PA-ARR-33 | Terminado | Un Oficial (no Jefatura) reabre; reabre sin motivo | `CARP-ARR-016`; `CARP-ARR-015` |
+| PA-ARR-34 | Vigente congelado | Jefatura escribe solo `motivoreapertura` | Mismo efecto sin cambio de estado; contador +1 |
+| PA-ARR-35 | Vigente sin congelar | Reabrir | `CARP-ARR-017` |
+| PA-ARR-36 | Reabrir con `sanic_comentarios` en el mismo guardado | Update | `CARP-ARR-012` |
+| PA-ARR-37 | Anulado y Descartado | Cualquier cambio de datos | `CARP-ARR-022` |
+| PA-ARR-38 | Terminado | Editar datos | `CARP-ARR-022` |
+| PA-ARR-39 | Vigente | Un usuario escribe `statecode = 1, statuscode = Terminado`; Vigente → Borrador | `CARP-ARR-010` |
+| PA-ARR-40 | Borrador congelado | `statuscode = Vigente` y `fechacongelamiento = null` a la vez | `CARP-ARR-012` |
+| PA-ARR-41 | `UserId` ≠ `InitiatingUserId` | Anular | `anuladoporid = InitiatingUserId` |
+| PA-ARR-42 | El sistema congela (escribe `fechacongelamiento` e instantánea) y marca Terminado | Update | Pasa sin tocar el `Target` |
+| PA-ARR-43 | El crédito ya tiene 9999 | Formalizar | `CARP-ARR-023` |
+| PA-ARR-44 | Reabrir con jefatura | Update | Una sola consulta de pertenencia a jefatura |
+| PA-ARR-45 | Update que solo cambia `sanic_conversacionid` y `sanic_nombre` | Update | No consulta identidad |
+
+### 2.7 Cuota (inv. 7.15; def. ítem 11; D-08, D-10; dicc. R-01, R-02)
+
+#### `CuotaActualizarStep` — Update · PreOperation · síncrono · orden 10 · sin filtro · pre-imagen `PreImagen` (`sanic_nombre`, `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_fechapago`, `sanic_montopagado`, `sanic_arregloid`)
+
+1. Columnas cambiadas (DC-01). Ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar.
+2. Si cambió alguna columna distinta de `sanic_fechapago` y `sanic_montopagado` ⇒ `CARP-CUO-001` (nombra la columna). El oficial solo registra pagos.
+3. Leer el arreglo (`statecode`, `statuscode`). Si no está **Vigente** ⇒ `CARP-CUO-002`. Esto incluye al Borrador: la solo-lectura nativa del registro inactivo no se hereda a la hija (def. ítem 11).
+4. No se exige que la fecha y el monto vengan juntos ni se valida el monto `[ABIERTA OA-8]`.
+
+#### `CuotaTerminarArregloStep` — Update · PostOperation · síncrono · orden 20 · filtro `sanic_fechapago,sanic_montopagado` · sin imagen
+
+1. Leer el arreglo con SYSTEM. Si no está Vigente ⇒ terminar.
+2. Buscar si queda alguna cuota del arreglo **sin pago registrado** (`sanic_fechapago` nulo, DC-21): consulta con `ColumnSet(false)` y `TopCount = 1`.
+3. Si no queda ninguna: `Update` del arreglo como SYSTEM con `statecode = 1`, `statuscode = Terminado` y `sanic_fechatermino = ahora` (def. ítem 11). Un pago parcial cuenta (R-02). Pasa por `ArregloActualizarStep` como escritura del sistema.
+
+Borrar un pago (dejar `sanic_fechapago` vacía) en un Vigente se permite y no revierte nada. Corregir un pago en un Terminado exige que la jefatura reabra el arreglo (2.6).
+
+| Código | Mensaje |
+|---|---|
+| `CARP-CUO-001` | En una cuota solo se puede registrar la fecha y el monto de pago. Columna no permitida: {columna}. |
+| `CARP-CUO-002` | Solo se pueden registrar pagos en un arreglo vigente. |
+
+Códigos reservados para decisiones abiertas, que el código no emite hasta que se decidan: `CARP-CUO-003` (OA-8, opción B), `CARP-UNI-010` (OA-11), `CARP-GEN-012` (OA-9, opción C), `CARP-EML-004` (OA-10, opción C).
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-CUO-01 | Arreglo Vigente | Un Oficial cambia `fechapago` y `montopagado` | Pasa |
+| PA-CUO-02 | Arreglo Vigente | Un Oficial cambia `sanic_monto`, `sanic_fechavencimiento`, `sanic_numero` o `sanic_arregloid` (parametrizada) | `CARP-CUO-001` nombrando la columna |
+| PA-CUO-03 | Arreglo Borrador, Terminado, Anulado, Descartado (parametrizada) | Un Oficial registra un pago | `CARP-CUO-002` |
+| PA-CUO-04 | Update con los mismos valores de la pre-imagen | Update | Pasa; no se lee el arreglo |
+| PA-CUO-05 | El sistema modifica `sanic_monto` | Update | Pasa |
+| PA-CUO-06 | Arreglo Vigente con 3 cuotas; las 2 primeras con pago | Se registra el pago de la 3.ª | El arreglo recibe (SYSTEM) `statecode = 1`, `statuscode = Terminado`, `fechatermino = ahora` |
+| PA-CUO-07 | Queda una cuota sin pago | Se registra otro pago | El arreglo no se escribe |
+| PA-CUO-08 | La última cuota se paga con `montopagado` menor que `monto` | Post-update | Termina igual (R-02) |
+| PA-CUO-09 | Vigente reabierto (sin congelar) con todas las cuotas pagadas | Post-update | Termina |
+| PA-CUO-10 | Se vacía `fechapago` de una cuota en un Vigente | Update | Pasa; el arreglo sigue Vigente |
+| PA-CUO-11 | Una cuota con `montopagado` y sin `fechapago`, las demás pagadas | Post-update | El arreglo no termina (DC-21, OA-8) |
+| PA-CUO-12 | El arreglo ya no está Vigente cuando corre el post | Post-update | No hace nada |
+| PA-CUO-13 | Arreglo de 60 cuotas | Post-update | La búsqueda de pendientes es una sola consulta con `TopCount = 1` y sin columnas |
+| PA-CUO-14 | Cadena (pipeline simulado) | Se paga la última cuota | `ArregloActualizarStep` acepta la transición a Terminado por ser del sistema; un Oficial que intente el mismo `Update` recibe `CARP-ARR-010` |
+
+### 2.8 Versión de plantilla y Mapeo de celda (inv. 7.16; def. ítem 15; D-14, D-15, D-16)
+
+#### `VersionPlantillaCrearStep` — Create · PreOperation · síncrono · orden 10
+
+Para una persona (el sistema pasa): (1) `sanic_estado` ausente o `Borrador`; otro ⇒ `CARP-VER-001`. Una versión **siempre nace en Borrador**, también por API (DC-19). (2) `sanic_huella`, `sanic_fechaaprobacion` o `sanic_aprobadoporid` presentes ⇒ `CARP-VER-002`. (3) `sanic_nombre` debe cumplir `^v[0-9]{2,3}$` ⇒ `CARP-VER-012` (la plataforma no valida el patrón; la unicidad la da K-03).
+
+#### `VersionPlantillaActualizarStep` — Update · PreOperation · síncrono · orden 10 · sin filtro · pre-imagen `PreImagen` (`statecode`, `sanic_nombre`, `sanic_estado`, `sanic_capacidad`, `sanic_huella`, `sanic_fechaaprobacion`, `sanic_aprobadoporid`)
+
+Columnas cambiadas (DC-01); ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar (así pasa el paso Vigente → Histórica). Para una persona, según el estado anterior:
+
+- **Borrador**:
+  - Cambió `sanic_huella`, `sanic_fechaaprobacion` o `sanic_aprobadoporid` ⇒ `CARP-VER-002`.
+  - Cambió `sanic_estado`: solo `Borrador → Vigente` es válido (**Publicar**); cualquier otro ⇒ `CARP-VER-004`. Publicar no admite otras columnas en el mismo guardado ⇒ `CARP-VER-013`.
+  - Si no cambió el estado: edición libre de `sanic_nombre` (con el patrón, `-012`), `sanic_capacidad` y el archivo; se puede desactivar (`statecode`) el borrador.
+- **Vigente**: cualquier cambio ⇒ `CARP-VER-003` (inmutable, también desactivarla).
+- **Histórica**: solo se acepta cambiar `statecode` (desactivar o reactivar el catálogo); otro cambio ⇒ `CARP-VER-003`.
+
+**Publicar** (con SYSTEM para lo que sigue):
+1. Descargar el archivo (`InitializeFileBlocksDownload` + `DownloadBlock`). Sin archivo ⇒ `CARP-VER-005`.
+2. Leer las filas de mapeo activas de la versión. `ValidadorDePublicacion.Validar(capacidad, filas)` ⇒ si hay errores, `CARP-VER-007`/`-008` con **todos** (2.0.7).
+3. **Generación de prueba** (DC-19): `IGeneradorDeFormato.Generar` con el archivo, su huella recién calculada, el mapeo y un `DatosArreglo` sintético (`DatosDePrueba`, plazo = capacidad, todas las claves con valores inventados). `PlantillaInvalidaException` ⇒ `CARP-VER-006`; `MapeoInvalidoException` o `DatosInvalidosException` ⇒ `CARP-VER-009` (incluye hoja inexistente: el generador responde con las hojas reales, spike 1 hallazgo 1). No escribe nada.
+4. Escribir en el `Target`: `sanic_huella` (SHA-256 del archivo), `sanic_fechaaprobacion = ahora`, `sanic_aprobadoporid = InitiatingUserId` (es el contexto del propio usuario: no hay elevación). El `sanic_estado = Vigente` ya viene del gesto.
+5. Con SYSTEM: cada otra versión `Vigente` pasa a `Histórica`. Después, comprobar que no queda ninguna otra Vigente; si queda ⇒ `CARP-VER-010` (revierte todo).
+
+#### `ArchivoDePlantillaStep` — mensaje `CommitFileBlocksUpload` · PreOperation · síncrono · orden 10 · registro condicionado a V-4
+
+Lee el `Target` (referencia a la versión). Si el actor no es del sistema y la versión no está en Borrador ⇒ `CARP-VER-003`. Si la plataforma no permite registrar el step (V-4), la barrera es la huella validada en cada generación (D-15, `CARP-GEN-008`).
+
+#### Mapeo de celda: `MapeoCeldaCrearStep`, `MapeoCeldaActualizarStep`, `MapeoCeldaEliminarStep`
+
+- **Create** · PreOperation · síncrono · orden 10. **Update** · PreOperation · síncrono · orden 10 · sin filtro · pre-imagen `PreImagen` (`sanic_versionplantillaid`, `sanic_hoja`, `sanic_celda`, `sanic_tipo`, `sanic_campo`, `sanic_filasmaximas`). **Delete** · PreOperation · síncrono · orden 10 · pre-imagen `PreImagen` (`sanic_versionplantillaid`).
+- El sistema pasa. Para una persona: la versión padre debe estar en **Borrador** ⇒ si no, `CARP-MAP-001` (la versión padre se lee de la referencia del `Target` en Create y de la pre-imagen en Update y Delete). El Jefe puede borrar un mapeo solo en una versión Borrador (matriz §2).
+- Validar con los valores efectivos: celda A1 bien formada ⇒ `CARP-MAP-002`; (tipo, campo) admitido por la tabla de dicc. §3.1 ⇒ `CARP-MAP-003`; `sanic_filasmaximas` entre 1 y 60 si el tipo es ColumnaDeBloqueDeCuotas ⇒ `CARP-MAP-004`; hoja no vacía ⇒ `CARP-MAP-005`. La hoja **no se recorta**: el nombre real empieza con un espacio (spike 1, hallazgo 1). Una hoja de solo espacios es vacía.
+- Normalizar la celda a mayúscula y escribir `sanic_nombre = "<hoja>!<celda>"` en Create y en Update si cambió la hoja o la celda.
+- Update que cambia `sanic_versionplantillaid` ⇒ `CARP-MAP-006`.
+- Las reglas entre filas (dos campos en la misma celda, bloque completo, capacidad) se validan al publicar (2.0.7).
+
+| Código | Mensaje |
+|---|---|
+| `CARP-VER-001` | Una versión de plantilla siempre se crea en estado Borrador. |
+| `CARP-VER-002` | La huella, la fecha y el aprobador los fija el sistema al publicar. |
+| `CARP-VER-003` | Solo una versión en Borrador se puede modificar. Para cambiar el formato cree una versión nueva. |
+| `CARP-VER-004` | Esa transición de estado de la versión no está permitida. Solo se puede publicar un borrador. |
+| `CARP-VER-005` | La versión no tiene archivo de plantilla cargado. |
+| `CARP-VER-006` | El archivo de la plantilla no es un libro de Excel válido. |
+| `CARP-VER-007` | El mapeo no se puede publicar: {errores}. |
+| `CARP-VER-008` | La capacidad de la versión ({capacidad}) no coincide con las filas máximas del bloque de cuotas. |
+| `CARP-VER-009` | La plantilla y el mapeo no producen un formato válido: {detalle}. |
+| `CARP-VER-010` | Quedó más de una versión vigente. Avise al equipo de soporte. |
+| `CARP-VER-012` | El número de versión debe tener el formato v07 (la letra v y 2 o 3 dígitos). |
+| `CARP-VER-013` | Publicar no admite otros cambios en el mismo guardado. |
+| `CARP-MAP-001` | Solo se puede modificar el mapeo de una versión en Borrador. |
+| `CARP-MAP-002` | La celda "{celda}" no está bien escrita. Use notación como B7. |
+| `CARP-MAP-003` | El campo "{campo}" no es compatible con el tipo de mapeo elegido. |
+| `CARP-MAP-004` | Las columnas del bloque de cuotas necesitan filas máximas entre 1 y 60. |
+| `CARP-MAP-005` | La hoja es obligatoria. |
+| `CARP-MAP-006` | Un mapeo no se puede mover a otra versión. |
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-VER-01 | Alta por el Jefe de `v08` | Create | Pasa |
+| PA-VER-02 | Alta con `nombre = "7"`; con estado Vigente; con huella | Create | `CARP-VER-012`; `-001`; `-002` |
+| PA-VER-03 | v08 en Borrador con el archivo v07 y el mapeo del diccionario; existe una v07 Vigente | Publicar (`sanic_estado = Vigente`) | Target con `huella` = SHA-256 del archivo, `fechaaprobacion = ahora`, `aprobadoporid = actor`; la v07 pasa a Histórica (escritura de SYSTEM); queda una sola Vigente |
+| PA-VER-04 | Primera publicación, sin Vigente previa | Publicar | Pasa |
+| PA-VER-05 | Sin archivo; archivo que no es zip | Publicar | `CARP-VER-005`; `CARP-VER-006` |
+| PA-VER-06 | Mapeo vacío; mapeo con dos campos en una celda y una celda mal formada | Publicar | `CARP-VER-007` con todos los errores |
+| PA-VER-07 | Capacidad 48 y bloque de 60 | Publicar | `CARP-VER-008` |
+| PA-VER-08 | Mapeo apuntando a la hoja `"FORMATO"` (sin el espacio inicial) | Publicar | `CARP-VER-009`; el mensaje lista las hojas reales entre comillas |
+| PA-VER-09 | Publicar y cambiar `sanic_capacidad` a la vez | Update | `CARP-VER-013` |
+| PA-VER-10 | Versión Vigente | Update de cualquier columna; desactivarla | `CARP-VER-003` |
+| PA-VER-11 | Versión Histórica | Editar la capacidad; desactivarla | `CARP-VER-003`; pasa |
+| PA-VER-12 | Borrador | Editar la capacidad; escribir `huella`; pasar a Histórica; pasar a Borrador desde Vigente | pasa; `-002`; `-004`; `-003` |
+| PA-VER-13 | Una escritura del sistema pasa Vigente → Histórica | Update | Pasa sin validar |
+| PA-VER-14 | Tras publicar queda otra Vigente (dato inconsistente) | Publicar | `CARP-VER-010`; al restaurar, la versión sigue en Borrador |
+| PA-VER-15 | `CommitFileBlocksUpload` sobre una versión Vigente; sobre una Borrador | Ejecutar | `CARP-VER-003`; pasa |
+| PA-VER-16 | Publicar | Generación de prueba | Usa solo datos sintéticos y no hay escrituras fuera de las de publicación (el registro del doble lo demuestra) |
+| PA-VER-17 | Cualquier fallo de publicación | Trazas | Sin nombres de personas ni datos de arreglos |
+| PA-MAP-01 | Versión Borrador | Create de `hoja = " FORMATO ARP ELECTRONICO"`, `celda = "b7"` | `sanic_nombre = " FORMATO ARP ELECTRONICO!B7"`; hoja sin recortar; celda `"B7"` |
+| PA-MAP-02 | Versión Vigente o Histórica | Create, Update, Delete | `CARP-MAP-001` |
+| PA-MAP-03 | Celdas `B0`, `7B`, `XFE1`, `""` | Create | `CARP-MAP-002` |
+| PA-MAP-04 | `Cuota: monto` + ValorSimple; `Numero de arreglo` + Bloque; `Total: montos de cuota` + TotalCalculado; `Moneda` + ValorSimple | Create | `CARP-MAP-003`; `-003`; pasa; pasa |
+| PA-MAP-05 | Bloque con filas máximas vacías, 0 y 61 | Create | `CARP-MAP-004` |
+| PA-MAP-06 | Hoja vacía; solo espacios; `" X"` | Create | `CARP-MAP-005`; `-005`; pasa |
+| PA-MAP-07 | Mapeo en Borrador | Update de la celda | Recalcula `sanic_nombre` |
+| PA-MAP-08 | Update que cambia la versión padre | Update | `CARP-MAP-006` |
+| PA-MAP-09 | Delete en Borrador; en Vigente | Delete | pasa; `CARP-MAP-001` |
+| PA-MAP-10 | Escrituras del sistema | Create/Update/Delete | Pasan |
+
+### 2.9 Email: remitente del área y columnas solo-sistema (inv. 7.11; D-28; def. ítem 3, L270)
+
+#### `RemitenteDelAreaStep` — Create · PreOperation · síncrono · orden 10 · sin filtro · sin imagen · tabla `email`
+
+Aplica solo a un correo **saliente** (`directioncode` verdadero) cuyo `regardingobjectid` es una `sanic_carp_tbl_conversacion`. Cualquier otro correo: terminar sin consultar nada (0 consultas).
+
+1. Resolver la queue del área (0.4, paso 5): `CARP-CFG-004`/`-005` si no hay una sola.
+2. Leer `Target["from"]` (colección de `activityparty`):
+   - Vacía o ausente ⇒ poner una sola parte: la queue.
+   - Solo la queue ⇒ pasa.
+   - Solo el usuario que crea (`InitiatingUserId`) ⇒ **reemplazar** por la queue (DC-07: es el remitente por defecto del formulario, spike 4).
+   - Cualquier otra combinación (otro usuario, otra queue, la queue más otra parte) ⇒ `CARP-EML-001`.
+3. No se fija `parentactivityid`: el botón Responder ya lo completa (spike 4, def. L269).
+
+#### `EmailSoloSistemaStep` — Create · PreOperation · orden 10; y Update · PreOperation · orden 10 · filtro `sanic_tiemporespuesta,sanic_respondidoporid` · tabla `email`
+
+Si el `Target` trae esas columnas y el actor no es del sistema ⇒ `CARP-EML-003`. (Dicc. §5 las marca solo-sistema; D-30 de la definición no las nombra, Inconsistencias punto 9.) El oficial tiene Write sobre Email y podría falsear los tiempos.
+
+| Código | Mensaje |
+|---|---|
+| `CARP-EML-001` | Las respuestas de una conversación salen siempre desde el buzón del área. |
+| `CARP-EML-003` | Estas columnas las gestiona el sistema y no se pueden modificar. |
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-EML-01 | Respuesta saliente con Regarding a una Conversación y `from = [usuario]` | Create | `from = [queue]` |
+| PA-EML-02 | Igual con `from` ausente | Create | `from = [queue]` |
+| PA-EML-03 | `from = [queue]` | Create | Igual |
+| PA-EML-04 | `from = [otro usuario]`; `from = [queue, usuario]`; `from = [otra queue]` | Create | `CARP-EML-001` |
+| PA-EML-05 | Correo entrante | Create | No toca nada; 0 consultas |
+| PA-EML-06 | Saliente sin Regarding; saliente con Regarding a una cuenta | Create | No toca nada; 0 consultas |
+| PA-EML-07 | Cero queues con la dirección configurada; dos queues | Create | `CARP-CFG-004`; `CARP-CFG-005` |
+| PA-EML-08 | La variable trae `Area@Banco.com`; la queue tiene `area@banco.com` | Create | Se resuelve (sin distinguir mayúsculas) |
+| PA-ESI-01 | Un Oficial crea un Email con `sanic_tiemporespuesta` | Create | `CARP-EML-003` |
+| PA-ESI-02 | Un Oficial actualiza `sanic_respondidoporid` | Update | `CARP-EML-003` |
+| PA-ESI-03 | El sistema escribe ambas | Create/Update | Pasa |
+| PA-ESI-04 | Update con las columnas pero valor `null` y la fila ya las tiene `null` | Update | Pasa (sin cambio) |
+
+### 2.10 Entrada de correo en conversaciones (inv. 7.11, 7.19; RF-01; D-03, D-32; def. ítem 1)
+
+#### `RegistrarCorreoEntranteStep` — Create · **PostOperation · asíncrono** · orden 10 · sin filtro · sin imagen · tabla `email`
+
+El step solo toma `PrimaryEntityId` y llama a `RegistradorDeCorreo.Registrar(emailId)`. La API de reconciliación (1.2) llama a la misma clase. Corre con SYSTEM. Si falla, el correo igual queda guardado (D-03) y la reconciliación lo recoge.
+
+**`RegistradorDeCorreo.Registrar(emailId)`** devuelve `Creada`, `Unida`, `YaTenia` u `Omitido(código)`.
+
+1. **Releer el Email por id** con SYSTEM (`directioncode`, `regardingobjectid`, `messageid`, `inreplyto`, `subject`, `sender`, `actualend`, `createdon`, `ownerid`). No se confía en el `Target`: el Regarding de la correlación puede escribirse en un `Update` posterior al `Create` (spike 3, "Qué columnas usar"). No existe ⇒ `Omitido(CARP-ENT-002)`. Es saliente ⇒ `Omitido(CARP-ENT-001)`.
+2. Fecha de llegada = `actualend`; si es nula, `createdon` (DC-13 y spike 3: `createdon` suma demora de sincronización, por eso no es la primera opción).
+3. **Determinar la conversación**:
+   - **A. Ya correlacionado**: el Regarding es una Conversación. Se lee.
+   - **B. Segunda red** (DC-08): sin Regarding (o con Regarding a una entidad que no es Conversación: se ignora y se traza) y con `inreplyto` informado: buscar un Email cuyo `messageid` coincida con `inreplyto` (se prueban tres variantes: tal cual, con `<` `>` y sin ellos; la comparación de texto de Dataverse no distingue mayúsculas, necesario porque los salientes de Dataverse llevan el dominio en mayúsculas, spike 3) y que tenga Regarding a una Conversación. Si se encuentra, esa es la conversación.
+   - **C. Nueva**: calcular la huella (2.0.2). Buscar por la clave K-01; si existe, usar esa (idempotencia, D-03). Si no existe, **crear** la conversación (paso 5).
+4. **Conversación Unida** (DC-09): si la encontrada está en Unida, seguir `sanic_unidaaid` (hasta 3 saltos) hasta una que no lo esté. Si no termina ⇒ `Omitido(CARP-ENT-003)`.
+5. **Crear** (ruta C, con SYSTEM): `sanic_huellamessageid`; `sanic_fechaprimercorreo` = llegada; `sanic_asunto` = `subject` recortado a 400; `sanic_remitente` = `sender` recortado, sin espacios y en minúscula, a 320; `sanic_sinrespuestadesde` = llegada; `sanic_cantidadrespuestas = 0`; `sanic_correonuevoenfinalizada = no`; `ownerid` = team del área (en el mismo create, def. D-31); `sanic_clienteid` = el `Cliente` activo cuyo `sanic_correo` es igual al remitente **si hay exactamente uno** (DC-14); estado Abierta por defecto. Un duplicado concurrente lo rechaza K-01; el job asíncrono falla y la reconciliación lo repara. No se atrapa.
+6. **Actualizar la conversación existente** (rutas A, B, o C encontrada por huella), con SYSTEM y solo si el valor cambia:
+   - **Abierta**: `sanic_sinrespuestadesde` = el menor entre el actual (si lo hay) y la llegada.
+   - **Finalizada**: `sanic_correonuevoenfinalizada = sí` y `sanic_sinrespuestadesde` = el menor entre el actual y la llegada (P-09, DC-10). No se reabre (RF-15).
+7. **Email**: si su Regarding no es la conversación final, `Update` de `regardingobjectid`. Si su `ownerid` no es el team del área, `AssignRequest` al team (con SYSTEM). Si ya es el team, no se asigna.
+8. Resultado: `Creada` (ruta C creó), `Unida` (se agregó a una existente por A, B o por huella ya existente cuando el correo no tenía Regarding), `YaTenia` (el correo ya estaba en la conversación correcta y no hubo cambios).
+
+Columnas de la conversación que **no** se tocan acá: cantidad de respuestas y tiempos (2.11).
+
+Residual conocido: dos correos que llegan casi a la vez a la misma conversación calculan el mínimo cada uno sin bloqueo; el resultado final puede quedar con la fecha del segundo. La vista de pendientes y la reconciliación semanal lo hacen visible; no se pone concurrencia optimista porque una falla de datos dentro del plugin revierte el trabajo (`patrones.md` §3).
+
+| Código | Mensaje (va al registro del job asíncrono y al `detalle` de 1.2) |
+|---|---|
+| `CARP-ENT-001` | El correo no es entrante. |
+| `CARP-ENT-002` | No se encontró el correo. |
+| `CARP-ENT-003` | La cadena de conversaciones unidas no termina en una conversación activa. |
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-ENT-01 | Email entrante sin Regarding ni `inreplyto`, `messageid` `<CAF+abc123@mail.example.com>`, asunto "Arreglo", remitente `Ana@X.com`, `actualend` 10:00 | Registrar | Conversación con huella `093f0929…05d1d`, `fechaprimercorreo` 10:00, asunto, remitente `ana@x.com`, `sinrespuestadesde` 10:00, cantidad 0, indicador no, `ownerid` = team; el Email con Regarding a ella y `ownerid` = team (por Assign); resultado `Creada` |
+| PA-ENT-02 | El mismo Email procesado dos veces | Registrar | Una sola conversación; la segunda vez `YaTenia` y sin escrituras |
+| PA-ENT-03 | Dos Emails con el mismo Message-ID (copia por otra queue) | Registrar ambos | Una sola conversación; ambos con su Regarding; el segundo `Unida` |
+| PA-ENT-04 | Email ya con Regarding a una conversación Abierta con `sinrespuestadesde` vacío | Registrar | `sinrespuestadesde` = llegada; no se crea conversación |
+| PA-ENT-05 | Abierta con `sinrespuestadesde` 09:00; llega correo de 10:00 | Registrar | Queda 09:00 y no se escribe la conversación |
+| PA-ENT-06 | Abierta con `sinrespuestadesde` 11:00; llega un correo con llegada 10:00 | Registrar | Queda 10:00 |
+| PA-ENT-07 | Conversación Finalizada | Llega un correo correlacionado de 10:00 | Indicador `sí`, `sinrespuestadesde` 10:00, sigue Finalizada |
+| PA-ENT-08 | Finalizada con indicador `sí` y `sinrespuestadesde` 09:00; llega otro de 10:00 | Registrar | Queda 09:00 |
+| PA-ENT-09 | El Regarding es una conversación Unida cuyo destino está Abierto | Registrar | El Email pasa a la conversación destino y esta se actualiza; la Unida no se toca |
+| PA-ENT-10 | Unida → Unida → Unida → Unida (4 saltos) | Registrar | `Omitido(CARP-ENT-003)`; sin escrituras |
+| PA-ENT-11 | Sin Regarding; `inreplyto` = `<ID@MAIL.EXAMPLE.COM>` y existe un Email con `messageid` `<id@mail.example.com>` con Regarding a la conversación C | Registrar | El correo se une a C; no se crea conversación (DC-08) |
+| PA-ENT-12 | Sin Regarding; `inreplyto` desconocido | Registrar | Se crea conversación nueva |
+| PA-ENT-13 | Email saliente; Email inexistente | Registrar | `Omitido(CARP-ENT-001)`; `Omitido(CARP-ENT-002)`; sin escrituras |
+| PA-ENT-14 | El Email ya tiene `ownerid` = team | Registrar | No hay `Assign` |
+| PA-ENT-15 | Un `Cliente` activo con el correo del remitente; ninguno; dos | Registrar | `clienteid` = ese; vacío; vacío |
+| PA-ENT-16 | `actualend` nulo | Registrar | Usa `createdon` |
+| PA-ENT-17 | Asunto de 500 caracteres y remitente de 400 | Registrar | Recortados a 400 y 320 |
+| PA-ENT-18 | Sin `messageid`, Email `11111111-…` | Registrar | Huella `bdc7ce0b…99340` |
+| PA-ENT-19 | Regarding a una cuenta | Registrar | Se trata como sin Regarding; se crea la conversación y el Email se re-apunta |
+| PA-ENT-20 | La BU no se resuelve | Registrar | Excepción `CARP-CFG-001`; sin escrituras |
+| PA-ENT-21 | Cualquier correo | Registrar | Ninguna traza contiene asunto, remitente ni cuerpo |
+| PA-ENT-22 | El step recibe un `Create` | Ejecutar | Llama a `Registrar` con el id del `Target`, no con datos del `Target` |
+| PA-ENT-23 | Cualquier correo | Registrar | Todas las escrituras con el servicio de SYSTEM |
+
+### 2.11 Respuesta enviada (inv. 7.11; RF-03, RF-04; D-05; def. ítem 3)
+
+#### `RespuestaEnviadaStep` — Update · **PostOperation · asíncrono** · orden 10 · filtro `statuscode` · sin imagen · tabla `email`
+
+Con SYSTEM:
+
+1. Releer el Email: `directioncode`, `statuscode`, `regardingobjectid`, `senton`, `actualend`, `createdby`, `sanic_respondidoporid`. Continuar solo si es **saliente**, `statuscode = Sent`, Regarding a una Conversación y `sanic_respondidoporid` **vacío** (esa columna es la marca de "ya procesado": idempotente ante reintentos). Si no, terminar. Un envío fallido (Failed), en cola o borrador no hace nada: `sanic_sinrespuestadesde` no se vacía (def. ítem 3).
+2. Instante del envío = `senton`; si es nulo, `actualend`.
+3. Leer la conversación. Si está Unida, seguirla hasta una activa (como en 2.10) y re-apuntar el Email.
+4. `TiemposDeConversacion.AplicarRespuestaEnviada` (2.0.6).
+5. Escribir el Email: `sanic_respondidoporid = createdby` (DC-12; siempre, aunque no haya tiempo) y `sanic_tiemporespuesta` (si hay).
+6. Escribir la conversación (solo si hay cambios): `sanic_cantidadrespuestas`, `sanic_sinrespuestadesde`, `sanic_tiempoprimerarespuesta`.
+
+Una respuesta enviada a una conversación Finalizada (por ejemplo, una cortesía) suma al contador y no toca los pendientes `[ABIERTA OA-10]`.
+
+| ID | Dado | Cuando | Entonces |
+|---|---|---|---|
+| PA-RES-01 | Abierta, `sinrespuestadesde` 10:00, cantidad 0, primera vacía; respuesta Sent con `senton` 10:45 creada por el Oficial O | Procesar | Email: `tiemporespuesta = 45`, `respondidoporid = O`; conversación: `sinrespuestadesde` vacío, cantidad 1, primera 45 |
+| PA-RES-02 | Segunda respuesta: pendiente 11:00, `senton` 11:20, primera 45, cantidad 1 | Procesar | Email 20; conversación cantidad 2, primera 45, pendiente vacío |
+| PA-RES-03 | Pendiente vacío (un recordatorio) | Procesar | Email sin tiempo pero con `respondidoporid`; cantidad +1; primera sin cambio |
+| PA-RES-04 | La primera respuesta fue sin pendiente (primera vacía) y la segunda tiene pendiente | Procesar ambas | La primera se fija con la segunda (DC-11) |
+| PA-RES-05 | Pendiente 10:50, `senton` 10:45 | Procesar | Sin tiempo; pendiente 10:50; cantidad +1 |
+| PA-RES-06 | `statuscode` Failed, Pending Send, Sending, Draft | Procesar | No hace nada |
+| PA-RES-07 | `sanic_respondidoporid` ya informado | Procesar | No hace nada |
+| PA-RES-08 | Correo entrante; correo sin Regarding; Regarding a una cuenta | Procesar | No hace nada |
+| PA-RES-09 | Conversación Finalizada con pendiente 10:00 | Procesar | Cantidad +1; Email con `respondidoporid` y sin tiempo; pendiente 10:00 (OA-10) |
+| PA-RES-10 | Regarding a una Unida con destino Abierto | Procesar | Se aplica al destino y el Email se re-apunta |
+| PA-RES-11 | `senton` nulo, `actualend` 10:45 | Procesar | Usa `actualend` |
+| PA-RES-12 | `senton` 10:45:59 y pendiente 10:00:00 | Procesar | 45 minutos |
+| PA-RES-13 | `createdby` = O y el job corre como SYSTEM | Procesar | `respondidoporid = O` |
+| PA-RES-14 | Escrituras | Procesar | Con el servicio de SYSTEM; el Email se escribe antes que la conversación |
+
+---
+
+## 3. Máquinas de estado
+
+Los estados son `statecode`/`statuscode` del diccionario §3.2 (0.7). Las transiciones las impone el plugin (dicc. §3.2, D-30), no la plataforma. "Gesto" es lo que el usuario hace y cómo lo reconoce el servidor (DC-04, DC-05, DC-06).
+
+### 3.1 Conversación (D-03, D-06, RF-14, RF-15)
+
+```
+   (entrada de correo, sistema)
+              │
+              ▼
+        ┌──────────┐  Finalizar (resultado; motivo y detalle si Sin respuesta)  ┌────────────┐
+        │ Abierta  │ ─────────────────────────────────────────────────────────► │ Finalizada │
+        │  0 / 1   │ ◄───────────────────────────────────────────────────────── │   1 / 2    │
+        └──────────┘                   Reabrir                                   └────────────┘
+              │                                                                       │
+              │ Unir conversaciones (API, sistema)                                    │ Iniciar conversación nueva (API):
+              ▼                                                                       │ la conversación sigue Finalizada
+        ┌──────────┐                                                                  ▼
+        │  Unida   │  (terminal; sin retorno)                                  (no cambia de estado)
+        │ 1/159460001
+        └──────────┘
+```
+
+| De | A | Quién | Gesto y cómo se reconoce | Columnas que escribe el usuario | Columnas que escribe el sistema | Error si no |
+|---|---|---|---|---|---|---|
+| ∅ | Abierta | Sistema (2.10, 1.5) | Alta | — | huella, fechaprimercorreo, asunto, remitente, sinrespuestadesde, cantidad 0, indicador no, cliente (si hay uno), propietario | — |
+| Abierta | Finalizada | Oficial o Jefe | **Finalizar**: `statecode = 1` (con o sin `statuscode = 2`) | `sanic_resultado`; si es Sin respuesta, `sanic_motivosinrespuesta` y `sanic_detallesinrespuesta` | `finalizadoporid`, `fechafinalizacion`, `tiempototal`, `sinrespuestadesde = null`; motivo y detalle `null` si el resultado no es Sin respuesta | `CNV-003`, `CNV-004` |
+| Finalizada | Abierta | Oficial o Jefe | **Reabrir**: `statecode = 0` | — | `resultado`, `motivo`, `detalle`, `fechafinalizacion`, `finalizadoporid`, `tiempototal` = null; indicador no; `sinrespuestadesde` **se conserva** | `CNV-005` |
+| Abierta | Unida | Solo la API de unir (sistema) | `unirconversaciones` | — | `unidaaid`, `fechafinalizacion`, `finalizadoporid` (actor), `sinrespuestadesde = null` | `CNV-006` para un usuario |
+| Finalizada | Finalizada | API iniciar nueva (sistema) | `iniciarconversacionnueva` | — | indicador `no`, `sinrespuestadesde = null` (no es cambio de estado) | `CNV-001` para un usuario |
+| Unida | cualquiera | nadie | — | — | — | `CNV-002` |
+| Abierta | Abierta | cualquiera | edición libre | `sanic_clienteid`; asignación (2.4) | — | `CNV-005` si trae resultado, motivo o detalle |
+
+Asignación (columna `sanic_oficialasignadoid`, no cambia el estado): vacío → uno mismo lo hace cualquier usuario (API Tomar); todo otro cambio, solo Jefatura (2.4).
+
+### 3.2 Arreglo (D-10, D-25, RF-12, RF-16)
+
+```
+                    Generar formato (API: congela)                     Formalizar
+   ∅ ──alta──► Borrador ◄──────────────── Borrador ───────────────────────────────► Vigente
+               (1, sin congelar)  Desbloquear  (1, congelado)   (solo desde congelado)  (159460001, congelado)
+                    │                                                │                 │   │
+                    │ Descartar (motivo)                             │ Descartar       │   │ Anular (motivo)
+                    ▼                                                ▼                 │   ▼
+               Descartado (1/159460003)  ◄───────────────────────────┘          Anulado (1/159460002)
+                                                                                       │
+        Todas las cuotas con pago (sistema) ──► Terminado (1/2) ◄─────────────── Vigente┘
+                                                  │
+                                      Reabrir (Jefatura, motivo)
+                                                  ▼
+                                        Vigente (sin congelar) ──► Generar formato ──► congelado otra vez
+
+        Vigente congelado ──Reabrir (Jefatura, motivo)──► Vigente sin congelar
+```
+
+Anulado y Descartado son finales: no se reabren ni se reactivan (D-10).
+
+| De | A | Quién | Gesto y cómo se reconoce | Columnas que escribe el usuario | Columnas que escribe el sistema | Error si no |
+|---|---|---|---|---|---|---|
+| ∅ | Borrador | Oficial | Alta (siempre Borrador) | datos del acuerdo | versión Vigente, canal (si aplica), remanente, total, fechafin, reaperturas 0, propietario; cuotas | `ARR-001` a `-009` |
+| Borrador (sin congelar) | Borrador (congelado) | Oficial o Jefe | **Generar formato** (API) | — | `fechacongelamiento`, 4 instantáneas, `numeroprovisional` | `GEN-*` |
+| Borrador (congelado) | Borrador (sin congelar) | Oficial | **Desbloquear**: `fechacongelamiento = null` | `fechacongelamiento` solo a nulo | 4 instantáneas y `numeroprovisional` = null | `ARR-017`, `ARR-018` |
+| Borrador (congelado) | Vigente | Oficial | **Formalizar**: estado efectivo Vigente | — | `numeroarreglo`, `formalizadoporid`, `fechaformalizado` | `ARR-019`, `ARR-020`, `ARR-023` |
+| Borrador | Descartado | Oficial | **Descartar** | `sanic_motivodescarte` | `descartadoporid`, `fechadescarte`, `fechatermino` | `ARR-013` |
+| Vigente | Anulado | Oficial | **Anular** | `sanic_motivoanulacion` | `anuladoporid`, `fechaanulacion`, `fechatermino` | `ARR-014` |
+| Vigente | Terminado | Sistema (2.7) | Todas las cuotas con `fechapago` | — | `statecode/statuscode`, `fechatermino` | `ARR-010` para un usuario |
+| Terminado | Vigente (sin congelar) | **Jefatura** | **Reabrir**: estado efectivo Vigente | `sanic_motivoreapertura` | `reabiertoporid`, `fechareapertura`, contador +1, `fechatermino`, congelamiento, instantáneas y provisional = null | `ARR-015`, `ARR-016` |
+| Vigente (congelado) | Vigente (sin congelar) | **Jefatura** | **Reabrir**: `sanic_motivoreapertura` | `sanic_motivoreapertura` | Igual, sin cambio de estado | `ARR-015`, `ARR-016`, `ARR-017` |
+| Vigente, Terminado | Borrador | nadie | — | — | — | `ARR-010` |
+| Anulado, Descartado | cualquiera | nadie | — | — | — | `ARR-022` |
+
+Qué se puede editar según el estado:
+
+| Estado | Datos del acuerdo | Cuotas (monto, fechas) | Pagos de cuota |
+|---|---|---|---|
+| Borrador sin congelar | sí (recalcula montos y calendario) | solo las reemplaza el sistema | no (`CUO-002`) |
+| Borrador congelado | no (`ARR-011`) | no | no |
+| Vigente congelado | no | no | sí |
+| Vigente sin congelar (reabierto) | sí; calendario solo si no hay pagos (`ARR-021`) | solo las reemplaza el sistema | sí |
+| Terminado, Anulado, Descartado | no (`ARR-022`) | no | no (`CUO-002`) |
+
+### 3.3 Versión de plantilla (D-14, D-15; dicc. DD-03)
+
+```
+ ∅ ──alta──► Borrador ──Publicar (Jefe: valida mapeo, calcula huella)──► Vigente ──(otra se publica; sistema)──► Histórica
+              (editable)                                                (inmutable)                             (inmutable)
+```
+
+| De | A | Quién | Gesto | Error si no |
+|---|---|---|---|---|
+| ∅ | Borrador | Jefe | Alta (siempre Borrador) | `VER-001`, `VER-002`, `VER-012` |
+| Borrador | Vigente | Jefe | **Publicar**: `sanic_estado = Vigente` | `VER-005` a `VER-010`, `VER-013` |
+| Vigente | Histórica | Sistema, al publicar otra | — | `VER-003` para un usuario |
+| Borrador, Histórica | desactivar (`statecode`) | Jefe | Desactivar el catálogo | Histórica sí; Vigente no (`VER-003`) |
+| cualquiera | cualquiera otra | nadie | — | `VER-003`, `VER-004` |
+
+---
+
+## 4. Estructura del código (inv. 7.1, 7.9, 7.10; conv. §5; M-PPP §8)
+
+### 4.1 Solución y proyectos
+
+| Proyecto | Destino | Qué es |
+|---|---|---|
+| `src/Sanic.Carp.sln` | — | Solución (conv. §5) |
+| `src/Sanic.Carp.Plugins/` | `net462;net8.0` | Ensamblado y paquete `sanic_carp_pkg_plugins`. Sin firmar. Dependencia: `DocumentFormat.OpenXml` 2.20.0 (spike 1 hallazgo 11; la 3.x queda para revisar). `TreatWarningsAsErrors` |
+| `src/Sanic.Carp.Plugins.Tests/` | `net8.0` | xUnit. Sin FakeXrmEasy (BP-PP-159). Corre en el puesto Linux con `dotnet test src/Sanic.Carp.Plugins.Tests` |
+
+```
+src/Sanic.Carp.Plugins/
+├── Dominio/                    PURO: ningún `using Microsoft.Xrm.Sdk`
+│   ├── Choices.g.cs            generado por herramientas/codigo/generar_enums.py (no se edita)
+│   ├── Estados.cs              EstadoDeConversacion, EstadoDeArreglo, EstadoEfectivo (DC-06)
+│   ├── Columnas.cs             categorías de columnas por tabla (2.0.8)
+│   ├── Cambios.cs              "cambió" = presente y distinto de la pre-imagen (DC-01)
+│   ├── Normalizacion.cs        NormalizadorDeTexto (2.0.1)
+│   ├── HuellaDeMessageId.cs    (2.0.2)
+│   ├── Montos/ReglasDeMontos.cs                (2.0.3)
+│   ├── Calendario/GeneradorDeCalendario.cs     (2.0.4)
+│   ├── ConsecutivoDeCredito.cs                 (2.0.5)
+│   ├── Tiempos/TiemposDeConversacion.cs, RecalculoDeConversacion.cs   (2.0.6)
+│   ├── Conversacion/ReglasDeConversacion.cs    Finalizar, Reabrir, asignación (2.3, 2.4)
+│   ├── Arreglo/ReglasDeArreglo.cs, PedidoDeActualizacion.cs, ResultadoDeEvaluacion.cs   (2.6)
+│   ├── Cuota/ReglasDeCuota.cs                  (2.7)
+│   ├── Plantilla/ValidadorDePublicacion.cs, TablaDeCompatibilidad.cs   (2.0.7)
+│   ├── Errores/ErrorDeNegocio.cs, CodigosDeError.cs   código + texto de cada CARP-*
+│   └── Puertos/                interfaces (4.2)
+├── Formato/                    PURO (usa OpenXml, no Xrm): generador del F-NIC-0000052 (4.3)
+├── Datos/                      Xrm: implementa los puertos sobre IOrganizationService
+├── Infraestructura/            Xrm: IdentidadDeEjecucion, ConfiguracionDelArea, ContextoDeStep, BaseDeStep, Reloj
+├── Api/                        las 5 Custom API (plugin de respaldo + clase de lógica cada una)
+└── Steps/                      los steps de la sección 5
+
+src/Sanic.Carp.Plugins.Tests/
+├── Aceptacion/                 una clase por pieza, con los PA-* de este documento (las escribe el arquitecto)
+│   └── Formato/                las pruebas del spike 1, portadas (4.3)
+├── Unitarias/<Pieza>/          pruebas del constructor para lo que la aceptación no cubre
+├── Dobles/                     OrganizationServiceEnMemoria, PipelineSimulado, … (4.5)
+├── Apoyo/                      constructores de datos, contexto simulado, lector de fixtures
+└── Fixtures/                   plantilla v07 y respuestas reales exportadas de Dev (4.5)
+```
+
+Dependencias permitidas: `Steps`, `Api` → `Infraestructura`, `Datos`, `Dominio`, `Formato`. `Datos` → `Dominio`. `Dominio` → `Formato` solo para `ValidadorDePublicacion`. Nada del dominio ni de `Formato` conoce Dataverse. Solo `Api`, `Steps`, `Datos` e `Infraestructura` tocan `IOrganizationService`.
+
+Reglas de código de la orden del constructor, que este diseño asume: comparaciones ordinales, cultura invariante, la hora entra por parámetro, sin APIs que no existan en net462, textos de usuario con ortografía completa, comentarios que explican el porqué con la cita.
+
+Regla de datos: **sin joins** (`link-entity`) en las consultas de los repositorios. El doble de pruebas no los simula y una consulta con join pasa en la prueba y falla en el entorno (M-PPP §1 paso 6). La variable de entorno se lee en dos consultas (definición y valor), no con el `link` de `seguridad.md`.
+
+### 4.2 Puertos (en `Dominio/Puertos`) y su implementación
+
+| Puerto | Métodos (nombre y semántica) | Implementa |
+|---|---|---|
+| `IReloj` | `AhoraUtc` | `Infraestructura/Reloj` |
+| `IIdentidadDeEjecucion` | `ActorId`, `EsSistema`, `EsCuentaDeServicio`, `EsEscrituraDelSistema`, `EsJefatura()` (0.3) | `Infraestructura/IdentidadDeEjecucion` |
+| `IConfiguracionDelArea` | `BuId`, `TeamPropietarioId`, `TeamJefaturaId`, `QueueRemitenteId`, `AppIdCuentaDeServicio` (Guid o nulo). Perezosos; lanzan `ErrorDeNegocio` `CARP-CFG-*` | `Infraestructura/ConfiguracionDelArea` |
+| `IConversaciones` | `Leer(id)`, `BuscarPorHuella(huella)`, `Crear(nueva)`, `Actualizar(id, cambios, conVersion)`, `HayUnidasA(id)`, `SeguirUnida(id, saltos)` | `Datos/ConversacionesDataverse` |
+| `ICorreos` | `Leer(id)`, `DeConversacion(conversacionId)`, `EntrantesSinConversacion(buId, antesDe, tope)`, `BuscarPorMessageId(variantes)`, `ApuntarA(emailId, conversacionId)`, `AsignarAlTeam(emailId, teamId)`, `EscribirRespuesta(emailId, tiempo, respondidoPor)` | `Datos/CorreosDataverse` |
+| `IArreglos` | `Leer(id)`, `NumerosDelCredito(producto, numeroProducto)`, `VersionesVigentes()`, `Actualizar(id, cambios)`, `CongelarYBitacora(...)` | `Datos/ArreglosDataverse` |
+| `ICuotas` | `Listar(arregloId)`, `Crear(cuota)`, `Borrar(id)`, `HayPagos(arregloId)`, `QuedaAlgunaSinPago(arregloId)` | `Datos/CuotasDataverse` |
+| `IClientes` | `BuscarPorCedula(cedulaNormalizada)` (siempre con SYSTEM, incluye inactivos), `BuscarActivosPorCorreo(correo, tope)`, `Leer(id)` | `Datos/ClientesDataverse` |
+| `IVersiones` | `Leer(id)`, `OtrasVigentes(exceptoId)`, `Actualizar`, `FilasDeMapeo(versionId)`, `DescargarArchivo(versionId)` | `Datos/VersionesDataverse` |
+| `IUsuarios` | `NombreCompleto(id)`, `Aplicacion(id)` (applicationid) | `Datos/UsuariosDataverse` |
+| `IGeneradorDeFormato` | `Generar(plantilla, huellaEsperada, mapeo, datos)` → `ResultadoGeneracion`; `CalcularHuella(bytes)` | `Formato/GeneradorOpenXml` |
+
+Los métodos de `Datos` son delgados: una consulta o una escritura, con `ColumnSet` nombrado. Los repositorios que necesitan "como sistema" o "como llamador" reciben el servicio por constructor; `Api` y `Steps` deciden cuál (0.2). Cuanto más fina sea esta capa, más barato es el TDD (M-PPP §8).
+
+### 4.3 Generador del formato (inv. 7.8)
+
+Se **porta** `spikes/plantilla/src/ArreglosPago.Formato/` a `src/Sanic.Carp.Plugins/Formato/`, namespace `Sanic.Carp.Plugins.Formato`: `GeneradorFormato`, `HojaEditable`, `EstilosInfo`, `ReferenciaCelda`, `ValidadorMapeo`, `Campos`, `DatosArreglo`, `MapeoCelda`, `ResultadoGeneracion`, `Excepciones`. Cambios respecto del spike, y solo esos:
+
+1. Agregar la clave `moneda` (opción 27 de `CampoMapeable`, simple) a la lista de campos conocidos si el generador la valida.
+2. Namespace y visibilidad: lo que el spike marca `public` y el paquete no necesita fuera del ensamblado pasa a `internal`, salvo lo que usan las pruebas (`InternalsVisibleTo`).
+3. `ClavesDelGenerador` (opción ⇒ clave, 1.1) y `DatosDePrueba` (datos sintéticos de la publicación, 2.8) son nuevos.
+4. `GeneradorOpenXml : IGeneradorDeFormato` es el adaptador. Registra `InnerException` antes de convertir (spike 1 hallazgo 6).
+
+Las 88 pruebas y 205 casos del spike se portan a `Aceptacion/Formato/`, con las cinco pruebas de la plantilla v07 como fixture (`Fixtures/F-NIC-0000052_v07.xlsx`, copia de `spikes/plantilla/F-NIC-0000052_v07_borrador.xlsx`). Más: una prueba de la clave `moneda` y la mutación equivalente a M07 se descarta por equivalente (spike 1 §4). Quedan pendientes, como en el spike, correrlas en `net462` en Windows y abrir un archivo generado en Excel de escritorio (spike 1b, filas 4 y 16).
+
+### 4.4 Firmas públicas de las piezas puras (lo que escribe el arquitecto como `NotImplementedException`)
+
+| Clase | Miembros |
+|---|---|
+| `NormalizadorDeTexto` (estática) | `NumeroDeProducto(string)`, `Cedula(string)`, `Correo(string)`, `NombreCompleto(string)`, `Celular(string)` → `string` |
+| `HuellaDeMessageId` (estática) | `Normalizar(string)` → `string`; `Calcular(string messageId, Guid emailId)` → `string` |
+| `ReglasDeMontos` (estática) | `Calcular(decimal saldoInicial, decimal montoAbonado, decimal cuotaMensual, int plazo)` → `ResultadoDeMontos { bool Ok; ErrorDeNegocio Error; decimal SaldoRemanente; decimal TotalPagar; decimal MontoUltimaCuota; IReadOnlyList<decimal> MontosDeCuotas() }` |
+| `GeneradorDeCalendario` (estática) | `Generar(DateTime fechaInicio, int plazo, decimal cuotaMensual, decimal montoUltimaCuota)` → `IReadOnlyList<CuotaDeCalendario { int Numero; DateTime FechaVencimiento; decimal Monto }>`; `FechaFin(...)` |
+| `ConsecutivoDeCredito` (estática) | `Siguiente(IEnumerable<int?> numeros)` → `int` o `ErrorDeNegocio` |
+| `TiemposDeConversacion` (estática) | `MinutosEntre(DateTime desde, DateTime hasta)` → `int`; `AplicarRespuestaEnviada(...)` → `ResultadoDeRespuesta`; `RecalcularTrasUnion(...)` |
+| `ReglasDeConversacion` (estática) | `Evaluar(PedidoDeConversacion)` → `ResultadoDeEvaluacion { bool Permitida; ErrorDeNegocio Error; IReadOnlyDictionary<string, object> Escribir }` |
+| `ReglasDeArreglo` (estática) | `EvaluarAlta(PedidoDeAlta, IReadOnlyList<VersionVigente>)`, `EvaluarActualizacion(PedidoDeActualizacion, IConsecutivos, IJefatura)` → `ResultadoDeEvaluacion` |
+| `ReglasDeCuota` (estática) | `Evaluar(PedidoDeCuota)` → `ResultadoDeEvaluacion` |
+| `ValidadorDePublicacion` (estática) | `Validar(int capacidad, IReadOnlyList<FilaDeMapeo>)` → `IReadOnlyList<ErrorDeNegocio>` |
+| `Cambios` (estática) | `Distinto(Entity o equivalente neutro)`: se define sobre un `IReadOnlyDictionary<string, object>` para no depender del SDK; compara `null`, `OptionSetValue`→int, `EntityReference`→Guid, `DateTime`, `decimal`, texto ordinal |
+| `ErrorDeNegocio` | `Codigo` (`"CARP-ARR-004"`), `Mensaje`, `ToString()` = `"CARP-ARR-004: …"` |
+| `CodigosDeError` | una constante con código y texto por cada fila de error de este documento |
+
+El dominio no usa `Entity`. Los steps convierten `Entity` ⇄ diccionario neutro en `Infraestructura` (`ConversorDeEntidades`).
+
+### 4.5 Dobles de prueba (inv. 7.9; `pruebas.md`; M-PPP §8)
+
+Todos en `Sanic.Carp.Plugins.Tests/Dobles` y `Apoyo`. Los datos de prueba nunca son datos reales (def. L411).
+
+| Doble | Qué hace |
+|---|---|
+| `OrganizationServiceEnMemoria : IOrganizationService` | Guarda `Entity` en un diccionario por tabla. Implementa `Create`, `Retrieve`, `Update`, `Delete`, `Associate`/`Disassociate` (no usados), `RetrieveMultiple` con `QueryExpression` y `FetchExpression` mínimo (no usados), y `Execute` para: `UpdateRequest` (con `ConcurrencyBehavior`), `AssignRequest`, `WhoAmIRequest`, `RetrievePrincipalAccessRequest` (tabla de accesos configurable), `InitializeFileBlocksDownloadRequest` y `DownloadBlockRequest` (bloques de 4 MB sobre un diccionario de archivos). Condiciones: `Equal`, `NotEqual`, `In`, `Null`, `NotNull`, `GreaterThan`, `GreaterEqual`, `LessThan`, `LessEqual`; `OrderExpression`; `TopCount`; `PageInfo` con cookie. Sin joins |
+| Versión de fila | Cada `Create`/`Update` sube un `RowVersion`. `UpdateRequest` con `IfRowVersionMatches` y versión vieja lanza `FaultException<OrganizationServiceFault>` con el código de "versión de fila no coincide" (a confirmar con una muestra real, spike 2 pregunta 3) |
+| Identidad por servicio | `FabricaDeServiciosSimulada : IOrganizationServiceFactory` entrega vistas del mismo almacén marcadas con la identidad (`CreateOrganizationService(userId)`; `null` = SYSTEM). Cada escritura queda en `Escrituras` con (operación, tabla, id, columnas, identidad, instante). Así se prueba "escribe con SYSTEM" y "lee con el llamador" |
+| Seguridad simulada | `NegarLectura(userId, tabla, id)`; `OcultarColumna(tabla, columna, paraUsuario)` devuelve `null` al usuario y el valor real a SYSTEM (cédula sin perfil de columna, spike 4) |
+| Fallas | `FallarEn(operacion, tabla, ordinal, codigoDeError)` lanza una `FaultException` en la n-ésima llamada |
+| Transacción | `Instantanea()` y `Restaurar()`. El ayudante `EjecutarComoPlataforma(plugin, contexto)` toma la instantánea, ejecuta y, si hay excepción, restaura: es la transacción de la plataforma |
+| Registro de consultas | `Consultas`: tabla, condiciones, columnas pedidas, `TopCount`. Permite afirmar "0 consultas de BU", "una sola consulta de jefatura", "sin `ColumnSet(true)`" |
+| Registros inactivos | Bandera `RechazarEscriturasEnInactivas` (por defecto `false`, V-2). Las pruebas que dependen de V-2 lo declaran |
+| `ContextoDePluginSimulado : IPluginExecutionContext` | `MessageName`, `Stage`, `Mode`, `Depth`, `UserId`, `InitiatingUserId`, `PrimaryEntityName`, `PrimaryEntityId`, `InputParameters` (con `Target`), `OutputParameters`, `PreEntityImages`, `OperationCreatedOn`, `ParentContext` |
+| `ProveedorDeServiciosSimulado : IServiceProvider` | Entrega el contexto, la fábrica y un `ITracingService` que guarda las líneas |
+| `PipelineSimulado` | Registra instancias de los steps (clase, mensaje, tabla, etapa, orden, filtro, pre-imagen) y, cuando un servicio escribe, ejecuta los steps que corresponden **con el contexto que la plataforma daría**: `UserId` e `InitiatingUserId` = SYSTEM si la escritura salió del servicio de SYSTEM, `Depth + 1`. Respeta el filtro de atributos. Sirve para las pruebas de cadena (la trampa A-23) y para comprobar que las escrituras del sistema no son rechazadas por nuestros propios steps |
+| `RelojFijo : IReloj` | Hora configurable |
+| `IdentidadSimulada` | Para pruebas del dominio y de steps: `ActorId`, banderas, `EsJefatura` configurable, contador de consultas |
+| `ConfiguracionSimulada` | Variables de entorno en un diccionario; BU, teams y queue sembrados; contadores de consultas |
+| `GeneradorFalso : IGeneradorDeFormato` | Devuelve bytes fijos o lanza la excepción pedida; guarda los datos y el mapeo recibidos |
+| `ConstructorDeDatos` | Constructores fluidos: `UnaConversacion()`, `UnArreglo()`, `UnaCuota()`, `UnCorreoEntrante()`, `UnaVersion()`, `UnMapeo()` con los valores por defecto del diccionario |
+
+**Validación contra respuestas reales** (`pruebas.md` §1; defecto D-59 de M-PPP: 1104 pruebas en verde con un doble que repetía el mismo error del código). Antes de dar por buenos los dobles, se exportan de Dev estos fixtures JSON y una prueba (`DobleContraRespuestasRealesAceptacion`) comprueba que el doble devuelve **los mismos tipos**: `OptionSetValue`, `EntityReference`, `DateTime` (UTC y solo fecha), `decimal`, `Guid` crudo en intersect (`teammembership`), `AliasedValue`:
+
+1. `email` entrante (Received) y `email` saliente (Sent) con `statuscode`, `directioncode`, `messageid` con `<>`, `inreplyto`, `actualend`, `senton`, `createdby`, `regardingobjectid`, `ownerid`.
+2. `sanic_carp_tbl_conversacion` en Abierta, Finalizada y Unida.
+3. `sanic_carp_tbl_arreglo` en Borrador congelado y Vigente.
+4. `teammembership` de un usuario; `team` con `isdefault`; `queue` con `emailaddress`.
+5. `environmentvariabledefinition` y `environmentvariablevalue`.
+6. `systemuser` con `applicationid` y el usuario SYSTEM (`WhoAmI` elevado).
+7. El `FaultException` de una violación de K-01 y el de "versión de fila no coincide".
+
+---
+
+## 5. Lista cerrada de steps a registrar (inv. 8.7)
+
+**35 registros** (34 firmes y 1 condicionado a V-4), sobre **20 clases** de step, todos en el paquete `sanic_carp_pkg_plugins`, tipo `Sanic.Carp.Plugins.Steps.<Clase>`. Las cinco Custom API no figuran: la plataforma crea su propio step interno al registrarlas (`Sanic.Carp.Plugins.Api.<Clase>Api`). Restricciones de la herramienta `step.py` respetadas (DC-27): un step por (clase, mensaje, tabla); filtro de atributos solo en `Update` y nunca la clave primaria; pre-imagen solo en `Update` y `Delete`; sin post-imágenes; asíncrono solo en PostOperation; etapas PreOperation y PostOperation.
+
+Nombre del step: `STEP - CARP - <tabla> - <mensaje> - <etapa> - <clase>` (DC-23). Todos sincrónicos salvo los marcados. La pre-imagen siempre se llama `PreImagen`. `sanic_carp_tbl_` se abrevia `t_` en la columna Tabla de esta tabla; el playbook usa el nombre completo.
+
+| # | Clase (`Steps.*`) | Mensaje | Tabla | Etapa | Orden | Filtro de atributos | Pre-imagen (sección) |
+|---|---|---|---|---|---|---|---|
+| S-01 | `PropietarioAlCrearStep` | Create | `t_cliente` | PreOperation | 5 | — | — |
+| S-02 | `PropietarioAlCrearStep` | Create | `t_conversacion` | PreOperation | 5 | — | — |
+| S-03 | `PropietarioAlCrearStep` | Create | `t_arreglo` | PreOperation | 5 | — | — |
+| S-04 | `PropietarioAlCrearStep` | Create | `t_cuota` | PreOperation | 5 | — | — |
+| S-05 | `PropietarioAlCrearStep` | Create | `t_versionplantilla` | PreOperation | 5 | — | — |
+| S-06 | `PropietarioAlCrearStep` | Create | `t_mapeocelda` | PreOperation | 5 | — | — |
+| S-07 | `PropietarioAlCrearStep` | Create | `t_generacionformato` | PreOperation | 5 | — | — |
+| S-08 | `PropietarioAlActualizarStep` | Update | `t_cliente` | PreOperation | 5 | `ownerid` | — |
+| S-09 | `PropietarioAlActualizarStep` | Update | `t_conversacion` | PreOperation | 5 | `ownerid` | — |
+| S-10 | `PropietarioAlActualizarStep` | Update | `t_arreglo` | PreOperation | 5 | `ownerid` | — |
+| S-11 | `PropietarioAlActualizarStep` | Update | `t_cuota` | PreOperation | 5 | `ownerid` | — |
+| S-12 | `PropietarioAlActualizarStep` | Update | `t_versionplantilla` | PreOperation | 5 | `ownerid` | — |
+| S-13 | `PropietarioAlActualizarStep` | Update | `t_mapeocelda` | PreOperation | 5 | `ownerid` | — |
+| S-14 | `PropietarioAlActualizarStep` | Update | `t_generacionformato` | PreOperation | 5 | `ownerid` | — |
+| S-15 | `ClienteStep` | Create | `t_cliente` | PreOperation | 10 | — | — |
+| S-16 | `ClienteStep` | Update | `t_cliente` | PreOperation | 10 | `sanic_nombrecompleto,sanic_cedula,sanic_correo,sanic_celular` | — |
+| S-17 | `ConversacionActualizarStep` | Update | `t_conversacion` | PreOperation | 10 | — (a propósito) | 2.3 |
+| S-18 | `ConversacionAsignacionStep` | Update | `t_conversacion` | PreOperation | 20 | `sanic_oficialasignadoid` | `sanic_oficialasignadoid` |
+| S-19 | `ArregloCrearStep` | Create | `t_arreglo` | PreOperation | 10 | — | — |
+| S-20 | `ArregloCalendarioStep` | Create | `t_arreglo` | **PostOperation** | 10 | — | — |
+| S-21 | `ArregloActualizarStep` | Update | `t_arreglo` | PreOperation | 10 | — (a propósito) | 2.6 |
+| S-22 | `ArregloCalendarioStep` | Update | `t_arreglo` | **PostOperation** | 10 | `sanic_plazo,sanic_cuotamensual,sanic_fechainicio,sanic_saldoinicial,sanic_montoabonado` | — |
+| S-23 | `CuotaActualizarStep` | Update | `t_cuota` | PreOperation | 10 | — (a propósito) | 2.7 |
+| S-24 | `CuotaTerminarArregloStep` | Update | `t_cuota` | **PostOperation** | 20 | `sanic_fechapago,sanic_montopagado` | — |
+| S-25 | `VersionPlantillaCrearStep` | Create | `t_versionplantilla` | PreOperation | 10 | — | — |
+| S-26 | `VersionPlantillaActualizarStep` | Update | `t_versionplantilla` | PreOperation | 10 | — (a propósito) | 2.8 |
+| S-27 | `ArchivoDePlantillaStep` | `CommitFileBlocksUpload` | `t_versionplantilla` | PreOperation | 10 | — | — (**condicionado a V-4**) |
+| S-28 | `MapeoCeldaCrearStep` | Create | `t_mapeocelda` | PreOperation | 10 | — | — |
+| S-29 | `MapeoCeldaActualizarStep` | Update | `t_mapeocelda` | PreOperation | 10 | — (a propósito) | 2.8 |
+| S-30 | `MapeoCeldaEliminarStep` | Delete | `t_mapeocelda` | PreOperation | 10 | — | `sanic_versionplantillaid` |
+| S-31 | `RemitenteDelAreaStep` | Create | `email` | PreOperation | 10 | — | — |
+| S-32 | `EmailSoloSistemaStep` | Create | `email` | PreOperation | 20 | — | — |
+| S-33 | `EmailSoloSistemaStep` | Update | `email` | PreOperation | 10 | `sanic_tiemporespuesta,sanic_respondidoporid` | — |
+| S-34 | `RegistrarCorreoEntranteStep` | Create | `email` | **PostOperation, asíncrono** | 10 | — | — |
+| S-35 | `RespuestaEnviadaStep` | Update | `email` | **PostOperation, asíncrono** | 10 | `statuscode` | — |
+
+Pre-imágenes con sus columnas, resumidas (el playbook las copia de 2.3, 2.6, 2.7 y 2.8):
+
+| Step | Columnas de `PreImagen` |
+|---|---|
+| S-17 | `statecode`, `statuscode`, `sanic_huellamessageid`, `sanic_fechaprimercorreo`, `sanic_asunto`, `sanic_remitente`, `sanic_sinrespuestadesde`, `sanic_correonuevoenfinalizada`, `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`, `sanic_fechafinalizacion`, `sanic_tiempoprimerarespuesta`, `sanic_tiempototal`, `sanic_cantidadrespuestas`, `sanic_unidaaid`, `sanic_finalizadoporid` |
+| S-18 | `sanic_oficialasignadoid` |
+| S-21 | las 42 de 2.6 |
+| S-23 | `sanic_nombre`, `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_fechapago`, `sanic_montopagado`, `sanic_arregloid` |
+| S-26 | `statecode`, `sanic_nombre`, `sanic_estado`, `sanic_capacidad`, `sanic_huella`, `sanic_fechaaprobacion`, `sanic_aprobadoporid` |
+| S-29 | `sanic_versionplantillaid`, `sanic_hoja`, `sanic_celda`, `sanic_tipo`, `sanic_campo`, `sanic_filasmaximas` |
+| S-30 | `sanic_versionplantillaid` |
+
+Orden de ejecución por (mensaje, tabla), para verificar BP-PP-060: `t_conversacion` Update PreOperation: 5, 10, 20. `t_arreglo` Create Pre: 5, 10; Post: 10. `t_arreglo` Update Pre: 5, 10; Post: 10. `t_cuota` Update Pre: 5, 10; Post: 20. `t_cliente` Create Pre: 5, 10; Update Pre: 5, 10. `t_versionplantilla` Create Pre: 5, 10; Update Pre: 5, 10. `t_mapeocelda` Create Pre: 5, 10; Update Pre: 5, 10. `email` Create Pre: 10, 20; Create Post async: 10; Update Pre: 10; Update Post async: 10. El de propietario (5) corre antes que el de reglas (10) para que ninguna regla vea un propietario ajeno.
+
+Los pre-update de Arreglo y Cuota **no** llevan filtro para que nada pase sin evaluar (misma razón que M-PPP §5.1, "la lista blanca va sin filtro de atributos a propósito"). El costo es una ejecución barata por guardado: sin cambios en columnas vigiladas el step termina antes de consultar nada.
+
+`Upsert`, `UpdateMultiple` y `CreateMultiple` no evitan estos controles: la plataforma funde los pipelines (M-PPP §5.1, cerrado con cita de Learn). Aplica a tablas estándar. **Si alguna tabla propia se convirtiera en elástica, las reglas se caen en silencio**; el diccionario las deja estándar (DD-09).
+
+---
+
+## 6. Decisiones abiertas
+
+Solo lo que no se puede deducir de las fuentes. Cada una dice qué hace el código **mientras tanto** (comportamiento provisional, marcado `[ABIERTA OA-n]` en el texto) y cuál es el costo de cambiarlo. Quien decide: el aprobador, con Héctor Romero para las de negocio del formato y de las cuotas (def. L639).
+
+### OA-1. ¿Formalizar y desbloquear piden motivo?
+
+**Qué dicen las fuentes.** def. L143 llama "gestos con motivo" a finalizar, formalizar, desbloquear, descartar, anular y reabrir. El diccionario solo tiene columnas de motivo para descartar, anular y reabrir (dicc. L389-393) y para finalizar con "Sin respuesta" (resultado, motivo, detalle). def. ítem 9 (L299-303) no pide motivo para formalizar ni desbloquear.
+
+| Opción | Qué implica | Costo |
+|---|---|---|
+| A. Ni formalizar ni desbloquear piden motivo | Es lo que describe el ítem 9 y lo que modela el diccionario. Quién y cuándo formalizó queda en `sanic_formalizadoporid` y `sanic_fechaformalizado`; quién y cuándo desbloqueó queda en la auditoría nativa de `sanic_fechacongelamiento` (la columna está auditada, dicc. §4.3) | Cero. Se corrige el texto de L143 |
+| B. Desbloquear pide motivo | Una columna nueva (por ejemplo `sanic_motivodesbloqueo`, memo 500, auditada), un cambio al gesto (DC-05) y una regla más en `ReglasDeArreglo`. Sirve para saber por qué se reimprime un formato | Columna nueva e irreversible, más fricción para el oficial en un paso previo a la firma, sin documento firmado en juego |
+| C. Los dos piden motivo | B más una columna para formalizar | Lo mismo, sin beneficio claro: formalizar es un paso positivo que ya deja usuario y fecha |
+
+**Recomendación: A.** El desbloqueo ocurre antes de firmar; el rastro de quién y cuándo ya existe. **Provisional en el código: A.** Cambiar a B después es barato (una columna y una regla) mientras no haya datos.
+
+### OA-2. Vistas de "sin respuesta", de "llegados a finalizadas" y de borradores
+
+**Qué dicen las fuentes.** def. L122 lista como vistas separadas "correos sin respuesta" y "correos llegados a conversaciones finalizadas"; def. ítem 4 (L276) describe una sola que reúne ambos casos. Además L122 lista "borradores" y L450 describe "borradores sin cambios en más de 30 días": no queda claro si es una vista o dos.
+
+El servidor ya resuelve la mitad: por P-09 (dicc. L661), un correo que llega a una finalizada completa `sanic_sinrespuestadesde`, así que **"sinrespuestadesde no vacío" ya incluye los dos casos**.
+
+| Opción | Detalle | Costo |
+|---|---|---|
+| A. Una sola vista | "Correos sin respuesta" = `sinrespuestadesde` no vacío, con el indicador visible como columna | El oficial no puede ir directo a las finalizadas con correo nuevo |
+| B. Una unida para supervisión y una operativa | "Correos sin respuesta" (todo `sinrespuestadesde` no vacío, para el criterio de éxito 4 del jefe) más "Correos llegados a conversaciones finalizadas" (indicador = sí, para el oficial que decide reabrir o iniciar una nueva) | Dos vistas, una consulta cada una; sin código |
+| C. Solo las dos separadas | La unión se hace a ojo | El jefe tendría que mirar dos vistas para comprobar el criterio 4 |
+
+Borradores: (i) una vista "Borradores" y otra "Borradores sin movimiento" (más de 30 días sin cambios, para formalizar o descartar), o (ii) solo la segunda. **Recomendación: B para las conversaciones y (i) para los borradores**, más "Finalizadas sin respuesta" (resultado = Sin respuesta) como pide D-06. No hay impacto en el servidor.
+
+### OA-3. Aviso cuando falla la purga
+
+**Qué dicen las fuentes.** def. L453 dice "si falla, el flujo avisa", pero ningún flujo lo cubre (def. L152-155, L446-449; inv. 11 y su inconsistencia 5).
+
+| Opción | Qué implica | Costo |
+|---|---|---|
+| A. Ampliar el flujo recurrente de salud (inv. 11.2) | Una cuarta comprobación: trabajos de eliminación masiva fallidos en las últimas 24 h. Hay que confirmar que `SR - CARP - Servicio` puede leerlos (la matriz no le da ese privilegio) | Un privilegio y una acción en un flujo que ya existe |
+| B. Un flujo nuevo | Trigger sobre el trabajo del sistema | Un flujo más para mantener y una connection reference más |
+| C. Revisión manual | El jefe o el equipo de automatización miran System Jobs una vez por semana (def. L453) | Cero código; el fallo se detecta tarde, y una purga fallida afecta RNF-07 y RNF-10 |
+| D. Una sexta Custom API | `estadodepurgas` que lee los trabajos con SYSTEM y devuelve conteos | Contradice la lista de cinco (def. L145-150); innecesaria si A funciona |
+
+**Recomendación: A**, y C como respaldo hasta que el flujo exista. Es una decisión de los flujos (inv. 11), no del código de este documento.
+
+### OA-4. Cómo se promueve la plantilla de Test a Prod
+
+**Qué dicen las fuentes.** def. L427: "con la herramienta de migración de configuración o una recarga controlada por el jefe (se decide en etapa 3)"; inv. 9 e inconsistencia 15.
+
+Dato de este diseño que condiciona la elección: una versión **solo puede nacer en Borrador** (`CARP-VER-001`, DC-19) y solo pasa a Vigente por el gesto Publicar, que valida el mapeo, genera una prueba, calcula la huella y deja aprobador y fecha. La herramienta de migración de configuración escribiría la fila ya Vigente con su huella copiada: el step la rechaza (y con razón: saltaría la validación).
+
+| Opción | Qué implica | Costo |
+|---|---|---|
+| A. Migración de configuración | Copia fila, archivo y mapeo | Choca con `CARP-VER-001`/`-002`. Habría que dejar entrar al sistema en Vigente sin validar, o aflojar el step. Pierde la prueba de publicación en Prod |
+| B. Recarga controlada: script versionado | Un script del proyecto (`playbooks/datos/versionplantilla.md` y `mapeocelda.md`) crea la versión en Borrador en Prod, sube el archivo, carga las filas de mapeo y **el jefe publica** con el gesto normal. Se compara la huella resultante con la de Test: deben ser iguales (mismo archivo) | Un script y un paso manual del jefe; el mismo camino que usa el negocio, con todas las validaciones |
+| C. Todo manual por el jefe | Sube el archivo y escribe 27 filas de mapeo a mano | Error humano en el mapeo de un documento firmado (riesgo "baja/alto", def. L625) |
+
+**Recomendación: B.** Cumple el diseño sin excepciones, y la comparación de huellas prueba que el archivo es el mismo. Hasta decidir, el código sigue B (no tiene otro camino).
+
+### OA-5. Regla de fechas de vencimiento (R-03) y fecha de fin
+
+**Qué dicen las fuentes.** def. ítem 8 (L298) y dicc. R-03: "mismo día de cada mes, tratamiento de fin de mes", a confirmar con Héctor; "centralizada en el plugin". `sanic_fechafin` es "fecha de la última cuota (el mockup la calcula con el plazo)" y no es solo-sistema.
+
+| Opción | Detalle | Costo |
+|---|---|---|
+| A. Mismo día de cada mes; si el mes no tiene ese día, el último día del mes, calculado siempre desde la fecha de inicio | 31-ene, 28-feb, 31-mar, 30-abr. Es `AddMonths` desde el origen | Es la regla del cálculo financiero habitual; sin saltos |
+| B. Igual, pero encadenando mes a mes | 31-ene, 28-feb, 28-mar… (el día se "pega" abajo) | El cliente ve fechas que se mueven; casi nunca es lo deseado |
+| C. Día fijo 1 a 28 | Se obliga a elegir un día que existe en todos los meses | Cambia la fecha de inicio que el cliente acordó |
+| D. Otra regla de negocio (feriados, días hábiles) | Requiere calendario | Más datos y reglas |
+
+Sobre `fechafin`: (i) el plugin la **calcula y la sobrescribe** con el vencimiento de la última cuota, o (ii) el plugin **valida** que coincida y rechaza si no. **Recomendación: A y (i)** (un solo cálculo, sin que el oficial pueda dejar una fecha de fin que contradiga el calendario). **Provisional: A y (i).** Todo vive en `GeneradorDeCalendario`.
+
+### OA-6. Más de un borrador del mismo crédito (R-07)
+
+**Qué dicen las fuentes.** El spike 2 confirmó que la clave K-02 admite varios borradores con número vacío; la definición no dice si se permiten (dicc. R-07).
+
+| Opción | Detalle | Costo |
+|---|---|---|
+| A. Se permiten | Sin regla. Dos propuestas distintas (por ejemplo temporal y cancelación) pueden convivir hasta que una se formalice | Un borrador olvidado queda vivo (lo cubre la vista de borradores sin movimiento, OA-2) |
+| B. Se rechaza el segundo borrador | Una consulta en `ArregloCrearStep` por (producto, número de producto) con Borrador activo | Impide comparar dos propuestas; hay que descartar una |
+| C. Se permite con aviso | Solo en el formulario | Sin garantía del servidor |
+
+**Recomendación: A.** El formalizar ya protege el consecutivo (K-02 y el número provisional). **Provisional: A.**
+
+### OA-7. Cómo se imprimen la moneda, el tipo de arreglo y su celda
+
+**Qué dicen las fuentes.** dicc. DD-11 y la opción 27 `Moneda` existen "para que el formato la imprima", pero (a) la v07 aprobada el 2026-10-09 (def. L68) no tiene una celda de moneda mapeada, (b) los formatos de monto de la plantilla muestran el símbolo C$ (dicc. L748 fila "Moneda"; spike 1), y (c) no hay texto fijado para imprimir: las etiquetas del choice van sin tildes (`Cordobas`, `Cancelacion`; BP-PP-197).
+
+| Opción | Detalle | Costo |
+|---|---|---|
+| A. Texto formal con ortografía: "Córdobas" / "Dólares" y "Temporal" / "Cancelación" | Tabla de textos en `ClavesDelGenerador`, aparte de las etiquetas del choice | Un lugar más que mantener |
+| B. Las etiquetas del choice tal cual (`Cordobas`, `Cancelacion`) | Cero código | Se imprime sin tilde en un documento firmado |
+| C. Símbolo (`C$`, `US$`) | Hay que cambiar los formatos de las celdas de monto en la plantilla, no solo agregar una celda | Cambia la plantilla v07 (otra aprobación de Héctor) |
+
+**Recomendación: A** para el texto, y que Héctor decida en qué celda va y si los formatos de monto cambian con la moneda (eso es un cambio de plantilla, no de código). **Provisional: A.** Mientras no haya celda mapeada, la clave `moneda` viaja en los datos y no se imprime.
+
+### OA-8. Qué es un "pago registrado"
+
+**Qué dicen las fuentes.** def. ítem 11: el oficial registra "fecha y monto"; "todas sus cuotas tienen pago registrado" pasa el arreglo a Terminado; un pago parcial cuenta (R-02) y saca la cuota de la lista de riesgo (RF-11). D-11 y el spike 2 evalúan el riesgo con `fechapago` nulo. No dice si se exige el par ni si se valida el monto.
+
+| Opción | Detalle | Costo |
+|---|---|---|
+| A. Pago registrado = `sanic_fechapago` no nulo; sin más validaciones | Coincide con la vista de riesgo (D-11) | Una fecha sin monto cuenta como pago |
+| B. Fecha y monto juntos, ambos o ninguno, monto mayor que cero | Una regla en `ReglasDeCuota`; mensaje `CARP-CUO-003` | El oficial no puede guardar la fecha primero y el monto después |
+| C. B más tope (monto pagado no mayor que el monto de la cuota) | Contradice el pago parcial solo si es *menor*, no mayor; un pago mayor podría ser un adelanto | Puede bloquear pagos reales |
+
+**Recomendación: B** (consistente con "un par fecha y monto por cuota", def. L200), **sin** tope superior hasta que Héctor lo pida. **Provisional: A** (DC-21), porque coincide con la vista de riesgo ya validada. Cambiar a B afecta también la vista de riesgo (debe seguir mirando `fechapago`).
+
+### OA-9. ¿Se genera el formato de un arreglo Terminado, Anulado o Descartado?
+
+**Qué dicen las fuentes.** def. ítem 14 y RF-08: el documento "se regenera desde los datos". No dice para qué estados. Congelar un registro inactivo depende de V-2.
+
+| Opción | Detalle | Costo |
+|---|---|---|
+| A. Sí, sin congelar ni tocar el arreglo; se escribe la bitácora | Sirve para reimprimir un terminado | La bitácora registra impresiones de arreglos cerrados |
+| B. Sí, y sin bitácora | Tratado como vista previa | No queda rastro de quién imprimió un arreglo cerrado |
+| C. No: solo Borrador y Vigente | Un `CARP-GEN-012` más | El área no puede reimprimir el historial del cliente (RF-13) |
+
+**Recomendación: A.** **Provisional: A** (PA-GEN-22).
+
+### OA-10. Respuesta enviada en una conversación Finalizada o Unida
+
+**Qué dicen las fuentes.** def. ítem 3 solo cubre "una respuesta enviada sin nada pendiente (por ejemplo, un recordatorio)". Una respuesta de cortesía en una finalizada no está contemplada; tampoco una respuesta cuyo borrador se creó antes de que la conversación se uniera.
+
+| Opción | Detalle | Costo |
+|---|---|---|
+| A. Finalizada: solo suma al contador; no toca pendientes ni indicador. Unida: se redirige al destino | Respeta "el oficial decide reabrir" (RF-15) | Una respuesta a un correo pendiente de una finalizada no lo marca como respondido; el oficial tiene que reabrir |
+| B. Finalizada: la respuesta limpia el pendiente y el indicador | Más natural para el oficial | Sortea la decisión de reabrir o iniciar una nueva, y la conversación queda Finalizada con correos respondidos |
+| C. Bloquear en el servidor responder desde una no Abierta | Un `CARP-EML-004` en `RemitenteDelAreaStep` | Impide también la cortesía sin reabrir |
+
+**Recomendación: A.** **Provisional: A** (PA-RES-09, PA-RES-10).
+
+### OA-11. Unir: ¿se admite un origen Finalizado? ¿y clientes distintos?
+
+**Qué dicen las fuentes.** def. ítem 5: el destino "debe estar Abierta"; no dice nada del estado del origen ni de qué pasa si los dos tienen cliente distinto. "Un cliente puede tener a la vez un tema de tarjeta y otro de préstamo" (L281), pero ambos del mismo cliente.
+
+| Pregunta | Opciones | Recomendación | Provisional |
+|---|---|---|---|
+| Origen Finalizado | (a) rechazar (`CARP-UNI-004`); (b) permitir y dejar el origen Unida | Rechazar: para continuar un tema finalizado ya existen Reabrir e Iniciar conversación nueva | (a) |
+| Clientes distintos | (a) no validar; (b) rechazar con `CARP-UNI-010`; (c) rechazar salvo que lo haga la jefatura | (b): unir correos de dos clientes mezcla datos de personas distintas (RNF-03) y repunta arreglos del otro cliente | (a), porque es lo que dicen las fuentes |
+
+### OA-12. Cómo reconoce el plugin a la cuenta de servicio, y quién ejecuta las API
+
+**Qué dicen las fuentes.** def. L418 y inv. 10.7 fijan una variable con el **Application ID** de la cuenta de servicio. def. L101 y D-21 (L482) dicen que la cuenta es **licenciada** y descartan un service principal como dueño de flujos. Un usuario licenciado es una persona con UPN y **no tiene `applicationid`**. En M-PPP esto obligó a reconocer a la cuenta por UPN (`servicio.cuenta`). Además la matriz (§1.2, L27) asigna Oficial a todo usuario de la BU, incluidas las cuentas de servicio, por lo que Servicio y Purga pasan el privilegio de ejecución de `generarformato`, `tomar…`, `unir…` e `iniciar…`.
+
+| Opción | Detalle | Costo |
+|---|---|---|
+| A. Mantener el Application ID | Funciona solo si la cuenta que escribe es un usuario de aplicación | Si la cuenta es un usuario licenciado, la variable nunca coincide: sus escrituras se tratan como de una persona (inocuo para los flujos del diseño, porque pasan por las API, que elevan; relevante si algún día un flujo escribe columnas solo-sistema) |
+| B. Cambiar la variable a UPN o `domainname` | Misma lógica, otro dato | Una variable con otro nombre y otro significado (inv. 10.7) |
+| C. No reconocer cuenta alguna: solo SYSTEM | Las API elevan siempre; los flujos nunca escriben solo-sistema | Más simple; ningún flujo del diseño lo necesita |
+
+Para las API: rechazar en `tomar…`, `unir…` e `iniciar…` a quien tenga `applicationid`, o aceptar que la cuenta de servicio también puede ejecutarlas.
+
+**Recomendación: confirmar con el administrador qué tipo de usuario es la cuenta de servicio; si es una persona licenciada, C** (y retirar 10.7), y aceptar que las API puedan ser ejecutadas por Servicio y Purga (no tienen sentido de negocio para ellas y la escritura queda atribuida). **Provisional: A** como está en las fuentes (`EsCuentaDeServicio`, 0.3), sin efecto sobre el resto.
+
+### Sin decisión pendiente para el servidor
+
+- "Con arreglo de pago" sin arreglo formalizado vinculado (R-06, def. L284): "hoy solo avisa". El aviso es de formulario; el servidor no hace nada. Si se vuelve obligatorio, lo valida `ReglasDeConversacion` (una regla y un código).
+- Promedio de tiempo total sin las "Sin respuesta" (def. L277 y L517): afecta el gráfico (inv. 12.16), no el servidor.
+- Regla de pertenencia a un team de grupo de Entra consultable por plugin (def. L502, confianza media): se verifica en Dev (H-8 de la lista de humo, 8.1).
+
+---
+
+## 7. Inconsistencias encontradas
+
+No se resolvieron en silencio. Para cada una, qué sigue este documento mientras tanto.
+
+| # | Dónde | Qué choca | Qué sigue este documento |
+|---|---|---|---|
+| 1 | `definicion.md:143` frente a `02-diccionario-datos.md:389-393` y `definicion.md:299-303` | La def. llama "gestos con motivo" a finalizar, formalizar, desbloquear, descartar, anular y reabrir. El diccionario solo modela motivo para descartar, anular y reabrir (y resultado/motivo/detalle al finalizar). Formalizar y desbloquear no lo piden | El diccionario (OA-1) |
+| 2 | `definicion.md:122` frente a `:276` y `:450` | Dos vistas separadas ("sin respuesta", "llegados a finalizadas") frente a una sola que reúne ambos; "borradores" frente a "borradores sin cambios en más de 30 días" | Nada en el servidor (OA-2) |
+| 3 | `02-diccionario-datos.md:661` (P-09) frente a `definicion.md:285-286` (ítem 6) y `:82`, `:276` | P-09 dice que el plugin "vacíe" `sanic_sinrespuestadesde` "al decidir" (reabrir o iniciar nueva). Si se vacía al reabrir, el correo nuevo queda sin respuesta en una conversación Abierta que ya no lo muestra, y falla el criterio de éxito 4 | Reabrir **conserva** `sinrespuestadesde`; Iniciar conversación nueva la vacía en la anterior (DC-10). A confirmar |
+| 4 | `06-inventario-componentes.md:166` frente a `definicion.md:163`, `:260` | El inventario pone la "vinculación por correo" entre los steps de Cliente (7.13); la definición la pone en el plugin de entrada de correo | En la entrada de correo (2.10, paso 5); `ClienteStep` no vincula |
+| 5 | `01-convenciones.md:44` frente a `06-inventario-componentes.md:223` | El ejemplo de la convención nombra la variable de la BU `sanic_carp_ev_businessunitarea`; el inventario la llama `sanic_carp_ev_nombrebu` *(prov.)* | `sanic_carp_ev_nombrebu` (0.4); la convención debería actualizar su ejemplo |
+| 6 | `definicion.md:418` e `06-inventario-componentes.md:227` frente a `definicion.md:101` y `:482` (D-21) | Variable con el Application ID de la cuenta de servicio, pero la cuenta es un usuario licenciado (sin `applicationid`) | Se implementa como dice (DC-02); ver OA-12 |
+| 7 | `spikes/manual/RESULTADO.md:3` y `:128-135` frente a `definicion.md:181`, `:256`, `:269` y D-34 (`:495`) | La def. cita el spike 4 como confirmado (botón Responder completa `parentactivityid`, imagen pegada en Base64, respuesta con asunto cambiado desde Outlook web), pero `RESULTADO.md` dice que esas pruebas manuales están "preparadas, no ejecutadas" y que los veredictos "no están en este documento". La evidencia no está en el repositorio | Se toman como hechos verificados (lo indica el pedido); falta registrar la evidencia |
+| 8 | `definicion.md:270` | El plugin "fija el remitente en la queue y rechaza cualquier otro", pero la misma línea dice que el remitente por defecto del formulario es el usuario. Si se rechaza todo lo que no sea la queue, la respuesta por defecto sería siempre rechazada | Reemplazar el usuario creador por la queue; rechazar cualquier otro (DC-07) |
+| 9 | `definicion.md:249-251` y `:491` (D-30) frente a `02-diccionario-datos.md:507-508` | D-30 lista las columnas solo-sistema de Conversación y Arreglo; el diccionario marca también `sanic_tiemporespuesta` y `sanic_respondidoporid` de Email como solo-sistema, sin plugin que las proteja en la def. | Se agrega `EmailSoloSistemaStep` (2.9) |
+| 10 | `01-convenciones.md:57` | El nombre de step `STEP - CARP - tabla - mensaje - etapa` no distingue dos steps del mismo mensaje y etapa (por ejemplo Conversación/Update/PreOperation tiene tres); el playbook rechaza nombres repetidos | Se agrega el nombre de la clase (DC-23) |
+| 11 | `04-matriz-privilegios.md:27` y `:30` frente a `definicion.md:402` (D-17) | Cada API se restringe con un privilegio "presente solo en los roles que corresponden", pero Servicio y Purga reciben también el rol Oficial por el team del sistema, y con él `Write` de Conversación y `Read` de Generación (Purga lo tiene además por su cuenta, `04:71`) | Sin cambio; ver OA-12 |
+| 12 | `04-matriz-privilegios.md:74` frente a `:67` y `definicion.md:391` | El texto de la matriz dice que el Oficial "no tiene ningún privilegio" sobre Mapeo y que el Jefe tampoco lee; la tabla (§2) y la def. dan `Read` de Mapeo al Oficial (opción A del 2026-10-09). Texto desactualizado | Rige la tabla |
+| 13 | `06-inventario-componentes.md:150` | Dice que el directorio `src/` no existe; ya existe `src/Sanic.Carp.Plugins/Dominio/Choices.g.cs` | Se parte de lo que hay |
+| 14 | `definicion.md:292` y `02-diccionario-datos.md:47` (DD-12) frente a `definicion.md:311` | Los montos se calculan "al crear el arreglo y al modificar el borrador". Un Vigente reabierto (descongelado) también admite modificar datos (ítem 10) y quedaría con montos sin recalcular | Se recalculan en todo arreglo editable, no solo en Borrador (2.6, paso 4) |
+| 15 | `definicion.md:282` frente a `definicion.md:471` (D-10) y `02-diccionario-datos.md:275` | "Repunta los arreglos vinculados", pero un arreglo Terminado, Anulado o Descartado es inactivo y de solo lectura | Se repuntan los activos; los inactivos no (V-2) |
+
+---
+
+## 8. Resumen y pruebas de humo
+
+### 8.1 Pruebas de humo en Dev (no automatizadas)
+
+Lo que el doble no puede probar (pipeline real, transacción, seguridad) se prueba en Dev, no se simula (M-PPP §8). Cada pieza se da por buena solo después de su prueba de humo:
+
+| # | Qué | Pieza |
+|---|---|---|
+| H-1 | V-1 a V-7 de 0.9 | todas |
+| H-2 | Formalizar dos arreglos del mismo crédito a la vez: la segunda recibe el rechazo de K-02 | 2.6 |
+| H-3 | 60 altas de cuota dentro de la transacción: tiempo bajo el límite | 2.5 |
+| H-4 | Generar un formato con un Oficial **no** administrador con el rol real y el perfil de columna | 1.1 |
+| H-5 | Responder desde el timeline: sale por la queue, `parentactivityid` completo, el cliente responde y entra a la misma conversación | 2.9, 2.10 |
+| H-6 | Una respuesta enviada: se llenan `sanic_tiemporespuesta` y `sanic_respondidoporid` y se recalcula la conversación | 2.11 |
+| H-7 | Reconciliación llamada por la cuenta de servicio desde un flujo | 1.2 |
+| H-8 | La pertenencia al team de jefatura (grupo de Entra) se ve desde el plugin | 0.3 |
+| H-9 | Los 7 fixtures de 4.5 exportados y comparados con el doble | 4.5 |
+| H-10 | Publicar una versión: la generación de prueba, la huella y el paso a Histórica | 2.8 |
+| H-11 | Abrir un archivo generado en Excel de escritorio sin que ofrezca reparar | 1.1 |
+
+### 8.2 Conteos
+
+| Concepto | Cantidad |
+|---|---|
+| Custom API | 5 (`generarformato`, `reconciliarcorreos`, `tomarconversacion`, `unirconversaciones`, `iniciarconversacionnueva`) |
+| Registros de step | 35 (34 firmes y 1 condicionado a V-4) |
+| Clases de step | 20 |
+| Máquinas de estado | 3 (Conversación, Arreglo, Versión de plantilla) |
+| Piezas de dominio puro | 8 (2.0.1 a 2.0.8) |
+| Pruebas de aceptación `PA-…` | ver el recuento al final de esta sección |
+| Decisiones de diseño `DC-nn` | 27 |
+| Supuestos de plataforma `V-n` | 7 |
+| Decisiones abiertas `OA-n` | 12 |
+| Inconsistencias | 15 |
+
+Pruebas de aceptación numeradas `PA-…`: **346** en 26 áreas (ARR 45, ASG 10, CAL 9, CLI 11, CNV 23, COL 2, CON 5, CUO 14, EML 8, ENT 23, ESI 4, FEC 7, GEN 27, HUE 5, INI 15, MAP 10, MON 14, NOR 8, PRO 11, PUB 9, REC 15, RES 14, TIE 10, TOM 9, UNI 21, VER 17).

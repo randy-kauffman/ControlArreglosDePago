@@ -168,3 +168,16 @@ Dentro de la solución `SpikesArreglosPago`: rol `SPK Oficial Correo` (9 privile
 | `s99_limpieza.py` | Limpieza (ensayo en seco por defecto) |
 | `evidencia/` | `q2c_resultado.json`, `b_intentos.jsonl`, `b_poda.json`, `rol_oficial_privilegios.json`, `b_envio_verificado.json`, `c_formulario_publicado.xml.json`, `c_import_customizations.xml.json` |
 | `estado.json` | Ids de la corrida |
+
+## Tarea D. Veredictos de las pruebas manuales (agregados el 2026-10-09)
+
+El usuario hizo las pruebas 1, 2, 1b y 3 desde la app el 2026-10-08 y el 2026-10-09 (UTC). `verificar.py` se corrió después de cada una; su salida quedó en la conversación de trabajo y no en `evidencia/` (no se guardó con `--json`), y los correos de prueba se borraron con la limpieza del 2026-10-09, así que no se puede volver a correr.
+
+| Prueba | Veredicto | Detalle |
+|---|---|---|
+| 1. Responder desde el timeline | **Confirmado** | La respuesta salió con `parentactivityid` = correo original e `In-Reply-To` correcto; el hilo se conservó en el buzón 2. El formulario deja poner la queue en "De", **pero no la propone por defecto**: el remitente por defecto es el usuario. De ahí el plugin pre-create que fija la queue como remitente |
+| 2. Imagen pegada en la respuesta | **Confirmado: Base64 dentro del cuerpo** | Sin filas en `msdyn_richtextfile` ni `activitymimeattachment` para la imagen: viaja y se purga con el Email |
+| 1b. Responder desde el formulario del correo | **Confirmado** (el script dijo REFUTADO: falso negativo) | El usuario respondió sobre su propia respuesta, no sobre el correo del cliente; `parentactivityid` quedó bien respecto del correo al que se respondió |
+| 3. El cliente responde cambiando el asunto | **Confirmado** | Desde Outlook web (buzón 2), asunto "Otro asunto": conservó `In-Reply-To`, `References` y `Thread-Index`, y Dataverse lo correlacionó a su conversación (`correlationmethod` 3) |
+
+Sin probar: Outlook de escritorio, Gmail y clientes móviles. Ruido del entorno: "Track emails sent between users as two activities" está activo, así que los correos entre buzones sincronizados aparecen duplicados (no pasa con clientes reales).
