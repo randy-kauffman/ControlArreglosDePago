@@ -1,0 +1,53 @@
+{
+ "filtros_InitializeFileBlocksUpload": [
+  {
+   "primaryobjecttypecode": "none",
+   "iscustomprocessingstepallowed": false,
+   "availability": 0
+  }
+ ],
+ "filtro_para_versionplantilla_InitializeFileBlocksUpload": [],
+ "filtros_CommitFileBlocksUpload": [
+  {
+   "primaryobjecttypecode": "none",
+   "iscustomprocessingstepallowed": false,
+   "availability": 0
+  }
+ ],
+ "filtro_para_versionplantilla_CommitFileBlocksUpload": [],
+ "filtros_UploadBlock": [
+  {
+   "primaryobjecttypecode": "none",
+   "iscustomprocessingstepallowed": false,
+   "availability": 0
+  }
+ ],
+ "filtro_para_versionplantilla_UploadBlock": [],
+ "registrar_step_commit_con_filtro_none": {
+  "http": 400,
+  "error": "Custom SdkMessageProcessingStep is not allowed on the specified message and entity. SdkMessageProcessingStepId: '0b4b2e83-a7c4-f111-a05a-7ced8d3c456b', SdkMessageFilterId: 'd0e93b42-8d0e-4d4f-a9cc-23b3623ba818'."
+ },
+ "registrar_step_commit_sin_filtro": {
+  "http": 400,
+  "error": "Custom SdkMessageProcessingStep with Id: '0c4b2e83-a7c4-f111-a05a-7ced8d3c456b' is not allowed on the message with SdkMessageId: 'ebe925db-cd3a-4a7c-890e-80044798991c'."
+ },
+ "subida_por_bloques": {
+  "init": [
+   200,
+   "token"
+  ],
+  "upload": 204,
+  "commit": [
+   200,
+   {
+    "FileSizeInBytes": 1200
+   }
+  ]
+ },
+ "relectura_tras_bloques": {
+  "sanic_archivo_name": "zzv.txt",
+  "sanic_archivo": "0f4b2e83-a7c4-f111-a05a-7ced8d3c456b"
+ },
+ "subida_patch_http": 204,
+ "relectura_tras_patch": "zzv2.txt"
+}

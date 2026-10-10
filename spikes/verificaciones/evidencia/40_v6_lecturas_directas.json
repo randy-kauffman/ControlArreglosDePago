@@ -1,0 +1,14 @@
+{
+ "admin_lee_directo": {
+  "sanic_cuentadebitar": "ZZV-cta-REAL-6",
+  "sanic_instantaneacedula": "ZZV-ced-REAL-6"
+ },
+ "sin_perfil_lee_directo": {
+  "sanic_cuentadebitar": null,
+  "sanic_instantaneacedula": null
+ },
+ "con_perfil_lee_directo": {
+  "sanic_cuentadebitar": "ZZV-cta-REAL-6",
+  "sanic_instantaneacedula": "ZZV-ced-REAL-6"
+ }
+}

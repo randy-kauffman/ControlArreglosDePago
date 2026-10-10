@@ -1,0 +1,2110 @@
+{
+ "pasos": [
+  {
+   "paso": "C0 control: PATCH de columna que NO es estado (detalle) en C2 activa",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820246\"",
+    "sanic_carp_tbl_conversacionid": "59e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": false,
+    "statecode": 0,
+    "sanic_detallesinrespuesta": "ZZV-c0",
+    "statuscode": 1
+   },
+   "t_ini": "2026-10-10T12:28:39Z",
+   "t_fin": "2026-10-10T12:28:41Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "a9d6dec3-49b3-4e38-85ac-00e838822b87",
+     "lineas": [
+      "ZZV|conversacion:upd-detalle:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-detalle:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_detallesinrespuesta='ZZV-c0'; sanic_carp_tbl_conversacionid=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:28:41.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-detalle:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-detalle:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1)]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:41.187Z"
+    }
+   ]
+  },
+  {
+   "paso": "C1 PATCH statecode=1,statuscode=2 (Finalizada) en C1  [Web API = Xrm.WebApi = formulario]",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820249\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": false,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": null,
+    "statuscode": 2
+   },
+   "t_ini": "2026-10-10T12:28:42Z",
+   "t_fin": "2026-10-10T12:28:44Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "de5ccd04-74fd-48c8-b347-d164ea0c24bd",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:28:43.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1)]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:43.937Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "de5ccd04-74fd-48c8-b347-d164ea0c24bd",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:44.06Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "de5ccd04-74fd-48c8-b347-d164ea0c24bd",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:44.107Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "de5ccd04-74fd-48c8-b347-d164ea0c24bd",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:28:43.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1)]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:44.123Z"
+    }
+   ]
+  },
+  {
+   "paso": "C2 V-2 admin: PATCH correonuevoenfinalizada=true sobre C1 INACTIVA",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820252\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": true,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": null,
+    "statuscode": 2
+   },
+   "t_ini": "2026-10-10T12:28:46Z",
+   "t_fin": "2026-10-10T12:28:46Z",
+   "trazas": []
+  },
+  {
+   "paso": "C3 V-2 SYSTEM: updbool correonuevoenfinalizada=false sobre C1 INACTIVA",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820255\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": false,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": null,
+    "statuscode": 2
+   },
+   "t_ini": "2026-10-10T12:28:48Z",
+   "t_fin": "2026-10-10T12:28:50Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "af678118-a325-4f78-9685-c3f6249887f1",
+     "lineas": [
+      "ZZVCMD|c3|INICIO op=updbool svc=sys depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|c3|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|c3|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:49.677Z"
+    }
+   ]
+  },
+  {
+   "paso": "C3b V-2 SYSTEM: updbool =true otra vez (marcar el indicador, RF-15)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820266\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": true,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": null,
+    "statuscode": 2
+   },
+   "t_ini": "2026-10-10T12:28:51Z",
+   "t_fin": "2026-10-10T12:28:52Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "970c3d47-579a-4b3e-a6b4-421f137ed8a2",
+     "lineas": [
+      "ZZVCMD|c3b|INICIO op=updbool svc=sys depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|c3b|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|c3b|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:52.677Z"
+    }
+   ]
+  },
+  {
+   "paso": "C3c V-2 SYSTEM: upd detalle de C1 INACTIVA",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820324\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": true,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": "ZZV-c3c",
+    "statuscode": 2
+   },
+   "t_ini": "2026-10-10T12:28:54Z",
+   "t_fin": "2026-10-10T12:28:55Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "e0aff9f6-eec9-4ca2-a138-fdd6660d31dd",
+     "lineas": [
+      "ZZVCMD|c3c|INICIO op=upd svc=sys depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|c3c|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|c3c|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:55.363Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "e0aff9f6-eec9-4ca2-a138-fdd6660d31dd",
+     "lineas": [
+      "ZZV|conversacion:upd-detalle:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-detalle:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_detallesinrespuesta='ZZV-c3c'; sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:28:55.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|conversacion:upd-detalle:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-detalle:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2)]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:55.457Z"
+    }
+   ]
+  },
+  {
+   "paso": "C3d V-2 contraste usuario del contexto (admin) via SDK: upd detalle de C1 INACTIVA",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820388\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": true,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": "ZZV-c3d",
+    "statuscode": 2
+   },
+   "t_ini": "2026-10-10T12:28:57Z",
+   "t_fin": "2026-10-10T12:28:58Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "b5d87873-bcd6-4627-b6d4-627a26fb74ca",
+     "lineas": [
+      "ZZVCMD|c3d|INICIO op=upd svc=usr depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|c3d|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|c3d|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:58.223Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "b5d87873-bcd6-4627-b6d4-627a26fb74ca",
+     "lineas": [
+      "ZZV|conversacion:upd-detalle:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-detalle:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_detallesinrespuesta='ZZV-c3d'; sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:28:58.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-detalle:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-detalle:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-c3c']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:28:58.3Z"
+    }
+   ]
+  },
+  {
+   "paso": "C4 PATCH reabrir C1: statecode=0,statuscode=1 en UN Update",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820456\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": true,
+    "statecode": 0,
+    "sanic_detallesinrespuesta": "ZZV-c3d",
+    "statuscode": 1
+   },
+   "t_ini": "2026-10-10T12:29:00Z",
+   "t_fin": "2026-10-10T12:29:01Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "c01c8060-b545-46c2-85e2-7a5f83c9165b",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:01.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:01.037Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "c01c8060-b545-46c2-85e2-7a5f83c9165b",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:01.083Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "c01c8060-b545-46c2-85e2-7a5f83c9165b",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:01.13Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "c01c8060-b545-46c2-85e2-7a5f83c9165b",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:01.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:01.147Z"
+    }
+   ]
+  },
+  {
+   "paso": "C5 SDK SetStateRequest (usuario del contexto = admin) C1 -> Finalizada",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820524\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": true,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": "ZZV-c3d",
+    "statuscode": 2
+   },
+   "t_ini": "2026-10-10T12:29:03Z",
+   "t_fin": "2026-10-10T12:29:04Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "3c598186-1f1e-4528-9c3e-ce2bf1ac0bfe",
+     "lineas": [
+      "ZZVCMD|c5|INICIO op=setstate svc=usr depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|c5|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|c5|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:04.147Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "3c598186-1f1e-4528-9c3e-ce2bf1ac0bfe",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(2)",
+      "ZZV|conversacion:setstatedyn:pre20|IN FromSandbox = True"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:04.207Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "3c598186-1f1e-4528-9c3e-ce2bf1ac0bfe",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=SetStateDynamicEntity/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; statecode=Option(1); statuscode=Option(2); modifiedon=2026-10-10T12:29:04.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:04.24Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "3c598186-1f1e-4528-9c3e-ce2bf1ac0bfe",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=SetStateDynamicEntity/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; statecode=Option(1); statuscode=Option(2); modifiedon=2026-10-10T12:29:04.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:04.27Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "3c598186-1f1e-4528-9c3e-ce2bf1ac0bfe",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(2)",
+      "ZZV|conversacion:setstatedyn:post40|IN FromSandbox = True"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:04.3Z"
+    }
+   ]
+  },
+  {
+   "paso": "C6 SDK SetStateRequest (SYSTEM) C1 -> Abierta",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820584\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": true,
+    "statecode": 0,
+    "sanic_detallesinrespuesta": "ZZV-c3d",
+    "statuscode": 1
+   },
+   "t_ini": "2026-10-10T12:29:06Z",
+   "t_fin": "2026-10-10T12:29:06Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "fea4f0fa-d7ce-4625-9314-1633c024f6b2",
+     "lineas": [
+      "ZZVCMD|c6|INICIO op=setstate svc=sys depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|c6|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|c6|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:06.973Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "fea4f0fa-d7ce-4625-9314-1633c024f6b2",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(1)",
+      "ZZV|conversacion:setstatedyn:pre20|IN FromSandbox = True"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:07.02Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "fea4f0fa-d7ce-4625-9314-1633c024f6b2",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=SetStateDynamicEntity/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; statecode=Option(0); statuscode=Option(1); modifiedon=2026-10-10T12:29:07.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:07.067Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "fea4f0fa-d7ce-4625-9314-1633c024f6b2",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=SetStateDynamicEntity/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; statecode=Option(0); statuscode=Option(1); modifiedon=2026-10-10T12:29:07.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:07.097Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "fea4f0fa-d7ce-4625-9314-1633c024f6b2",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(1)",
+      "ZZV|conversacion:setstatedyn:post40|IN FromSandbox = True"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:07.113Z"
+    }
+   ]
+  },
+  {
+   "paso": "C7 SDK Update statecode+statuscode (usuario del contexto) C1 -> Finalizada",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820717\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": true,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": "ZZV-c3d",
+    "statuscode": 2
+   },
+   "t_ini": "2026-10-10T12:29:09Z",
+   "t_fin": "2026-10-10T12:29:10Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "5cd67e15-2e96-498d-865c-06320279d9d1",
+     "lineas": [
+      "ZZVCMD|c7|INICIO op=updstate svc=usr depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|c7|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|c7|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:10.083Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "5cd67e15-2e96-498d-865c-06320279d9d1",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:10.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:10.177Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 3,
+     "mode": 0,
+     "correlationid": "5cd67e15-2e96-498d-865c-06320279d9d1",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=3|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:10.193Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 3,
+     "mode": 0,
+     "correlationid": "5cd67e15-2e96-498d-865c-06320279d9d1",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=3|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:10.27Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "5cd67e15-2e96-498d-865c-06320279d9d1",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:10.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:10.287Z"
+    }
+   ]
+  },
+  {
+   "paso": "C8 SDK Update statecode+statuscode (SYSTEM) C1 -> Abierta",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820794\"",
+    "sanic_carp_tbl_conversacionid": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": true,
+    "statecode": 0,
+    "sanic_detallesinrespuesta": "ZZV-c3d",
+    "statuscode": 1
+   },
+   "t_ini": "2026-10-10T12:29:12Z",
+   "t_fin": "2026-10-10T12:29:12Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "cfb427b5-8bec-4e0a-9c7d-b79f760f019f",
+     "lineas": [
+      "ZZVCMD|c8|INICIO op=updstate svc=sys depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|c8|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|c8|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:12.913Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "cfb427b5-8bec-4e0a-9c7d-b79f760f019f",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:12.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|conversacion:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:12.96Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 3,
+     "mode": 0,
+     "correlationid": "cfb427b5-8bec-4e0a-9c7d-b79f760f019f",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=3|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:12.99Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 3,
+     "mode": 0,
+     "correlationid": "cfb427b5-8bec-4e0a-9c7d-b79f760f019f",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=3|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:13.053Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "cfb427b5-8bec-4e0a-9c7d-b79f760f019f",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_carp_tbl_conversacionid=57e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:12.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|conversacion:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,57e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-c3d']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:13.067Z"
+    }
+   ]
+  },
+  {
+   "paso": "C9 PATCH solo statecode=1 en C2 (sin statuscode)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820858\"",
+    "sanic_carp_tbl_conversacionid": "59e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": false,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": "ZZV-c0",
+    "statuscode": 2
+   },
+   "t_ini": "2026-10-10T12:29:14Z",
+   "t_fin": "2026-10-10T12:29:15Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "96a54934-d8ad-46a6-9c59-a3808d57df9b",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); sanic_carp_tbl_conversacionid=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:15.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_detallesinrespuesta='ZZV-c0']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:15.663Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "96a54934-d8ad-46a6-9c59-a3808d57df9b",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(-1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:15.693Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "96a54934-d8ad-46a6-9c59-a3808d57df9b",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(-1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:15.723Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "96a54934-d8ad-46a6-9c59-a3808d57df9b",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); sanic_carp_tbl_conversacionid=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:15.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_detallesinrespuesta='ZZV-c0']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:15.74Z"
+    }
+   ]
+  },
+  {
+   "paso": "C10 PATCH solo statecode=0 en C2 (sin statuscode)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820910\"",
+    "sanic_carp_tbl_conversacionid": "59e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": false,
+    "statecode": 0,
+    "sanic_detallesinrespuesta": "ZZV-c0",
+    "statuscode": 1
+   },
+   "t_ini": "2026-10-10T12:29:17Z",
+   "t_fin": "2026-10-10T12:29:18Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "7cd593a3-f44b-4d55-88af-f3e4d5949b06",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); sanic_carp_tbl_conversacionid=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:18.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-c0']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:18.367Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "7cd593a3-f44b-4d55-88af-f3e4d5949b06",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(-1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:18.423Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "7cd593a3-f44b-4d55-88af-f3e4d5949b06",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(-1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:18.46Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "7cd593a3-f44b-4d55-88af-f3e4d5949b06",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); sanic_carp_tbl_conversacionid=59e3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:18.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,59e3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-c0']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:18.477Z"
+    }
+   ]
+  },
+  {
+   "paso": "C11 Web API: accion SetState bound (POST conversacion/Microsoft.Dynamics.CRM.SetState)",
+   "http": 404,
+   "error": "Resource not found for the segment 'Microsoft.Dynamics.CRM.SetState'",
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820910\"",
+    "sanic_carp_tbl_conversacionid": "59e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": false,
+    "statecode": 0,
+    "sanic_detallesinrespuesta": "ZZV-c0",
+    "statuscode": 1
+   },
+   "t_ini": "2026-10-10T12:29:20Z",
+   "t_fin": "2026-10-10T12:29:21Z",
+   "trazas": []
+  },
+  {
+   "paso": "C12 Web API: accion SetState no ligada con EntityMoniker",
+   "http": 404,
+   "error": "Resource not found for the segment 'SetState'.",
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12820910\"",
+    "sanic_carp_tbl_conversacionid": "59e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_correonuevoenfinalizada": false,
+    "statecode": 0,
+    "sanic_detallesinrespuesta": "ZZV-c0",
+    "statuscode": 1
+   },
+   "t_ini": "2026-10-10T12:29:22Z",
+   "t_fin": "2026-10-10T12:29:23Z",
+   "trazas": []
+  },
+  {
+   "paso": "A0 control: PATCH comentarios (NO estado) en A1 (Borrador)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821130\"",
+    "statuscode": 1,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 0,
+    "_sanic_conversacionid_value": null,
+    "sanic_comentarios": "ZZV-a0"
+   },
+   "t_ini": "2026-10-10T12:29:26Z",
+   "t_fin": "2026-10-10T12:29:26Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "b4382662-d027-4789-8232-4d192cdb6a2d",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-a0'; sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:26.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:26.93Z"
+    }
+   ]
+  },
+  {
+   "paso": "A1 PATCH solo statuscode=159460001 (Borrador -> Vigente, mismo statecode)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821184\"",
+    "statuscode": 159460001,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 0,
+    "_sanic_conversacionid_value": null,
+    "sanic_comentarios": "ZZV-a0"
+   },
+   "t_ini": "2026-10-10T12:29:28Z",
+   "t_fin": "2026-10-10T12:29:29Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "48d36a91-7431-4b3a-a8e6-5c95c8a75c3b",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:29.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_comentarios='ZZV-a0'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:29.557Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "48d36a91-7431-4b3a-a8e6-5c95c8a75c3b",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:29.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_comentarios='ZZV-a0'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:29.617Z"
+    }
+   ]
+  },
+  {
+   "paso": "A2 PATCH statecode=1,statuscode=2 (Terminado)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821258\"",
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "_sanic_conversacionid_value": null,
+    "sanic_comentarios": "ZZV-a0"
+   },
+   "t_ini": "2026-10-10T12:29:31Z",
+   "t_fin": "2026-10-10T12:29:32Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "7680404d-089e-489d-b261-a9fba2fbad9e",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:32.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_comentarios='ZZV-a0'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:32.353Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "7680404d-089e-489d-b261-a9fba2fbad9e",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:32.46Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "7680404d-089e-489d-b261-a9fba2fbad9e",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:32.477Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "7680404d-089e-489d-b261-a9fba2fbad9e",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:32.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_comentarios='ZZV-a0'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:32.507Z"
+    }
+   ]
+  },
+  {
+   "paso": "A3 V-2 admin: PATCH comentarios sobre A1 INACTIVA (Terminado)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821319\"",
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "_sanic_conversacionid_value": null,
+    "sanic_comentarios": "ZZV-a3-admin"
+   },
+   "t_ini": "2026-10-10T12:29:34Z",
+   "t_fin": "2026-10-10T12:29:34Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "6a34cd01-6675-49a3-b259-16d113468f5d",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-a3-admin'; sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:35.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-a0'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:35.103Z"
+    }
+   ]
+  },
+  {
+   "paso": "A4 V-2 SYSTEM: upd comentarios sobre A1 INACTIVA",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821386\"",
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "_sanic_conversacionid_value": null,
+    "sanic_comentarios": "ZZV-a4-sys"
+   },
+   "t_ini": "2026-10-10T12:29:37Z",
+   "t_fin": "2026-10-10T12:29:37Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "1196ce8c-534c-4eee-9d71-13ecbcce932f",
+     "lineas": [
+      "ZZVCMD|a4|INICIO op=upd svc=sys depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|a4|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|a4|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:37.823Z"
+    },
+    {
+     "createdon": "2026-10-10T12:29:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "1196ce8c-534c-4eee-9d71-13ecbcce932f",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-a4-sys'; sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:37.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-a3-admin'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:37.917Z"
+    }
+   ]
+  },
+  {
+   "paso": "A5 V-2 SYSTEM: updref sanic_conversacionid de A1 INACTIVA -> C2 (repuntar, unir)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821514\"",
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "_sanic_conversacionid_value": "59e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a4-sys"
+   },
+   "t_ini": "2026-10-10T12:29:39Z",
+   "t_fin": "2026-10-10T12:29:40Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "42ff5a73-db83-4ae6-9ca6-45f970ac0e73",
+     "lineas": [
+      "ZZVCMD|a5|INICIO op=updref svc=sys depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|a5|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|a5|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:40.527Z"
+    }
+   ]
+  },
+  {
+   "paso": "A5b V-2 admin Web API: repuntar lookup de A1 INACTIVA -> C1",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821548\"",
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a4-sys"
+   },
+   "t_ini": "2026-10-10T12:29:43Z",
+   "t_fin": "2026-10-10T12:29:43Z",
+   "trazas": []
+  },
+  {
+   "paso": "A5c V-2 contraste SDK con el usuario del contexto (admin): upd comentarios sobre A1 INACTIVA",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821586\"",
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a5c-usr"
+   },
+   "t_ini": "2026-10-10T12:29:45Z",
+   "t_fin": "2026-10-10T12:29:46Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "7cc0055c-6a6f-433c-b004-80efba3ea76a",
+     "lineas": [
+      "ZZVCMD|a5c|INICIO op=upd svc=usr depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|a5c|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|a5c|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:46.387Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "7cc0055c-6a6f-433c-b004-80efba3ea76a",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-a5c-usr'; sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:46.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-a4-sys'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:46.463Z"
+    }
+   ]
+  },
+  {
+   "paso": "A6 V-5 PATCH reabrir Terminado -> Vigente: statecode=0,statuscode=159460001 en UN Update",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821621\"",
+    "statuscode": 159460001,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 0,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a5c-usr"
+   },
+   "t_ini": "2026-10-10T12:29:48Z",
+   "t_fin": "2026-10-10T12:29:48Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "775752e6-0eef-4381-8096-e4eda6c65168",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:49.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:49.217Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "775752e6-0eef-4381-8096-e4eda6c65168",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:49.247Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "775752e6-0eef-4381-8096-e4eda6c65168",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:49.277Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "775752e6-0eef-4381-8096-e4eda6c65168",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:49.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:49.293Z"
+    }
+   ]
+  },
+  {
+   "paso": "A7 de nuevo a Terminado",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821660\"",
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a5c-usr"
+   },
+   "t_ini": "2026-10-10T12:29:50Z",
+   "t_fin": "2026-10-10T12:29:52Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "d8357c7f-bdfd-49ce-9758-33094a9b58ea",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:51.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:52.013Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "d8357c7f-bdfd-49ce-9758-33094a9b58ea",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:52.1Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "d8357c7f-bdfd-49ce-9758-33094a9b58ea",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:52.123Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "d8357c7f-bdfd-49ce-9758-33094a9b58ea",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:51.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:52.153Z"
+    }
+   ]
+  },
+  {
+   "paso": "A8 V-5 variante: PATCH SOLO statecode=0 sobre Terminado (que statuscode queda)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821696\"",
+    "statuscode": 1,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 0,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a5c-usr"
+   },
+   "t_ini": "2026-10-10T12:29:54Z",
+   "t_fin": "2026-10-10T12:29:55Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "ff55fa26-73aa-4901-a0a7-eb9637e1dfed",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:55.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:55.077Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "ff55fa26-73aa-4901-a0a7-eb9637e1dfed",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(-1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:55.09Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "ff55fa26-73aa-4901-a0a7-eb9637e1dfed",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(-1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:55.153Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "ff55fa26-73aa-4901-a0a7-eb9637e1dfed",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:55.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:55.17Z"
+    }
+   ]
+  },
+  {
+   "paso": "A9 PATCH statecode=0,statuscode=159460001 (dejarlo Vigente)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821732\"",
+    "statuscode": 159460001,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 0,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a5c-usr"
+   },
+   "t_ini": "2026-10-10T12:29:56Z",
+   "t_fin": "2026-10-10T12:29:57Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "6453534b-c5a9-4884-ae74-3bcb1bf6adec",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:58.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:58.247Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "6453534b-c5a9-4884-ae74-3bcb1bf6adec",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:58.277Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "6453534b-c5a9-4884-ae74-3bcb1bf6adec",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:58.307Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "6453534b-c5a9-4884-ae74-3bcb1bf6adec",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:29:58.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:29:58.34Z"
+    }
+   ]
+  },
+  {
+   "paso": "A10 V-5 variante SDK: SetStateRequest Terminado (usuario ctx)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821772\"",
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a5c-usr"
+   },
+   "t_ini": "2026-10-10T12:30:00Z",
+   "t_fin": "2026-10-10T12:30:01Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "1d2daee5-4dac-49fe-8136-a7aebcbfef7b",
+     "lineas": [
+      "ZZVCMD|a10|INICIO op=setstate svc=usr depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|a10|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|a10|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:01.683Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "1d2daee5-4dac-49fe-8136-a7aebcbfef7b",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(2)",
+      "ZZV|arreglo:setstatedyn:pre20|IN FromSandbox = True"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:01.73Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "1d2daee5-4dac-49fe-8136-a7aebcbfef7b",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=SetStateDynamicEntity/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; statecode=Option(1); statuscode=Option(2); modifiedon=2026-10-10T12:30:01.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:01.873Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "1d2daee5-4dac-49fe-8136-a7aebcbfef7b",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=SetStateDynamicEntity/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; statecode=Option(1); statuscode=Option(2); modifiedon=2026-10-10T12:30:01.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:01.887Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "1d2daee5-4dac-49fe-8136-a7aebcbfef7b",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(2)",
+      "ZZV|arreglo:setstatedyn:post40|IN FromSandbox = True"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:01.933Z"
+    }
+   ]
+  },
+  {
+   "paso": "A11 V-5 variante SDK: Update statecode+statuscode juntos (SYSTEM) Terminado -> Vigente",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821805\"",
+    "statuscode": 159460001,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 0,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a5c-usr"
+   },
+   "t_ini": "2026-10-10T12:30:05Z",
+   "t_fin": "2026-10-10T12:30:06Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "dc841ebb-d189-496f-853c-18e8b0a30042",
+     "lineas": [
+      "ZZVCMD|a11|INICIO op=updstate svc=sys depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|a11|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|a11|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:05.34Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "dc841ebb-d189-496f-853c-18e8b0a30042",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:30:05.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:05.42Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 3,
+     "mode": 0,
+     "correlationid": "dc841ebb-d189-496f-853c-18e8b0a30042",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=3|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:05.467Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 3,
+     "mode": 0,
+     "correlationid": "dc841ebb-d189-496f-853c-18e8b0a30042",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=3|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:05.527Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "dc841ebb-d189-496f-853c-18e8b0a30042",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:30:05.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:05.56Z"
+    }
+   ]
+  },
+  {
+   "paso": "A12 V-5 variante: SetStateRequest a Anulado y reapertura a Vigente por un unico PATCH",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821921\"",
+    "statuscode": 159460002,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a5c-usr"
+   },
+   "t_ini": "2026-10-10T12:30:08Z",
+   "t_fin": "2026-10-10T12:30:10Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_cliente",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "c09e722e-be86-4d05-ad20-5c8fed499aad",
+     "lineas": [
+      "ZZVCMD|a12|INICIO op=setstate svc=sys depth=1 user=ffc778df-d287-f111-8075-70a8a5af5a32 init=ffc778df-d287-f111-8075-70a8a5af5a32",
+      "ZZVCMD|a12|WHOAMI del servicio = fc1957c4-d896-4ad5-b165-2814799fdd23 fullname='SYSTEM'",
+      "ZZVCMD|a12|RESULTADO=OK"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:09.593Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "c09e722e-be86-4d05-ad20-5c8fed499aad",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(159460002)",
+      "ZZV|arreglo:setstatedyn:pre20|IN FromSandbox = True"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:09.653Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "c09e722e-be86-4d05-ad20-5c8fed499aad",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=SetStateDynamicEntity/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; statecode=Option(1); statuscode=Option(159460002); modifiedon=2026-10-10T12:30:09.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:09.687Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "c09e722e-be86-4d05-ad20-5c8fed499aad",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=SetStateDynamicEntity/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; statecode=Option(1); statuscode=Option(159460002); modifiedon=2026-10-10T12:30:09.0000000Z; modifiedby=Ref(systemuser,fc1957c4-d896-4ad5-b165-2814799fdd23); modifiedonbehalfby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32)]",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:09.717Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "c09e722e-be86-4d05-ad20-5c8fed499aad",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=fc1957c4-d896-4ad5-b165-2814799fdd23|init=fc1957c4-d896-4ad5-b165-2814799fdd23|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(159460002)",
+      "ZZV|arreglo:setstatedyn:post40|IN FromSandbox = True"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:09.733Z"
+    }
+   ]
+  },
+  {
+   "paso": "A13 PATCH Anulado -> Vigente",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode,sanic_comentarios,_sanic_conversacionid_value)/$entity",
+    "@odata.etag": "W/\"12821951\"",
+    "statuscode": 159460001,
+    "sanic_carp_tbl_arregloid": "5be3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 0,
+    "_sanic_conversacionid_value": "57e3fb1d-a6c4-f111-a05a-7ced8d3c456b",
+    "sanic_comentarios": "ZZV-a5c-usr"
+   },
+   "t_ini": "2026-10-10T12:30:11Z",
+   "t_fin": "2026-10-10T12:30:13Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:30:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "8e92eb0c-1d60-4239-bedc-913f1d5f48eb",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:30:13.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(159460002); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:13.03Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "8e92eb0c-1d60-4239-bedc-913f1d5f48eb",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:13.06Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "8e92eb0c-1d60-4239-bedc-913f1d5f48eb",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:13.093Z"
+    },
+    {
+     "createdon": "2026-10-10T12:30:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "8e92eb0c-1d60-4239-bedc-913f1d5f48eb",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=5be3fb1d-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:30:13.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,5be3fb1d-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(159460002); sanic_comentarios='ZZV-a5c-usr'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-e2']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:30:13.107Z"
+    }
+   ]
+  }
+ ],
+ "trazas_sin_paso": []
+}

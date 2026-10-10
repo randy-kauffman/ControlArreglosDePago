@@ -1,0 +1,359 @@
+{
+ "solucion_id": "ce4baec7-36c4-f111-a05a-7ced8d3c456b",
+ "componentes_solucion": [
+  {
+   "@odata.etag": "W/\"12711492\"",
+   "componenttype": 1,
+   "rootcomponentbehavior": 0,
+   "objectid": "5ae78132-3fc4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "583f4247-3fc4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12696340\"",
+   "componenttype": 1,
+   "rootcomponentbehavior": 0,
+   "objectid": "6023621c-3ac4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "13121229-3ac4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12725034\"",
+   "componenttype": 1,
+   "rootcomponentbehavior": 1,
+   "objectid": "60696d5d-4d78-4712-b4e0-6cbef3df4906",
+   "solutioncomponentid": "a714e59e-49c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12691550\"",
+   "componenttype": 1,
+   "rootcomponentbehavior": 0,
+   "objectid": "7d064901-3ac4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "2a98970d-3ac4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12657521\"",
+   "componenttype": 1,
+   "rootcomponentbehavior": 0,
+   "objectid": "81770123-38c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "2a3bb13d-38c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12688761\"",
+   "componenttype": 1,
+   "rootcomponentbehavior": 1,
+   "objectid": "95ae88b3-cc0c-45ac-a2db-655dceec238b",
+   "solutioncomponentid": "dbfecd37-39c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12659611\"",
+   "componenttype": 1,
+   "rootcomponentbehavior": 0,
+   "objectid": "97d2b14d-38c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "6e116a61-38c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12661878\"",
+   "componenttype": 1,
+   "rootcomponentbehavior": 0,
+   "objectid": "b3347768-38c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "fd52a273-38c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12665646\"",
+   "componenttype": 1,
+   "rootcomponentbehavior": 0,
+   "objectid": "c094877c-38c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "33bd5389-38c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12696431\"",
+   "componenttype": 2,
+   "rootcomponentbehavior": 0,
+   "objectid": "350c7e31-3ac4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "370c7e31-3ac4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12740775\"",
+   "componenttype": 2,
+   "rootcomponentbehavior": 0,
+   "objectid": "91129943-90b8-4170-bf27-883f303280b7",
+   "solutioncomponentid": "938497d0-4cc4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12654637\"",
+   "componenttype": 9,
+   "rootcomponentbehavior": 0,
+   "objectid": "0ea987ff-36c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "13a987ff-36c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12654955\"",
+   "componenttype": 9,
+   "rootcomponentbehavior": 0,
+   "objectid": "2d021b06-37c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "32021b06-37c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12655081\"",
+   "componenttype": 9,
+   "rootcomponentbehavior": 0,
+   "objectid": "34021b06-37c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "39021b06-37c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12654733\"",
+   "componenttype": 9,
+   "rootcomponentbehavior": 0,
+   "objectid": "38a987ff-36c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "3da987ff-36c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12654859\"",
+   "componenttype": 9,
+   "rootcomponentbehavior": 0,
+   "objectid": "3fa987ff-36c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "2b021b06-37c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12654257\"",
+   "componenttype": 9,
+   "rootcomponentbehavior": 0,
+   "objectid": "44940af8-36c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "49940af8-36c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12654384\"",
+   "componenttype": 9,
+   "rootcomponentbehavior": 0,
+   "objectid": "4b940af8-36c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "50940af8-36c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12654479\"",
+   "componenttype": 9,
+   "rootcomponentbehavior": 0,
+   "objectid": "52940af8-36c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "57940af8-36c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12654098\"",
+   "componenttype": 9,
+   "rootcomponentbehavior": 0,
+   "objectid": "69a91df0-36c4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "6ea91df0-36c4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12740776\"",
+   "componenttype": 10,
+   "rootcomponentbehavior": 0,
+   "objectid": "3ebce2c9-4cc4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "948497d0-4cc4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12741065\"",
+   "componenttype": 20,
+   "rootcomponentbehavior": 0,
+   "objectid": "a4ed3f99-4ec4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "aeed3f99-4ec4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12740961\"",
+   "componenttype": 20,
+   "rootcomponentbehavior": 0,
+   "objectid": "ca75358f-4ec4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "d475358f-4ec4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12740842\"",
+   "componenttype": 20,
+   "rootcomponentbehavior": 0,
+   "objectid": "eaba6888-4ec4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "f4ba6888-4ec4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12741162\"",
+   "componenttype": 20,
+   "rootcomponentbehavior": 0,
+   "objectid": "feed3f99-4ec4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "08ee3f99-4ec4-f111-a05a-7ced8d3c456b"
+  },
+  {
+   "@odata.etag": "W/\"12734712\"",
+   "componenttype": 70,
+   "rootcomponentbehavior": 0,
+   "objectid": "d06b299c-4bc4-f111-a05a-7ced8d3c456b",
+   "solutioncomponentid": "d16b299c-4bc4-f111-a05a-7ced8d3c456b"
+  }
+ ],
+ "org": {
+  "organizationid": "88c7cdef-44ef-f011-aa23-6045bd003e24",
+  "plugintracelogsetting": 2
+ },
+ "usuario": {
+  "id": "32122bbd-56c3-f111-a05a-000d3a35abca",
+  "isdisabled": true,
+  "accessmode": 4,
+  "bu": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "roles": [],
+  "teams": [
+   [
+    "Arreglos de Pago",
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+    0
+   ]
+  ]
+ },
+ "perfil": [
+  {
+   "@odata.etag": "W/\"12734731\"",
+   "name": "CSP - CARP - Datos sensibles",
+   "fieldsecurityprofileid": "d06b299c-4bc4-f111-a05a-7ced8d3c456b"
+  }
+ ],
+ "perfil_miembros": {
+  "usuarios": [],
+  "teams": []
+ },
+ "paquetes": [
+  {
+   "@odata.etag": "W/\"9928321\"",
+   "pluginpackageid": "65dc2b06-7bbb-f111-aaad-000d3a301e02",
+   "uniquename": "pocbac_PocBacPlugins",
+   "version": "1.0.0.0"
+  },
+  {
+   "@odata.etag": "W/\"4341688\"",
+   "pluginpackageid": "1ee3abeb-0011-f111-8342-000d3a316609",
+   "uniquename": "sanic_WorkflowEngine",
+   "version": "1.0.0"
+  },
+  {
+   "@odata.etag": "W/\"12142505\"",
+   "pluginpackageid": "d4392a17-7ab6-f111-aaad-000d3a350099",
+   "uniquename": "sanic_mppp_pkg_plugins",
+   "version": "1.0.0"
+  },
+  {
+   "@odata.etag": "W/\"5595528\"",
+   "pluginpackageid": "44ece57d-5680-f111-ab0e-70a8a59a720a",
+   "uniquename": "sanic_SigilSpike",
+   "version": "1.0.0"
+  },
+  {
+   "@odata.etag": "W/\"5892257\"",
+   "pluginpackageid": "0a249ee5-ce80-f111-ab0e-70a8a59a720a",
+   "uniquename": "sanic_Sigil",
+   "version": "1.0.0"
+  },
+  {
+   "@odata.etag": "W/\"10302738\"",
+   "pluginpackageid": "b85a3656-5447-f111-bec6-7ced8d6e6b87",
+   "uniquename": "sanic_Smelter.Plugins",
+   "version": "1.0.0"
+  },
+  {
+   "@odata.etag": "W/\"8431638\"",
+   "pluginpackageid": "08e5a4a1-ba9a-f111-b8dd-7ced8d6f268c",
+   "uniquename": "sanic_Heartbeat.Plugins",
+   "version": "1.0.0.0"
+  },
+  {
+   "@odata.etag": "W/\"1975111\"",
+   "pluginpackageid": "61dbfe41-3773-4b7f-8146-913fe601954b",
+   "uniquename": "mspp_Microsoft.PowerPages.AzureBlob.Plugins",
+   "version": "1.1.2502.1120"
+  }
+ ],
+ "ensamblados": [
+  {
+   "@odata.etag": "W/\"9928322\"",
+   "pluginassemblyid": "67dc2b06-7bbb-f111-aaad-000d3a301e02",
+   "ismanaged": false,
+   "name": "PocBac.Plugins"
+  },
+  {
+   "@odata.etag": "W/\"3902183\"",
+   "pluginassemblyid": "22e3abeb-0011-f111-8342-000d3a316609",
+   "ismanaged": false,
+   "name": "WorkflowEngine"
+  },
+  {
+   "@odata.etag": "W/\"12142507\"",
+   "pluginassemblyid": "496af81e-7ab6-f111-aaad-000d3a350099",
+   "ismanaged": false,
+   "name": "Sanic.Mppp.Plugins"
+  },
+  {
+   "@odata.etag": "W/\"8842833\"",
+   "pluginassemblyid": "58f5da7c-b190-f111-b8da-002248097b5c",
+   "ismanaged": false,
+   "name": "CashHub.Plugins"
+  },
+  {
+   "@odata.etag": "W/\"5595530\"",
+   "pluginassemblyid": "46ece57d-5680-f111-ab0e-70a8a59a720a",
+   "ismanaged": false,
+   "name": "SigilSpike.Plugin"
+  },
+  {
+   "@odata.etag": "W/\"5892259\"",
+   "pluginassemblyid": "0c249ee5-ce80-f111-ab0e-70a8a59a720a",
+   "ismanaged": false,
+   "name": "Sigil.Plugins"
+  },
+  {
+   "@odata.etag": "W/\"12805084\"",
+   "pluginassemblyid": "ec98c49b-17c0-f111-a05a-70a8a5b09c9f",
+   "ismanaged": false,
+   "name": "Sanic.CobranzaMovil.Plugins"
+  },
+  {
+   "@odata.etag": "W/\"10302740\"",
+   "pluginassemblyid": "9188915e-5447-f111-bec6-7ced8d6e6b87",
+   "ismanaged": false,
+   "name": "Smelter.Plugins"
+  },
+  {
+   "@odata.etag": "W/\"8431640\"",
+   "pluginassemblyid": "07769ca8-ba9a-f111-b8dd-7ced8d6f268c",
+   "ismanaged": false,
+   "name": "Heartbeat.Plugins"
+  }
+ ],
+ "tablas": {
+  "conversacion": {
+   "set": "sanic_carp_tbl_conversacions",
+   "pk": "sanic_carp_tbl_conversacionid",
+   "otc": 11201
+  },
+  "arreglo": {
+   "set": "sanic_carp_tbl_arreglos",
+   "pk": "sanic_carp_tbl_arregloid",
+   "otc": 11199
+  },
+  "versionplantilla": {
+   "set": "sanic_carp_tbl_versionplantillas",
+   "pk": "sanic_carp_tbl_versionplantillaid",
+   "otc": 11195
+  },
+  "cliente": {
+   "set": "sanic_carp_tbl_clientes",
+   "pk": "sanic_carp_tbl_clienteid",
+   "otc": 11194
+  },
+  "cuota": {
+   "set": "sanic_carp_tbl_cuotas",
+   "pk": "sanic_carp_tbl_cuotaid",
+   "otc": 11200
+  },
+  "generacionformato": {
+   "set": "sanic_carp_tbl_generacionformatos",
+   "pk": "sanic_carp_tbl_generacionformatoid",
+   "otc": 11197
+  },
+  "mapeocelda": {
+   "set": "sanic_carp_tbl_mapeoceldas",
+   "pk": "sanic_carp_tbl_mapeoceldaid",
+   "otc": 11196
+  }
+ }
+}

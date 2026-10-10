@@ -1,0 +1,59 @@
+{
+ "trazas_Zzv_restantes": 0,
+ "solucion_componentes_antes": 26,
+ "solucion_componentes_ahora": 26,
+ "solucion_componentes_nuevos": [],
+ "solucion_componentes_que_faltan": [],
+ "plugintracelogsetting_antes": 2,
+ "plugintracelogsetting_ahora": 2,
+ "usuario_antes": {
+  "id": "32122bbd-56c3-f111-a05a-000d3a35abca",
+  "isdisabled": true,
+  "accessmode": 4,
+  "bu": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "roles": [],
+  "teams": [
+   [
+    "Arreglos de Pago",
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+    0
+   ]
+  ]
+ },
+ "usuario_ahora": {
+  "id": "32122bbd-56c3-f111-a05a-000d3a35abca",
+  "isdisabled": true,
+  "accessmode": 4,
+  "bu": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "roles": [],
+  "teams": [
+   [
+    "Arreglos de Pago",
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+    0
+   ]
+  ]
+ },
+ "usuario_igual": true,
+ "perfil_miembros_ahora": {
+  "usuarios": 0,
+  "teams": 0
+ },
+ "perfil_miembros_antes": {
+  "usuarios": 0,
+  "teams": 0
+ },
+ "jefatura_miembros_ahora": [],
+ "paquetes_igual_que_antes": true,
+ "ensamblados_igual_que_antes": true,
+ "ensamblados_Zzv": [],
+ "steps_ZZV": 0,
+ "customapis_ZZV": 0,
+ "filas_conversacion": 0,
+ "filas_arreglo": 0,
+ "filas_versionplantilla": 0,
+ "filas_cliente": 0,
+ "filas_cuota": 0,
+ "filas_generacionformato": 0,
+ "filas_mapeocelda": 0
+}

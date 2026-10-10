@@ -1,0 +1,41 @@
+{
+ "team_jefatura_roles": [
+  "SR - CARP - Jefe"
+ ],
+ "jefatura_miembros_antes": [],
+ "admin_RPA": [
+  200,
+  "ReadAccess, WriteAccess, AppendAccess, AppendToAccess, CreateAccess, DeleteAccess, ShareAccess, AssignAccess"
+ ],
+ "admin_PATCH": [
+  204,
+  ""
+ ],
+ "oficial_RPA_por_admin": [
+  200,
+  "ReadAccess, AppendToAccess"
+ ],
+ "oficial_RPA_autollamada": [
+  200,
+  "ReadAccess, AppendToAccess"
+ ],
+ "oficial_PATCH": [
+  403,
+  "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8671, businessUnitId=2dbc18e7-f9c3-f111-a05a-7ced8d3c456b, ApplicationId/FullName: a988a60"
+ ],
+ "oficial_lectura": 200,
+ "jefe_RPA_por_admin": [
+  200,
+  "ReadAccess, WriteAccess, AppendAccess, AppendToAccess, CreateAccess"
+ ],
+ "jefe_RPA_autollamada": [
+  200,
+  "ReadAccess, WriteAccess, AppendAccess, AppendToAccess, CreateAccess"
+ ],
+ "jefe_PATCH": [
+  204,
+  ""
+ ],
+ "jefe_lectura": 200,
+ "jefatura_miembros_despues": []
+}

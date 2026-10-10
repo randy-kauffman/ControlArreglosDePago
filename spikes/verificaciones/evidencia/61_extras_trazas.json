@@ -1,0 +1,66 @@
+{
+ "pasos": [
+  {
+   "paso": "E1a subida por bloques con step filtrado por sanic_archivo",
+   "http": 200,
+   "error": null,
+   "relectura": null,
+   "t_ini": "2026-10-10T12:40:13Z",
+   "t_fin": "2026-10-10T12:40:14Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:40:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_versionplantilla",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "6bd5a420-cccc-4fe8-99b1-a87b2200dade",
+     "lineas": [
+      "ZZV|version:upd-archivo:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_versionplantilla|primaryId=2130ecb6-a7c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=CommitFileBlocksUpload/stage30",
+      "ZZV|version:upd-archivo:pre20|IN Target = Entity(sanic_carp_tbl_versionplantilla,2130ecb6-a7c4-f111-a05a-7ced8d3c456b)[sanic_carp_tbl_versionplantillaid=2130ecb6-a7c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:40:15.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null; sanic_archivo=176d8bbd-a7c4-f111-a05a-7ced8d3c456b]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:40:15.427Z"
+    }
+   ]
+  },
+  {
+   "paso": "E1b control: PATCH sanic_huella con el mismo step filtrado",
+   "http": 204,
+   "error": null,
+   "relectura": null,
+   "t_ini": "2026-10-10T12:40:17Z",
+   "t_fin": "2026-10-10T12:40:18Z",
+   "trazas": []
+  },
+  {
+   "paso": "E2 step suplantando al admin; llamador NO admin SIN perfil: PATCH comentarios",
+   "http": 204,
+   "error": null,
+   "relectura": null,
+   "t_ini": "2026-10-10T12:40:24Z",
+   "t_fin": "2026-10-10T12:40:26Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:40:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "11182e57-d61d-46c3-bf4e-8ad6e23beb50",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=7aca0fca-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-e2-suplantado'; sanic_carp_tbl_arregloid=7aca0fca-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:40:25.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_comentarios='ZZV-v6-conperfil-2'; sanic_cuentadebitar='ZZV-cta-NUEVA-6'; sanic_instantaneacedula='ZZV-ced-REAL-6'; sanic_numeroproducto='ZZV-v6b']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:40:26.147Z"
+    }
+   ]
+  }
+ ],
+ "trazas_sin_paso": []
+}

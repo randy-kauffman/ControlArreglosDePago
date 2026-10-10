@@ -1,0 +1,483 @@
+{
+ "pasos": [
+  {
+   "paso": "(a) ADMIN: PATCH comentarios",
+   "http": 204,
+   "error": null,
+   "relectura": null,
+   "t_ini": "2026-10-10T12:34:01Z",
+   "t_fin": "2026-10-10T12:34:02Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:34:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "e5fc9fb6-8453-43b4-bee7-e90bd89760d9",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=7aca0fca-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-v6-admin'; sanic_carp_tbl_arregloid=7aca0fca-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:02.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_cuentadebitar='ZZV-cta-REAL-6'; sanic_instantaneacedula='ZZV-ced-REAL-6'; sanic_numeroproducto='ZZV-v6b']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:02.373Z"
+    }
+   ]
+  },
+  {
+   "paso": "(c) NO ADMIN SIN perfil: PATCH comentarios",
+   "http": 204,
+   "error": null,
+   "relectura": null,
+   "t_ini": "2026-10-10T12:34:03Z",
+   "t_fin": "2026-10-10T12:34:04Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:34:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "17db4128-b2b9-4412-b402-518e291d52fa",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=7aca0fca-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-v6-sinperfil'; sanic_carp_tbl_arregloid=7aca0fca-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:05.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_comentarios='ZZV-v6-admin'; sanic_numeroproducto='ZZV-v6b']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:05.467Z"
+    }
+   ]
+  },
+  {
+   "paso": "(b) NO ADMIN CON perfil: PATCH comentarios",
+   "http": 204,
+   "error": null,
+   "relectura": null,
+   "t_ini": "2026-10-10T12:34:25Z",
+   "t_fin": "2026-10-10T12:34:25Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "1f5dada3-5738-46f4-97ef-cbeb5236aae2",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=7aca0fca-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-v6-conperfil'; sanic_carp_tbl_arregloid=7aca0fca-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:26.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_comentarios='ZZV-v6-sinperfil'; sanic_cuentadebitar='ZZV-cta-REAL-6'; sanic_instantaneacedula='ZZV-ced-REAL-6'; sanic_numeroproducto='ZZV-v6b']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:26.3Z"
+    }
+   ]
+  },
+  {
+   "paso": "(b2) NO ADMIN CON perfil: PATCH cuentadebitar y comentarios (el Target trae la protegida)",
+   "http": 204,
+   "error": null,
+   "relectura": null,
+   "t_ini": "2026-10-10T12:34:28Z",
+   "t_fin": "2026-10-10T12:34:28Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "b964e3fa-1fb5-49e3-b0e3-e8cf1d7b5e02",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=7aca0fca-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-v6-conperfil-2'; sanic_cuentadebitar='ZZV-cta-NUEVA-6'; sanic_carp_tbl_arregloid=7aca0fca-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:28.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,7aca0fca-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_comentarios='ZZV-v6-conperfil'; sanic_cuentadebitar='ZZV-cta-REAL-6'; sanic_instantaneacedula='ZZV-ced-REAL-6'; sanic_numeroproducto='ZZV-v6b']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:28.737Z"
+    }
+   ]
+  },
+  {
+   "paso": "(V-2 extra) NO ADMIN (Oficial) PATCH detalle sobre Conversacion INACTIVA",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,sanic_detallesinrespuesta)/$entity",
+    "@odata.etag": "W/\"12822318\"",
+    "sanic_carp_tbl_conversacionid": "ac6b34f0-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "sanic_detallesinrespuesta": "ZZV-v2-oficial"
+   },
+   "t_ini": "2026-10-10T12:34:32Z",
+   "t_fin": "2026-10-10T12:34:33Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "ff763937-62a2-4225-a0ce-2e980b0c772e",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_conversacionid=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:32.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1)]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:32.033Z"
+    },
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "ff763937-62a2-4225-a0ce-2e980b0c772e",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:32.067Z"
+    },
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "ff763937-62a2-4225-a0ce-2e980b0c772e",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:32.097Z"
+    },
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "ff763937-62a2-4225-a0ce-2e980b0c772e",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_conversacionid=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:32.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1)]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:32.113Z"
+    },
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "be9a2730-7758-4d33-823c-0411ddf4632f",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_arregloid=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:32.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-v6i']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:32.457Z"
+    },
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "be9a2730-7758-4d33-823c-0411ddf4632f",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:32.487Z"
+    },
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "be9a2730-7758-4d33-823c-0411ddf4632f",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(1)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(2)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:32.533Z"
+    },
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "be9a2730-7758-4d33-823c-0411ddf4632f",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_carp_tbl_arregloid=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:32.0000000Z; modifiedby=Ref(systemuser,ffc778df-d287-f111-8075-70a8a5af5a32); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-v6i']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:32.567Z"
+    },
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "5cf2497d-d2c9-4929-8da8-2abf134ecedd",
+     "lineas": [
+      "ZZV|conversacion:upd-detalle:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-detalle:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[sanic_detallesinrespuesta='ZZV-v2-oficial'; sanic_carp_tbl_conversacionid=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:33.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-detalle:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-detalle:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2)]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:33.177Z"
+    }
+   ]
+  },
+  {
+   "paso": "(V-2 extra) NO ADMIN (Oficial) PATCH comentarios sobre Arreglo INACTIVO",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,sanic_comentarios)/$entity",
+    "@odata.etag": "W/\"12822320\"",
+    "sanic_carp_tbl_arregloid": "ae6b34f0-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 1,
+    "sanic_comentarios": "ZZV-v2-oficial"
+   },
+   "t_ini": "2026-10-10T12:34:35Z",
+   "t_fin": "2026-10-10T12:34:35Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:34:38Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "85272133-0916-4264-be51-d94f6406d3e4",
+     "lineas": [
+      "ZZV|arreglo:upd-comentarios:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-comentarios:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[sanic_comentarios='ZZV-v2-oficial'; sanic_carp_tbl_arregloid=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:35.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-comentarios:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-comentarios:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-v6i']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:35.863Z"
+    }
+   ]
+  },
+  {
+   "paso": "(V-2 extra) NO ADMIN (Oficial) PATCH estado Arreglo INACTIVO -> Vigente (reapertura)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(statecode,statuscode)/$entity",
+    "@odata.etag": "W/\"12822361\"",
+    "statuscode": 159460001,
+    "sanic_carp_tbl_arregloid": "ae6b34f0-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 0
+   },
+   "t_ini": "2026-10-10T12:34:37Z",
+   "t_fin": "2026-10-10T12:34:38Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:35:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "cc1f3be4-1d5d-4431-84e2-2977610a3997",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:38.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-v2-oficial'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-v6i']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:38.473Z"
+    },
+    {
+     "createdon": "2026-10-10T12:35:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "cc1f3be4-1d5d-4431-84e2-2977610a3997",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:pre20|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:38.503Z"
+    },
+    {
+     "createdon": "2026-10-10T12:35:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "cc1f3be4-1d5d-4431-84e2-2977610a3997",
+     "lineas": [
+      "ZZV|arreglo:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_arreglo|primaryId=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Upsert/stage30",
+      "ZZV|arreglo:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|arreglo:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|arreglo:setstatedyn:post40|IN Status = Option(159460001)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:38.537Z"
+    },
+    {
+     "createdon": "2026-10-10T12:35:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "cc1f3be4-1d5d-4431-84e2-2977610a3997",
+     "lineas": [
+      "ZZV|arreglo:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_arreglo|primaryId=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|arreglo:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(159460001); sanic_carp_tbl_arregloid=ae6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:38.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|arreglo:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|arreglo:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_arreglo,ae6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_comentarios='ZZV-v2-oficial'; sanic_cuentadebitar='ZZV-cta-0001'; sanic_instantaneacedula='ZZV-ced-0001'; sanic_numeroproducto='ZZV-v6i']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:38.55Z"
+    }
+   ]
+  },
+  {
+   "paso": "(V-1 extra) NO ADMIN (Oficial) PATCH estado Conversacion INACTIVA -> Abierta (formulario / Xrm.WebApi de un Oficial)",
+   "http": 204,
+   "error": null,
+   "relectura": {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_conversacions(statecode,statuscode)/$entity",
+    "@odata.etag": "W/\"12822364\"",
+    "sanic_carp_tbl_conversacionid": "ac6b34f0-a6c4-f111-a05a-7ced8d3c456b",
+    "statecode": 0,
+    "statuscode": 1
+   },
+   "t_ini": "2026-10-10T12:34:40Z",
+   "t_fin": "2026-10-10T12:34:40Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-10T12:35:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "d321dbb1-1044-4fe4-8fba-cc55e75e20b0",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:pre20|msg=Update|stage=20|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:pre20|IN Target = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_carp_tbl_conversacionid=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:41.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:pre20|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:pre20|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-v2-oficial']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:41.16Z"
+    },
+    {
+     "createdon": "2026-10-10T12:35:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "d321dbb1-1044-4fe4-8fba-cc55e75e20b0",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:pre20|msg=SetStateDynamicEntity|stage=20|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:pre20|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:pre20|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:pre20|IN Status = Option(1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:41.19Z"
+    },
+    {
+     "createdon": "2026-10-10T12:35:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "SetStateDynamicEntity",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 2,
+     "mode": 0,
+     "correlationid": "d321dbb1-1044-4fe4-8fba-cc55e75e20b0",
+     "lineas": [
+      "ZZV|conversacion:setstatedyn:post40|msg=SetStateDynamicEntity|stage=40|mode=0|depth=2|primary=sanic_carp_tbl_conversacion|primaryId=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Upsert/stage30",
+      "ZZV|conversacion:setstatedyn:post40|IN EntityMoniker = EntityReference(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)",
+      "ZZV|conversacion:setstatedyn:post40|IN State = Option(0)",
+      "ZZV|conversacion:setstatedyn:post40|IN Status = Option(1)"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:41.223Z"
+    },
+    {
+     "createdon": "2026-10-10T12:35:08Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Update",
+     "primaryentity": "sanic_carp_tbl_conversacion",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "d321dbb1-1044-4fe4-8fba-cc55e75e20b0",
+     "lineas": [
+      "ZZV|conversacion:upd-estado:post40|msg=Update|stage=40|mode=0|depth=1|primary=sanic_carp_tbl_conversacion|primaryId=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|parentMsg=Update/stage30",
+      "ZZV|conversacion:upd-estado:post40|IN Target = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(0); statuscode=Option(1); sanic_carp_tbl_conversacionid=ac6b34f0-a6c4-f111-a05a-7ced8d3c456b; modifiedon=2026-10-10T12:34:41.0000000Z; modifiedby=Ref(systemuser,32122bbd-56c3-f111-a05a-000d3a35abca); modifiedonbehalfby=null]",
+      "ZZV|conversacion:upd-estado:post40|IN ConcurrencyBehavior = <ConcurrencyBehavior>",
+      "ZZV|conversacion:upd-estado:post40|PRE[PreImage] = Entity(sanic_carp_tbl_conversacion,ac6b34f0-a6c4-f111-a05a-7ced8d3c456b)[statecode=Option(1); statuscode=Option(2); sanic_detallesinrespuesta='ZZV-v2-oficial']"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-10T12:34:41.253Z"
+    }
+   ]
+  }
+ ],
+ "trazas_sin_paso": []
+}
