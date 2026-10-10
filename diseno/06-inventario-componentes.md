@@ -1,6 +1,6 @@
 # 06. Inventario de componentes
 
-Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **borrador** (2026-10-09). Completo respecto de lo que las fuentes dicen. Lo que la definición describe sin diseño detallado queda marcado `diseño detallado pendiente` y no se resuelve acá.
+Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **borrador** (2026-10-09; ajustado el 2026-10-10 por las decisiones OA-1 a OA-12 de `03-contratos-custom-api.md`). Completo respecto de lo que las fuentes dicen. Lo que la definición describe sin diseño detallado queda marcado `diseño detallado pendiente` y no se resuelve acá.
 
 Todo lo que hay que crear, en el orden en que se puede crear. Cada componente se construye a partir de un **playbook**: una especificación en Markdown, cerrada y sin ambigüedad, que ejecuta un agente constructor y audita un agente revisor.
 
@@ -28,15 +28,16 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 7 | Código de plugins (C#, TDD estricto) | 22 | 0 | 9 | 13 |
 | 8 | Registro de paquete, Custom API y steps | 7 | 0 | 1 | 6 |
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
-| 10 | Configuración entre entornos (EV y connection references) | 8 | 0 | 4 | 4 |
+| 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 0 | 3 | 4 |
 | 11 | Flujos | 3 | 0 | 0 | 3 |
 | 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 0 | 0 | 25 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
-| **Total** | | **128** | **10** | **59** | **59** |
+| **Total** | | **127** | **10** | **58** | **59** |
 
 Notas del resumen:
 
 - Las filas 13.1 a 13.3 están hechas **solo en Dev** (2026-10-09, `01-convenciones.md` §7). Faltan Test y Prod, por eso cuentan como `pendiente`.
+- La fila 10.7 quedó **retirada** el 2026-10-10 (OA-12) y no cuenta como fila activa; no se renumeraron las demás. Antes del cambio el total era 128 filas (59 pendientes) y el grupo 10 tenía 8 (4 pendientes).
 - La fila 11.3 es condicional (el respaldo de D-11 no se activa) y cuenta como fila. Si no se activa, no se construye.
 - Los pasos de familias de steps (8.7) y los gestos (12.24) son contenido de una sola fila: no suman filas.
 - Cifras del diccionario que respaldan los grupos 2 a 6: 9 choices con 50 opciones; 7 tablas propias con 73 columnas y 18 lookups; 2 columnas sobre `email` (una es lookup); 19 relaciones que se crean y 1 nativa; 3 claves; 1 perfil con 3 columnas; 8 motivos de estado (diccionario §13, última línea).
@@ -152,9 +153,9 @@ Estas filas **no tienen playbook**. Cada pieza se especifica con pruebas de acep
 | # | Pieza (responsabilidad) | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
 | 7.1 | Solución .NET, proyecto de pruebas y enums generados de los choices (`Dominio/Choices.g.cs`, vía `herramientas/codigo/generar_enums.py`) | — (convenciones §5) | 2.1 a 2.9 | Convenciones §5 y §6 | pendiente |
-| 7.2 | Dominio: estados y transiciones permitidas de Conversación, Arreglo y Versión de plantilla; qué columnas son solo-sistema y quién actúa (sistema, cuenta de servicio, usuario) | — | 7.1 | D-10, D-26, D-30, diccionario §3.2 | pendiente |
+| 7.2 | Dominio: estados y transiciones permitidas de Conversación, Arreglo y Versión de plantilla; qué columnas son solo-sistema y quién actúa (sistema, usuario; ninguna cuenta de servicio se reconoce, OA-12) | — | 7.1 | D-10, D-26, D-30, diccionario §3.2 | pendiente |
 | 7.3 | Dominio: normalización (número de producto, cédula, correo, Message-ID) y huella SHA-256 | — | 7.1 | P-06, D-03, ítem 1 | pendiente |
-| 7.4 | Dominio: montos del arreglo (saldo remanente, total a pagar, última cuota) y generador del calendario de hasta 60 cuotas. La regla de fechas de vencimiento sigue abierta (R-03) | — | 7.1 | RF-06, RF-08, DD-12, R-04, ítems 7 y 8 | pendiente |
+| 7.4 | Dominio: montos del arreglo (saldo remanente, total a pagar, última cuota) y generador del calendario de hasta 60 cuotas. La regla de fechas de vencimiento está decidida (R-03, OA-5: mismo día de cada mes desde la fecha de inicio; el plugin sobrescribe la fecha de fin) | — | 7.1 | RF-06, RF-08, DD-12, R-04, ítems 7 y 8 | pendiente |
 | 7.5 | Dominio: consecutivo por crédito (`max+1`) y comparación con el número provisional impreso | — | 7.1 | RF-07, D-09, ítem 9 | pendiente |
 | 7.6 | Dominio: tiempos de la conversación y de cada respuesta (sin respuesta desde, primera respuesta, total, cantidad), en minutos | — | 7.1 | RF-03, RF-04, DD-05, ítems 1, 3 y 6 | pendiente |
 | 7.7 | Dominio: validación de publicación de plantilla y mapeo (celdas A1 bien formadas, sin dos campos en la misma celda, bloque de cuotas completo, capacidad coherente) y huella del archivo | — | 7.1, 7.3 | RF-09, D-15, ítem 15 | pendiente |
@@ -206,12 +207,12 @@ Familias de steps que la definición implica (contenido de 8.7; la lista cerrada
 
 ## 9. Datos semilla y de configuración
 
-La BU, los teams, la queue, el mailbox y las versiones de plantilla con su mapeo son **datos, no componentes de solución**: no viajan con ella (definición §6, Entornos y despliegue). Sin una versión Vigente el alta de un arreglo se rechaza (ítem 7). La forma de promover la plantilla de Test a Prod (herramienta de migración de configuración o recarga controlada por el jefe) "se decide en etapa 3" y sigue abierta.
+La BU, los teams, la queue, el mailbox y las versiones de plantilla con su mapeo son **datos, no componentes de solución**: no viajan con ella (definición §6, Entornos y despliegue). Sin una versión Vigente el alta de un arreglo se rechaza (ítem 7). La forma de promover la plantilla de Test a Prod quedó decidida el 2026-10-10 (OA-4): **recarga controlada** con un script versionado (9.1 y 9.2) que crea la versión en Borrador en Prod, sube el archivo y carga el mapeo; el jefe publica con el gesto normal y se compara la huella con la de Test. La herramienta de migración de configuración queda descartada (escribiría la versión ya Vigente y saltaría la validación de publicar).
 
 | # | Qué | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 9.1 | Versión de plantilla v07 (fila y archivo `.xlsx`), publicada como Vigente por el flujo normal de publicación. v07 aprobada por Héctor Romero el 2026-10-09 | `playbooks/datos/versionplantilla.md` | 3.5, 8.7 (publicación), 9.2 | RF-09, C-01, D-15 | pendiente |
-| 9.2 | Mapeo de celda de v07 (el diccionario §9 cuenta unas 27 filas) | `playbooks/datos/mapeocelda.md` | 3.6, 2.8, 2.9, 4.8 | RF-09, D-14, D-16 | pendiente |
+| 9.1 | Versión de plantilla v07 (fila y archivo `.xlsx`), publicada como Vigente por el flujo normal de publicación. v07 aprobada por Héctor Romero el 2026-10-09. En Prod el script crea la versión en Borrador y sube el archivo; el jefe publica y se compara la huella con la de Test (OA-4, 2026-10-10) | `playbooks/datos/versionplantilla.md` | 3.5, 8.7 (publicación), 9.2 | RF-09, C-01, D-15 | pendiente |
+| 9.2 | Mapeo de celda de v07 (el diccionario §9 cuenta unas 27 filas). El mismo script lo carga en Prod antes de que el jefe publique (OA-4, 2026-10-10) | `playbooks/datos/mapeocelda.md` | 3.6, 2.8, 2.9, 4.8 | RF-09, D-14, D-16 | pendiente |
 | 9.3 | Datos de prueba para Dev y Test (nunca datos reales de Prod). Contenido no definido | `playbooks/datos/humo_*.md` | 3.1 a 3.7, 4.x | Definición §6 Seguridad (Datos en entornos no productivos) | diseño detallado pendiente |
 
 ## 10. Configuración entre entornos
@@ -224,7 +225,7 @@ Las **definiciones** viajan en la solución; los **valores** y las **conexiones*
 | 10.2 | Environment variable `sanic_carp_ev_nombreteamjefatura` *(prov.)*: nombre del team Jefatura | `playbooks/variable-entorno/sanic_carp_ev_nombreteamjefatura.md` | 1.1 | D-04, D-23 | diseño detallado pendiente |
 | 10.3 | Environment variable `sanic_carp_ev_destinatariosalertas` *(prov.)*: destinatarios de alertas | `playbooks/variable-entorno/sanic_carp_ev_destinatariosalertas.md` | 1.1 | §6 Entornos, Operación | diseño detallado pendiente |
 | 10.4 | Environment variable `sanic_carp_ev_umbralesmonitoreo` *(prov.)*: umbrales de monitoreo (puede ser más de una variable) | `playbooks/variable-entorno/sanic_carp_ev_umbralesmonitoreo.md` | 1.1 | §6 Entornos, Operación | diseño detallado pendiente |
-| 10.7 | Environment variable `sanic_carp_ev_upncuentaservicio` *(prov.)*: UPN de la cuenta de servicio licenciada (RNF-06), por el que los plugins reconocen las escrituras del sistema (`domainname`) | `playbooks/variable-entorno/sanic_carp_ev_upncuentaservicio.md` | 1.1 | Decisión del usuario del 2026-10-09 (inconsistencia 4), D-23 | pendiente |
+| 10.7 | ~~Environment variable `sanic_carp_ev_upncuentaservicio` *(prov.)*: UPN de la cuenta de servicio licenciada (RNF-06), por el que los plugins reconocen las escrituras del sistema (`domainname`)~~ | ~~`playbooks/variable-entorno/sanic_carp_ev_upncuentaservicio.md`~~ | ~~1.1~~ | ~~Decisión del usuario del 2026-10-09 (inconsistencia 4), D-23~~ | **RETIRADA (OA-12, 2026-10-10).** Ningún plugin reconoce a la cuenta de servicio: solo SYSTEM escribe columnas solo-sistema. La fila 10.7 no se reutiliza ni se renumera |
 | 10.8 | Environment variable `sanic_carp_ev_buzonarea` *(prov.)*: dirección del buzón del área, por la que se resuelve la queue remitente | `playbooks/variable-entorno/sanic_carp_ev_buzonarea.md` | 1.1 | Decisión del usuario del 2026-10-09 (inconsistencia 4), D-23 | pendiente |
 | 10.5 | Connection reference `sanic_carp_conr_outlook` (`CONR - CARP - Outlook`), conector Office 365 Outlook | `playbooks/variable-entorno/sanic_carp_conr_outlook.md` (misma carpeta de tipo; ruta a confirmar) | 1.1 | §6 Integraciones; convenciones §2 | pendiente |
 | 10.6 | Connection reference `sanic_carp_conr_dataverse` *(prov.)*, conector Dataverse | `playbooks/variable-entorno/sanic_carp_conr_dataverse.md` (ídem) | 1.1 | §6 Integraciones | pendiente |
@@ -238,7 +239,7 @@ Solo monitoreo. La captura de correos no pasa por flujos (D-21). Son propiedad d
 | # | Componente | Disparador | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|---|
 | 11.1 | `Cloud Flow - CARP - COD - Avisar estado del mailbox` *(prov.; `COD` por definir)*: avisa por Outlook al jefe y al equipo cuando la entrada o la salida del buzón pasan a fallo | cambio de estado del Mailbox | `playbooks/flujo/<cod>.md` | 10.1 a 10.6, 6.4, 13.5, 13.6 | D-21, §6 Operación | diseño detallado pendiente |
-| 11.2 | `Cloud Flow - CARP - SAL - Salud del buzon` (ID `CARP-SAL`): cada 30 minutos en horario hábil comprueba correos entrantes recientes, correos sin conversación y respuestas con error de envío; si hay correos sin conversación invoca 8.3 | recurrente | `playbooks/flujo/carp-sal.md` | 8.3, 10.3 a 10.6, 6.4, 13.5, 13.6 | D-21, RNF-08, §6 Operación | diseño detallado pendiente |
+| 11.2 | `Cloud Flow - CARP - SAL - Salud del buzon` (ID `CARP-SAL`): cada 30 minutos en horario hábil comprueba correos entrantes recientes, correos sin conversación, respuestas con error de envío y **trabajos de eliminación masiva fallidos en las últimas 24 h** (cuarta comprobación, OA-3, 2026-10-10); si hay correos sin conversación invoca 8.3. El privilegio con que `SR - CARP - Servicio` lee esos trabajos está PENDIENTE de verificar en Dev al construir este flujo (`04-matriz-privilegios.md`, duda D-09). Hasta que el flujo exista, revisión manual semanal de System Jobs | recurrente | `playbooks/flujo/carp-sal.md` | 8.3, 10.3 a 10.6, 6.4, 13.5, 13.6 | D-21, RNF-08, §6 Operación | diseño detallado pendiente |
 | 11.3 | Flujo diario de marcado de cuotas vencidas sin pago (respaldo de D-11). **Condicional: no se activa**, el spike 2 mostró que el operador de fecha relativa sirve. Requeriría una Custom API que la definición no lista entre las cinco | recurrente diario | — | D-11, D-21; escribe Cuota con rol Servicio | diseño detallado pendiente (condicional; no se construye salvo que se active) |
 
 ## 12. App model-driven
@@ -253,12 +254,12 @@ Nombre de vista: texto de negocio, sin prefijo y sin tildes. Los nombres son *(p
 
 | # | Vista | Tabla | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|---|
-| 12.1 | Correos sin respuesta | Conversación | `playbooks/vista/correos_sin_respuesta.md` | 3.2 (incluye `sanic_antiguedad`) | RF-04, D-27 | diseño detallado pendiente |
-| 12.2 | Correos llegados a conversaciones finalizadas | Conversación | `playbooks/vista/correos_en_finalizadas.md` | 3.2 | RF-15, D-32 | diseño detallado pendiente |
-| 12.3 | Finalizadas sin respuesta | Conversación | `playbooks/vista/finalizadas_sin_respuesta.md` | 3.2 | RF-04, D-06 | diseño detallado pendiente |
+| 12.1 | Correos sin respuesta (todo `sanic_sinrespuestadesde` no vacío; para el jefe; incluye las finalizadas con correo nuevo, OA-2) | Conversación | `playbooks/vista/correos_sin_respuesta.md` | 3.2 (incluye `sanic_antiguedad`) | RF-04, D-27 | diseño detallado pendiente |
+| 12.2 | Correos llegados a conversaciones finalizadas (indicador = sí; para el oficial, OA-2) | Conversación | `playbooks/vista/correos_en_finalizadas.md` | 3.2 | RF-15, D-32 | diseño detallado pendiente |
+| 12.3 | Finalizadas sin respuesta (resultado = Sin respuesta) | Conversación | `playbooks/vista/finalizadas_sin_respuesta.md` | 3.2 | RF-04, D-06 | diseño detallado pendiente |
 | 12.4 | Respuestas con error de envio | Email | `playbooks/vista/respuestas_con_error_de_envio.md` | 3.8 | RF-03, §6 Lógica ítem 3 | diseño detallado pendiente |
 | 12.5 | Borradores | Arreglo | `playbooks/vista/borradores.md` | 3.3 | RF-16 | diseño detallado pendiente |
-| 12.6 | Borradores sin movimiento (más de 30 días) | Arreglo | `playbooks/vista/borradores_sin_movimiento.md` | 3.3 | RF-16, D-22, §6 Operación | diseño detallado pendiente |
+| 12.6 | Borradores sin movimiento (más de 30 días sin cambios; vista aparte de 12.5, OA-2) | Arreglo | `playbooks/vista/borradores_sin_movimiento.md` | 3.3 | RF-16, D-22, §6 Operación | diseño detallado pendiente |
 | 12.7 | Arreglos en riesgo (vigentes con una cuota vencida sin pago; filtro relacionado, `olderthan-x-days 1` o `yesterday`) | Arreglo | `playbooks/vista/arreglos_en_riesgo.md` | 3.3, 3.4, 4.5 | RF-11, D-11 | diseño detallado pendiente |
 | 12.8 | Arreglos de prestamo | Arreglo | `playbooks/vista/arreglos_de_prestamo.md` | 3.3, 2.3 | RF-17, D-35 | diseño detallado pendiente |
 | 12.9 | Arreglos de tarjeta | Arreglo | `playbooks/vista/arreglos_de_tarjeta.md` | 3.3, 2.3 | RF-17, D-35 | diseño detallado pendiente |
@@ -371,10 +372,10 @@ Citas en la forma `archivo:línea`. No se resolvieron: este inventario sigue la 
 1. **[Resuelta el 2026-10-09: volumen de Custom API: 5 (definición corregida).] Cantidad de Custom API.** `definicion.md:145-150` lista cinco (generación, reconciliación, Tomar, unir, iniciar conversación nueva). `definicion.md:620` (riesgos) habla de "plugins y 3 Custom API". El inventario usa cinco (8.2 a 8.6).
 2. **[Resuelta el 2026-10-09: sin trabajo de `msdyn_richtextfiles` (definición corregida).] Purga de imágenes del editor y cantidad de trabajos BulkDelete.** `definicion.md:219` incluye en el orden de purga "las imágenes de esos correos en `msdyn_richtextfiles`". `definicion.md:347` y D-22 (`definicion.md:480`) dicen que viven dentro del Email y no necesitan trabajo propio. `definicion.md:566` estima "cuatro trabajos BulkDelete (incluidas las imágenes del editor)". `definicion.md:395` no da al rol Purga ningún permiso sobre esa tabla. Afecta 6.5 y 13.12.
 3. **[Resuelta el 2026-10-09: variables: BU y team Jefatura (definición corregida).] Environment variables.** `definicion.md:415` dice "nombres de los dos teams, destinatarios de alertas y umbrales". `definicion.md:418` dice que el nombre de la **BU** y el del team Jefatura vienen de variables, y que el team propietario se resuelve por `isdefault`, sin nombre. `01-convenciones.md:79-80` confirma que el propietario no se resuelve por nombre. Además `01-convenciones.md:44` usa como ejemplo `sanic_carp_ev_teamarea` ("Team del area"), una variable que la decisión del propietario deja sin uso. Afecta 10.1 a 10.4.
-4. **[Resuelta el 2026-10-09: variables 10.7 y 10.8.] Cómo identifican los plugins a la cuenta de servicio y a la queue.** `definicion.md:249` y `definicion.md:545` exigen que el plugin distinga la identidad de la cuenta de servicio. `definicion.md:270` exige fijar "la queue del área" como remitente. Ni la identidad ni la queue aparecen entre las variables de `definicion.md:415`. El mecanismo no está definido. En el proyecto 2026-001 esto era un parámetro de configuración.
-5. **Flujo de aviso de fallo de purga.** `definicion.md:450` dice "si falla, el flujo avisa". Los flujos listados son dos más uno condicional (`definicion.md:152-155`, `definicion.md:444-446`) y ninguno cubre los trabajos de purga.
-6. **Gestos "con motivo".** `definicion.md:143` llama "gestos con motivo" a finalizar, formalizar, desbloquear, descartar, anular y reabrir. El diccionario solo tiene columnas de motivo para descartar, anular y reabrir (`02-diccionario-datos.md:389-393`); formalizar y desbloquear no llevan motivo (`definicion.md:300-303`). Tampoco se define cómo se captura el motivo en la pantalla. Afecta 12.24.
-7. **Vistas de sin respuesta.** `definicion.md:122` lista como vistas separadas "correos sin respuesta" y "correos llegados a conversaciones finalizadas". `definicion.md:276` describe una sola vista que reúne ambos casos. El inventario las deja como dos (12.1 y 12.2). Además `definicion.md:122` lista "borradores" y `definicion.md:447` describe "borradores sin cambios en más de 30 días": no queda claro si es una vista o dos (12.5 y 12.6).
+4. **[Resuelta el 2026-10-09: variables 10.7 y 10.8. La 10.7 se retiró el 2026-10-10 por OA-12; sigue la 10.8.] Cómo identifican los plugins a la cuenta de servicio y a la queue.** `definicion.md:249` y `definicion.md:545` exigen que el plugin distinga la identidad de la cuenta de servicio. `definicion.md:270` exige fijar "la queue del área" como remitente. Ni la identidad ni la queue aparecen entre las variables de `definicion.md:415`. El mecanismo no está definido. En el proyecto 2026-001 esto era un parámetro de configuración.
+5. **[Resuelta el 2026-10-10 por OA-3: la comprobación entra al flujo 11.2; hasta entonces, revisión manual semanal de System Jobs.] Flujo de aviso de fallo de purga.** `definicion.md:450` dice "si falla, el flujo avisa". Los flujos listados son dos más uno condicional (`definicion.md:152-155`, `definicion.md:444-446`) y ninguno cubre los trabajos de purga.
+6. **[Resuelta el 2026-10-10 por OA-1: formalizar y desbloquear no piden motivo; `definicion.md` corregida.] Gestos "con motivo".** `definicion.md:143` llama "gestos con motivo" a finalizar, formalizar, desbloquear, descartar, anular y reabrir. El diccionario solo tiene columnas de motivo para descartar, anular y reabrir (`02-diccionario-datos.md:389-393`); formalizar y desbloquear no llevan motivo (`definicion.md:300-303`). Tampoco se define cómo se captura el motivo en la pantalla. Afecta 12.24.
+7. **[Resuelta el 2026-10-10 por OA-2: cinco vistas, 12.1 a 12.3, 12.5 y 12.6 tal como están; `definicion.md` alineada.] Vistas de sin respuesta.** `definicion.md:122` lista como vistas separadas "correos sin respuesta" y "correos llegados a conversaciones finalizadas". `definicion.md:276` describe una sola vista que reúne ambos casos. El inventario las deja como dos (12.1 y 12.2). Además `definicion.md:122` lista "borradores" y `definicion.md:447` describe "borradores sin cambios en más de 30 días": no queda claro si es una vista o dos (12.5 y 12.6).
 8. **[Resuelta el 2026-10-09: P-22 decidida y D-36 actualizada.] Moneda: pregunta cerrada en el diccionario, abierta en la definición.** `definicion.md:494` (D-36) deja abierta la pregunta de la tarjeta con saldo en dos monedas, con propuesta "sí, un arreglo por moneda". `02-diccionario-datos.md:742` (P-22) la decide al revés: "un solo arreglo, en una sola moneda". Cuando decida el dueño, la definición debe actualizarse.
 9. **[Resuelta el 2026-10-09: textos del diccionario corregidos.] Textos del diccionario que quedaron viejos.**
    - `02-diccionario-datos.md:26`, `:647` y `:736` dicen que P-22 sigue abierta; `:3` y `:742` dicen que está decidida.
@@ -385,4 +386,4 @@ Citas en la forma `archivo:línea`. No se resolvieron: este inventario sigue la 
 12. **[Resuelta el 2026-10-09: definición corregida por P-11.] Propietario en siete tablas.** `definicion.md:253` y D-31 (`:489`) fijan el team como propietario solo en Cliente, Conversación y Arreglo. `02-diccionario-datos.md:663` (P-11, aceptada) lo amplía a las siete. La definición no se actualizó; el inventario sigue P-11 (7.17).
 13. **[Resuelta el 2026-10-09: roles heredados por la BU hija, verificado en Dev.] Roles en la BU hija frente a componentes de solución.** `definicion.md:381` dice que los roles "se crean en la BU ARP". `definicion.md:424` dice que la BU no es componente de solución y no viaja. No está definido cómo un rol que viaja en la solución queda disponible en la BU hija. Afecta 6.2 a 6.5 y 13.7.
 14. **[Resuelta el 2026-10-09: el Jefe lleva solo lo adicional; Oficial va al team del sistema de la BU.] Alcance del rol Jefe.** `definicion.md:393` dice que el Jefe "suma" privilegios a los del Oficial, sin decir si incluye todos los del Oficial. La matriz de privilegios no existe todavía (6.2 a 6.5).
-15. **Promoción de la plantilla entre entornos.** `definicion.md:424` deja abierta la herramienta de migración de configuración o la recarga controlada por el jefe ("se decide en etapa 3"). El diseño no la fija (9.1 y 9.2).
+15. **[Resuelta el 2026-10-10 por OA-4: recarga controlada con script versionado y publicación por el jefe.] Promoción de la plantilla entre entornos.** `definicion.md:424` deja abierta la herramienta de migración de configuración o la recarga controlada por el jefe ("se decide en etapa 3"). El diseño no la fija (9.1 y 9.2).

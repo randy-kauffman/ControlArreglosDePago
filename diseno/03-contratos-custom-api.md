@@ -1,6 +1,6 @@
 # 03. Contratos de Custom API, plugins y máquinas de estado
 
-Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **borrador del arquitecto para revisión del aprobador** (2026-10-09)
+Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **borrador del arquitecto para revisión del aprobador** (2026-10-09); decisiones abiertas OA-1 a OA-12 resueltas por el usuario el 2026-10-10 (sección 6)
 
 Fuentes y forma de citar: `def.` = `definicion.md` (con línea `L###` o `ítem N` de §6 Lógica); `D-xx` = decisión de la definición; `dicc.` = `diseno/02-diccionario-datos.md` (con sección, `P-xx`, `R-xx`, `DD-xx`); `matriz` = `diseno/04-matriz-privilegios.md`; `inv.` = `diseno/06-inventario-componentes.md`; `conv.` = `diseno/01-convenciones.md`; `spike N` = `spikes/*/RESULTADO.md` (1 plantilla, 1b sandbox, 2 plataforma, 3 sincronización, 4 manual, roles). `M-PPP` = `/home/gmaker/projects/M-PPP/diseno/03-contratos-custom-api.md`, solo como modelo de forma.
 
@@ -10,7 +10,7 @@ Recetas respetadas: `power-platform-construir/references/dataverse/` `patrones.m
 
 Un constructor escribe el C# con TDD estricto **sin tomar decisiones de diseño**. Por eso cada pieza trae: el contrato (qué entra, qué sale, qué escribe, con qué identidad), los errores con código y mensaje, las pruebas de aceptación numeradas (`PA-…`, Dado/Cuando/Entonces) y, en la sección 4, las firmas y la estructura de carpetas. El ciclo es el de `herramientas/agentes/orden_constructor_codigo.md`: el arquitecto convierte las pruebas `PA-…` en `src/Sanic.Carp.Plugins.Tests/Aceptacion/` y deja firmas que lanzan `NotImplementedException`; el constructor implementa hasta ponerlas en verde.
 
-Lo que este documento **no** decide: reglas de negocio que las fuentes dejan abiertas. Esas van a la sección 6 ("Decisiones abiertas"), y donde el código necesita un comportamiento mientras tanto se usa el **comportamiento provisional** que ahí se indica, marcado `[ABIERTA OA-n]`. Lo que sí fija este documento, y que las fuentes no traían, está en 0.8 ("Decisiones de diseño de este documento", `DC-nn`): son decisiones técnicas reversibles, cada una con su motivo.
+Lo que este documento **no** decide: reglas de negocio que las fuentes dejan abiertas. Esas fueron a la sección 6 ("Decisiones abiertas"), con su análisis y un comportamiento provisional marcado en el texto. **El 2026-10-10 el usuario decidió las doce (OA-1 a OA-12)**, aceptando todas las recomendaciones: ya no queda ninguna marca de decisión abierta ni comportamiento provisional, y cada decisión termina con su línea "Decidida el 2026-10-10" al pie de su análisis, que se conserva como justificación. Lo que sí fija este documento, y que las fuentes no traían, está en 0.8 ("Decisiones de diseño de este documento", `DC-nn`): son decisiones técnicas reversibles, cada una con su motivo.
 
 ## Mapa de piezas
 
@@ -61,7 +61,7 @@ Lo que este documento **no** decide: reglas de negocio que las fuentes dejan abi
 | `reconciliarcorreos` | `prvCreatesanic_carp_tbl_conversacion` | Servicio (L). El Oficial no lo tiene |
 | `tomarconversacion`, `unirconversaciones`, `iniciarconversacionnueva` | `prvWritesanic_carp_tbl_conversacion` | Oficial (L); Jefe y Servicio por el Oficial |
 
-Observación para el aprobador (no se resuelve acá): la matriz asigna el rol Oficial al team del sistema de la BU, y las cuentas de servicio están en la BU. Por eso Servicio y Purga también ejecutan `generarformato`, `tomar…`, `unir…` e `iniciar…`. Ver Inconsistencias, punto 11.
+La matriz asigna el rol Oficial al team del sistema de la BU, y las cuentas de servicio están en la BU. Por eso Servicio y Purga también ejecutan `generarformato`, `tomar…`, `unir…` e `iniciar…`. **Aceptado el 2026-10-10 (OA-12, Inconsistencias, punto 11):** las API no tienen sentido de negocio para esas cuentas, pero se acepta que puedan ejecutarlas porque la escritura queda atribuida.
 
 ### 0.2 Identidad y elevación (quién lee, quién escribe, quién es el actor)
 
@@ -83,8 +83,8 @@ Supuesto de arquitectura de la def. (L523, L548: "las escrituras anidadas del si
 
 - `ActorId`: `InitiatingUserId` del contexto.
 - `EsSistema`: `ActorId` es el usuario SYSTEM. El id de SYSTEM se obtiene **una vez por ejecución** con `WhoAmIRequest` sobre un servicio creado con `CreateOrganizationService(null)`. No se cachea entre ejecuciones (los plugins son sin estado, `rendimiento.md`).
-- `EsCuentaDeServicio`: el `systemuser` de `ActorId` tiene `applicationid` igual al valor de la variable de entorno `sanic_carp_ev_appidcuentaservicio` (10.7). Variable ausente, vacía o que no es un Guid ⇒ `false` (cierra; nunca tumba el guardado de otro).
-- `EsEscrituraDelSistema` = `EsSistema` **o** `EsCuentaDeServicio`.
+- `EsEscrituraDelSistema` = `EsSistema`. Se conserva el nombre porque lo usan todos los steps; ya no incluye a ninguna cuenta de servicio.
+- ~~`EsCuentaDeServicio`: el `systemuser` de `ActorId` tiene `applicationid` igual al valor de la variable de entorno de Application ID de la cuenta de servicio (10.7).~~ **Retirada el 2026-10-10 (OA-12, opción C).** No se reconoce ninguna cuenta de servicio: solo SYSTEM escribe columnas solo-sistema, porque las Custom API elevan siempre y ningún flujo del diseño las escribe. La cuenta de servicio es un usuario licenciado (RNF-06, D-21) y no tiene Application ID, así que la variable nunca habría coincidido. Cualquier otra identidad, incluida la cuenta de servicio, se trata como persona.
 - `EsJefatura()`: `ActorId` figura en `teammembership` del team de jefatura (nombre en `sanic_carp_ev_nombreteamjefatura`, dentro de la BU). Consulta perezosa, una vez por ejecución. Las tablas intersect devuelven `Guid` crudo, no `EntityReference` (`patrones.md` §3).
 - **Perezosa**: un step primero revisa, en memoria, si el `Target` toca columnas vigiladas. Si no las toca, no consulta identidad (camino barato).
 
@@ -96,8 +96,9 @@ Variables de entorno que los plugins leen (def. L418; `seguridad.md` §2). Los n
 |---|---|---|
 | `sanic_carp_ev_nombrebu` | 10.1 | Nombre de la BU ARP |
 | `sanic_carp_ev_nombreteamjefatura` | 10.2 | Nombre del team de jefatura, buscado dentro de la BU |
-| `sanic_carp_ev_appidcuentaservicio` | 10.7 | Application ID de la cuenta de servicio (0.3) |
 | `sanic_carp_ev_buzonarea` | 10.8 | Dirección del buzón del área; resuelve la queue remitente |
+
+~~Variable de Application ID de la cuenta de servicio (inventario 10.7).~~ **Retirada el 2026-10-10 (OA-12):** los plugins no leen ninguna variable para reconocer a una cuenta de servicio (0.3). El inventario conserva la fila 10.7 marcada como retirada, sin renumerar.
 
 `IConfiguracionDelArea` (una instancia por ejecución, todo con servicio SYSTEM y memoizado dentro de la ejecución):
 
@@ -154,7 +155,7 @@ No estaban en las fuentes. Son técnicas, reversibles y se pueden vetar sin toca
 | ID | Decisión | Motivo |
 |---|---|---|
 | DC-01 | Una columna solo-sistema "cambió" si está en el `Target` **y** su valor difiere del de la pre-imagen. Estar presente con el mismo valor no es un cambio | Un cliente que reenvía la fila completa no debe fallar sin motivo. D-30 dice "cambio" |
-| DC-02 | "Sistema" = SYSTEM por `WhoAmI` elevado, o la cuenta de servicio por Application ID (0.3) | Supuesto de def. L523 y L548; variable 10.7 |
+| DC-02 | "Sistema" = SYSTEM (`WhoAmI` elevado). No se reconoce ninguna cuenta de servicio (0.3). ~~O la cuenta de servicio por Application ID~~ (retirado el 2026-10-10, OA-12) | Supuesto de def. L523. Las Custom API elevan siempre y ningún flujo del diseño escribe columnas solo-sistema; la cuenta de servicio es un usuario licenciado sin Application ID (RNF-06, D-21) |
 | DC-03 | Si `EsEscrituraDelSistema`, el step deja pasar el `Target` sin revalidar reglas de gesto. Solo aplica normalización y el atajo de propietario | Riesgo residual aceptado en M-PPP §4: otro plugin SYSTEM del entorno. Mantiene baratas las 60 altas de cuotas |
 | DC-04 | En Arreglo, un **gesto** es una transición de estado o una columna disparadora, y no admite otros cambios en el mismo `Update` | Evita mezclar "formalizar" con editar datos. Hace cada gesto verificable |
 | DC-05 | **Desbloquear** = `Update` con `sanic_fechacongelamiento = null`. **Reabrir un Vigente congelado** = `Update` con `sanic_motivoreapertura` | El diccionario no da columnas de gesto para estos dos (inv. 12.24: "el mecanismo no está definido") |
@@ -173,7 +174,7 @@ No estaban en las fuentes. Son técnicas, reversibles y se pueden vetar sin toca
 | DC-18 | La vista previa no escribe nada (ni bitácora ni congelamiento). La generación normal escribe la bitácora siempre | def. ítem 14: "la vista previa… no congela" |
 | DC-19 | Una versión nace siempre en Borrador (también por API) y se publica por el gesto normal. Al publicar se hace además una **generación de prueba** con datos sintéticos | Atrapa hoja inexistente (spike 1, hallazgo 1). Habilita la promoción Test→Prod (6, OA-4) |
 | DC-20 | Las cuotas se crean con `Create` individual (no `ExecuteMultiple`) y con propietario explícito; el step de propietario deja pasar una escritura del sistema que ya trae team | `rendimiento.md`; evita 120 consultas por calendario |
-| DC-21 | "Pago registrado" = `sanic_fechapago` no nulo `[ABIERTA OA-8]` | D-11 usa `fechapago` nulo (spike 2) |
+| DC-21 | "Pago registrado" = `sanic_fechapago` y `sanic_montopagado` juntos: ambos o ninguno, monto mayor que cero y sin tope superior. Lo exige `ReglasDeCuota` con `CARP-CUO-003` (decidido el 2026-10-10, OA-8). ~~Antes: `sanic_fechapago` no nulo, sin más validaciones~~. "Cuota sin pago" para el paso a Terminado y para la vista de riesgo sigue siendo `fechapago` nulo | D-11 usa `fechapago` nulo (spike 2); con el par obligatorio, `fechapago` nulo equivale a no tener pago |
 | DC-22 | La unicidad de la cédula se valida también al cambiarla, y la consulta corre con SYSTEM | Sin SYSTEM, un usuario sin perfil de columna ve `null` y la duplicada pasa en silencio (spike 4, tarea A) |
 | DC-23 | Nombre de step: `STEP - CARP - <tabla> - <mensaje> - <etapa> - <clase>` | conv. §2 no distingue dos steps del mismo mensaje y etapa; el playbook rechaza nombres repetidos |
 | DC-24 | Parámetros de Custom API siempre Guid, nunca `EntityReference` | JS y flujos más simples |
@@ -225,18 +226,18 @@ Genera el F-NIC-0000052 en Excel para un arreglo, lo devuelve en Base64 y, si el
 | OficialDeArreglo | `oficial` | `fullname` del usuario `sanic_oficialid` |
 | NombreDelCliente / CedulaDelCliente / CorreoDelCliente / CelularDelCliente | `clienteNombre` / `clienteCedula` / `clienteCorreo` / `clienteCelular` | Si el arreglo está **congelado**: `sanic_instantaneanombre` / `…cedula` / `…correo` / `…celular`. Si no: `sanic_nombrecompleto`, `sanic_cedula`, `sanic_correo`, `sanic_celular` del Cliente (def. ítem 14) |
 | NumeroDePrestamoOTarjeta | `numeroProducto` | `sanic_numeroproducto` |
-| TipoDeArreglo | `tipo` | texto de la opción `[ABIERTA OA-7]`; provisional: "Temporal" / "Cancelación" |
+| TipoDeArreglo | `tipo` | texto formal con ortografía, decidido el 2026-10-10 (OA-7): "Temporal" / "Cancelación" |
 | NumeroDeArreglo | `numeroArreglo` | Borrador: el número provisional (el guardado, o el calculado si aún no hay). Otros estados: `sanic_numeroarreglo` (def. ítem 14: "en un borrador, imprime el número provisional") |
 | SaldoInicial, MontoAbonado, SaldoRemanente, CuotaMensual, TotalAPagar | `saldoInicial`, `montoAbonado`, `saldoRemanente`, `cuota`, `totalPagar` | columnas del arreglo (decimal) |
 | PlazoEnCuotas | `plazo` | `sanic_plazo` (int) |
 | FechaDeInicio, FechaDeFinalizacion | `fechaInicio`, `fechaFin` | columnas del arreglo (DateTime sin conversión) |
 | CuentaADebitar | `cuentaDebitar` | `sanic_cuentadebitar` |
 | Comentarios | `comentarios` | `sanic_comentarios` (`null` si vacío) |
-| Moneda | `moneda` | texto de la opción `[ABIERTA OA-7]`; provisional: "Córdobas" / "Dólares". **El generador del spike 1 todavía no tiene esta clave**: se agrega (dicc. §3.1, opción 27) |
+| Moneda | `moneda` | texto formal con ortografía, decidido el 2026-10-10 (OA-7): "Córdobas" / "Dólares". Mientras la v07 no tenga una celda de moneda mapeada, la clave viaja en los datos y no se imprime. **El generador del spike 1 todavía no tiene esta clave**: se agrega (dicc. §3.1, opción 27) |
 | Cuota: numero, fecha, monto, fecha de pago, monto pagado | `cuota.*` | una `CuotaDato` por cuota, orden por número |
 | Total: montos de cuota, montos pagados | `total.*` | los calcula el generador |
 
-La tabla "opción ⇒ clave" vive en `Formato/ClavesDelGenerador`. Una prueba verifica que cubre las 27 opciones del enum `CampoMapeable` (si se agrega una opción y falta acá, la prueba falla). `TipoDeMapeo` ⇒ `TipoMapeo` del generador: ValorSimple ⇒ Simple, TotalCalculado ⇒ Total, ColumnaDeBloqueDeCuotas ⇒ Bloque.
+La tabla "opción ⇒ clave" vive en `Formato/ClavesDelGenerador`, y ahí también la tabla de textos formales de Tipo y Moneda (OA-7), aparte de las etiquetas sin tildes del choice (BP-PP-197). Una prueba verifica que cubre las 27 opciones del enum `CampoMapeable` (si se agrega una opción y falta acá, la prueba falla). `TipoDeMapeo` ⇒ `TipoMapeo` del generador: ValorSimple ⇒ Simple, TotalCalculado ⇒ Total, ColumnaDeBloqueDeCuotas ⇒ Bloque.
 
 **Comportamiento paso a paso**
 
@@ -252,7 +253,7 @@ La tabla "opción ⇒ clave" vive en `Formato/ClavesDelGenerador`. Una prueba ve
 10. Si **no** es vista previa, y el arreglo está activo, escribir con `sistema`, en este orden:
     a. Si no está congelado: `Update` del arreglo con `sanic_fechacongelamiento = ahora`, las cuatro `sanic_instantanea*` copiadas del Cliente y, **solo si es Borrador**, `sanic_numeroprovisional` = `max+1` (2.0.5).
     b. `Create` de `sanic_carp_tbl_generacionformato`: `sanic_arregloid`, `sanic_versionplantillaid`, `sanic_generadoporid = actor` (explícito, 0.2), `sanic_fechageneracion = ahora`, `ownerid` = team del área.
-    Arreglo inactivo (Terminado, Anulado, Descartado): no se congela; solo se escribe la bitácora `[ABIERTA OA-9]`.
+    Arreglo inactivo (Terminado, Anulado, Descartado): no se congela ni se toca el arreglo; solo se escribe la bitácora (decidido el 2026-10-10, OA-9).
 11. Escribir las salidas.
 
 **Todo en una transacción** (la API corre dentro de la transacción de la plataforma): si algo falla, no queda congelamiento ni bitácora (def. ítem 14: "si falla, error sin archivo parcial y sin congelar"). El archivo se genera **antes** de escribir.
@@ -302,10 +303,10 @@ La tabla "opción ⇒ clave" vive en `Formato/ClavesDelGenerador`. Una prueba ve
 | PA-GEN-16 | `versionpreviaid` de una versión Vigente | Se llama | `CARP-GEN-006` |
 | PA-GEN-17 | Vista previa y el llamador no tiene `WriteAccess` sobre la versión | Se llama | `CARP-GEN-007` |
 | PA-GEN-18 | Vista previa de un Borrador sin congelar | Se llama | `numeroprovisional` = lo que se imprimió (`max+1`), sin guardarse |
-| PA-GEN-19 | Arreglo en dólares | Se llama | `moneda` recibe el texto provisional de Dólares |
+| PA-GEN-19 | Un arreglo en dólares de tipo Cancelación y otro en córdobas de tipo Temporal | Se llama (dos casos) | `moneda` y `tipo` reciben los textos formales con ortografía (OA-7): "Dólares" y "Cancelación"; "Córdobas" y "Temporal" |
 | PA-GEN-20 | Cliente sin correo ni celular; sin comentarios | Se llama | `Valores` contiene las claves `clienteCorreo`, `clienteCelular` y `comentarios` con valor `null` (no ausentes) |
 | PA-GEN-21 | `fechainicio` guardada 2026-11-05 | Se llama | El generador recibe `DateTime` 2026-11-05 sin cambio de zona |
-| PA-GEN-22 | Arreglo Terminado | Se llama | Se genera sin congelar y se escribe la bitácora `[ABIERTA OA-9]` |
+| PA-GEN-22 | Arreglo Terminado | Se llama | Se genera sin congelar ni tocar el arreglo y se escribe la bitácora (OA-9) |
 | PA-GEN-23 | Una escritura falla a mitad (fallo inyectado al crear la Generación) | Se llama | `CARP-GEN-900`; al restaurar la transacción del doble, el arreglo no está congelado |
 | PA-GEN-24 | El generador devuelve dos advertencias | Se llama | `advertencias` las trae separadas por salto de línea |
 | PA-GEN-25 | Arreglo con cédula en el Cliente | Se llama | Ninguna línea de traza contiene la cédula, la cuenta ni el nombre |
@@ -428,7 +429,7 @@ Mueve los correos de una conversación de origen a una de destino. Fuente: def. 
 
 1. Ids ausentes ⇒ `CARP-UNI-001`. Iguales ⇒ `CARP-UNI-002` (REL-09 permite que un registro se apunte a sí mismo; la API no).
 2. Leer origen y destino con el servicio del llamador. Alguno inexistente o sin acceso ⇒ `CARP-UNI-003`.
-3. Origen no Abierta ⇒ `CARP-UNI-004` `[ABIERTA OA-11]`. Destino no Abierta ⇒ `CARP-UNI-005` (def. ítem 5).
+3. Origen no Abierta ⇒ `CARP-UNI-004` (decidido el 2026-10-10, OA-11: un tema finalizado se continúa con Reabrir o Iniciar conversación nueva). Destino no Abierta ⇒ `CARP-UNI-005` (def. ítem 5). Origen y destino con cliente, y clientes distintos ⇒ `CARP-UNI-010` (decidido el 2026-10-10, OA-11: unir correos de dos clientes mezclaría datos de personas distintas, RNF-03). Si alguna de las dos no tiene cliente, o ninguna lo tiene, no hay nada que comparar y la unión sigue; el destino toma el cliente del origen solo si no tiene uno (paso 6c).
 4. Cadenas y ciclos, **en este orden**:
    - Ciclo: seguir `sanic_unidaaid` desde el destino, hasta 10 saltos. Si se llega al origen, si se vuelve a una conversación ya visitada (incluido el destino apuntándose a sí mismo) o si no termina en 10 saltos ⇒ `CARP-UNI-007`.
    - Cadena: `origen.sanic_unidaaid` o `destino.sanic_unidaaid` no nulos (aunque el estado diga Abierta: dato corrupto) ⇒ `CARP-UNI-006`.
@@ -454,6 +455,7 @@ Mueve los correos de una conversación de origen a una de destino. Fuente: def. 
 | `CARP-UNI-007` | La unión formaría un ciclo entre conversaciones. | no |
 | `CARP-UNI-008` | La conversación de origen ya recibió otras conversaciones. Una unión sobre otra unión no está permitida: una el destino sobre el origen o elija otro destino. | no |
 | `CARP-UNI-009` | La conversación de origen tiene más de 1.000 correos y no se puede unir en una sola operación. | no |
+| `CARP-UNI-010` | Las dos conversaciones son de clientes distintos. Solo se pueden unir conversaciones del mismo cliente. | no |
 | `CARP-UNI-900` | No se pudo unir. No se guardó ningún cambio. Intente de nuevo. | sí |
 
 **Pruebas de aceptación** (`Aceptacion/UnirConversacionesAceptacion.cs`)
@@ -462,13 +464,13 @@ Mueve los correos de una conversación de origen a una de destino. Fuente: def. 
 |---|---|---|---|
 | PA-UNI-01 | Origen A (3 correos, 1 arreglo Borrador) y destino B (2 correos), ambas Abiertas | El Oficial llama | Los 5 correos con Regarding B; el arreglo con `conversacionid` B; A en Unida (1/159460001) con `unidaaid` B, `fechafinalizacion` = ahora y `finalizadoporid` = Oficial; salidas 3 y 1; toda escritura con el servicio de SYSTEM |
 | PA-UNI-02 | A tiene cliente y oficial; B no | Se llama | B recibe cliente y oficial de A |
-| PA-UNI-03 | A y B tienen cliente y oficial distintos | Se llama | B conserva los suyos |
+| PA-UNI-03 | A y B tienen el mismo cliente y oficiales distintos | Se llama | B conserva su oficial y su cliente |
 | PA-UNI-04 | A con `fechaprimercorreo` 10:00 y `sinrespuestadesde` 10:00; B con 09:00 y `sinrespuestadesde` vacío | Se llama | B queda con `fechaprimercorreo` 09:00 y `sinrespuestadesde` 10:00; A con `sinrespuestadesde` vacío |
 | PA-UNI-05 | Correos del destino: 2 salientes procesados (tiempos 40 y 15, el de 40 enviado antes) y 1 del origen: 1 saliente procesado (tiempo 5) enviado después | Se llama | `cantidadrespuestas = 3`; `tiempoprimerarespuesta = 40` |
 | PA-UNI-06 | `origenid = destinoid` | Se llama | `CARP-UNI-002` |
 | PA-UNI-07 | Ids ausentes (dos casos) | Se llama | `CARP-UNI-001` |
 | PA-UNI-08 | Una de las conversaciones no existe; otra que el llamador no puede leer | Se llama | `CARP-UNI-003` |
-| PA-UNI-09 | Origen Finalizada; origen Unida `[ABIERTA OA-11]` | Se llama | `CARP-UNI-004` |
+| PA-UNI-09 | Origen Finalizada; origen Unida (OA-11) | Se llama | `CARP-UNI-004` |
 | PA-UNI-10 | Destino Finalizada; destino Unida | Se llama | `CARP-UNI-005` |
 | PA-UNI-11 | Destino Abierta con `unidaaid` apuntando a una tercera conversación (cadena que termina); origen con `unidaaid` no nulo | Se llama (dos casos) | `CARP-UNI-006` |
 | PA-UNI-12 | Destino con `unidaaid` = origen; destino apuntándose a sí mismo; cadena de 11 saltos que no termina | Se llama (tres casos) | `CARP-UNI-007` |
@@ -478,9 +480,11 @@ Mueve los correos de una conversación de origen a una de destino. Fuente: def. 
 | PA-UNI-16 | Fallo inyectado al actualizar el origen (último paso) | Se llama | `CARP-UNI-900`; al restaurar, ningún correo cambió de Regarding |
 | PA-UNI-17 | `UserId` del contexto distinto de `InitiatingUserId` | Se llama | `finalizadoporid = InitiatingUserId` |
 | PA-UNI-18 | Los correos del origen tienen dueños y `parentactivityid` | Se llama | Siguen iguales tras el movimiento |
-| PA-UNI-19 | Clientes distintos en origen y destino `[ABIERTA OA-11]` | Se llama | Se une sin error (comportamiento provisional) |
+| PA-UNI-19 | Clientes distintos en origen y destino (OA-11) | Se llama | `CARP-UNI-010`; sin escrituras. ~~Antes: se une sin error~~ |
 | PA-UNI-21 | Entre la lectura del origen y su escritura, otro proceso lo modificó (el doble sube la versión de fila) | Se llama | `CARP-UNI-900`; al restaurar, ningún correo cambió de Regarding |
 | PA-UNI-20 | Cadena (pipeline simulado): se ejecuta la API y luego los steps de Conversación con identidad SYSTEM | Se llama | `ConversacionActualizarStep` acepta Unida, `unidaaid` y `finalizadoporid` (escritura del sistema); un Oficial que intente lo mismo por `Update` directo recibe `CARP-CNV-006` |
+| PA-UNI-22 | Origen y destino del mismo cliente, ambas Abiertas (OA-11) | Se llama | Se une sin error; el destino conserva su cliente |
+| PA-UNI-23 | Origen sin cliente y destino con cliente; y origen y destino sin cliente (dos casos) (OA-11) | Se llama | Se une sin error en los dos; el destino conserva su cliente o sigue sin él |
 
 ### 1.5 `sanic_carp_capi_iniciarconversacionnueva` (inv. 8.6, 7.22)
 
@@ -622,7 +626,7 @@ Resultado: `SaldoRemanente`, `TotalPagar`, `MontoUltimaCuota`, o el error con su
 
 #### 2.0.4 Calendario de cuotas (def. ítem 8; inv. 7.4)
 
-`GeneradorDeCalendario.Generar(fechaInicio, plazo, cuotaMensual, montoUltimaCuota)` devuelve `plazo` cuotas con `Numero` (1..plazo), `FechaVencimiento` y `Monto`. **Regla de fechas provisional `[ABIERTA OA-5]`**: la cuota `n` vence en `fechaInicio.Date.AddMonths(n − 1)`, calculado siempre desde la fecha original, con el día ajustado al último día del mes si no existe. La cuota 1 vence en `fechaInicio` (dicc. §4.3: "fecha de la primera cuota"). `fechaFin` = vencimiento de la última cuota. Toda la regla queda en este único método (def. ítem 8: "centralizada en el plugin").
+`GeneradorDeCalendario.Generar(fechaInicio, plazo, cuotaMensual, montoUltimaCuota)` devuelve `plazo` cuotas con `Numero` (1..plazo), `FechaVencimiento` y `Monto`. **Regla de fechas decidida el 2026-10-10 (OA-5, opción A)**: la cuota `n` vence en `fechaInicio.Date.AddMonths(n − 1)`, es decir, el mismo día de cada mes contado siempre desde la fecha de inicio (nunca encadenando mes a mes), y si el mes no tiene ese día, el último del mes. La regla de negocio puede consultarse con Héctor Romero, pero el código ya la aplica. La cuota 1 vence en `fechaInicio` (dicc. §4.3: "fecha de la primera cuota"). `fechaFin` = vencimiento de la última cuota; el plugin la calcula y la sobrescribe (OA-5, opción (i)). Toda la regla queda en este único método (def. ítem 8: "centralizada en el plugin").
 
 | ID | Dado | Cuando | Entonces |
 |---|---|---|---|
@@ -653,7 +657,7 @@ Resultado: `SaldoRemanente`, `TotalPagar`, `MontoUltimaCuota`, o el error con su
   - Conversación Abierta y `sinRespuestaDesde` no nulo y `sinRespuestaDesde <= enviadoEn`: tiempo = minutos entre ambos; `NuevoSinRespuestaDesde = null`; si `primeraRespuesta` es nula, pasa a ser ese tiempo.
   - Abierta y `sinRespuestaDesde` nulo: sin tiempo; nada más cambia.
   - Abierta y `sinRespuestaDesde > enviadoEn` (el pendiente llegó después): sin tiempo; `sinRespuestaDesde` se mantiene.
-  - Finalizada `[ABIERTA OA-10]`: sin tiempo y sin cambios en `sinRespuestaDesde`.
+  - Finalizada (decidido el 2026-10-10, OA-10): sin tiempo y sin cambios en `sinRespuestaDesde`; la respuesta solo suma al contador. Para marcar respondido, el oficial reabre.
   - En todos los casos `NuevaCantidad = cantidad + 1`.
 - `Recalcular` para la unión: ver PA-TIE-10 y 1.4 paso 6c.
 
@@ -826,8 +830,8 @@ Quién: cualquier usuario del área con Write sobre Conversación (Oficial; el J
 | PA-CNV-14 | El Target trae `sanic_cantidadrespuestas` con el mismo valor de la pre-imagen | Update | Pasa (no es un cambio, DC-01) |
 | PA-CNV-15 | Update solo de `sanic_clienteid` | Update | Pasa y **no** se consulta identidad (0 llamadas a `WhoAmI`) |
 | PA-CNV-16 | Update del sistema (`InitiatingUserId` = SYSTEM) que cambia columnas solo-sistema y pasa a Unida | Update | Pasa sin modificar el `Target` |
-| PA-CNV-17 | Update de la cuenta de servicio (Application ID igual al de la variable) que cambia `sinrespuestadesde` | Update | Pasa |
-| PA-CNV-18 | La variable del Application ID está vacía y el actor tiene `applicationid` | Update | Se trata como persona: `CARP-CNV-001` |
+| PA-CNV-17 | Update de la cuenta de servicio (un usuario licenciado que no es SYSTEM) que cambia `sinrespuestadesde` (OA-12) | Update | `CARP-CNV-001`: no se reconoce ninguna cuenta de servicio |
+| PA-CNV-18 | Update de otro usuario que no es SYSTEM (por ejemplo, un usuario de aplicación) que cambia `sinrespuestadesde` (OA-12) | Update | Se trata como persona: `CARP-CNV-001`. Solo SYSTEM escribe columnas solo-sistema (DC-02) |
 | PA-CNV-19 | Finalizar con `fechaprimercorreo` nula | Update | No se escribe `tiempototal`; el resto sí |
 | PA-CNV-20 | Finalizar y Reabrir hechos por un Oficial y por un Jefe | Update | Ambos pasan |
 | PA-CNV-21 | `UserId` ≠ `InitiatingUserId` | Finalizar | `finalizadoporid = InitiatingUserId` |
@@ -872,10 +876,10 @@ Un `EsEscrituraDelSistema` termina el step sin reglas (DC-03). Para una persona:
 6. Plazo: debe estar entre 1 y 60 **y** no superar `sanic_capacidad` de esa versión ⇒ `CARP-ARR-003`.
 7. Canal de origen: si `sanic_conversacionid` viene informado y `sanic_canalorigen` está vacío ⇒ poner `Correo` (DD-13). Sin conversación no se completa nada.
 8. Montos: `ReglasDeMontos.Calcular` ⇒ errores `CARP-ARR-004/005/007`; si va bien, escribir `sanic_saldoremanente` y `sanic_totalpagar`.
-9. `sanic_fechafin` = vencimiento de la última cuota, calculado con `GeneradorDeCalendario` `[ABIERTA OA-5]`.
+9. `sanic_fechafin` = vencimiento de la última cuota, calculado con `GeneradorDeCalendario`. El plugin la **sobrescribe** aunque el `Target` traiga otra (OA-5, decidido el 2026-10-10).
 10. `sanic_cantidadreaperturas = 0`.
 
-No se valida si ya hay otro Borrador del mismo crédito `[ABIERTA OA-6]`: la clave K-02 admite varios con número vacío (spike 2).
+No se valida si ya hay otro Borrador del mismo crédito: se permiten varios (decidido el 2026-10-10, OA-6, opción A); la clave K-02 admite varios con número vacío (spike 2).
 
 #### `ArregloCalendarioStep` — Create · PostOperation · **síncrono** · orden 10 · sin filtro; y Update · PostOperation · síncrono · orden 10 · filtro `sanic_plazo,sanic_cuotamensual,sanic_fechainicio,sanic_saldoinicial,sanic_montoabonado`
 
@@ -913,7 +917,7 @@ El tiempo de 60 altas individuales dentro de la misma transacción se mide en De
 | PA-ARR-07 | Falta el saldo inicial y la fecha de inicio | Create | `CARP-ARR-006` nombrando ambos |
 | PA-ARR-08 | `statuscode = Vigente`; `statuscode = Borrador`; sin estado | Create | `CARP-ARR-008`; pasa; pasa |
 | PA-ARR-09 | Una prueba parametrizada con cada columna solo-sistema (20) con valor | Create de un Oficial | `CARP-ARR-009` nombrándola |
-| PA-ARR-10 | Ya existe un Borrador del mismo crédito | Create | Pasa (comportamiento provisional OA-6) |
+| PA-ARR-10 | Ya existe un Borrador del mismo crédito | Create | Pasa (OA-6: se permiten varios borradores) |
 | PA-ARR-11 | Alta del sistema con columnas solo-sistema | Create | Pasa sin cambios en el `Target` |
 | PA-CAL-01 | Arreglo recién creado `ARR-000123`, plazo 3, cuota 300, remanente 900, inicio 2026-11-05 | Post-create | 3 cuotas `ARR-000123-C01…C03`; números 1 a 3; fechas 11-05, 12-05, 01-05; montos 300; `arregloid`; `ownerid` = el del arreglo; pagos vacíos |
 | PA-CAL-02 | Remanente 1000, cuota 300, plazo 4 | Post-create | Montos 300, 300, 300, 100 |
@@ -969,7 +973,7 @@ La reapertura de un arreglo Terminado sobre un registro inactivo depende de V-5.
 2. Si el arreglo está congelado y cambió alguna columna de "datos del acuerdo" ⇒ `CARP-ARR-011` (nombra la columna). Un valor igual al de la pre-imagen no cuenta.
 3. Normalizar `sanic_numeroproducto` si viene.
 4. Con los valores efectivos (pre-imagen + `Target`): si cambió `saldoinicial`, `montoabonado`, `cuotamensual` o `plazo` ⇒ validar el plazo (`CARP-ARR-003`, la capacidad se lee de la versión del arreglo con SYSTEM) y recalcular montos (`CARP-ARR-004/005/007`), escribiendo `sanic_saldoremanente` y `sanic_totalpagar`.
-5. Si cambió `plazo` o `fechainicio`, recalcular `sanic_fechafin` `[ABIERTA OA-5]`.
+5. Si cambió `plazo`, `fechainicio` o `fechafin`, recalcular y **sobrescribir** `sanic_fechafin` con el vencimiento de la última cuota (OA-5, decidido el 2026-10-10: el oficial no puede dejar una fecha de fin que contradiga el calendario).
 6. Si cambió algo que altera el calendario (`plazo`, `cuotamensual`, `fechainicio`, `saldoinicial`, `montoabonado`) y existe una cuota con `sanic_fechapago` ⇒ `CARP-ARR-021` (def. ítem 8: solo se reemplaza "mientras no esté congelado ni tenga pagos").
 
 | Código | Mensaje |
@@ -1028,6 +1032,8 @@ La clave K-02 es la última barrera ante dos formalizaciones simultáneas: la pl
 | PA-ARR-43 | El crédito ya tiene 9999 | Formalizar | `CARP-ARR-023` |
 | PA-ARR-44 | Reabrir con jefatura | Update | Una sola consulta de pertenencia a jefatura |
 | PA-ARR-45 | Update que solo cambia `sanic_conversacionid` y `sanic_nombre` | Update | No consulta identidad |
+| PA-ARR-46 | Alta de un Oficial con `fechafin` distinta del vencimiento de la última cuota (OA-5) | Create | Target con `fechafin` = la calculada |
+| PA-ARR-47 | Borrador sin congelar | Update de un Oficial que cambia solo `fechafin` a una fecha distinta de la del calendario (OA-5) | Target con `fechafin` = la calculada |
 
 ### 2.7 Cuota (inv. 7.15; def. ítem 11; D-08, D-10; dicc. R-01, R-02)
 
@@ -1036,7 +1042,7 @@ La clave K-02 es la última barrera ante dos formalizaciones simultáneas: la pl
 1. Columnas cambiadas (DC-01). Ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar.
 2. Si cambió alguna columna distinta de `sanic_fechapago` y `sanic_montopagado` ⇒ `CARP-CUO-001` (nombra la columna). El oficial solo registra pagos.
 3. Leer el arreglo (`statecode`, `statuscode`). Si no está **Vigente** ⇒ `CARP-CUO-002`. Esto incluye al Borrador: la solo-lectura nativa del registro inactivo no se hereda a la hija (def. ítem 11).
-4. No se exige que la fecha y el monto vengan juntos ni se valida el monto `[ABIERTA OA-8]`.
+4. Pago registrado (DC-21, decidido el 2026-10-10, OA-8, opción B): con los valores efectivos de `sanic_fechapago` y `sanic_montopagado` (pre-imagen más `Target`), ambos o ninguno ⇒ si solo uno tiene valor, `CARP-CUO-003`; si `sanic_montopagado` tiene valor y no es mayor que cero ⇒ `CARP-CUO-003`. **Sin tope superior**: un monto mayor que el de la cuota pasa (puede ser un adelanto). Se evalúa solo si cambió alguna de las dos columnas (paso 1) y después de `CARP-CUO-001` y `CARP-CUO-002`.
 
 #### `CuotaTerminarArregloStep` — Update · PostOperation · síncrono · orden 20 · filtro `sanic_fechapago,sanic_montopagado` · sin imagen
 
@@ -1044,18 +1050,19 @@ La clave K-02 es la última barrera ante dos formalizaciones simultáneas: la pl
 2. Buscar si queda alguna cuota del arreglo **sin pago registrado** (`sanic_fechapago` nulo, DC-21): consulta con `ColumnSet(false)` y `TopCount = 1`.
 3. Si no queda ninguna: `Update` del arreglo como SYSTEM con `statecode = 1`, `statuscode = Terminado` y `sanic_fechatermino = ahora` (def. ítem 11). Un pago parcial cuenta (R-02). Pasa por `ArregloActualizarStep` como escritura del sistema.
 
-Borrar un pago (dejar `sanic_fechapago` vacía) en un Vigente se permite y no revierte nada. Corregir un pago en un Terminado exige que la jefatura reabra el arreglo (2.6).
+Borrar un pago (vaciar `sanic_fechapago` y `sanic_montopagado` juntos) en un Vigente se permite y no revierte nada; vaciar solo una de las dos es `CARP-CUO-003`. Corregir un pago en un Terminado exige que la jefatura reabra el arreglo (2.6).
 
 | Código | Mensaje |
 |---|---|
 | `CARP-CUO-001` | En una cuota solo se puede registrar la fecha y el monto de pago. Columna no permitida: {columna}. |
 | `CARP-CUO-002` | Solo se pueden registrar pagos en un arreglo vigente. |
+| `CARP-CUO-003` | El pago de una cuota se registra con su fecha y su monto juntos, y el monto debe ser mayor que cero. |
 
-Códigos reservados para decisiones abiertas, que el código no emite hasta que se decidan: `CARP-CUO-003` (OA-8, opción B), `CARP-UNI-010` (OA-11), `CARP-GEN-012` (OA-9, opción C), `CARP-EML-004` (OA-10, opción C).
+Códigos que estuvieron reservados para decisiones abiertas: `CARP-CUO-003` (OA-8, opción B) y `CARP-UNI-010` (OA-11) **se emiten desde el 2026-10-10** (tablas de errores de 2.7 y 1.4). ~~`CARP-GEN-012` (OA-9, opción C) y `CARP-EML-004` (OA-10, opción C)~~ quedan descartados: se decidió la opción A en ambos casos y el código no los emite.
 
 | ID | Dado | Cuando | Entonces |
 |---|---|---|---|
-| PA-CUO-01 | Arreglo Vigente | Un Oficial cambia `fechapago` y `montopagado` | Pasa |
+| PA-CUO-01 | Arreglo Vigente | Un Oficial cambia `fechapago` y `montopagado` (monto mayor que cero) | Pasa |
 | PA-CUO-02 | Arreglo Vigente | Un Oficial cambia `sanic_monto`, `sanic_fechavencimiento`, `sanic_numero` o `sanic_arregloid` (parametrizada) | `CARP-CUO-001` nombrando la columna |
 | PA-CUO-03 | Arreglo Borrador, Terminado, Anulado, Descartado (parametrizada) | Un Oficial registra un pago | `CARP-CUO-002` |
 | PA-CUO-04 | Update con los mismos valores de la pre-imagen | Update | Pasa; no se lee el arreglo |
@@ -1064,11 +1071,17 @@ Códigos reservados para decisiones abiertas, que el código no emite hasta que 
 | PA-CUO-07 | Queda una cuota sin pago | Se registra otro pago | El arreglo no se escribe |
 | PA-CUO-08 | La última cuota se paga con `montopagado` menor que `monto` | Post-update | Termina igual (R-02) |
 | PA-CUO-09 | Vigente reabierto (sin congelar) con todas las cuotas pagadas | Post-update | Termina |
-| PA-CUO-10 | Se vacía `fechapago` de una cuota en un Vigente | Update | Pasa; el arreglo sigue Vigente |
-| PA-CUO-11 | Una cuota con `montopagado` y sin `fechapago`, las demás pagadas | Post-update | El arreglo no termina (DC-21, OA-8) |
+| PA-CUO-10 | Se vacían `fechapago` y `montopagado` de una cuota con pago en un Vigente | Update | Pasa; el arreglo sigue Vigente |
+| PA-CUO-11 | Una cuota con `montopagado` y sin `fechapago` escrita por el sistema (un Oficial no puede producirla, PA-CUO-16), las demás pagadas | Post-update | El arreglo no termina: la búsqueda de pendientes mira `fechapago` nulo (DC-21) |
 | PA-CUO-12 | El arreglo ya no está Vigente cuando corre el post | Post-update | No hace nada |
 | PA-CUO-13 | Arreglo de 60 cuotas | Post-update | La búsqueda de pendientes es una sola consulta con `TopCount = 1` y sin columnas |
 | PA-CUO-14 | Cadena (pipeline simulado) | Se paga la última cuota | `ArregloActualizarStep` acepta la transición a Terminado por ser del sistema; un Oficial que intente el mismo `Update` recibe `CARP-ARR-010` |
+| PA-CUO-15 | Arreglo Vigente, cuota sin pago | Un Oficial escribe `fechapago` sin `montopagado` (OA-8) | `CARP-CUO-003` |
+| PA-CUO-16 | Arreglo Vigente, cuota sin pago | Un Oficial escribe `montopagado` sin `fechapago` (OA-8) | `CARP-CUO-003` |
+| PA-CUO-17 | Arreglo Vigente, cuota sin pago | Un Oficial escribe `fechapago` con `montopagado` en 0 y, en otra llamada, negativo (OA-8) | `CARP-CUO-003` en ambos |
+| PA-CUO-18 | Arreglo Vigente, cuota de 300 sin pago | Un Oficial registra fecha y `montopagado` de 500 (OA-8, sin tope) | Pasa |
+| PA-CUO-19 | Arreglo Vigente, cuota sin pago | Un Oficial envía `fechapago` y `montopagado` ambos vacíos (OA-8) | Pasa; no hay cambio (DC-01) y ambos o ninguno se cumple |
+| PA-CUO-20 | Arreglo Vigente, cuota con pago | Un Oficial vacía solo `fechapago`, y en otra llamada solo `montopagado` (OA-8) | `CARP-CUO-003` en ambos |
 
 ### 2.8 Versión de plantilla y Mapeo de celda (inv. 7.16; def. ítem 15; D-14, D-15, D-16)
 
@@ -1267,7 +1280,7 @@ Con SYSTEM:
 5. Escribir el Email: `sanic_respondidoporid = createdby` (DC-12; siempre, aunque no haya tiempo) y `sanic_tiemporespuesta` (si hay).
 6. Escribir la conversación (solo si hay cambios): `sanic_cantidadrespuestas`, `sanic_sinrespuestadesde`, `sanic_tiempoprimerarespuesta`.
 
-Una respuesta enviada a una conversación Finalizada (por ejemplo, una cortesía) suma al contador y no toca los pendientes `[ABIERTA OA-10]`.
+Una respuesta enviada a una conversación Finalizada (por ejemplo, una cortesía) suma al contador y no toca los pendientes ni el indicador (decidido el 2026-10-10, OA-10, opción A). Para marcar un correo como respondido, el oficial reabre la conversación. Una conversación Unida se redirige al destino (paso 3).
 
 | ID | Dado | Cuando | Entonces |
 |---|---|---|---|
@@ -1279,7 +1292,7 @@ Una respuesta enviada a una conversación Finalizada (por ejemplo, una cortesía
 | PA-RES-06 | `statuscode` Failed, Pending Send, Sending, Draft | Procesar | No hace nada |
 | PA-RES-07 | `sanic_respondidoporid` ya informado | Procesar | No hace nada |
 | PA-RES-08 | Correo entrante; correo sin Regarding; Regarding a una cuenta | Procesar | No hace nada |
-| PA-RES-09 | Conversación Finalizada con pendiente 10:00 | Procesar | Cantidad +1; Email con `respondidoporid` y sin tiempo; pendiente 10:00 (OA-10) |
+| PA-RES-09 | Conversación Finalizada con pendiente 10:00 | Procesar | Cantidad +1; Email con `respondidoporid` y sin tiempo; pendiente 10:00; indicador sin cambio (OA-10) |
 | PA-RES-10 | Regarding a una Unida con destino Abierto | Procesar | Se aplica al destino y el Email se re-apunta |
 | PA-RES-11 | `senton` nulo, `actualend` 10:45 | Procesar | Usa `actualend` |
 | PA-RES-12 | `senton` 10:45:59 y pendiente 10:00:00 | Procesar | 45 minutos |
@@ -1441,15 +1454,15 @@ Regla de datos: **sin joins** (`link-entity`) en las consultas de los repositori
 | Puerto | Métodos (nombre y semántica) | Implementa |
 |---|---|---|
 | `IReloj` | `AhoraUtc` | `Infraestructura/Reloj` |
-| `IIdentidadDeEjecucion` | `ActorId`, `EsSistema`, `EsCuentaDeServicio`, `EsEscrituraDelSistema`, `EsJefatura()` (0.3) | `Infraestructura/IdentidadDeEjecucion` |
-| `IConfiguracionDelArea` | `BuId`, `TeamPropietarioId`, `TeamJefaturaId`, `QueueRemitenteId`, `AppIdCuentaDeServicio` (Guid o nulo). Perezosos; lanzan `ErrorDeNegocio` `CARP-CFG-*` | `Infraestructura/ConfiguracionDelArea` |
+| `IIdentidadDeEjecucion` | `ActorId`, `EsSistema`, `EsEscrituraDelSistema` (= `EsSistema`), `EsJefatura()` (0.3) | `Infraestructura/IdentidadDeEjecucion` |
+| `IConfiguracionDelArea` | `BuId`, `TeamPropietarioId`, `TeamJefaturaId`, `QueueRemitenteId`. Perezosos; lanzan `ErrorDeNegocio` `CARP-CFG-*` | `Infraestructura/ConfiguracionDelArea` |
 | `IConversaciones` | `Leer(id)`, `BuscarPorHuella(huella)`, `Crear(nueva)`, `Actualizar(id, cambios, conVersion)`, `HayUnidasA(id)`, `SeguirUnida(id, saltos)` | `Datos/ConversacionesDataverse` |
 | `ICorreos` | `Leer(id)`, `DeConversacion(conversacionId)`, `EntrantesSinConversacion(buId, antesDe, tope)`, `BuscarPorMessageId(variantes)`, `ApuntarA(emailId, conversacionId)`, `AsignarAlTeam(emailId, teamId)`, `EscribirRespuesta(emailId, tiempo, respondidoPor)` | `Datos/CorreosDataverse` |
 | `IArreglos` | `Leer(id)`, `NumerosDelCredito(producto, numeroProducto)`, `VersionesVigentes()`, `Actualizar(id, cambios)`, `CongelarYBitacora(...)` | `Datos/ArreglosDataverse` |
 | `ICuotas` | `Listar(arregloId)`, `Crear(cuota)`, `Borrar(id)`, `HayPagos(arregloId)`, `QuedaAlgunaSinPago(arregloId)` | `Datos/CuotasDataverse` |
 | `IClientes` | `BuscarPorCedula(cedulaNormalizada)` (siempre con SYSTEM, incluye inactivos), `BuscarActivosPorCorreo(correo, tope)`, `Leer(id)` | `Datos/ClientesDataverse` |
 | `IVersiones` | `Leer(id)`, `OtrasVigentes(exceptoId)`, `Actualizar`, `FilasDeMapeo(versionId)`, `DescargarArchivo(versionId)` | `Datos/VersionesDataverse` |
-| `IUsuarios` | `NombreCompleto(id)`, `Aplicacion(id)` (applicationid) | `Datos/UsuariosDataverse` |
+| `IUsuarios` | `NombreCompleto(id)` | `Datos/UsuariosDataverse` |
 | `IGeneradorDeFormato` | `Generar(plantilla, huellaEsperada, mapeo, datos)` → `ResultadoGeneracion`; `CalcularHuella(bytes)` | `Formato/GeneradorOpenXml` |
 
 Los métodos de `Datos` son delgados: una consulta o una escritura, con `ColumnSet` nombrado. Los repositorios que necesitan "como sistema" o "como llamador" reciben el servicio por constructor; `Api` y `Steps` deciden cuál (0.2). Cuanto más fina sea esta capa, más barato es el TDD (M-PPP §8).
@@ -1515,7 +1528,7 @@ Todos en `Sanic.Carp.Plugins.Tests/Dobles` y `Apoyo`. Los datos de prueba nunca 
 3. `sanic_carp_tbl_arreglo` en Borrador congelado y Vigente.
 4. `teammembership` de un usuario; `team` con `isdefault`; `queue` con `emailaddress`.
 5. `environmentvariabledefinition` y `environmentvariablevalue`.
-6. `systemuser` con `applicationid` y el usuario SYSTEM (`WhoAmI` elevado).
+6. El usuario SYSTEM (`WhoAmI` elevado) y un `systemuser` ordinario (`WhoAmI` del llamador).
 7. El `FaultException` de una violación de K-01 y el de "versión de fila no coincide".
 
 ---
@@ -1586,7 +1599,7 @@ Los pre-update de Arreglo y Cuota **no** llevan filtro para que nada pase sin ev
 
 ## 6. Decisiones abiertas
 
-Solo lo que no se puede deducir de las fuentes. Cada una dice qué hace el código **mientras tanto** (comportamiento provisional, marcado `[ABIERTA OA-n]` en el texto) y cuál es el costo de cambiarlo. Quien decide: el aprobador, con Héctor Romero para las de negocio del formato y de las cuotas (def. L639).
+Solo lo que no se pudo deducir de las fuentes. **Estado al 2026-10-10: las doce están decididas** (el usuario aceptó todas las recomendaciones; ver D-37 en `definicion.md`). Cada una conserva su análisis como justificación y termina con su línea "Decidida el 2026-10-10". Donde la opción decidida cambió el comportamiento que el código tenía como provisional (OA-8, OA-11 y OA-12), el texto provisional queda tachado. Héctor Romero sigue siendo quien puede revisar las reglas de negocio del formato y de las cuotas (def. L639).
 
 ### OA-1. ¿Formalizar y desbloquear piden motivo?
 
@@ -1598,7 +1611,9 @@ Solo lo que no se puede deducir de las fuentes. Cada una dice qué hace el códi
 | B. Desbloquear pide motivo | Una columna nueva (por ejemplo `sanic_motivodesbloqueo`, memo 500, auditada), un cambio al gesto (DC-05) y una regla más en `ReglasDeArreglo`. Sirve para saber por qué se reimprime un formato | Columna nueva e irreversible, más fricción para el oficial en un paso previo a la firma, sin documento firmado en juego |
 | C. Los dos piden motivo | B más una columna para formalizar | Lo mismo, sin beneficio claro: formalizar es un paso positivo que ya deja usuario y fecha |
 
-**Recomendación: A.** El desbloqueo ocurre antes de firmar; el rastro de quién y cuándo ya existe. **Provisional en el código: A.** Cambiar a B después es barato (una columna y una regla) mientras no haya datos.
+**Recomendación: A.** El desbloqueo ocurre antes de firmar; el rastro de quién y cuándo ya existe. Cambiar a B después es barato (una columna y una regla) mientras no haya datos.
+
+**Decidida el 2026-10-10: A.** Ni formalizar ni desbloquear piden motivo. Se corrige `definicion.md` (ítem de plugins, antes L143): los gestos con motivo son finalizar, descartar, anular y reabrir. Inconsistencia 1 de la sección 7 resuelta.
 
 ### OA-2. Vistas de "sin respuesta", de "llegados a finalizadas" y de borradores
 
@@ -1614,6 +1629,8 @@ El servidor ya resuelve la mitad: por P-09 (dicc. L661), un correo que llega a u
 
 Borradores: (i) una vista "Borradores" y otra "Borradores sin movimiento" (más de 30 días sin cambios, para formalizar o descartar), o (ii) solo la segunda. **Recomendación: B para las conversaciones y (i) para los borradores**, más "Finalizadas sin respuesta" (resultado = Sin respuesta) como pide D-06. No hay impacto en el servidor.
 
+**Decidida el 2026-10-10: B para las conversaciones y (i) para los borradores.** Cinco vistas: "Correos sin respuesta" (todo `sanic_sinrespuestadesde` no vacío, para el jefe), "Correos llegados a conversaciones finalizadas" (indicador = sí, para el oficial), "Borradores", "Borradores sin movimiento" (más de 30 días sin cambios) y "Finalizadas sin respuesta" (D-06). `definicion.md` y el inventario (12.1 a 12.6) quedan alineados. Inconsistencia 2 de la sección 7 resuelta.
+
 ### OA-3. Aviso cuando falla la purga
 
 **Qué dicen las fuentes.** def. L453 dice "si falla, el flujo avisa", pero ningún flujo lo cubre (def. L152-155, L446-449; inv. 11 y su inconsistencia 5).
@@ -1627,6 +1644,8 @@ Borradores: (i) una vista "Borradores" y otra "Borradores sin movimiento" (más 
 
 **Recomendación: A**, y C como respaldo hasta que el flujo exista. Es una decisión de los flujos (inv. 11), no del código de este documento.
 
+**Decidida el 2026-10-10: A, con C como respaldo.** El flujo recurrente de salud (inv. 11.2) suma la comprobación de trabajos de eliminación masiva fallidos en las últimas 24 h; hasta que el flujo exista, revisión manual semanal de System Jobs. Consecuencia pendiente: `SR - CARP - Servicio` probablemente necesite leer los trabajos de eliminación masiva; el privilegio **no está aplicado** y queda como duda D-09 de `04-matriz-privilegios.md`, a verificar en Dev al construir 11.2.
+
 ### OA-4. Cómo se promueve la plantilla de Test a Prod
 
 **Qué dicen las fuentes.** def. L427: "con la herramienta de migración de configuración o una recarga controlada por el jefe (se decide en etapa 3)"; inv. 9 e inconsistencia 15.
@@ -1639,7 +1658,9 @@ Dato de este diseño que condiciona la elección: una versión **solo puede nace
 | B. Recarga controlada: script versionado | Un script del proyecto (`playbooks/datos/versionplantilla.md` y `mapeocelda.md`) crea la versión en Borrador en Prod, sube el archivo, carga las filas de mapeo y **el jefe publica** con el gesto normal. Se compara la huella resultante con la de Test: deben ser iguales (mismo archivo) | Un script y un paso manual del jefe; el mismo camino que usa el negocio, con todas las validaciones |
 | C. Todo manual por el jefe | Sube el archivo y escribe 27 filas de mapeo a mano | Error humano en el mapeo de un documento firmado (riesgo "baja/alto", def. L625) |
 
-**Recomendación: B.** Cumple el diseño sin excepciones, y la comparación de huellas prueba que el archivo es el mismo. Hasta decidir, el código sigue B (no tiene otro camino).
+**Recomendación: B.** Cumple el diseño sin excepciones, y la comparación de huellas prueba que el archivo es el mismo. El código ya seguía B (no tiene otro camino).
+
+**Decidida el 2026-10-10: B.** Recarga controlada con un script versionado (`playbooks/datos/versionplantilla.md` y `mapeocelda.md`): crea la versión en Borrador en Prod, sube el archivo, carga el mapeo, y el jefe publica con el gesto normal; se compara la huella con la de Test. Se ajustan `definicion.md` (Datos de configuración) y el inventario 9; inconsistencia 15 del inventario resuelta.
 
 ### OA-5. Regla de fechas de vencimiento (R-03) y fecha de fin
 
@@ -1652,7 +1673,9 @@ Dato de este diseño que condiciona la elección: una versión **solo puede nace
 | C. Día fijo 1 a 28 | Se obliga a elegir un día que existe en todos los meses | Cambia la fecha de inicio que el cliente acordó |
 | D. Otra regla de negocio (feriados, días hábiles) | Requiere calendario | Más datos y reglas |
 
-Sobre `fechafin`: (i) el plugin la **calcula y la sobrescribe** con el vencimiento de la última cuota, o (ii) el plugin **valida** que coincida y rechaza si no. **Recomendación: A y (i)** (un solo cálculo, sin que el oficial pueda dejar una fecha de fin que contradiga el calendario). **Provisional: A y (i).** Todo vive en `GeneradorDeCalendario`.
+Sobre `fechafin`: (i) el plugin la **calcula y la sobrescribe** con el vencimiento de la última cuota, o (ii) el plugin **valida** que coincida y rechaza si no. **Recomendación: A y (i)** (un solo cálculo, sin que el oficial pueda dejar una fecha de fin que contradiga el calendario). Todo vive en `GeneradorDeCalendario`.
+
+**Decidida el 2026-10-10: A y (i).** Mismo día de cada mes, contado siempre desde la fecha de inicio (`AddMonths` desde el origen); si el mes no tiene ese día, el último del mes. El plugin calcula y sobrescribe `sanic_fechafin` con el vencimiento de la última cuota. R-03 del diccionario queda decidida; la regla de negocio puede consultarse con Héctor Romero.
 
 ### OA-6. Más de un borrador del mismo crédito (R-07)
 
@@ -1664,7 +1687,9 @@ Sobre `fechafin`: (i) el plugin la **calcula y la sobrescribe** con el vencimien
 | B. Se rechaza el segundo borrador | Una consulta en `ArregloCrearStep` por (producto, número de producto) con Borrador activo | Impide comparar dos propuestas; hay que descartar una |
 | C. Se permite con aviso | Solo en el formulario | Sin garantía del servidor |
 
-**Recomendación: A.** El formalizar ya protege el consecutivo (K-02 y el número provisional). **Provisional: A.**
+**Recomendación: A.** El formalizar ya protege el consecutivo (K-02 y el número provisional).
+
+**Decidida el 2026-10-10: A.** Se permiten varios borradores del mismo crédito. R-07 del diccionario cerrada.
 
 ### OA-7. Cómo se imprimen la moneda, el tipo de arreglo y su celda
 
@@ -1676,7 +1701,9 @@ Sobre `fechafin`: (i) el plugin la **calcula y la sobrescribe** con el vencimien
 | B. Las etiquetas del choice tal cual (`Cordobas`, `Cancelacion`) | Cero código | Se imprime sin tilde en un documento firmado |
 | C. Símbolo (`C$`, `US$`) | Hay que cambiar los formatos de las celdas de monto en la plantilla, no solo agregar una celda | Cambia la plantilla v07 (otra aprobación de Héctor) |
 
-**Recomendación: A** para el texto, y que Héctor decida en qué celda va y si los formatos de monto cambian con la moneda (eso es un cambio de plantilla, no de código). **Provisional: A.** Mientras no haya celda mapeada, la clave `moneda` viaja en los datos y no se imprime.
+**Recomendación: A** para el texto, y que Héctor decida en qué celda va y si los formatos de monto cambian con la moneda (eso es un cambio de plantilla, no de código). Mientras no haya celda mapeada, la clave `moneda` viaja en los datos y no se imprime.
+
+**Decidida el 2026-10-10: A.** Textos formales con ortografía en `ClavesDelGenerador`: "Córdobas" / "Dólares" y "Temporal" / "Cancelación". **Pendiente de Héctor Romero (no es una decisión abierta del código):** en qué celda se imprime la moneda y si cambian los formatos de monto; es un cambio de plantilla, no de código.
 
 ### OA-8. Qué es un "pago registrado"
 
@@ -1688,7 +1715,9 @@ Sobre `fechafin`: (i) el plugin la **calcula y la sobrescribe** con el vencimien
 | B. Fecha y monto juntos, ambos o ninguno, monto mayor que cero | Una regla en `ReglasDeCuota`; mensaje `CARP-CUO-003` | El oficial no puede guardar la fecha primero y el monto después |
 | C. B más tope (monto pagado no mayor que el monto de la cuota) | Contradice el pago parcial solo si es *menor*, no mayor; un pago mayor podría ser un adelanto | Puede bloquear pagos reales |
 
-**Recomendación: B** (consistente con "un par fecha y monto por cuota", def. L200), **sin** tope superior hasta que Héctor lo pida. **Provisional: A** (DC-21), porque coincide con la vista de riesgo ya validada. Cambiar a B afecta también la vista de riesgo (debe seguir mirando `fechapago`).
+**Recomendación: B** (consistente con "un par fecha y monto por cuota", def. L200), **sin** tope superior hasta que Héctor lo pida. La vista de riesgo debe seguir mirando `fechapago`. ~~Provisional: A (DC-21), porque coincide con la vista de riesgo ya validada.~~
+
+**Decidida el 2026-10-10: B, sin tope.** Pago registrado = `sanic_fechapago` y `sanic_montopagado` juntos: ambos o ninguno, monto mayor que cero, sin tope superior. Regla en `ReglasDeCuota`, mensaje `CARP-CUO-003`. Cambian DC-21 (que era A), 2.7 y las pruebas `PA-CUO-…`; la vista de riesgo sigue mirando `fechapago` nulo.
 
 ### OA-9. ¿Se genera el formato de un arreglo Terminado, Anulado o Descartado?
 
@@ -1700,7 +1729,9 @@ Sobre `fechafin`: (i) el plugin la **calcula y la sobrescribe** con el vencimien
 | B. Sí, y sin bitácora | Tratado como vista previa | No queda rastro de quién imprimió un arreglo cerrado |
 | C. No: solo Borrador y Vigente | Un `CARP-GEN-012` más | El área no puede reimprimir el historial del cliente (RF-13) |
 
-**Recomendación: A.** **Provisional: A** (PA-GEN-22).
+**Recomendación: A.**
+
+**Decidida el 2026-10-10: A.** Se genera el formato de un arreglo Terminado, Anulado o Descartado sin congelar ni tocar el arreglo, y se escribe la bitácora (PA-GEN-22). `CARP-GEN-012` queda sin uso.
 
 ### OA-10. Respuesta enviada en una conversación Finalizada o Unida
 
@@ -1712,16 +1743,20 @@ Sobre `fechafin`: (i) el plugin la **calcula y la sobrescribe** con el vencimien
 | B. Finalizada: la respuesta limpia el pendiente y el indicador | Más natural para el oficial | Sortea la decisión de reabrir o iniciar una nueva, y la conversación queda Finalizada con correos respondidos |
 | C. Bloquear en el servidor responder desde una no Abierta | Un `CARP-EML-004` en `RemitenteDelAreaStep` | Impide también la cortesía sin reabrir |
 
-**Recomendación: A.** **Provisional: A** (PA-RES-09, PA-RES-10).
+**Recomendación: A.**
+
+**Decidida el 2026-10-10: A.** Finalizada: la respuesta solo suma al contador y no toca pendientes ni indicador; para marcar respondido, el oficial reabre. Unida: se redirige al destino (PA-RES-09, PA-RES-10). `CARP-EML-004` queda sin uso.
 
 ### OA-11. Unir: ¿se admite un origen Finalizado? ¿y clientes distintos?
 
 **Qué dicen las fuentes.** def. ítem 5: el destino "debe estar Abierta"; no dice nada del estado del origen ni de qué pasa si los dos tienen cliente distinto. "Un cliente puede tener a la vez un tema de tarjeta y otro de préstamo" (L281), pero ambos del mismo cliente.
 
-| Pregunta | Opciones | Recomendación | Provisional |
+| Pregunta | Opciones | Recomendación | Previsto en el código hasta el 2026-10-10 |
 |---|---|---|---|
 | Origen Finalizado | (a) rechazar (`CARP-UNI-004`); (b) permitir y dejar el origen Unida | Rechazar: para continuar un tema finalizado ya existen Reabrir e Iniciar conversación nueva | (a) |
-| Clientes distintos | (a) no validar; (b) rechazar con `CARP-UNI-010`; (c) rechazar salvo que lo haga la jefatura | (b): unir correos de dos clientes mezcla datos de personas distintas (RNF-03) y repunta arreglos del otro cliente | (a), porque es lo que dicen las fuentes |
+| Clientes distintos | (a) no validar; (b) rechazar con `CARP-UNI-010`; (c) rechazar salvo que lo haga la jefatura | (b): unir correos de dos clientes mezcla datos de personas distintas (RNF-03) y repunta arreglos del otro cliente | ~~(a), porque es lo que dicen las fuentes~~ |
+
+**Decidida el 2026-10-10:** origen Finalizado, (a) rechazar con `CARP-UNI-004` (ya era el comportamiento previsto); clientes distintos, (b) rechazar con `CARP-UNI-010` (el comportamiento previsto era (a), no validar, y cambió). Si alguna de las dos conversaciones no tiene cliente no hay nada que comparar y la unión sigue (paso 6c y PA-UNI-02, PA-UNI-23). Se agregan la regla, el mensaje y `PA-UNI-19`, `PA-UNI-22` y `PA-UNI-23`.
 
 ### OA-12. Cómo reconoce el plugin a la cuenta de servicio, y quién ejecuta las API
 
@@ -1735,37 +1770,40 @@ Sobre `fechafin`: (i) el plugin la **calcula y la sobrescribe** con el vencimien
 
 Para las API: rechazar en `tomar…`, `unir…` e `iniciar…` a quien tenga `applicationid`, o aceptar que la cuenta de servicio también puede ejecutarlas.
 
-**Recomendación: confirmar con el administrador qué tipo de usuario es la cuenta de servicio; si es una persona licenciada, C** (y retirar 10.7), y aceptar que las API puedan ser ejecutadas por Servicio y Purga (no tienen sentido de negocio para ellas y la escritura queda atribuida). **Provisional: A** como está en las fuentes (`EsCuentaDeServicio`, 0.3), sin efecto sobre el resto.
+**Recomendación: confirmar con el administrador qué tipo de usuario es la cuenta de servicio; si es una persona licenciada, C** (y retirar 10.7), y aceptar que las API puedan ser ejecutadas por Servicio y Purga (no tienen sentido de negocio para ellas y la escritura queda atribuida). ~~Provisional: A como está en las fuentes (`EsCuentaDeServicio`, 0.3), sin efecto sobre el resto.~~
+
+**Decidida el 2026-10-10: C.** No se reconoce ninguna cuenta de servicio: solo SYSTEM escribe columnas solo-sistema (las Custom API elevan siempre y ningún flujo del diseño las escribe). La cuenta de servicio es un usuario licenciado (RNF-06, D-21) y no tiene Application ID, por eso la variable era un error. Se acepta que Servicio y Purga puedan ejecutar las API: reciben el rol Oficial por el team del sistema y la escritura queda atribuida. Se retiran `EsCuentaDeServicio`, la variable 10.7 (inventario, sin renumerar) y `Aplicacion(id)` de `IUsuarios`; se reescriben DC-02 y PA-CNV-17 y PA-CNV-18. Inconsistencias 6 y 11 de la sección 7 resueltas.
 
 ### Sin decisión pendiente para el servidor
 
 - "Con arreglo de pago" sin arreglo formalizado vinculado (R-06, def. L284): "hoy solo avisa". El aviso es de formulario; el servidor no hace nada. Si se vuelve obligatorio, lo valida `ReglasDeConversacion` (una regla y un código).
 - Promedio de tiempo total sin las "Sin respuesta" (def. L277 y L517): afecta el gráfico (inv. 12.16), no el servidor.
 - Regla de pertenencia a un team de grupo de Entra consultable por plugin (def. L502, confianza media): se verifica en Dev (H-8 de la lista de humo, 8.1).
+- Celda de moneda en la plantilla y formatos de monto por moneda (OA-7): pendiente de Héctor Romero; es un cambio de plantilla, no de código.
 
 ---
 
 ## 7. Inconsistencias encontradas
 
-No se resolvieron en silencio. Para cada una, qué sigue este documento mientras tanto.
+No se resolvieron en silencio. Para cada una, qué sigue este documento y, desde el 2026-10-10, su estado.
 
-| # | Dónde | Qué choca | Qué sigue este documento |
-|---|---|---|---|
-| 1 | `definicion.md:143` frente a `02-diccionario-datos.md:389-393` y `definicion.md:299-303` | La def. llama "gestos con motivo" a finalizar, formalizar, desbloquear, descartar, anular y reabrir. El diccionario solo modela motivo para descartar, anular y reabrir (y resultado/motivo/detalle al finalizar). Formalizar y desbloquear no lo piden | El diccionario (OA-1) |
-| 2 | `definicion.md:122` frente a `:276` y `:450` | Dos vistas separadas ("sin respuesta", "llegados a finalizadas") frente a una sola que reúne ambos; "borradores" frente a "borradores sin cambios en más de 30 días" | Nada en el servidor (OA-2) |
-| 3 | `02-diccionario-datos.md:661` (P-09) frente a `definicion.md:285-286` (ítem 6) y `:82`, `:276` | P-09 dice que el plugin "vacíe" `sanic_sinrespuestadesde` "al decidir" (reabrir o iniciar nueva). Si se vacía al reabrir, el correo nuevo queda sin respuesta en una conversación Abierta que ya no lo muestra, y falla el criterio de éxito 4 | Reabrir **conserva** `sinrespuestadesde`; Iniciar conversación nueva la vacía en la anterior (DC-10). A confirmar |
-| 4 | `06-inventario-componentes.md:166` frente a `definicion.md:163`, `:260` | El inventario pone la "vinculación por correo" entre los steps de Cliente (7.13); la definición la pone en el plugin de entrada de correo | En la entrada de correo (2.10, paso 5); `ClienteStep` no vincula |
-| 5 | `01-convenciones.md:44` frente a `06-inventario-componentes.md:223` | El ejemplo de la convención nombra la variable de la BU `sanic_carp_ev_businessunitarea`; el inventario la llama `sanic_carp_ev_nombrebu` *(prov.)* | `sanic_carp_ev_nombrebu` (0.4); la convención debería actualizar su ejemplo |
-| 6 | `definicion.md:418` e `06-inventario-componentes.md:227` frente a `definicion.md:101` y `:482` (D-21) | Variable con el Application ID de la cuenta de servicio, pero la cuenta es un usuario licenciado (sin `applicationid`) | Se implementa como dice (DC-02); ver OA-12 |
-| 7 | `spikes/manual/RESULTADO.md:3` y `:128-135` frente a `definicion.md:181`, `:256`, `:269` y D-34 (`:495`) | La def. cita el spike 4 como confirmado (botón Responder completa `parentactivityid`, imagen pegada en Base64, respuesta con asunto cambiado desde Outlook web), pero `RESULTADO.md` dice que esas pruebas manuales están "preparadas, no ejecutadas" y que los veredictos "no están en este documento". La evidencia no está en el repositorio | Se toman como hechos verificados (lo indica el pedido); falta registrar la evidencia |
-| 8 | `definicion.md:270` | El plugin "fija el remitente en la queue y rechaza cualquier otro", pero la misma línea dice que el remitente por defecto del formulario es el usuario. Si se rechaza todo lo que no sea la queue, la respuesta por defecto sería siempre rechazada | Reemplazar el usuario creador por la queue; rechazar cualquier otro (DC-07) |
-| 9 | `definicion.md:249-251` y `:491` (D-30) frente a `02-diccionario-datos.md:507-508` | D-30 lista las columnas solo-sistema de Conversación y Arreglo; el diccionario marca también `sanic_tiemporespuesta` y `sanic_respondidoporid` de Email como solo-sistema, sin plugin que las proteja en la def. | Se agrega `EmailSoloSistemaStep` (2.9) |
-| 10 | `01-convenciones.md:57` | El nombre de step `STEP - CARP - tabla - mensaje - etapa` no distingue dos steps del mismo mensaje y etapa (por ejemplo Conversación/Update/PreOperation tiene tres); el playbook rechaza nombres repetidos | Se agrega el nombre de la clase (DC-23) |
-| 11 | `04-matriz-privilegios.md:27` y `:30` frente a `definicion.md:402` (D-17) | Cada API se restringe con un privilegio "presente solo en los roles que corresponden", pero Servicio y Purga reciben también el rol Oficial por el team del sistema, y con él `Write` de Conversación y `Read` de Generación (Purga lo tiene además por su cuenta, `04:71`) | Sin cambio; ver OA-12 |
-| 12 | `04-matriz-privilegios.md:74` frente a `:67` y `definicion.md:391` | El texto de la matriz dice que el Oficial "no tiene ningún privilegio" sobre Mapeo y que el Jefe tampoco lee; la tabla (§2) y la def. dan `Read` de Mapeo al Oficial (opción A del 2026-10-09). Texto desactualizado | Rige la tabla |
-| 13 | `06-inventario-componentes.md:150` | Dice que el directorio `src/` no existe; ya existe `src/Sanic.Carp.Plugins/Dominio/Choices.g.cs` | Se parte de lo que hay |
-| 14 | `definicion.md:292` y `02-diccionario-datos.md:47` (DD-12) frente a `definicion.md:311` | Los montos se calculan "al crear el arreglo y al modificar el borrador". Un Vigente reabierto (descongelado) también admite modificar datos (ítem 10) y quedaría con montos sin recalcular | Se recalculan en todo arreglo editable, no solo en Borrador (2.6, paso 4) |
-| 15 | `definicion.md:282` frente a `definicion.md:471` (D-10) y `02-diccionario-datos.md:275` | "Repunta los arreglos vinculados", pero un arreglo Terminado, Anulado o Descartado es inactivo y de solo lectura | Se repuntan los activos; los inactivos no (V-2) |
+| # | Dónde | Qué choca | Qué sigue este documento | Estado |
+|---|---|---|---|---|
+| 1 | `definicion.md:143` frente a `02-diccionario-datos.md:389-393` y `definicion.md:299-303` | La def. llama "gestos con motivo" a finalizar, formalizar, desbloquear, descartar, anular y reabrir. El diccionario solo modela motivo para descartar, anular y reabrir (y resultado/motivo/detalle al finalizar). Formalizar y desbloquear no lo piden | El diccionario (OA-1). Decidido: ni formalizar ni desbloquear piden motivo | **Resuelta por OA-1 (2026-10-10).** `definicion.md` corregida |
+| 2 | `definicion.md:122` frente a `:276` y `:450` | Dos vistas separadas ("sin respuesta", "llegados a finalizadas") frente a una sola que reúne ambos; "borradores" frente a "borradores sin cambios en más de 30 días" | Nada en el servidor (OA-2). Decidido: cinco vistas (ver OA-2) | **Resuelta por OA-2 (2026-10-10).** `definicion.md` e inventario 12.1 a 12.6 alineados |
+| 3 | `02-diccionario-datos.md:661` (P-09) frente a `definicion.md:285-286` (ítem 6) y `:82`, `:276` | P-09 dice que el plugin "vacíe" `sanic_sinrespuestadesde` "al decidir" (reabrir o iniciar nueva). Si se vacía al reabrir, el correo nuevo queda sin respuesta en una conversación Abierta que ya no lo muestra, y falla el criterio de éxito 4 | Reabrir **conserva** `sinrespuestadesde`; Iniciar conversación nueva la vacía en la anterior (DC-10). A confirmar | **A confirmar.** No la decide OA-1 a OA-12; sigue pendiente de confirmación del aprobador |
+| 4 | `06-inventario-componentes.md:166` frente a `definicion.md:163`, `:260` | El inventario pone la "vinculación por correo" entre los steps de Cliente (7.13); la definición la pone en el plugin de entrada de correo | En la entrada de correo (2.10, paso 5); `ClienteStep` no vincula | Decidida en este documento (2.10). El inventario 7.13 todavía lista la vinculación entre los steps de Cliente; sin alinear |
+| 5 | `01-convenciones.md:44` frente a `06-inventario-componentes.md:223` | El ejemplo de la convención nombra la variable de la BU `sanic_carp_ev_businessunitarea`; el inventario la llama `sanic_carp_ev_nombrebu` *(prov.)* | `sanic_carp_ev_nombrebu` (0.4); la convención debería actualizar su ejemplo | **Sigue abierta.** `01-convenciones.md:44` todavía usa `sanic_carp_ev_businessunitarea` y el inventario 10.1 `sanic_carp_ev_nombrebu` |
+| 6 | `definicion.md:418` e `06-inventario-componentes.md:227` frente a `definicion.md:101` y `:482` (D-21) | Variable con el Application ID de la cuenta de servicio, pero la cuenta es un usuario licenciado (sin `applicationid`) | ~~Se implementa como dice (DC-02)~~. Decidido por OA-12: sin variable ni reconocimiento de cuenta de servicio; DC-02 reescrita | **Resuelta por OA-12 (2026-10-10).** Variable 10.7 retirada |
+| 7 | `spikes/manual/RESULTADO.md:3` y `:128-135` frente a `definicion.md:181`, `:256`, `:269` y D-34 (`:495`) | La def. cita el spike 4 como confirmado (botón Responder completa `parentactivityid`, imagen pegada en Base64, respuesta con asunto cambiado desde Outlook web), pero `RESULTADO.md` dice que esas pruebas manuales están "preparadas, no ejecutadas" y que los veredictos "no están en este documento". La evidencia no está en el repositorio | Se toman como hechos verificados. ~~Falta registrar la evidencia~~: ya está registrada | **Resuelta.** Los veredictos de las cuatro pruebas manuales están en `spikes/manual/RESULTADO.md` (sección "Tarea D. Veredictos", agregada el 2026-10-09). Quedan desactualizados el encabezado (L3) y la fila D de la tabla de veredictos (L18) del mismo archivo |
+| 8 | `definicion.md:270` | El plugin "fija el remitente en la queue y rechaza cualquier otro", pero la misma línea dice que el remitente por defecto del formulario es el usuario. Si se rechaza todo lo que no sea la queue, la respuesta por defecto sería siempre rechazada | Reemplazar el usuario creador por la queue; rechazar cualquier otro (DC-07) | Decidida en este documento (DC-07) |
+| 9 | `definicion.md:249-251` y `:491` (D-30) frente a `02-diccionario-datos.md:507-508` | D-30 lista las columnas solo-sistema de Conversación y Arreglo; el diccionario marca también `sanic_tiemporespuesta` y `sanic_respondidoporid` de Email como solo-sistema, sin plugin que las proteja en la def. | Se agrega `EmailSoloSistemaStep` (2.9) | Decidida en este documento (2.9) |
+| 10 | `01-convenciones.md:57` | El nombre de step `STEP - CARP - tabla - mensaje - etapa` no distingue dos steps del mismo mensaje y etapa (por ejemplo Conversación/Update/PreOperation tiene tres); el playbook rechaza nombres repetidos | Se agrega el nombre de la clase (DC-23) | Decidida en este documento (DC-23). `01-convenciones.md:57` todavía muestra el nombre sin la clase |
+| 11 | `04-matriz-privilegios.md:27` y `:30` frente a `definicion.md:402` (D-17) | Cada API se restringe con un privilegio "presente solo en los roles que corresponden", pero Servicio y Purga reciben también el rol Oficial por el team del sistema, y con él `Write` de Conversación y `Read` de Generación (Purga lo tiene además por su cuenta, `04:71`) | Sin cambio de roles. Decidido por OA-12: se acepta | **Resuelta por OA-12 (2026-10-10).** Se acepta que Servicio y Purga ejecuten las API |
+| 12 | `04-matriz-privilegios.md:74` frente a `:67` y `definicion.md:391` | El texto de la matriz dice que el Oficial "no tiene ningún privilegio" sobre Mapeo y que el Jefe tampoco lee; la tabla (§2) y la def. dan `Read` de Mapeo al Oficial (opción A del 2026-10-09). Texto desactualizado | Rige la tabla. Texto de la matriz corregido | **Resuelta (2026-10-10).** Texto de `04-matriz-privilegios.md` corregido: el Oficial lee Mapeo por la opción A del 2026-10-09; el Jefe no tiene Read propio, le llega por el Oficial |
+| 13 | `06-inventario-componentes.md:150` | Dice que el directorio `src/` no existe; ya existe `src/Sanic.Carp.Plugins/Dominio/Choices.g.cs` | Se parte de lo que hay | Decidida en este documento. El inventario (L150) todavía dice que `src/` no existe |
+| 14 | `definicion.md:292` y `02-diccionario-datos.md:47` (DD-12) frente a `definicion.md:311` | Los montos se calculan "al crear el arreglo y al modificar el borrador". Un Vigente reabierto (descongelado) también admite modificar datos (ítem 10) y quedaría con montos sin recalcular | Se recalculan en todo arreglo editable, no solo en Borrador (2.6, paso 4) | Decidida en este documento (2.6, paso 4) |
+| 15 | `definicion.md:282` frente a `definicion.md:471` (D-10) y `02-diccionario-datos.md:275` | "Repunta los arreglos vinculados", pero un arreglo Terminado, Anulado o Descartado es inactivo y de solo lectura | Se repuntan los activos; los inactivos no (V-2) | Decidida en este documento (V-2) |
 
 ---
 
@@ -1799,9 +1837,9 @@ Lo que el doble no puede probar (pipeline real, transacción, seguridad) se prue
 | Máquinas de estado | 3 (Conversación, Arreglo, Versión de plantilla) |
 | Piezas de dominio puro | 8 (2.0.1 a 2.0.8) |
 | Pruebas de aceptación `PA-…` | ver el recuento al final de esta sección |
-| Decisiones de diseño `DC-nn` | 27 |
+| Decisiones de diseño `DC-nn` | 27 (DC-02 y DC-21 reescritas el 2026-10-10; ninguna agregada ni retirada) |
 | Supuestos de plataforma `V-n` | 7 |
-| Decisiones abiertas `OA-n` | 12 |
+| Decisiones abiertas `OA-n` | 0 (las 12 decididas el 2026-10-10) |
 | Inconsistencias | 15 |
 
-Pruebas de aceptación numeradas `PA-…`: **346** en 26 áreas (ARR 45, ASG 10, CAL 9, CLI 11, CNV 23, COL 2, CON 5, CUO 14, EML 8, ENT 23, ESI 4, FEC 7, GEN 27, HUE 5, INI 15, MAP 10, MON 14, NOR 8, PRO 11, PUB 9, REC 15, RES 14, TIE 10, TOM 9, UNI 21, VER 17).
+Pruebas de aceptación numeradas `PA-…`: **356** en 26 áreas (ARR 47, ASG 10, CAL 9, CLI 11, CNV 23, COL 2, CON 5, CUO 20, EML 8, ENT 23, ESI 4, FEC 7, GEN 27, HUE 5, INI 15, MAP 10, MON 14, NOR 8, PRO 11, PUB 9, REC 15, RES 14, TIE 10, TOM 9, UNI 23, VER 17). Eran 346 el 2026-10-09: el 2026-10-10 se agregaron 2 de ARR (`PA-ARR-46` y `-47`, OA-5), 6 de CUO (`PA-CUO-15` a `-20`, OA-8) y 2 de UNI (`PA-UNI-22` y `-23`, OA-11); se modificaron `PA-CNV-17`, `PA-CNV-18`, `PA-CUO-01`, `-10`, `-11`, `PA-GEN-19`, `PA-UNI-03`, `-09` y `-19`.

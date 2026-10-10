@@ -1,6 +1,6 @@
 # Spike 4: identidad no administradora, app de pruebas y pruebas manuales
 
-Proyecto 2026-003 "Control de Arreglos de Pago". Fecha de ejecución: 2026-10-08 (19:50 a 21:10 UTC). Estado: las tareas A, B y C están terminadas y verificadas; la tarea D está **preparada y a la espera de que el usuario haga las tres pruebas** (ver el final).
+Proyecto 2026-003 "Control de Arreglos de Pago". Fecha de ejecución: 2026-10-08 (19:50 a 21:10 UTC). Estado: las tareas A, B y C están terminadas y verificadas; la tarea D la ejecutó el usuario y sus veredictos están al final.
 
 ## Alcance y método
 
@@ -17,7 +17,7 @@ Proyecto 2026-003 "Control de Arreglos de Pago". Fecha de ejecución: 2026-10-08
 | A | 2c: sin perfil de columna, ¿quick find encuentra la fila por la cédula? ¿Y con perfil? | **CONFIRMADO** el comportamiento esperado: **sin perfil NO la encuentra (y no da error); con perfil SÍ la encuentra** | Principal no administrador, rol solo de lectura. Sin perfil: la fila se ve (por nombre), `spk_cedula` viene `null`, quick find por cédula devuelve 0 filas con HTTP 200. Con perfil: `spk_cedula` visible y quick find devuelve `Q2-beto` | **D-12 y D-19 se cierran con la salvedad de abajo**: la seguridad por columna sobre la cédula es compatible con la búsqueda del oficial que está en el perfil. El plan B de D-19 no se activa |
 | B | D-28: ¿puede un no administrador crear un Email con la queue como remitente, Regarding a la conversación, `parentactivityid`, y enviarlo con `SendEmail`? | **CONFIRMADO**, con un rol de **9 privilegios** | Envío verificado por Graph en el buzón 2: `From` y `Sender` = la queue, `In-Reply-To` = el correo original, misma raíz de `Thread-Index`, 23 s después de `SendEmail`; Email en Dataverse con estado Sent, propietario = el usuario de aplicación | **D-28 se corrige**: "Send Email as Another User" **no** hizo falta; sí hacen falta AppendTo y Read sobre Queue. "Send" y "Queue Item: Read" del diseño no existen como privilegios (ver abajo) |
 | C | App model-driven con timeline | **CONFIRMADO** | App publicada, `clienttype` 4, tablas `spk_conversacion` y `email` + sitemap, formulario publicado con el timeline | URL abajo |
-| D | Tres pruebas manuales | **PREPARADAS, NO EJECUTADAS** | Correo `[SPIKE4] Prueba manual`, conversación y guía listos; `verificar.py` corre y reporta "pendiente" en las tres | Los resultados salen cuando el usuario avise |
+| D | Tres pruebas manuales | **EJECUTADAS Y CONFIRMADAS** (1, 1b, 2 y 3; ver al final) | Las hizo el usuario sobre el correo `[SPIKE4] Prueba manual`; en 1b, `verificar.py` dio un falso negativo | Confirman lo que la definición da por hecho: `parentactivityid` por el botón Responder, imagen pegada en Base64, correlación de una respuesta con asunto cambiado |
 
 ## Tarea A. Búsqueda por cédula sin perfil de columna (pregunta 2c del spike 2)
 
