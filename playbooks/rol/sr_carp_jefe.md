@@ -51,7 +51,7 @@ Advertencias: un rol no lleva etiquetas por idioma (es un texto único), así qu
 }
 ```
 
-Un security role en la unidad de negocio raíz, con los privilegios del rol `App Opener` (los que tenga el entorno en el momento de construir) más los 10 de este playbook. **Solo lo adicional al Oficial** (decisión del 2026-10-09, definición línea 393): no repite ningún privilegio del rol `SR - CARP - Oficial`. Alcances: `usuario` = Basic (solo lo propio) · `unidad` = Local (la BU `Arreglos de Pago`) · `unidad_e_hijas` = Deep · `organizacion` = Global.
+Un security role en la unidad de negocio raíz, con los privilegios del rol `App Opener` (los que tenga el entorno en el momento de construir) más los 7 de este playbook. **Solo lo adicional al Oficial** (decisión del 2026-10-09, definición línea 393): no repite ningún privilegio del rol `SR - CARP - Oficial`. Alcances: `usuario` = Basic (solo lo propio) · `unidad` = Local (la BU `Arreglos de Pago`) · `unidad_e_hijas` = Deep · `organizacion` = Global.
 
 Decisiones que este playbook toma y el diseño no traía:
 
@@ -69,8 +69,8 @@ Viene del diseño, no lo decide este playbook:
 - Las vistas y el dashboard de supervisión no son privilegios: van con la app (inventario 12).
 - La vista previa de plantilla y la publicación usan `escribir` sobre Versión de plantilla (definición línea 342).
 - `anexar` de Mapeo es el lado hijo del lookup a Versión de plantilla (REL-08); el lado padre (`anexar_a` de Versión) lo trae el Oficial.
-- No tiene `asignar`: la definición solo lo da al Oficial, en Cliente y Arreglo (D-31).
-- **Huecos de la matriz resueltos por el arquitecto el 2026-10-09** (D-01 y D-02 de `diseno/04-matriz-privilegios.md` §5): se agregan `leer` de Mapeo (sin él el Jefe no podría abrir lo que mantiene) y `asignar` de Versión y de Mapeo (el plugin de P-11 pone al team como dueño en el alta, y crear un registro con otro dueño exige Assign, igual que D-31 para el Oficial). Ambos se confirman en la prueba con un usuario no administrador.
+- No tiene `asignar`: no hace falta para crear con el team como dueño (prueba de roles del 2026-10-09).
+- **Huecos de la matriz (D-01, D-02) cerrados el 2026-10-09**: el Read de Mapeo le llega por el Oficial (opción A del usuario) y Assign no hace falta (prueba de roles, `spikes/roles/RESULTADO.md`). Este rol lleva solo Create, Write y Append de Versión y Create, Write, Append y Delete de Mapeo.
 
 ## 3. Precondiciones
 
@@ -113,7 +113,7 @@ Otros privilegios: ninguno.
 | # | Comprobación | Esperado |
 |---|---|---|
 | 1 | `GET roles` por nombre en la unidad raíz | un rol · `ismanaged = false` · la descripción de la sección 2 |
-| 2 | `RetrieveRolePrivilegesRole` | los privilegios de `App Opener` más los 10 de arriba; **ninguno más** (en particular, ningún privilegio de Email, Queue, Cliente, Conversación, Arreglo, Cuota ni Generación de formato: son del Oficial) |
+| 2 | `RetrieveRolePrivilegesRole` | los privilegios de `App Opener` más los 7 de arriba; **ninguno más** (en particular, ningún privilegio de Email, Queue, Cliente, Conversación, Arreglo, Cuota ni Generación de formato: son del Oficial) |
 | 3 | Pertenencia a la solución | el rol figura una vez en la solución de la sección 1 (`solutioncomponents`, tipo 20) |
 | 4 | Segunda ejecución sin `--solo-verificar` | estado `ya_existia`, código de salida 0 |
 | 5 | Comprobación independiente contra el XML exportado (`muestra_rol.py`) | `OK`, y la muestra queda en `playbooks/rol/muestras/` |
@@ -132,4 +132,3 @@ Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`
 - Dar al rol acceso a la app model-driven y a las vistas y el dashboard de supervisión: van con la app, inventario 12.
 - El perfil de seguridad de columna y su asociación al team Jefatura: inventarios 6.1 y 13.8.
 - Los privilegios de ejecución de las Custom API: inventario 8.2 a 8.6 (diseño detallado pendiente). La definición los apoya en privilegios de tabla que el Jefe ya tiene por el Oficial; este rol no agrega ninguno para ellas.
-- La prueba con un usuario no administrador de que `asignar` hace falta para crear con el team como dueño (D-02): si no hace falta, se quita.

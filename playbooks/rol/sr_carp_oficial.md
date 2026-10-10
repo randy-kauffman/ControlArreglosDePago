@@ -100,7 +100,7 @@ Viene del diseño, no lo decide este playbook:
 - `prvAppendToQueue` lo exige la plataforma para poner la queue como remitente (spike 4, D-28).
 - **Adjuntos de correo**: la definición pide "crear y leer" y deja los privilegios para la construcción (línea 388). Leído de Dev el 2026-10-09: `activitymimeattachment` y `attachment` **no tienen privilegios propios**; los cubren `prvCreateActivity` y `prvReadActivity`. No se otorga nada sobre `msdyn_richtextfile` (el editor no la usa, spike 4). Duda D-03 de la matriz: no se probó con un adjunto real.
 - Queue Item no tiene privilegios propios (spike 4, hallazgo 3); lo cubre `prvReadQueue`.
-- `asignar` solo en Cliente y Arreglo y solo para fijar el team del sistema como propietario (D-31, definición líneas 383 y 385).
+- **Sin `asignar`** (prueba de roles del 2026-10-09, `spikes/roles/RESULTADO.md`): crear con el team como dueño no lo necesita; la plataforma exige en cambio que el team dueño lea la tabla. Por eso este rol lee Mapeo (opción A del usuario) aunque no lo edite, y lleva `prvAppendToUser` para los lookups a usuario.
 - No tiene `crear` sobre Conversación (las crea el sistema, línea 384; y es el privilegio de ejecución de la reconciliación, solo de Servicio), ni `crear` ni `borrar` sobre Cuota (las altas y bajas las hace el sistema, D-08), ni acceso a Mapeo de celda ni a Mailbox (líneas 390 y 392).
 - Nadie humano borra (D-18): ninguna tabla lleva `borrar` y no hay `prvDeleteActivity`.
 - Tiene `escribir` sobre Conversación, Arreglo y Cuota, pero qué columnas puede tocar lo limitan los plugins (definición §6 Lógica), no este rol.
@@ -143,12 +143,13 @@ Privilegios sobre las tablas de la solución. **Exactamente estos**: uno de meno
 
 | Tabla | Privilegios esperados |
 |---|---|
-| `sanic_carp_tbl_cliente` | `prvCreatesanic_carp_tbl_cliente` = Local · `prvReadsanic_carp_tbl_cliente` = Local · `prvWritesanic_carp_tbl_cliente` = Local · `prvAppendsanic_carp_tbl_cliente` = Local · `prvAppendTosanic_carp_tbl_cliente` = Local · `prvAssignsanic_carp_tbl_cliente` = Local |
+| `sanic_carp_tbl_cliente` | `prvCreatesanic_carp_tbl_cliente` = Local · `prvReadsanic_carp_tbl_cliente` = Local · `prvWritesanic_carp_tbl_cliente` = Local · `prvAppendsanic_carp_tbl_cliente` = Local · `prvAppendTosanic_carp_tbl_cliente` = Local |
 | `sanic_carp_tbl_conversacion` | `prvReadsanic_carp_tbl_conversacion` = Local · `prvWritesanic_carp_tbl_conversacion` = Local · `prvAppendsanic_carp_tbl_conversacion` = Local · `prvAppendTosanic_carp_tbl_conversacion` = Local |
-| `sanic_carp_tbl_arreglo` | `prvCreatesanic_carp_tbl_arreglo` = Local · `prvReadsanic_carp_tbl_arreglo` = Local · `prvWritesanic_carp_tbl_arreglo` = Local · `prvAppendsanic_carp_tbl_arreglo` = Local · `prvAppendTosanic_carp_tbl_arreglo` = Local · `prvAssignsanic_carp_tbl_arreglo` = Local |
+| `sanic_carp_tbl_arreglo` | `prvCreatesanic_carp_tbl_arreglo` = Local · `prvReadsanic_carp_tbl_arreglo` = Local · `prvWritesanic_carp_tbl_arreglo` = Local · `prvAppendsanic_carp_tbl_arreglo` = Local · `prvAppendTosanic_carp_tbl_arreglo` = Local |
 | `sanic_carp_tbl_cuota` | `prvReadsanic_carp_tbl_cuota` = Local · `prvWritesanic_carp_tbl_cuota` = Local |
 | `sanic_carp_tbl_versionplantilla` | `prvReadsanic_carp_tbl_versionplantilla` = Local · `prvAppendTosanic_carp_tbl_versionplantilla` = Local |
 | `sanic_carp_tbl_generacionformato` | `prvReadsanic_carp_tbl_generacionformato` = Local |
+| `sanic_carp_tbl_mapeocelda` | `prvReadsanic_carp_tbl_mapeocelda` = Local |
 
 Otros privilegios:
 
@@ -158,6 +159,7 @@ Otros privilegios:
 | `prvWriteActivity` | Basic |
 | `prvAppendActivity` | Basic |
 | `prvReadActivity` | Local |
+| `prvAppendToUser` | Local |
 | `prvAppendToActivity` | Local |
 | `prvReadQueue` | Local |
 | `prvAppendToQueue` | Local |
