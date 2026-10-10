@@ -28,7 +28,7 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 7 | Código de plugins (C#, TDD estricto) | 22 | 0 | 9 | 13 |
 | 8 | Registro de paquete, Custom API y steps | 7 | 0 | 1 | 6 |
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
-| 10 | Configuración entre entornos (EV y connection references) | 6 | 0 | 2 | 4 |
+| 10 | Configuración entre entornos (EV y connection references) | 8 | 0 | 4 | 4 |
 | 11 | Flujos | 3 | 0 | 0 | 3 |
 | 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 0 | 0 | 25 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
