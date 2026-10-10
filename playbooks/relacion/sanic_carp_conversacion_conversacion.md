@@ -119,7 +119,7 @@ Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`
 ## 8. Fuera de alcance
 
 - Claves alternativas: ninguna usa este lookup (K-01 a K-03 usan solo texto, choice y entero; inventario 5.1 a 5.3, `02` §7).
-- **Ciclos y autorreferencia.** Learn no documenta que la plataforma impida que una conversación se una a sí misma ni que se formen ciclos, y el comportamiento está pendiente de verificar en una tabla descartable. Si el negocio los prohíbe, es una regla de la Custom API «Unir conversaciones» o de un plugin, y se especifica en su propio playbook (inventario 7, 8).
+- **Ciclos y autorreferencia.** **La plataforma no los impide** (verificado el 2026-10-09 en una tabla descartable: un registro que se apunta a sí mismo y el ciclo A→B, B→A se guardan con 204). Como el negocio no tiene sentido sin esa prohibición, es una regla de la Custom API «Unir conversaciones» o de un plugin, y se especifica en su propio playbook (inventario 7, 8).
 - El estado «Unida» (`statuscode` 159460001) lo fija solo la Custom API de unir (D-30, `02` §3.2); este playbook no lo toca.
 - Esta relación no es la jerarquía de la tabla: no se marca `IsHierarchical` (decisión sobre toda la tabla, otro tipo de playbook). No ocupa el lugar de la relación parental que admite la tabla hija, porque no tiene cascadas.
 - Vistas, formularios y seguridad de registro que muestran este lookup: inventario 12 y 6.
