@@ -221,7 +221,7 @@ Las **definiciones** viajan en la solución; los **valores** y las **conexiones*
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 10.1 | Environment variable `sanic_carp_ev_nombrebu` *(prov.)*: nombre de la BU, por el que los plugins resuelven la BU | `playbooks/variable-entorno/sanic_carp_ev_nombrebu.md` | 1.1 | D-23, §6 Entornos | diseño detallado pendiente |
+| 10.1 | Environment variable `sanic_carp_ev_nombrebu` (nombre confirmado por el usuario el 2026-10-10): nombre de la BU, por el que los plugins resuelven la BU | `playbooks/variable-entorno/sanic_carp_ev_nombrebu.md` | 1.1 | D-23, §6 Entornos | diseño detallado pendiente |
 | 10.2 | Environment variable `sanic_carp_ev_nombreteamjefatura` *(prov.)*: nombre del team Jefatura | `playbooks/variable-entorno/sanic_carp_ev_nombreteamjefatura.md` | 1.1 | D-04, D-23 | diseño detallado pendiente |
 | 10.3 | Environment variable `sanic_carp_ev_destinatariosalertas` *(prov.)*: destinatarios de alertas | `playbooks/variable-entorno/sanic_carp_ev_destinatariosalertas.md` | 1.1 | §6 Entornos, Operación | diseño detallado pendiente |
 | 10.4 | Environment variable `sanic_carp_ev_umbralesmonitoreo` *(prov.)*: umbrales de monitoreo (puede ser más de una variable) | `playbooks/variable-entorno/sanic_carp_ev_umbralesmonitoreo.md` | 1.1 | §6 Entornos, Operación | diseño detallado pendiente |

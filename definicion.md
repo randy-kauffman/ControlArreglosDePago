@@ -452,7 +452,7 @@ Toda regla que debe cumplirse sin importar el punto de entrada vive en plugins d
 - **Borradores sin movimiento.** Una vista para el jefe lista los borradores sin cambios en más de 30 días, para formalizarlos o descartarlos. Sin esto, un borrador olvidado no tiene fecha de término y la retención nunca lo alcanza (RF-16, RNF-07).
 - **Plugins asíncronos.** Se supervisan en System Jobs. Se registran trazas solo de excepciones.
 - **Retención.**
-  - Cada corrida de purga se revisa en System Jobs. Si falla, el flujo recurrente de salud avisa (OA-3, decidido el 2026-10-10); hasta que ese flujo exista, el jefe o el equipo de automatización revisan System Jobs una vez por semana. Los fallos por Restrict se esperan reducidos, porque los filtros excluyen los registros todavía relacionados.
+  - Cada corrida de purga se revisa en System Jobs. Si falla, el flujo recurrente de salud avisa (OA-3, decidido el 2026-10-10); hasta que ese flujo exista, el equipo de automatización revisa System Jobs una vez por semana (decisión del usuario del 2026-10-10). Los fallos por Restrict se esperan reducidos, porque los filtros excluyen los registros todavía relacionados.
   - Un backup manual precede a cambios grandes. El backup automático puede conservar datos purgados hasta que expire su retención. Esa ventana, y la de los logs de auditoría, se consultan a Cumplimiento (RNF-10).
 - **Permisos.** Se repite la revisión de roles ajenos con el administrador antes de cada pase a Prod, y se revisa periódicamente la lista de System Administrators (ver Seguridad).
 - **Cambios de plantilla.** Los hace el jefe como versión nueva en Borrador, con vista previa y publicación. El equipo de automatización no interviene, salvo para agregar campos mapeables.

@@ -41,7 +41,7 @@ Si un componente **no tiene nombre lógico** en la plataforma, aplica solo la re
 | Custom API | `CAPI - CARP - Nombre` | `sanic_carp_capi_nombre` | `CAPI - CARP - Generar formato` · `sanic_carp_capi_generarformato` |
 | Parámetro de entrada de Custom API | `CAPI_IP - CARP - Nombre` | `uniquename` **corto**: `nombre` · `name`: `sanic_carp_capiip_<api>_<nombre>` | `arregloid` · `sanic_carp_capiip_generarformato_arregloid` |
 | Parámetro de salida de Custom API | `CAPI_OP - CARP - Nombre` | `uniquename` corto · `name`: `sanic_carp_capiop_<api>_<nombre>` | `archivo` · `sanic_carp_capiop_generarformato_archivo` |
-| Environment variable | `EV - CARP - Nombre` | `sanic_carp_ev_nombre` | `EV - CARP - Business unit del area` · `sanic_carp_ev_businessunitarea` (el team propietario se resuelve por `isdefault` dentro de esa business unit; ver sección 2) |
+| Environment variable | `EV - CARP - Nombre` | `sanic_carp_ev_nombre` | `EV - CARP - Nombre de la BU` · `sanic_carp_ev_nombrebu` (el team propietario se resuelve por `isdefault` dentro de esa business unit; ver sección 2) |
 | Connection reference | `CONR - CARP - Nombre` | `sanic_carp_conr_nombre` | `CONR - CARP - Outlook` · `sanic_carp_conr_outlook` |
 | Cloud flow | `Cloud Flow - CARP - COD - Nombre`, con `CARP-COD` como identificador corto de tres letras (BP-PP-196) | **no tiene**: Power Automate no popula `uniquename` al crear un cloud flow (verificado en el proyecto 2026-001) | `Cloud Flow - CARP - SAL - Salud del buzon` · ID `CARP-SAL` |
 | Security role | `SR - CARP - Nombre` | **no tiene** | `SR - CARP - Oficial` |
