@@ -24,7 +24,7 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 3 | Tablas con sus columnas (7 propias + columnas sobre `email`) | 8 | 8 | 0 | 0 |
 | 4 | Relaciones 1:N (con su lookup) | 19 | 19 | 0 | 0 |
 | 5 | Claves alternativas | 3 | 3 | 0 | 0 |
-| 6 | Seguridad: perfil de columnas (1) y roles (4) | 5 | 1 | 0 | 4 |
+| 6 | Seguridad: perfil de columnas (1) y roles (4) | 5 | 5 | 0 | 0 |
 | 7 | Código de plugins (C#, TDD estricto) | 22 | 0 | 9 | 13 |
 | 8 | Registro de paquete, Custom API y steps | 7 | 0 | 1 | 6 |
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
@@ -136,10 +136,10 @@ Se crean con profundidad BU, sin Delete humano sobre el agregado (definición §
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 6.2 | `SR - CARP - Oficial` (definición: "ARP Oficial") | `playbooks/rol/sr_carp_oficial.md` | 3.1 a 3.8 y las tablas estándar Email, Attachment, Queue | RNF-04, D-17, D-28, D-31 | diseño detallado pendiente |
-| 6.3 | `SR - CARP - Jefe` (definición: "ARP Jefe"; "suma" privilegios al Oficial) | `playbooks/rol/sr_carp_jefe.md` | ídem; 6.2 como base de lectura | RF-09, RF-04, RNF-04 | diseño detallado pendiente |
-| 6.4 | `SR - CARP - Servicio` (definición: "ARP Servicio"; cuenta de servicio, flujos y reconciliación) | `playbooks/rol/sr_carp_servicio.md` | ídem; Mailbox, Queue Item | D-21, D-26; Create de Conversación es el privilegio de ejecución de 8.3 | diseño detallado pendiente |
-| 6.5 | `SR - CARP - Purga` (definición: "ARP Purga"; trabajos de eliminación) | `playbooks/rol/sr_carp_purga.md` | ídem; Email con adjuntos y Queue Item | RNF-07, D-22 | diseño detallado pendiente |
+| 6.2 | `SR - CARP - Oficial` (definición: "ARP Oficial") | `playbooks/rol/sr_carp_oficial.md` | 3.1 a 3.8 y las tablas estándar Email, Attachment, Queue | RNF-04, D-17, D-28, D-31 | hecho (creado en Dev el 2026-10-09 desde `diseno/04-matriz-privilegios.md`; `ya_existia` y muestra exportada coinciden; falta la prueba con un usuario no administrador, matriz §7) |
+| 6.3 | `SR - CARP - Jefe` (definición: "ARP Jefe"; "suma" privilegios al Oficial) | `playbooks/rol/sr_carp_jefe.md` | ídem; 6.2 como base de lectura | RF-09, RF-04, RNF-04 | hecho (creado en Dev el 2026-10-09 desde `diseno/04-matriz-privilegios.md`; `ya_existia` y muestra exportada coinciden; falta la prueba con un usuario no administrador, matriz §7) |
+| 6.4 | `SR - CARP - Servicio` (definición: "ARP Servicio"; cuenta de servicio, flujos y reconciliación) | `playbooks/rol/sr_carp_servicio.md` | ídem; Mailbox, Queue Item | D-21, D-26; Create de Conversación es el privilegio de ejecución de 8.3 | hecho (creado en Dev el 2026-10-09 desde `diseno/04-matriz-privilegios.md`; `ya_existia` y muestra exportada coinciden; falta la prueba con un usuario no administrador, matriz §7) |
+| 6.5 | `SR - CARP - Purga` (definición: "ARP Purga"; trabajos de eliminación) | `playbooks/rol/sr_carp_purga.md` | ídem; Email con adjuntos y Queue Item | RNF-07, D-22 | hecho (creado en Dev el 2026-10-09 desde `diseno/04-matriz-privilegios.md`; `ya_existia` y muestra exportada coinciden; falta la prueba con un usuario no administrador, matriz §7) |
 
 Los roles son previos a las Custom API: cada API se restringe con el privilegio de una tabla propia, presente solo en los roles que corresponden (D-17). Las API dependen de los roles, no al revés.
 
