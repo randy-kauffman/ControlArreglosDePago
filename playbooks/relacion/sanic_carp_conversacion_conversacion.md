@@ -89,7 +89,7 @@ Receta: `power-platform-construir`, `references/modelo-datos/patrones.md` §2.3 
 python3 herramientas/construir/relacion.py playbooks/relacion/sanic_carp_conversacion_conversacion.md
 ```
 
-**Estado esperado de la herramienta: `bloqueado`.** La variante A (autorreferida no jerárquica) está implementada pero no verificada contra la plataforma; `relacion.py` devuelve `bloqueado` hasta que un ensayo sobre una tabla descartable la dé por verificada. Este playbook no esquiva ese bloqueo ni cambia su contenido para pasarlo. Lo sin verificar: que el alta con `IsHierarchical: false` explícito sea aceptada y devuelta así; el error exacto de la plataforma online con comportamiento parental en una autorreferida (la prohibición del formato no depende de eso); y si la plataforma impide que un registro se apunte a sí mismo o forme ciclos.
+**Construida el 2026-10-09.** La variante A se ensayó ese día sobre una tabla descartable y quedó verificada: `IsHierarchical` falso, `RemoveLink` vacía el lookup al borrar. La plataforma **permite** que un registro se apunte a sí mismo y que se formen ciclos (A unida a B y B unida a A): si el negocio lo prohíbe, lo hace cumplir la Custom API de unir. Resultado: `creado`, después `ya_existia`, y la muestra exportada coincide.
 
 ## 5. Verificación
 

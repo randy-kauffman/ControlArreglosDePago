@@ -1,0 +1,54 @@
+<ImportExportXml version="9.2.26094.138" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26094.138" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26094.00142">
+  <SolutionManifest>
+    <UniqueName>sanic_carp_sol_controlarreglospago</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="SOL - CARP - Control de Arreglos de Pago" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Proyecto 2026-003 Control de Arreglos de Pago (BAC Credomatic Nicaragua, area de Arreglos de Pago)." languagecode="1033" />
+    </Descriptions>
+    <Version>1.0.0.0</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>Sistemas_Abiertos_Nicaragua</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Sistemas_Abiertos_Nicaragua" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="Sistemas Abiertos - BacCredomatic NIC" languagecode="1033" />
+      </Descriptions>
+      <EMailAddress>hjiron@baccredomatic.ni</EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>sanic</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>15946</CustomizationOptionValuePrefix>
+      <Addresses />
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="email" behavior="1" />
+      <RootComponent type="1" schemaName="sanic_carp_tbl_arreglo" behavior="0" />
+      <RootComponent type="1" schemaName="sanic_carp_tbl_cliente" behavior="0" />
+      <RootComponent type="1" schemaName="sanic_carp_tbl_conversacion" behavior="0" />
+      <RootComponent type="1" schemaName="sanic_carp_tbl_cuota" behavior="0" />
+      <RootComponent type="1" schemaName="sanic_carp_tbl_generacionformato" behavior="0" />
+      <RootComponent type="1" schemaName="sanic_carp_tbl_mapeocelda" behavior="0" />
+      <RootComponent type="1" schemaName="sanic_carp_tbl_versionplantilla" behavior="0" />
+      <RootComponent type="1" schemaName="sanic_carp_tbl_zzrel" behavior="0" />
+      <RootComponent type="1" schemaName="systemuser" behavior="1" />
+      <RootComponent type="9" schemaName="sanic_carp_ch_campomapeable" behavior="0" />
+      <RootComponent type="9" schemaName="sanic_carp_ch_canalorigen" behavior="0" />
+      <RootComponent type="9" schemaName="sanic_carp_ch_estadoversionplantilla" behavior="0" />
+      <RootComponent type="9" schemaName="sanic_carp_ch_moneda" behavior="0" />
+      <RootComponent type="9" schemaName="sanic_carp_ch_motivosinrespuesta" behavior="0" />
+      <RootComponent type="9" schemaName="sanic_carp_ch_productocrediticio" behavior="0" />
+      <RootComponent type="9" schemaName="sanic_carp_ch_resultadoconversacion" behavior="0" />
+      <RootComponent type="9" schemaName="sanic_carp_ch_tipoarreglo" behavior="0" />
+      <RootComponent type="9" schemaName="sanic_carp_ch_tipomapeo" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="1" schemaName="systemuser" displayName="SystemUser" parentSchemaName="" solution="msdyn_PowerAdminSettingsEmail (2.2.3552.1)" />
+        <Dependent type="1" schemaName="systemuser" displayName="SystemUser" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

@@ -88,7 +88,7 @@ Receta: `power-platform-construir`, `references/modelo-datos/patrones.md` §2.3 
 python3 herramientas/construir/relacion.py playbooks/relacion/sanic_carp_systemuser_email.md
 ```
 
-**Estado esperado de la herramienta: `bloqueado`.** La variante B (hija estándar) no está implementada en `relacion.py`: la detecta con `IsCustomEntity = false` en la tabla hija y devuelve `bloqueado`. Este playbook no la esquiva. Lo sin verificar: la pertenencia a la solución (qué filas de `solutioncomponents` crean la relación y su lookup, y con qué `rootcomponentbehavior` queda `email`), los parámetros exactos de `CanBeReferencing` / `CanBeReferenced` y la publicación de una tabla estándar.
+**Construida el 2026-10-09.** La variante B (hija estándar) se ensayó ese día con un lookup descartable sobre `email` y quedó implementada y verificada en `relacion.py`: comprueba `CanBeReferencing`/`CanBeReferenced` antes de crear y exige la pertenencia observada (relación y lookup con una fila cada uno, `email` una vez con `rootcomponentbehavior` 1). Resultado: `creado`, después `ya_existia`, y la muestra exportada coincide.
 
 ## 5. Verificación
 

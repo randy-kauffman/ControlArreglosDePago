@@ -11,21 +11,36 @@ sola). Verificado contra la plataforma el 2026-09-20: al crear, la plataforma
 IGNORA la auditoría del lookup (la deja desactivada); si el playbook la pide,
 se reenvía la definición completa del lookup con PUT antes de publicar. Y una
 relación NO es un componente propio de la solución: viaja dentro de la tabla
-hija, que tiene que estar en la solución con todos sus subcomponentes.
+hija, que tiene que estar en la solución con todos sus subcomponentes (salvo
+con una hija estándar, variante B abajo: ahí la relación y el lookup tienen
+fila propia y la tabla no es nuestra).
 
 Nunca modifica ni borra: si la relación existe y no coincide, informa
 `difiere`. Dos salvedades explícitas: `--publicar` vuelve a publicar solo si
 coincide en todo, y `--corregir-lookup` repara solo la auditoría del lookup,
 cuando esa es la única diferencia.
 
-Variantes de `relacion.md` (sección 6), ambas con 0 ciclos completos:
-- A, autorreferida no jerárquica (`tabla_padre` igual a `tabla_hija`, con
-  `jerarquica: false`): implementada pero NO verificada contra la plataforma.
-  Mientras no lo esté, la herramienta devuelve `bloqueado`; se ensaya primero
-  sobre una tabla descartable con `--permitir-no-verificadas` (solo vale si el
-  nombre de la tabla lleva `_tbl_zz`).
-- B, tabla hija estándar (por ejemplo `email`): NO implementada. Se detecta
-  con `IsCustomEntity` de la hija y se devuelve `bloqueado`.
+Variantes de `relacion.md` (sección 6), ambas ensayadas contra la plataforma el 2026-10-09 (Dev) y verificadas:
+- A, autorreferida no jerárquica (`tabla_padre` igual a `tabla_hija`, con `jerarquica: false`). El ensayo (tabla descartable `…_tbl_zzrel`,
+  construida con `--permitir-no-verificadas` → `creado`) dio: el alta con `IsHierarchical: false` explícito es aceptada y la plataforma lo devuelve así
+  (`IsHierarchical` false, ReferencedEntity = ReferencingEntity, Delete = RemoveLink; `CascadeConfiguration` trae además `Archive`, que la plataforma pone
+  sola). Con datos, la plataforma PERMITE que un registro se apunte a sí mismo y los ciclos (B→C y C→B), y borrar con RemoveLink deja el lookup vacío:
+  si el negocio los prohíbe es una regla de plugin. Una autorreferida PARENTAL (cascadas Cascade) por Web API también fue aceptada (204): la prohibición
+  del formato la frena la validación offline, no la plataforma.
+- B, tabla hija estándar (por ejemplo `email`). El ensayo (Web API directo: la herramienta aún no la implementaba) dio: `POST CanBeReferencing
+  {"EntityName": "email"}` → `CanBeReferencing: true` y `POST CanBeReferenced {"EntityName": "systemuser"}` → `CanBeReferenced: true`; el alta con el mismo
+  cuerpo que la relación común y la cabecera `MSCRM.SolutionUniqueName` → 204. En `solutioncomponents`: la relación 1 fila (componenttype 10,
+  rootcomponentbehavior 0), el lookup 1 fila (componenttype 2, rootcomponentbehavior 0) y `email` 1 fila (componenttype 1, rootcomponentbehavior 1; ya estaba
+  por otra columna propia). El lookup nace con `IsAuditEnabled` false. La solución exportada trae `<RootComponent type="1" schemaName="email" behavior="1" />`
+  y la entidad Email con solo nuestros atributos. La herramienta pregunta `CanBeReferencing` (hija) y `CanBeReferenced` (padre) antes de CREAR (si
+  alguna es false: `bloqueado`; una relación que ya existe prueba que se pudo crear y no las pregunta), solo admite `restringido` o `quitar_vinculo` (la
+  parental es un error de playbook, offline) y EXIGE esa pertenencia: la relación 1 fila, el lookup 1 fila y la tabla estándar exactamente 1 fila con
+  `rootcomponentbehavior` distinto de 0 (0 filas, 2 filas o behavior 0 es una diferencia). Antes del alta la estándar puede no figurar todavía en la
+  solución: no impide crear (la pertenencia se mira solo de lo que ya existe); se exige al releer. Sin ensayar, y por eso bloqueado: un lookup
+  auditado sobre una estándar (`variante:hija-estandar-auditoria`: el ajuste de la auditoría con PUT sobre una tabla estándar no se observó) y
+  `--corregir-lookup` (error: no aplica).
+Una característica que volviera a estar sin verificar (fuera de `VERIFICADAS_EN_PLATAFORMA`) devuelve `bloqueado`; solo se ensaya con
+`--permitir-no-verificadas` sobre algo descartable (una tabla `_tbl_zz…`, o con una hija estándar un lookup `_zz…`).
 
 Última línea de la salida: JSON de una línea con `estado`
 (creado | ya_existia | difiere | bloqueado | error), `componente`, `detalle`.
@@ -65,23 +80,29 @@ from _comun import (  # noqa: E402
 TIPO = "relacion"
 LARGO_MAXIMO_RELACION = 100  # schema name de una relación (Learn, tabla EntityRelationship)
 LARGO_MAXIMO_IDENTIFICADOR = 95
-COMPONENTE_TABLA = 1  # la relación viaja dentro de su tabla hija: no tiene fila propia en solutioncomponents
+COMPONENTE_TABLA = 1  # la relación común viaja dentro de su tabla hija: no tiene fila propia en solutioncomponents
+COMPONENTE_ATRIBUTO = 2  # el lookup de la variante B (hija estándar) tiene fila propia
+COMPONENTE_RELACION = 10  # la relación de la variante B (hija estándar) tiene fila propia
 INCLUYE_SUBCOMPONENTES = 0  # rootcomponentbehavior de una tabla agregada con todo lo suyo
 TABLAS_DEL_SISTEMA = {"systemuser"}  # únicas tablas ajenas que el formato admite como padre
-NOMBRE_ESTANDAR = r"[a-z][a-z0-9_]*"  # nombre lógico de una tabla estándar (variante B): se detecta, no se construye
+NOMBRE_ESTANDAR = r"[a-z][a-z0-9_]*"  # nombre lógico de una tabla estándar (variante B)
+ACCION_HIJA, ACCION_PADRE = "CanBeReferencing", "CanBeReferenced"  # acciones de elegibilidad de Learn (Table relationship eligibility)
 
-# Gate "Ensayo". Todo lo que el formato admite y todavía no se ensayó contra la plataforma queda bloqueado: primero se ensaya sobre una
-# tabla descartable (`…_tbl_zz…`, con --permitir-no-verificadas) y recién después se agrega a VERIFICADAS_EN_PLATAFORMA.
-# La variante A tiene 0 ciclos completos (relacion.md §6 y la receta, patrones.md §2.3): nada de lo suyo se ensayó.
+# Gate "Ensayo". Todo lo que el formato admite y todavía no se ensayó contra la plataforma queda bloqueado: primero se ensaya sobre algo descartable
+# (una tabla `…_tbl_zz…` o, con una hija estándar, un lookup `…_zz…`, con --permitir-no-verificadas) y recién después se agrega a VERIFICADAS_EN_PLATAFORMA.
 AUTORREFERIDA = "variante:autorreferida"
-CARACTERISTICAS = frozenset({AUTORREFERIDA})
-VERIFICADAS_EN_PLATAFORMA = frozenset()
+HIJA_ESTANDAR = "variante:hija-estandar"
+HIJA_ESTANDAR_AUDITORIA = "variante:hija-estandar-auditoria"
+CARACTERISTICAS = frozenset({AUTORREFERIDA, HIJA_ESTANDAR, HIJA_ESTANDAR_AUDITORIA})
+# 2026-10-09 (Dev): la variante A (tabla descartable `…_tbl_zzrel`) y la variante B (lookup sobre `email`, Web API directo) pasaron un ciclo
+# completo; el detalle de lo observado está en la docstring del módulo. La auditoría del lookup sobre una estándar NO se ensayó (el lookup se ensayó con
+# auditoria false): sigue bloqueada.
+VERIFICADAS_EN_PLATAFORMA = frozenset({AUTORREFERIDA, HIJA_ESTANDAR})
 INFIJO_DESCARTABLE = "_tbl_zz"
+INFIJO_DESCARTABLE_LOOKUP = "_zz"
 PENDIENTE_DE_VERIFICAR = {
-    AUTORREFERIDA: "la relación autorreferida no jerárquica (variante A de relacion.md, sección 6) tiene 0 ciclos completos. Está sin verificar: "
-                   "que el alta con IsHierarchical: false explícito sea aceptada y la plataforma lo devuelva así; el error exacto que devuelve la plataforma online "
-                   "con comportamiento parental en una autorreferida (la prohibición del formato no depende de eso); y si la plataforma impide que un registro "
-                   "se apunte a sí mismo o forme ciclos (Learn no lo documenta)",
+    HIJA_ESTANDAR_AUDITORIA: "un lookup auditado sobre una tabla estándar no se ensayó: la plataforma ignora la auditoría del lookup al crear y ajustarla exige reenviar la "
+                             "definición del lookup con PUT, algo que sobre una tabla estándar no se observó (el ensayo del 2026-10-09 fue con auditoria false)",
 }
 
 MENSAJE_FALLO_CLIENTE = (
@@ -129,6 +150,12 @@ def _corto(tabla, prefijo, abrev):
     return tabla[len(inicio):] if tabla.startswith(inicio) else tabla
 
 
+def es_hija_estandar(datos, identidad):
+    """La tabla hija es estándar (variante B) cuando su nombre no es el de una tabla de la solución: la estructura ya validó que, si no lo es, tiene la
+    forma del nombre lógico de una estándar. Contra el entorno se confirma con `IsCustomEntity`."""
+    return not re.fullmatch(rf"{identidad['prefijo']}_{identidad['abrev']}_tbl_[a-z0-9]+", datos["tabla_hija"])
+
+
 def _validar_jerarquica(datos, autorreferida):
     """La clave `jerarquica` aparece SOLO cuando `tabla_padre` es igual a `tabla_hija`, y vale `false`. En cualquier otra relación no está
     (así los playbooks existentes, que no la traen, siguen siendo válidos)."""
@@ -162,7 +189,16 @@ def _validar_estructura(datos, identidad):
     if datos["comportamiento"] not in CASCADAS:
         raise ErrorPlaybook(f"'comportamiento' tiene que ser uno de {sorted(CASCADAS)}, no {datos['comportamiento']!r}")
     autorreferida = datos["tabla_padre"] == datos["tabla_hija"]
+    estandar = es_hija_estandar(datos, identidad)
     _validar_jerarquica(datos, autorreferida)
+    if autorreferida and estandar:
+        raise ErrorPlaybook(f"'tabla_padre' y 'tabla_hija' son la misma tabla estándar ({datos['tabla_hija']!r}): una relación autorreferida sobre una tabla estándar "
+                            "no está cubierta (la variante A es solo para una tabla de la solución)")
+    if estandar and datos["comportamiento"] == "parental":
+        # Variante B (relacion.md §6): una estándar ya trae sus relaciones parentales (las de actividad, por ejemplo) y Learn no admite una cascada nueva si la
+        # tabla relacionada ya es hija en otra con cascadas. Es una regla del formato: se frena acá, sin tocar la red.
+        raise ErrorPlaybook(f"'comportamiento' = 'parental' no se admite cuando 'tabla_hija' es una tabla estándar ({datos['tabla_hija']!r}, variante B de relacion.md, "
+                            "sección 6): una tabla estándar ya trae sus relaciones parentales y no se pueden agregar más cascadas: usar 'restringido' o 'quitar_vinculo'")
 
     # BP-PP-188: <prefijo>_<abrev>_<padre>_<hijo>, con sufijo libre si hay más de una relación entre el mismo par.
     base = f"{prefijo}_{abrev}_{_corto(datos['tabla_padre'], prefijo, abrev)}_{_corto(datos['tabla_hija'], prefijo, abrev)}"
@@ -180,35 +216,52 @@ def _validar_estructura(datos, identidad):
 
     if autorreferida:
         # Variante A (relacion.md §6): nunca parental (la cascada recorrería ciclos y la tabla es padre e hija a la vez), y el lookup no es requerido
-        # (el primer registro de la tabla no podría cumplirlo). La prohibición del formato no depende del error que dé la plataforma.
+        # (el primer registro de la tabla no podría cumplirlo). La prohibición del formato no depende de la plataforma: en el ensayo del 2026-10-09 una
+        # autorreferida parental por Web API devolvió 204 (la plataforma la ACEPTA); la frena esta validación offline.
         if datos["comportamiento"] == "parental":
-            raise ErrorPlaybook("'comportamiento' = 'parental' no se admite en una relación autorreferida (la cascada recorrería ciclos y la tabla es padre e hija a la vez): "
-                                "usar 'restringido' o 'quitar_vinculo'")
+            raise ErrorPlaybook("'comportamiento' = 'parental' no se admite en una relación autorreferida (la cascada recorrería ciclos y la tabla es padre e hija a la vez; "
+                                "la plataforma la acepta, ensayo del 2026-10-09, pero la prohibición es del formato): usar 'restringido' o 'quitar_vinculo'")
         if k["requerida"]:
             raise ErrorPlaybook("lookup.requerida tiene que ser false en una relación autorreferida: el primer registro de la tabla no podría cumplirlo")
 
 
-def caracteristicas_usadas(datos):
+def caracteristicas_usadas(datos, identidad):
     """Lo que usa el playbook y puede no estar verificado contra la plataforma."""
-    return {AUTORREFERIDA} if datos["tabla_padre"] == datos["tabla_hija"] else set()
+    usadas = set()
+    if datos["tabla_padre"] == datos["tabla_hija"]:
+        usadas.add(AUTORREFERIDA)
+    if es_hija_estandar(datos, identidad):
+        usadas.add(HIJA_ESTANDAR)
+        if datos["lookup"]["auditoria"]:
+            usadas.add(HIJA_ESTANDAR_AUDITORIA)
+    return usadas
 
 
-def comprobar_verificadas(datos, verificadas, permitir_no_verificadas):
-    """Gate "Ensayo": `bloqueado` si el playbook usa algo no verificado, salvo con --permitir-no-verificadas y solo sobre una tabla descartable
-    (la columna lookup nace en la tabla, así que lo que tiene que ser descartable es la tabla, no el nombre de la relación)."""
-    faltan = sorted(caracteristicas_usadas(datos) - set(verificadas))
+def comprobar_verificadas(datos, identidad, verificadas, permitir_no_verificadas):
+    """Gate "Ensayo": `bloqueado` si el playbook usa algo no verificado, salvo con --permitir-no-verificadas y solo sobre algo descartable: la tabla
+    (la columna lookup nace en la tabla, así que lo que tiene que ser descartable es la tabla, no el nombre de la relación) o, si la hija es una tabla
+    estándar (que no puede ser descartable), el lookup."""
+    faltan = sorted(caracteristicas_usadas(datos, identidad) - set(verificadas))
     if not faltan:
         return
-    pendiente = "; ".join(PENDIENTE_DE_VERIFICAR[f] for f in faltan)
+    estandar = es_hija_estandar(datos, identidad)
+    pendiente = "; ".join(PENDIENTE_DE_VERIFICAR[f] for f in faltan if f in PENDIENTE_DE_VERIFICAR)
+    pendiente = f": {pendiente}" if pendiente else ""
     if not permitir_no_verificadas:
+        descartable = f"un lookup descartable ('…{INFIJO_DESCARTABLE_LOOKUP}…')" if estandar else f"una tabla descartable ('…{INFIJO_DESCARTABLE}…')"
         raise Bloqueado(
-            f"el playbook usa algo todavía no verificado contra la plataforma ({', '.join(faltan)}): {pendiente}. "
-            f"Primero se ensaya sobre una tabla descartable ('…{INFIJO_DESCARTABLE}…') con --permitir-no-verificadas"
+            f"el playbook usa algo todavía no verificado contra la plataforma ({', '.join(faltan)}){pendiente}. "
+            f"Primero se ensaya sobre {descartable} con --permitir-no-verificadas"
         )
-    if INFIJO_DESCARTABLE not in datos["tabla_hija"]:
+    if estandar and INFIJO_DESCARTABLE_LOOKUP not in datos["lookup"]["nombre"]:
+        raise Bloqueado(
+            f"--permitir-no-verificadas solo vale sobre un lookup descartable, con '{INFIJO_DESCARTABLE_LOOKUP}' en su nombre; "
+            f"{datos['lookup']['nombre']!r} no lo es (la tabla estándar {datos['tabla_hija']!r} no puede ser descartable). Sin verificar ({', '.join(faltan)}){pendiente}"
+        )
+    if not estandar and INFIJO_DESCARTABLE not in datos["tabla_hija"]:
         raise Bloqueado(
             f"--permitir-no-verificadas solo vale sobre una tabla descartable, con '{INFIJO_DESCARTABLE}' en el nombre de la tabla; "
-            f"{datos['tabla_hija']!r} no lo es. Sin verificar ({', '.join(faltan)}): {pendiente}"
+            f"{datos['tabla_hija']!r} no lo es. Sin verificar ({', '.join(faltan)}){pendiente}"
         )
 
 
@@ -250,27 +303,47 @@ def construir_payload(datos, identidad, atributo_referenciado):
 # ---------------------------------------------------------------------------
 # Lectura del entorno: una sola función para los tres caminos
 # ---------------------------------------------------------------------------
-def _exigir_hija_propia(t, tabla, consulta, identidad):
-    """Precondición de NEGOCIO (`bloqueado`): la tabla hija es una tabla de la solución. La forma de `IsCustomEntity` se valida por tipo
-    (nulo o texto es `error`: no se pudo averiguar). Una hija estándar (por ejemplo `email`) es la variante B de relacion.md §6, sin ensayar:
-    NO se crea. Esto también protege a la relación común de crear por error un lookup sobre una tabla estándar.
-    La tabla PADRE `systemuser` NO es este caso: el padre estándar ya estaba soportado (se referencia, no se modifica), por eso acá solo se mira la hija."""
-    if exigir_forma(t.get("IsCustomEntity"), bool, consulta, "IsCustomEntity"):
-        patron = rf"{identidad['prefijo']}_{identidad['abrev']}_tbl_[a-z0-9]+"
-        if not re.fullmatch(patron, tabla):
-            raise Bloqueado(f"la tabla hija '{tabla}' es una tabla propia (IsCustomEntity = true) pero no es una tabla de la solución (no cumple {patron}): "
-                            "el lookup se crea en una tabla de la solución")
-        return
-    raise Bloqueado(
-        f"la tabla hija '{tabla}' no es una tabla propia (IsCustomEntity = false): es la variante B de relacion.md (sección 6), la relación cuya hija es una tabla "
-        "estándar, y está sin ensayar. Falta verificar: la pertenencia a la solución (qué filas de solutioncomponents crean la relación y su lookup, y con qué "
-        "rootcomponentbehavior queda la tabla estándar), los parámetros exactos de CanBeReferencing / CanBeReferenced y la publicación de una tabla estándar. "
-        "La herramienta no crea esta variante ni supone cómo se verifica"
-    )
+def _exigir_hija(t, tabla, consulta, identidad):
+    """Precondición de NEGOCIO (`bloqueado`): la tabla hija es una tabla de la solución o, en la variante B, una tabla estándar. La forma de
+    `IsCustomEntity` se valida por tipo (nulo o texto es `error`: no se pudo averiguar). El nombre (ya validado offline) dice cuál se espera y el
+    entorno lo confirma: una tabla con el nombre de la solución que no es propia, o una estándar por nombre que sí es propia, bloquea. Eso protege a
+    la relación común de crear por error un lookup sobre una tabla estándar. La tabla PADRE `systemuser` NO es este caso: el padre estándar se
+    referencia, no se modifica."""
+    es_propia = exigir_forma(t.get("IsCustomEntity"), bool, consulta, "IsCustomEntity")
+    patron = rf"{identidad['prefijo']}_{identidad['abrev']}_tbl_[a-z0-9]+"
+    de_la_solucion = bool(re.fullmatch(patron, tabla))
+    if de_la_solucion and not es_propia:
+        raise Bloqueado(f"la tabla hija '{tabla}' lleva el nombre de una tabla de la solución pero no es una tabla propia (IsCustomEntity = false): una tabla estándar solo se "
+                        "admite como hija en la variante B de relacion.md (sección 6), con su nombre lógico sin el prefijo del proyecto")
+    if not de_la_solucion and es_propia:
+        raise Bloqueado(f"la tabla hija '{tabla}' es una tabla propia (IsCustomEntity = true) pero no es una tabla de la solución (no cumple {patron}): "
+                        "el lookup se crea en una tabla de la solución")
+
+
+def _preguntar(dv, accion, tabla):
+    """Acción de elegibilidad de Learn («Table relationship eligibility»): `POST <accion> {"EntityName": "<tabla>"}` → 200 con `{"<accion>": true|false}`.
+    Solo pregunta; pasa por `escribir_metadatos` como toda llamada POST de la herramienta."""
+    consulta = f"la consulta de elegibilidad (POST {accion} '{tabla}')"
+    est, cuerpo, _ = escribir_metadatos(dv, "POST", accion, {"EntityName": tabla})
+    if est != 200:
+        raise ErrorEntorno(f"{consulta} devolvió HTTP {est} (se esperaba 200): {cuerpo}")
+    exigir_forma(cuerpo, dict, consulta, "cuerpo")
+    return exigir_forma(cuerpo.get(accion), bool, consulta, accion)
+
+
+def comprobar_elegibilidad(dv, datos):
+    """Precondición de la variante B, antes de CREAR (relacion.md §6.B): la hija puede ser la referenciante (`CanBeReferencing`) y el padre puede ser
+    referenciado (`CanBeReferenced`). Si no, `bloqueado`. La hija se informa primero."""
+    if not _preguntar(dv, ACCION_HIJA, datos["tabla_hija"]):
+        raise Bloqueado(f"la tabla hija '{datos['tabla_hija']}' no puede ser la referenciante de una relación 1:N ({ACCION_HIJA} = false): "
+                        "la plataforma no admite crear un lookup en ella (variante B de relacion.md, sección 6)")
+    if not _preguntar(dv, ACCION_PADRE, datos["tabla_padre"]):
+        raise Bloqueado(f"la tabla padre '{datos['tabla_padre']}' no puede ser referenciada por una relación 1:N ({ACCION_PADRE} = false): "
+                        "la plataforma no admite que sea el lado 1 (variante B de relacion.md, sección 6)")
 
 
 def comprobar_tablas(dv, datos, identidad):
-    """Precondición: las dos tablas existen, y la hija es una tabla de la solución. Devuelve la clave primaria de la
+    """Precondición: las dos tablas existen, y la hija es una tabla de la solución (o una estándar, variante B). Devuelve la clave primaria de la
     tabla padre (el atributo referenciado) y el MetadataId de la tabla hija."""
     claves, ids = {}, {}
     for rol in ("tabla_padre", "tabla_hija"):
@@ -280,13 +353,13 @@ def comprobar_tablas(dv, datos, identidad):
         if t is None:
             raise Bloqueado(f"la tabla '{tabla}' ({rol}) no existe en el entorno: se construye antes que sus relaciones")
         if rol == "tabla_hija":
-            _exigir_hija_propia(t, tabla, consulta, identidad)
+            _exigir_hija(t, tabla, consulta, identidad)
         claves[rol] = exigir_forma(t.get("PrimaryIdAttribute"), str, consulta, "PrimaryIdAttribute", no_vacio=True)
         ids[rol] = exigir_forma(t.get("MetadataId"), str, consulta, "MetadataId", no_vacio=True)
     return claves["tabla_padre"], ids["tabla_hija"]
 
 
-def _verificar(dv, datos, identidad, solution_id, atributo_referenciado, id_tabla_hija):
+def _verificar(dv, datos, identidad, solution_id, atributo_referenciado, id_tabla_hija, estandar=False):
     idiomas, difs, k = identidad["idiomas"], [], datos["lookup"]
     cr = f"la consulta de la relación (GET RelationshipDefinitions '{datos['nombre']}')"
     r = leer_entorno(dv, f"RelationshipDefinitions(SchemaName='{datos['nombre']}')/Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata", cr, admite_404=True)
@@ -311,7 +384,7 @@ def _verificar(dv, datos, identidad, solution_id, atributo_referenciado, id_tabl
     n = k["nombre"]
     cl = f"la consulta de la columna lookup (GET Attributes '{n}' LookupAttributeMetadata)"
     a = leer_entorno(dv, f"EntityDefinitions(LogicalName='{datos['tabla_hija']}')/Attributes(LogicalName='{n}')/Microsoft.Dynamics.CRM.LookupAttributeMetadata"
-                         "?$select=LogicalName,SchemaName,AttributeTypeName,Targets,RequiredLevel,IsAuditEnabled,IsSecured,DisplayName,Description", cl)
+                         "?$select=MetadataId,LogicalName,SchemaName,AttributeTypeName,Targets,RequiredLevel,IsAuditEnabled,IsSecured,DisplayName,Description", cl)
     tipo_real = valor_administrado(a.get("AttributeTypeName"), str, cl, "AttributeTypeName")
     if tipo_real != "LookupType":
         difs.append(f"{n}.tipo: entorno={tipo_real!r} playbook='LookupType'")
@@ -330,7 +403,11 @@ def _verificar(dv, datos, identidad, solution_id, atributo_referenciado, id_tabl
     comparar_descripcion(a.get("Description"), idiomas, f"{n}.Description", k["descripcion"], difs, cl, "Description")
 
     cs = "la consulta de pertenencia a la solución (GET solutioncomponents)"
-    sc = leer_entorno(dv, f"solutioncomponents?$select=rootcomponentbehavior&$filter=_solutionid_value eq {solution_id} and objectid eq {id_tabla_hija} and componenttype eq {COMPONENTE_TABLA}", cs)
+    if estandar:
+        id_lookup = exigir_forma(a.get("MetadataId"), str, cl, "MetadataId", no_vacio=True)
+        _pertenencia_hija_estandar(dv, datos, solution_id, metadata_id, id_lookup, id_tabla_hija, cs, difs)
+        return {"existe": True, "diffs": difs, "metadata_id": metadata_id}
+    sc = leer_entorno(dv, _consulta_pertenencia(solution_id, id_tabla_hija, COMPONENTE_TABLA), cs)
     filas = exigir_forma(sc.get("value"), [dict], cs, "value")
     if len(filas) != 1:
         difs.append(f"pertenencia a la solución: la tabla hija '{datos['tabla_hija']}' tiene {len(filas)} filas en solutioncomponents, se esperaba 1 (la relación viaja dentro de ella)")
@@ -339,6 +416,29 @@ def _verificar(dv, datos, identidad, solution_id, atributo_referenciado, id_tabl
         if alcance != INCLUYE_SUBCOMPONENTES:
             difs.append(f"la tabla hija '{datos['tabla_hija']}' está en la solución pero no incluye todos sus subcomponentes (rootcomponentbehavior={alcance}): la relación no viajaría con ella")
     return {"existe": True, "diffs": difs, "metadata_id": metadata_id}
+
+
+def _consulta_pertenencia(solution_id, objeto, tipo_componente):
+    return f"solutioncomponents?$select=rootcomponentbehavior&$filter=_solutionid_value eq {solution_id} and objectid eq {objeto} and componenttype eq {tipo_componente}"
+
+
+def _pertenencia_hija_estandar(dv, datos, solution_id, id_relacion, id_lookup, id_tabla_hija, consulta, difs):
+    """Pertenencia a la solución de la variante B (ensayo del 2026-10-09). Una relación cuya hija es estándar NO viaja dentro de la tabla (que no es nuestra):
+    la relación tiene su fila (componenttype 10), el lookup la suya (componenttype 2) y la tabla estándar figura con `rootcomponentbehavior` distinto de 0.
+    Se exige exactamente 1 fila de cada una; 0 filas, 2 filas o behavior 0 de la tabla (la arrastraría entera a la solución) es una diferencia."""
+    prefijo = "pertenencia a la solución: "
+    for que, objeto, tipo in ((f"la relación '{datos['nombre']}'", id_relacion, COMPONENTE_RELACION), (f"el lookup '{datos['lookup']['nombre']}'", id_lookup, COMPONENTE_ATRIBUTO)):
+        filas = exigir_forma(leer_entorno(dv, _consulta_pertenencia(solution_id, objeto, tipo), consulta).get("value"), [dict], consulta, "value")
+        if len(filas) != 1:
+            difs.append(f"{prefijo}{que} tiene {len(filas)} filas en solutioncomponents (componenttype {tipo}), se esperaba 1")
+    tabla = datos["tabla_hija"]
+    filas = exigir_forma(leer_entorno(dv, _consulta_pertenencia(solution_id, id_tabla_hija, COMPONENTE_TABLA), consulta).get("value"), [dict], consulta, "value")
+    if len(filas) != 1:
+        difs.append(f"{prefijo}la tabla estándar '{tabla}' tiene {len(filas)} filas en solutioncomponents (componenttype {COMPONENTE_TABLA}), se esperaba 1")
+        return
+    alcance = exigir_forma(filas[0].get("rootcomponentbehavior"), int, consulta, "value[0].rootcomponentbehavior")
+    if alcance == INCLUYE_SUBCOMPONENTES:
+        difs.append(f"{prefijo}la tabla estándar '{tabla}' figura con rootcomponentbehavior={alcance}, que la arrastraría entera a la solución: tiene que ser distinto de 0")
 
 
 def ajustar_lookup(dv, datos, identidad):
@@ -372,13 +472,18 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, componente, publicar, 
     solucion = identidad["solucion"]
     solution_id = comprobar_solucion_e_idioma(dv, identidad)
     atributo, id_hija = comprobar_tablas(dv, datos, identidad)
-    actual = _verificar(dv, datos, identidad, solution_id, atributo, id_hija)
+    estandar = es_hija_estandar(datos, identidad)
+    actual = _verificar(dv, datos, identidad, solution_id, atributo, id_hija, estandar)
+    if estandar and not actual["existe"]:
+        # Precondición de la CREACIÓN (variante B). Antes del alta la tabla estándar puede no figurar todavía en la solución: no es una diferencia que
+        # impida crear (`_verificar` ni mira la pertenencia de lo que no existe); se exige al releer, ya con la relación.
+        comprobar_elegibilidad(dv, datos)
 
     if actual["existe"] and corregir_lookup and not solo_verificar and _solo_difiere_la_auditoria(datos, actual["diffs"]):
         problema = ajustar_lookup(dv, datos, identidad) or _publicar(dv, datos)
         if problema:
             return "error", componente, problema
-        actual = _verificar(dv, datos, identidad, solution_id, atributo, id_hija)
+        actual = _verificar(dv, datos, identidad, solution_id, atributo, id_hija, estandar)
         if not actual["diffs"]:
             return "ya_existia", componente, (f"MetadataId {actual['metadata_id']}; la relación existía y su única diferencia era la auditoría del lookup, "
                                               f"que la plataforma ignora al crear; se corrigió y ahora coincide en todo; pertenece a '{solucion}'")
@@ -406,7 +511,7 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, componente, publicar, 
     problema = _publicar(dv, datos)
     if problema:
         return "error", componente, f"la relación se creó pero falló publicar: {problema}. Verificar con --solo-verificar y, si coincide, volver a correr con --publicar"
-    final = _verificar(dv, datos, identidad, solution_id, atributo, id_hija)
+    final = _verificar(dv, datos, identidad, solution_id, atributo, id_hija, estandar)
     if not final["existe"]:
         return "error", componente, "se creó (204) pero no aparece al releer del entorno"
     if final["diffs"]:
@@ -429,8 +534,12 @@ def construir(ruta_playbook, solo_verificar, fabrica_cliente, publicar=False, co
         identidad = obtener_identidad(secciones)
         paso = "validar el bloque de la relación"
         validar_playbook(datos, identidad)
+        paso = "comprobar las banderas"
+        if corregir_lookup and es_hija_estandar(datos, identidad):
+            raise ErrorPlaybook(f"--corregir-lookup no aplica a una relación con tabla hija estándar ({datos['tabla_hija']!r}): ajustar el lookup con PUT sobre una tabla estándar "
+                                "no se ensayó; una diferencia se informa y no se toca")
         paso = "comprobar qué variantes están verificadas"
-        comprobar_verificadas(datos, verificadas, permitir_no_verificadas)
+        comprobar_verificadas(datos, identidad, verificadas, permitir_no_verificadas)
     except ErrorPlaybook as e:
         return "error", componente, str(e)
     except Bloqueado as e:
