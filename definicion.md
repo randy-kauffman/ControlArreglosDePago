@@ -390,7 +390,8 @@ Toda regla que debe cumplirse sin importar el punto de entrada vive en plugins d
     - Versión de plantilla: Read y AppendTo, para fijar el lookup del arreglo. Sin acceso a Mapeo.
     - Generación de formato: Read.
     - Sin acceso al Mailbox.
-  - **"ARP Jefe":** suma Create, Write y Append sobre Versión de plantilla y Mapeo, Delete solo sobre Mapeo en Borrador (el plugin bloquea el resto), y las vistas y el dashboard de supervisión. La reasignación y la reapertura las comprueba el plugin por pertenencia a "ARP Jefatura".
+  - **Asignación (decisión del usuario del 2026-10-09).** "ARP Oficial" se asigna al team del sistema de la BU, así que todo usuario del área lo recibe por estar en ella. "ARP Jefe" lleva **solo lo adicional** y se asigna al team "ARP Jefatura": un jefe suma los dos roles. Nada se duplica. Consecuencia: las cuentas de servicio, que también están en la BU, reciben además los privilegios del oficial; se acepta porque ninguno es Delete ni toca columnas solo-sistema (las protege el plugin por identidad).
+  - **"ARP Jefe":** solo lo adicional al oficial: Create, Write y Append sobre Versión de plantilla y Mapeo, Delete solo sobre Mapeo en Borrador (el plugin bloquea el resto), y las vistas y el dashboard de supervisión. La reasignación y la reapertura las comprueba el plugin por pertenencia a "ARP Jefatura".
   - **"ARP Servicio"** (cuenta de servicio, flujos y reconciliación): lectura sobre Mailbox, Email, Queue Item, Conversación y Arreglo; Create sobre Conversación, que es el privilegio de ejecución de la Custom API de reconciliación; escritura sobre Cuota solo si se activa el respaldo de D-11.
   - **"ARP Purga"** (cuenta de servicio): Read, Delete y BulkDelete sobre Arreglo, Cuota, Generación, Conversación, Email con sus adjuntos y Queue Item y Cliente. Ningún rol humano tiene Delete sobre el agregado.
 - **Seguridad por columna (RNF-03, RNF-10).**
@@ -412,7 +413,7 @@ Toda regla que debe cumplirse sin importar el punto de entrada vive en plugins d
 - **Entornos.** Dev, Test y Prod de Nicaragua, compartidos y administrados (RNF-06). Se coordinan con el administrador los recursos únicos por entorno: registro de ensamblados, pool de requests, configuración de pipelines y, si se usa, Application Insights.
 - **Solution.**
   - Una única solution con un publisher dedicado, unmanaged solo en Dev. Test y Prod reciben managed.
-  - Environment variables y connection references en lugar de valores fijos. Las variables son: nombre de la BU ARP (el team propietario se resuelve dentro de ella por `isdefault`), nombre del team Jefatura, destinatarios de alertas y umbrales de monitoreo.
+  - Environment variables y connection references en lugar de valores fijos. Las variables son: nombre de la BU ARP (el team propietario se resuelve dentro de ella por `isdefault`), nombre del team Jefatura, Application ID de la cuenta de servicio (los plugins reconocen por él las escrituras del sistema), dirección del buzón del área (la queue remitente se resuelve por ella), destinatarios de alertas y umbrales de monitoreo (decisión del usuario del 2026-10-09).
   - El mecanismo de despliegue son los Power Platform pipelines, dado que los entornos son administrados. Si el host no existe, es un punto a coordinar con el administrador (ver Supuestos de arquitectura).
 - **Teams por nombre, por entorno.**
   - El GUID de un team y su grupo de Entra cambian en cada entorno. Los plugins resuelven la BU ARP por el nombre que indica una environment variable; el team propietario es el team de esa BU con `isdefault` verdadero (no depende de un nombre) y el team Jefatura se busca por el nombre de otra environment variable, dentro de la BU.
