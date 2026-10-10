@@ -1,0 +1,56 @@
+{
+  "A1 crear Cliente propio sin Assign": {
+    "http": 201,
+    "esperado": "ok",
+    "resultado": "CONFIRMADO",
+    "detalle": ""
+  },
+  "A2 crear Cliente con el team como dueno SIN Assign (D-02: se espera rechazo)": {
+    "http": 403,
+    "esperado": "rechazo",
+    "resultado": "CONFIRMADO",
+    "detalle": "Read Privilege Check For Owner failed with exception: Principal team (Id=2ebc18e7-f9c3-f111-a05a-7ced8d3c456b, type=9, teamType=0, privilegeCount=0, MetadataCachePrivilegesCount=8671, businessUnitId=2dbc18e7-f9c3-f111-a05a-7ced8d3c456b), is missing prvReadsanic_carp_tbl_cliente privilege (Id=3ec09966-9e27-40c7-8dae-90c5c6957384) on OTC=11194 for entity 'sanic_carp_tbl_cliente' (LocalizedName='Cliente'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+  },
+  "B1 Oficial crea Cliente con el team como dueno (con Assign)": {
+    "http": 201,
+    "esperado": "ok",
+    "resultado": "CONFIRMADO",
+    "detalle": ""
+  },
+  "B2 Oficial lee una Conversacion del team": {
+    "http": 400,
+    "esperado": "ok",
+    "resultado": "REFUTADO",
+    "detalle": "Bad Request - Error in query syntax."
+  },
+  "B3 Oficial crea Arreglo con lookup a usuario, cliente y conversacion (D-07)": {
+    "http": 400,
+    "esperado": "ok",
+    "resultado": "REFUTADO",
+    "detalle": "Bad Request - Error in query syntax."
+  },
+  "B4 Oficial crea un borrador de Email con Regarding a la conversacion": {
+    "http": 400,
+    "esperado": "ok",
+    "resultado": "REFUTADO",
+    "detalle": "Bad Request - Error in query syntax."
+  },
+  "B7 Jefe crea Version de plantilla con el team como dueno": {
+    "http": 201,
+    "esperado": "ok",
+    "resultado": "CONFIRMADO",
+    "detalle": ""
+  },
+  "B8 Jefe crea Mapeo con lookup a la version y el team como dueno": {
+    "http": 403,
+    "esperado": "ok",
+    "resultado": "REFUTADO",
+    "detalle": "Read Privilege Check For Owner failed with exception: Principal team (Id=2ebc18e7-f9c3-f111-a05a-7ced8d3c456b, type=9, teamType=0, privilegeCount=109, MetadataCachePrivilegesCount=8671, businessUnitId=2dbc18e7-f9c3-f111-a05a-7ced8d3c456b), is missing prvReadsanic_carp_tbl_mapeocelda privilege (Id=03b0b9b6-42f7-4dcb-81bc-e18547c4535d) on OTC=11196 for entity 'sanic_carp_tbl_mapeocelda' (LocalizedName='Mapeo de celda'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+  },
+  "B10 Oficial NO puede borrar un Cliente": {
+    "http": 403,
+    "esperado": "rechazo",
+    "resultado": "CONFIRMADO",
+    "detalle": "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=2, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8671, businessUnitId=2dbc18e7-f9c3-f111-a05a-7ced8d3c456b, ApplicationId/FullName: a988a605-21e0-4762-ae8d-b0200b91423a/SPIKE4 SP - DEV - Pruebas de Correo), is missing prvDeletesanic_carp_tbl_cliente privilege (Id=2ce24bae-abe8-4f8a-a9e2-bff2f8dc95dc) on OTC=11194 for entity 'sanic_carp_tbl_cliente' (LocalizedName='Cliente'). context.Caller=32122bbd-56c3-f111-a05a-000d3a35abca. Consider adding missed privilege to one of the principal (user/team) roles."
+  }
+}
