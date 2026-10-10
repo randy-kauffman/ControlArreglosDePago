@@ -38,15 +38,12 @@ Advertencias: un rol no lleva etiquetas por idioma (es un texto único), así qu
     "sanic_carp_tbl_versionplantilla": {
       "crear": "unidad",
       "escribir": "unidad",
-      "anexar": "unidad",
-      "asignar": "unidad"
+      "anexar": "unidad"
     },
     "sanic_carp_tbl_mapeocelda": {
       "crear": "unidad",
-      "leer": "unidad",
       "escribir": "unidad",
       "anexar": "unidad",
-      "asignar": "unidad",
       "borrar": "unidad"
     }
   },

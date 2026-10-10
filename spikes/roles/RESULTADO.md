@@ -38,3 +38,7 @@ Entorno de desarrollo (`org36e60d9d`). Usuario: el de aplicación del service pr
 
 - La primera vuelta no creó la conversación de prueba porque el nombre tenía 22 caracteres y la primaria admite 20 (error del script, no de la plataforma).
 - Crear un rol con el mismo nombre de uno recién borrado falló una vez y funcionó al reintentar: la baja del rol en las BU hijas no es instantánea.
+
+## Tercera vuelta, con los cambios aplicados (2026-10-09)
+
+Decisión del usuario: opción A (el Oficial lee Mapeo; todo es del team del sistema). Se quitó Assign del Oficial (Cliente, Arreglo) y del Jefe (Versión, Mapeo), se agregó `prvAppendToUser` (BU) y Read de Mapeo al Oficial, y se quitó al Jefe el Read de Mapeo (le llega por el Oficial). `prueba_roles_2.py` otra vez, resultados en `resultado_3.json`: **B3 (lookup a usuario) y B8a (Mapeo con el team del sistema como dueño) pasan**; el resto igual. B8b (Mapeo con el team Jefatura como dueño) ahora da 403 porque Jefatura ya no lee Mapeo por su cuenta: es lo esperado con la opción A y vuelve a confirmar la regla del dueño. Nota: `RemovePrivilegeRole` por Web API rechazó el parámetro `PrivilegeId`; los privilegios se quitaron con `DELETE roles(<id>)/roleprivileges_association(<privilegeid>)/$ref`.

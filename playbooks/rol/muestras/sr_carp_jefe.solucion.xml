@@ -16,8 +16,6 @@
         <RolePrivilege name="prvAppendWorkflow" level="Basic" />
         <RolePrivilege name="prvAppendWorkflowSession" level="Basic" />
         <RolePrivilege name="prvAssignAsyncOperation" level="Basic" />
-        <RolePrivilege name="prvAssignsanic_carp_tbl_mapeocelda" level="Local" />
-        <RolePrivilege name="prvAssignsanic_carp_tbl_versionplantilla" level="Local" />
         <RolePrivilege name="prvAssignWorkflow" level="Basic" />
         <RolePrivilege name="prvAssignWorkflowSession" level="Basic" />
         <RolePrivilege name="prvCreateNewProcess" level="Global" />
@@ -59,7 +57,6 @@
         <RolePrivilege name="prvReadRelationship" level="Global" />
         <RolePrivilege name="prvReadReport" level="Basic" />
         <RolePrivilege name="prvReadRole" level="Global" />
-        <RolePrivilege name="prvReadsanic_carp_tbl_mapeocelda" level="Local" />
         <RolePrivilege name="prvReadSavedQueryVisualizations" level="Global" />
         <RolePrivilege name="prvReadSdkMessage" level="Global" />
         <RolePrivilege name="prvReadSdkMessageProcessingStep" level="Global" />

@@ -40,8 +40,7 @@ Advertencias: un rol no lleva etiquetas por idioma (es un texto único), así qu
       "leer": "unidad",
       "escribir": "unidad",
       "anexar": "unidad",
-      "anexar_a": "unidad",
-      "asignar": "unidad"
+      "anexar_a": "unidad"
     },
     "sanic_carp_tbl_conversacion": {
       "leer": "unidad",
@@ -54,8 +53,7 @@ Advertencias: un rol no lleva etiquetas por idioma (es un texto único), así qu
       "leer": "unidad",
       "escribir": "unidad",
       "anexar": "unidad",
-      "anexar_a": "unidad",
-      "asignar": "unidad"
+      "anexar_a": "unidad"
     },
     "sanic_carp_tbl_cuota": {
       "leer": "unidad",
@@ -67,6 +65,9 @@ Advertencias: un rol no lleva etiquetas por idioma (es un texto único), así qu
     },
     "sanic_carp_tbl_generacionformato": {
       "leer": "unidad"
+    },
+    "sanic_carp_tbl_mapeocelda": {
+      "leer": "unidad"
     }
   },
   "otros_privilegios": {
@@ -76,7 +77,8 @@ Advertencias: un rol no lleva etiquetas por idioma (es un texto único), así qu
     "prvReadActivity": "unidad",
     "prvAppendToActivity": "unidad",
     "prvReadQueue": "unidad",
-    "prvAppendToQueue": "unidad"
+    "prvAppendToQueue": "unidad",
+    "prvAppendToUser": "unidad"
   }
 }
 ```

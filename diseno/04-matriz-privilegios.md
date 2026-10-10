@@ -1,6 +1,6 @@
 # 04. Matriz de privilegios
 
-Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **borrador para revisión del aprobador** (2026-10-09). Fuente de cada celda: `definicion.md` §6 Seguridad, bloque **Roles** (líneas 381 a 396), D-04, D-17, D-18, D-28, D-31 y los spikes 3 y 4. Lo que la definición dejaba abierto se resolvió con una lectura de solo GET contra Dev el 2026-10-09 (sección 4). Lo que ni así se pudo cerrar queda como duda en la sección 5, **no como privilegio**.
+Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **aplicada en Dev y probada con un usuario no administrador** (2026-10-09, `spikes/roles/RESULTADO.md`). Fuente de cada celda: `definicion.md` §6 Seguridad, bloque **Roles** (líneas 381 a 396), D-04, D-17, D-18, D-28, D-31 y los spikes 3 y 4. Lo que la definición dejaba abierto se resolvió con una lectura de solo GET contra Dev el 2026-10-09 (sección 4). Lo que ni así se pudo cerrar queda como duda en la sección 5, **no como privilegio**.
 
 Reglas citadas: BP-PP-002 (sin sharing manual), BP-PP-003 (pocas business units), BP-PP-182 y BP-PP-185 (nombre de un security role). Inventario: 6.2 a 6.5 de `06-inventario-componentes.md`.
 
@@ -42,7 +42,6 @@ Nombres exactos leídos de Dev (`EntityDefinitions(...)?$select=LogicalName,Priv
 | Cliente | `prvWritesanic_carp_tbl_cliente` | L | | | | Línea 383 |
 | Cliente | `prvAppendsanic_carp_tbl_cliente` | L | | | | Línea 383 |
 | Cliente | `prvAppendTosanic_carp_tbl_cliente` | L | | | | Línea 383. Lo piden los lookups de Conversación y Arreglo (REL-01, REL-02) |
-| Cliente | `prvAssignsanic_carp_tbl_cliente` | L | | | | Línea 383, solo para fijar el team como propietario (D-31) |
 | Cliente | `prvDeletesanic_carp_tbl_cliente` | | | | L | Línea 396. "Clientes sin arreglos ni conversaciones" |
 | Conversación | `prvCreatesanic_carp_tbl_conversacion` | | | L | | Línea 395. Es el privilegio de ejecución de la API de reconciliación (línea 400). El oficial **no** lo tiene: las conversaciones las crea el sistema (línea 384) |
 | Conversación | `prvReadsanic_carp_tbl_conversacion` | L | | L | L | Línea 384. Servicio: línea 395. Purga: línea 396. Spike 4: Read Local para el formulario y el timeline |
@@ -55,7 +54,6 @@ Nombres exactos leídos de Dev (`EntityDefinitions(...)?$select=LogicalName,Priv
 | Arreglo | `prvWritesanic_carp_tbl_arreglo` | L | | | | Línea 385 |
 | Arreglo | `prvAppendsanic_carp_tbl_arreglo` | L | | | | Línea 385. Lo piden los lookups a Cliente, Conversación y Versión (REL-02, 03, 04) |
 | Arreglo | `prvAppendTosanic_carp_tbl_arreglo` | L | | | | Línea 385 |
-| Arreglo | `prvAssignsanic_carp_tbl_arreglo` | L | | | | Línea 385, solo para fijar el team como propietario (D-31) |
 | Arreglo | `prvDeletesanic_carp_tbl_arreglo` | | | | L | Línea 396. Retención de 24 meses |
 | Cuota | `prvReadsanic_carp_tbl_cuota` | L | | | L | Línea 386. Purga: línea 396 |
 | Cuota | `prvWritesanic_carp_tbl_cuota` | L | | | | Línea 386. El plugin limita la escritura a las columnas de pago. Servicio **no** la recibe: el respaldo de D-11 no se activa (inventario 11.3) |
@@ -65,13 +63,11 @@ Nombres exactos leídos de Dev (`EntityDefinitions(...)?$select=LogicalName,Priv
 | Versión de plantilla | `prvWritesanic_carp_tbl_versionplantilla` | | L | | | Línea 394. Es también el permiso que comprueba la vista previa (línea 342) |
 | Versión de plantilla | `prvAppendsanic_carp_tbl_versionplantilla` | | L | | | Línea 394 |
 | Versión de plantilla | `prvAppendTosanic_carp_tbl_versionplantilla` | L | | | | Línea 390, "para fijar el lookup del arreglo" (REL-04). El Jefe lo tiene por Oficial |
-| Versión de plantilla | `prvAssignsanic_carp_tbl_versionplantilla` | | L | | | D-02, resuelta por el arquitecto el 2026-10-09: el alta con el team como dueño (P-11) exige Assign |
 | Mapeo de celda | `prvCreatesanic_carp_tbl_mapeocelda` | | L | | | Línea 394 |
-| Mapeo de celda | `prvReadsanic_carp_tbl_mapeocelda` | | L | | | D-01, resuelta por el arquitecto el 2026-10-09: sin Read el Jefe no abre lo que mantiene |
+| Mapeo de celda | `prvReadsanic_carp_tbl_mapeocelda` | L | | | | Opción A del usuario (2026-10-09): el team del sistema es dueño de todo y la plataforma exige que el dueño lea la tabla (`spikes/roles/RESULTADO.md`). El Jefe lo recibe por el Oficial |
 | Mapeo de celda | `prvWritesanic_carp_tbl_mapeocelda` | | L | | | Línea 394 |
 | Mapeo de celda | `prvAppendsanic_carp_tbl_mapeocelda` | | L | | | Línea 394. Lo pide el lookup a Versión (REL-08) |
 | Mapeo de celda | `prvDeletesanic_carp_tbl_mapeocelda` | | L | | | Línea 394, "solo sobre Mapeo en Borrador": el límite lo pone el plugin (inventario 7.16) |
-| Mapeo de celda | `prvAssignsanic_carp_tbl_mapeocelda` | | L | | | D-02, ídem Versión |
 | Generación de formato | `prvReadsanic_carp_tbl_generacionformato` | L | | | L | Línea 391. Privilegio de ejecución de generar formato (línea 400). Purga: línea 396 |
 | Generación de formato | `prvDeletesanic_carp_tbl_generacionformato` | | | | L | Línea 396 |
 
@@ -96,6 +92,7 @@ Nombres exactos leídos de Dev el 2026-10-09. En el playbook van en `otros_privi
 | Email | `prvDeleteActivity` | | | | L | Línea 396, "Email con sus adjuntos y Queue Item". **Ningún rol humano**: el correo es la evidencia de RF-03 (línea 387) |
 | Queue | `prvReadQueue` | L | | L | | Línea 389. Spike 4: mínimo Local. Servicio: es el medio de "leer Queue Item" (sección 4, resolución R-03) |
 | Queue | `prvAppendToQueue` | L | | | | Línea 389, **lo exige la plataforma para poner la queue como remitente** (spike 4, hallazgo del intento 1; D-28) |
+| Usuario | `prvAppendToUser` | L | | | | Prueba de roles del 2026-10-09 (D-07): la plataforma lo exige para poner un usuario en cualquier lookup (403 `is missing prvAppendToUser`) |
 | Mailbox | `prvReadMailbox` | | | L | | Línea 395. Oficial: "Sin acceso al Mailbox" (línea 392) |
 | (organización) | `prvBulkDelete` | | | | G | Línea 396. **Solo admite G** (lectura de Dev, sección 4). El alcance del borrado lo sigue limitando el Delete de cada tabla, que es L |
 | Attachment | (ninguno) | | | | | La definición pide "crear y leer" (línea 388) y "con sus adjuntos" (línea 396). **`activitymimeattachment` y `attachment` no tienen privilegios propios** (sección 4, R-01): el acceso lo da el Email |
@@ -121,13 +118,13 @@ Ninguna se cerró con un privilegio inventado. Cada una dice qué la cierra.
 
 | # | Duda | Cita | Qué la cierra |
 |---|---|---|---|
-| **D-01 (resuelta: se agrega Read de Mapeo al Jefe)** | **El Jefe no tiene `Read` sobre Mapeo de celda.** Se le dan Create, Write, Append y Delete sobre un Mapeo que no puede leer, y el Oficial (que el Jefe también tiene) "no tiene acceso a Mapeo". Sin Read no se abre el formulario ni el subgrid de Mapeo en la Versión de plantilla (inventario 12.20, 12.21), ni se puede editar ni borrar una fila. Es un hallazgo de la matriz | Definición líneas 390 y 394; inventario 12.20 y 12.21 | El aprobador decide agregar `prvReadsanic_carp_tbl_mapeocelda` (L) al Jefe. Mientras no lo decida, el playbook no lo trae |
-| **D-02 (resuelta: Assign de Versión y Mapeo al Jefe; se confirma con un usuario no administrador)** | **El Jefe crea Versión de plantilla y Mapeo, pero no tiene Assign.** P-11 extiende el plugin que fija el team del sistema como propietario a las siete tablas, y la definición dice que el Oficial necesita Assign "solo" en Cliente y Arreglo, "se confirma en el spike". Si fijar el propietario en un Create exige Assign (es la razón por la que Cliente y Arreglo lo llevan), Versión y Mapeo lo necesitarían. No consta que el spike lo haya confirmado | Definición línea 253 y D-31 (línea 490); diccionario P-11 (línea 663) | Una prueba en Dev con un usuario no administrador con el rol Jefe creando una Versión. Si falla, es un hallazgo de la matriz |
-| **D-03** | **Adjuntos de correo sin prueba.** Dev dice que no hay privilegios propios, pero ningún spike adjuntó un archivo con un rol no administrador (el rol del spike 4 tiene 9 privilegios y ninguno de adjuntos). Existe además `activityfileattachment` (Dev: tabla `UserOwned` con sus ocho privilegios), que la definición no nombra; no se sabe si el editor de correo la usa | Definición líneas 388 y 539; inventario 6.2 | Un envío con adjunto, y una recepción con adjunto leída, hechos con un usuario con `SR - CARP - Oficial`. Si pide `prvCreateactivityfileattachment` o similar, es un hallazgo de la matriz |
+| **D-01 (resuelta por la opción A del usuario: Read de Mapeo en el Oficial, el Jefe lo recibe por él)** | **El Jefe no tiene `Read` sobre Mapeo de celda.** Se le dan Create, Write, Append y Delete sobre un Mapeo que no puede leer, y el Oficial (que el Jefe también tiene) "no tiene acceso a Mapeo". Sin Read no se abre el formulario ni el subgrid de Mapeo en la Versión de plantilla (inventario 12.20, 12.21), ni se puede editar ni borrar una fila. Es un hallazgo de la matriz | Definición líneas 390 y 394; inventario 12.20 y 12.21 | El aprobador decide agregar `prvReadsanic_carp_tbl_mapeocelda` (L) al Jefe. Mientras no lo decida, el playbook no lo trae |
+| **D-02 (refutada por la prueba de roles del 2026-10-09: Assign no hace falta; se quitó de todos los roles humanos)** | **El Jefe crea Versión de plantilla y Mapeo, pero no tiene Assign.** P-11 extiende el plugin que fija el team del sistema como propietario a las siete tablas, y la definición dice que el Oficial necesita Assign "solo" en Cliente y Arreglo, "se confirma en el spike". Si fijar el propietario en un Create exige Assign (es la razón por la que Cliente y Arreglo lo llevan), Versión y Mapeo lo necesitarían. No consta que el spike lo haya confirmado | Definición línea 253 y D-31 (línea 490); diccionario P-11 (línea 663) | Una prueba en Dev con un usuario no administrador con el rol Jefe creando una Versión. Si falla, es un hallazgo de la matriz |
+| **D-03 (cerrada por la prueba de roles: el adjunto funciona con los privilegios de Activity)** | **Adjuntos de correo sin prueba.** Dev dice que no hay privilegios propios, pero ningún spike adjuntó un archivo con un rol no administrador (el rol del spike 4 tiene 9 privilegios y ninguno de adjuntos). Existe además `activityfileattachment` (Dev: tabla `UserOwned` con sus ocho privilegios), que la definición no nombra; no se sabe si el editor de correo la usa | Definición líneas 388 y 539; inventario 6.2 | Un envío con adjunto, y una recepción con adjunto leída, hechos con un usuario con `SR - CARP - Oficial`. Si pide `prvCreateactivityfileattachment` o similar, es un hallazgo de la matriz |
 | **D-04** | **Purga y Queue Item.** Queue Item no tiene privilegios. Que borrar el Email limpie los Queue Items (línea 346, spike 3) no consta que se haya probado con el rol `Purga` y no con un administrador: puede que la cascada pida `prvDeleteQueue` o `prvReadQueue` | Definición líneas 346 y 396 | La prueba de la retención en Test (inventario 13.12) |
 | **D-05** | **Rol base `App Opener` en Jefe, Servicio y Purga.** La herramienta exige un rol base. En Jefe duplica lo que ya trae Oficial (la definición dice "nada se duplica", línea 393). Es inocuo (la base no toca tablas de ARP), pero no es "solo lo adicional" en sentido estricto | `rol.py` (`CLAVES`); definición línea 393; receta `seguridad/patrones.md` §2.1 | Que el aprobador confirme que la base es `App Opener` en los cuatro, o indique otra |
 | **D-06 (resuelta: queda Basic. El spike 4, `spikes/manual/RESULTADO.md` línea 96, da Basic como profundidad mínima probada de `prvWriteActivity`)** | **Email en B para Write.** La definición pone Write en B (línea 387). El spike 4 concluye que, como varios oficiales leen los correos de los demás, "la profundidad BU del diseño sigue siendo la correcta para Read, AppendTo y Write" (`RESULTADO.md` línea 105). Se sigue la definición. Si un oficial debe editar o reenviar un borrador que escribió otro, o uno que pasó al team (D-31), B no alcanza | Definición línea 387; spike 4 línea 105 | Prueba con dos oficiales distintos. Si falla, Write pasa a L en el Oficial |
-| **D-07** | **Lookups a `systemuser`.** Arreglo guarda cinco lookups a usuario (`sanic_oficialid`, requerido, y los de formalizó, descartó, anuló y reabrió), Conversación dos y Versión uno. `prvAppendToUser` y `prvAppendUser` existen y **`App Opener` no los trae** (Dev). La definición no los pide. Muy probablemente no hagan falta (lookups a usuario), pero no hay prueba | Dev (R-08); diccionario sección 6.2 | La prueba de alta de un Arreglo por un oficial no administrador |
+| **D-07 (confirmada por la prueba de roles: se agrega `prvAppendToUser` al Oficial)** | **Lookups a `systemuser`.** Arreglo guarda cinco lookups a usuario (`sanic_oficialid`, requerido, y los de formalizó, descartó, anuló y reabrió), Conversación dos y Versión uno. `prvAppendToUser` y `prvAppendUser` existen y **`App Opener` no los trae** (Dev). La definición no los pide. Muy probablemente no hagan falta (lookups a usuario), pero no hay prueba | Dev (R-08); diccionario sección 6.2 | La prueba de alta de un Arreglo por un oficial no administrador |
 | **D-08** | **Cascada de Assign.** Arreglo es padre parental de Cuota y de Generación (Cascade All). El Oficial tiene Assign en Arreglo y no en las hijas; no se sabe si la cascada exige el privilegio en la hija. La asignación a un propietario distinto del team la rechaza el plugin, así que en la práctica el caso es raro | Diccionario REL-05 y REL-06; definición línea 385 | La misma prueba de D-02 y D-07 |
 
 ## 6. Conteo por rol
@@ -136,8 +133,8 @@ Privilegios **propios del playbook** (los que se suman a `App Opener`).
 
 | Rol | Sobre tablas de la solución | Otros privilegios | Total |
 |---|---|---|---|
-| `SR - CARP - Oficial` | 21 | 7 | **28** |
-| `SR - CARP - Jefe` | 10 | 0 | **10** |
+| `SR - CARP - Oficial` | 20 | 8 | **28** |
+| `SR - CARP - Jefe` | 7 | 0 | **7** |
 | `SR - CARP - Servicio` | 3 | 3 | **6** |
 | `SR - CARP - Purga` | 10 | 3 | **13** |
 

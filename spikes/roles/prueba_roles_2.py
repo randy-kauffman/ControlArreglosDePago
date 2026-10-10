@@ -118,7 +118,7 @@ try:
         navm = {r["ReferencingAttribute"]: r["ReferencingEntityNavigationPropertyName"] for r in adm.call("GET", "EntityDefinitions(LogicalName='sanic_carp_tbl_mapeocelda')/ManyToOneRelationships?$select=ReferencingAttribute,ReferencingEntityNavigationPropertyName")[1]["value"]}
         s, b, _ = yo.call("POST", ES["mapeocelda"], {"sanic_nombre": "x!A1", "sanic_hoja": "x", "sanic_celda": "A1", **OWNER,
                                                      f"{navm['sanic_versionplantillaid']}@odata.bind": f"/{ES['versionplantilla']}({ver})"}, cabeceras={"Prefer": "return=representation"})
-        anotar("B8a Mapeo con el team del sistema como dueno (el Oficial no lee Mapeo: se espera rechazo)", s, b, "rechazo")
+        anotar("B8a Mapeo con el team del sistema como dueno (Oficial lee Mapeo, opcion A)", s, b, "ok")
         if b.get("sanic_carp_tbl_mapeoceldaid"): creados.insert(0, (ES["mapeocelda"], b["sanic_carp_tbl_mapeoceldaid"]))
         s, b, _ = yo.call("POST", ES["mapeocelda"], {"sanic_nombre": "x!A2", "sanic_hoja": "x", "sanic_celda": "A2", "ownerid@odata.bind": f"/teams({jef})", f"{navm['sanic_versionplantillaid']}@odata.bind": f"/{ES['versionplantilla']}({ver})"},
                           cabeceras={"Prefer": "return=representation"})
@@ -139,5 +139,5 @@ finally:
         print("  rol zz", adm.call("DELETE", f"roles({r['roleid']})")[0])
     print("  quitar de Jefatura:", adm.call("POST", f"teams({jef})/Microsoft.Dynamics.CRM.RemoveMembersTeam", {"Members": [{"@odata.type": "Microsoft.Dynamics.CRM.systemuser", "systemuserid": uid}]})[0])
     print("  deshabilitar:", adm.call("PATCH", f"systemusers({uid})", {"isdisabled": True})[0])
-    with open(os.path.join(AQUI, "resultado_2.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(AQUI, "resultado_3.json"), "w", encoding="utf-8") as f:
         json.dump(res, f, ensure_ascii=False, indent=2)
