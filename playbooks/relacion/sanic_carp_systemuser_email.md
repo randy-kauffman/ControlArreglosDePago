@@ -76,7 +76,7 @@ Las de la receta (`power-platform-construir`, `references/modelo-datos/patrones.
 | 1 | La solución existe, no es administrada, y su publisher coincide en unique name, prefijo y prefijo de opciones | los de la sección 1 |
 | 2 | Cada idioma de `idiomas` está provisionado, y la lista incluye 1033 | `[1033, 3082]` |
 | 3 | La tabla padre existe | `systemuser` (tabla del sistema) |
-| 4 | La tabla hija estándar existe, tiene las columnas propias del playbook 3.8 y puede ser la referenciante | `email` (`IsCustomEntity = false`; inventario 3.8 construido). **Pendiente de verificar** (`relacion.md` §6, variante B): las acciones `CanBeReferencing` (hija) y `CanBeReferenced` (padre) devuelven `true` |
+| 4 | La tabla hija estándar existe, tiene las columnas propias del playbook 3.8 y puede ser la referenciante | `email` (`IsCustomEntity = false`; inventario 3.8 construido); `CanBeReferencing(email)` y `CanBeReferenced(systemuser)` = `true` (verificado el 2026-10-09) |
 
 Si alguna falla: estado `bloqueado`, no se crea nada.
 
@@ -101,14 +101,14 @@ python3 herramientas/construir/relacion.py playbooks/relacion/sanic_carp_systemu
 | 1 | `GET RelationshipDefinitions(SchemaName='sanic_carp_systemuser_email')/Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata` | 200 · `ReferencedEntity = systemuser` · `ReferencedAttribute` = la clave primaria de `systemuser` · `ReferencingEntity = email` · `ReferencingAttribute = sanic_respondidoporid` · `IsCustomRelationship = true` · `IsManaged = false` · `IsHierarchical = false` |
 | 2 | Cascadas del comportamiento `restringido` | `Assign = NoCascade` · `Merge = NoCascade` · `Reparent = NoCascade` · `Share = NoCascade` · `Unshare = NoCascade` · `RollupView = NoCascade` · `Delete = Restrict` |
 | 3 | El lookup `sanic_respondidoporid` | tipo lookup · `Targets = [systemuser]` · requerida = no · auditoría = no · sin seguridad de columna · nombre visible «Respondido por» en 1033 y en 3082 · descripción de la sección 2; ninguna etiqueta en otro idioma |
-| 4 | Pertenencia a la solución (variante B) | **Pendiente de verificar.** `email` figura en la solución con `rootcomponentbehavior` distinto de 0; qué filas de `solutioncomponents` crea la relación y su lookup se fija en el primer ciclo. Hasta entonces el playbook no puede declararse verificado en este punto |
-| 5 | Segunda ejecución sin `--solo-verificar` | estado `ya_existia`, código de salida 0, no cambia nada (con el punto 4 pendiente) |
+| 4 | Pertenencia a la solución (variante B) | La relación con 1 fila (`componenttype` 10), el lookup con 1 fila (`componenttype` 2) y `email` exactamente 1 vez con `rootcomponentbehavior` distinto de 0 (observado: 1). Criterio fijado por el ensayo del 2026-10-09 |
+| 5 | Segunda ejecución sin `--solo-verificar` | estado `ya_existia`, código de salida 0, no cambia nada |
 | 6 | La tabla estándar sigue coincidiendo con su playbook de columnas | `python3 herramientas/construir/columnas_estandar.py playbooks/tabla/email.md --solo-verificar` da `ya_existia`: el lookup no la hace diferir. No se compara contra un playbook de tabla propia |
-| 7 | Muestra real: `python3 herramientas/construir/muestra_relacion.py playbooks/relacion/sanic_carp_systemuser_email.md --guardar` | **Pendiente de definir en el primer ciclo** (hija estándar): el XML exportado queda en `playbooks/relacion/muestras/` solo si la herramienta lo soporta para esta variante |
+| 7 | Muestra real: `python3 herramientas/construir/muestra_relacion.py playbooks/relacion/sanic_carp_systemuser_email.md --guardar` | La `EntityRelationship` coincide (`Email` y `SystemUser` comparados sin distinguir mayúsculas) y `solution.xml` trae `email` como `RootComponent` una vez con `behavior` distinto de 0 |
 
 ## 6. Si ya existe
 
-Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`. Si alguna no: `difiere`, con la diferencia exacta, **sin tocar nada**. Con el punto 4 pendiente (variante B), el resultado `ya_existia` no basta para declararlo verificado.
+Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`. Si alguna no: `difiere`, con la diferencia exacta, **sin tocar nada**.
 
 ## 7. Reversa
 
