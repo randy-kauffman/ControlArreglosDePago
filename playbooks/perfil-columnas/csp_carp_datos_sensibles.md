@@ -32,7 +32,7 @@ Advertencias: el perfil no tiene nombre lógico (BP-PP-185) y su nombre es un te
 {
   "tipo": "perfil-columnas",
   "nombre": "CSP - CARP - Datos sensibles",
-  "descripcion": "Lectura y escritura de la cédula del cliente y de la cuenta a debitar, y lectura de la cédula copiada en el arreglo. Se da al team ARP y al team ARP Jefatura.",
+  "descripcion": "Lectura y escritura de la cédula del cliente y de la cuenta a debitar, y lectura de la cédula copiada en el arreglo. Se da al team del área (el team del sistema de la business unit Arreglos de Pago) y al team Arreglos de Pago - Jefatura.",
   "permisos": [
     {
       "tabla": "sanic_carp_tbl_cliente",
@@ -71,7 +71,7 @@ Decisiones que este playbook toma y el diseño no traía:
 
 | Decisión | Valor | Por qué |
 |---|---|---|
-| Texto de la descripción | El del diccionario §8, tal cual | El diccionario trae la descripción; el playbook no la reescribe. Nota: nombra «team ARP» y «team ARP Jefatura», mientras que el inventario 13.2 y 13.3 los llama `Arreglos de Pago` y `Arreglos de Pago - Jefatura` (ver dudas en la entrega) |
+| Texto de la descripción | El del diccionario §8, tal cual | El diccionario trae la descripción; el playbook no la reescribe (el diccionario se corrigió el 2026-10-09 para nombrar los teams reales en lugar de «team ARP»). |
 | Leer sin enmascarar | No permitido | Las columnas no tienen regla de enmascarado; es el valor por defecto y el más restrictivo, y el formato del playbook no lo admite |
 | Un solo perfil, un solo nivel de acceso | Los dos teams reciben los mismos permisos | La matriz del diccionario §8 no pide accesos distintos para grupos distintos sobre las mismas columnas; si se pidieran, haría falta un perfil por nivel (`perfil-columnas.md` §4) |
 

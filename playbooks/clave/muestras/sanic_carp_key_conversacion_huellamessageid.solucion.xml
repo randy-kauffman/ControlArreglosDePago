@@ -1,0 +1,14 @@
+<EntityKey>
+              <Name>sanic_carp_key_conversacion_huellamessageid</Name>
+              <LogicalName>sanic_carp_key_conversacion_huellamessageid</LogicalName>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>0</IsCustomizable>
+              <EntityKeyAttributes>
+                <AttributeName>sanic_huellamessageid</AttributeName>
+              </EntityKeyAttributes>
+              <displaynames>
+                <displayname description="KEY - CARP - Conversacion - Huella del Message-ID" languagecode="1033" />
+                <displayname description="KEY - CARP - Conversacion - Huella del Message-ID" languagecode="3082" />
+              </displaynames>
+            </EntityKey>
+          

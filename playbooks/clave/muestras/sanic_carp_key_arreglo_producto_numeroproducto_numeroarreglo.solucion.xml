@@ -1,0 +1,16 @@
+<EntityKey>
+              <Name>sanic_carp_key_arreglo_producto_numeroproducto_numeroarreglo</Name>
+              <LogicalName>sanic_carp_key_arreglo_producto_numeroproducto_numeroarreglo</LogicalName>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>0</IsCustomizable>
+              <EntityKeyAttributes>
+                <AttributeName>sanic_numeroarreglo</AttributeName>
+                <AttributeName>sanic_numeroproducto</AttributeName>
+                <AttributeName>sanic_producto</AttributeName>
+              </EntityKeyAttributes>
+              <displaynames>
+                <displayname description="KEY - CARP - Arreglo - Producto, numero de producto y numero de arreglo" languagecode="1033" />
+                <displayname description="KEY - CARP - Arreglo - Producto, numero de producto y numero de arreglo" languagecode="3082" />
+              </displaynames>
+            </EntityKey>
+          

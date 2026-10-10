@@ -1,0 +1,14 @@
+<EntityKey>
+              <Name>sanic_carp_key_versionplantilla_nombre</Name>
+              <LogicalName>sanic_carp_key_versionplantilla_nombre</LogicalName>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>0</IsCustomizable>
+              <EntityKeyAttributes>
+                <AttributeName>sanic_nombre</AttributeName>
+              </EntityKeyAttributes>
+              <displaynames>
+                <displayname description="KEY - CARP - Version de plantilla - Numero de version" languagecode="1033" />
+                <displayname description="KEY - CARP - Version de plantilla - Numero de version" languagecode="3082" />
+              </displaynames>
+            </EntityKey>
+          

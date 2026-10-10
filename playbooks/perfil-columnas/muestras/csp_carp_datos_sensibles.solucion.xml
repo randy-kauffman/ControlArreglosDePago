@@ -1,0 +1,29 @@
+<FieldSecurityProfile name="CSP - CARP - Datos sensibles" description="Lectura y escritura de la cédula del cliente y de la cuenta a debitar, y lectura de la cédula copiada en el arreglo. Se da al team del área (el team del sistema de la business unit Arreglos de Pago) y al team Arreglos de Pago - Jefatura." fieldsecurityprofileid="{d06b299c-4bc4-f111-a05a-7ced8d3c456b}">
+      <FieldPermissions>
+        <FieldPermission>
+          <EntityName>sanic_carp_tbl_cliente</EntityName>
+          <AttributeName>sanic_cedula</AttributeName>
+          <CanRead>4</CanRead>
+          <CanUpdate>4</CanUpdate>
+          <CanCreate>4</CanCreate>
+          <CanReadUnmasked>0</CanReadUnmasked>
+        </FieldPermission>
+        <FieldPermission>
+          <EntityName>sanic_carp_tbl_arreglo</EntityName>
+          <AttributeName>sanic_cuentadebitar</AttributeName>
+          <CanRead>4</CanRead>
+          <CanUpdate>4</CanUpdate>
+          <CanCreate>4</CanCreate>
+          <CanReadUnmasked>0</CanReadUnmasked>
+        </FieldPermission>
+        <FieldPermission>
+          <EntityName>sanic_carp_tbl_arreglo</EntityName>
+          <AttributeName>sanic_instantaneacedula</AttributeName>
+          <CanRead>4</CanRead>
+          <CanUpdate>0</CanUpdate>
+          <CanCreate>0</CanCreate>
+          <CanReadUnmasked>0</CanReadUnmasked>
+        </FieldPermission>
+      </FieldPermissions>
+    </FieldSecurityProfile>
+  

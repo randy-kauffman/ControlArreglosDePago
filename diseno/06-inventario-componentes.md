@@ -21,10 +21,10 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 |---|---|---|---|---|---|
 | 1 | Base (solución) | 1 | 1 | 0 | 0 |
 | 2 | Choices globales | 9 | 9 | 0 | 0 |
-| 3 | Tablas con sus columnas (7 propias + columnas sobre `email`) | 8 | 0 | 8 | 0 |
-| 4 | Relaciones 1:N (con su lookup) | 19 | 0 | 19 | 0 |
-| 5 | Claves alternativas | 3 | 0 | 3 | 0 |
-| 6 | Seguridad: perfil de columnas (1) y roles (4) | 5 | 0 | 1 | 4 |
+| 3 | Tablas con sus columnas (7 propias + columnas sobre `email`) | 8 | 8 | 0 | 0 |
+| 4 | Relaciones 1:N (con su lookup) | 19 | 17 | 2 | 0 |
+| 5 | Claves alternativas | 3 | 3 | 0 | 0 |
+| 6 | Seguridad: perfil de columnas (1) y roles (4) | 5 | 1 | 0 | 4 |
 | 7 | Código de plugins (C#, TDD estricto) | 22 | 0 | 9 | 13 |
 | 8 | Registro de paquete, Custom API y steps | 7 | 0 | 1 | 6 |
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
@@ -86,24 +86,24 @@ Cada una crea su lookup en la tabla hija. Todas llevan el nombre y el del lookup
 
 | # | Componente (relación) | Playbook | Lookup que crea → hija | Comportamiento | Depende de | Origen | Estado |
 |---|---|---|---|---|---|---|---|
-| 4.1 | `sanic_carp_cliente_conversacion` (REL-01) | `playbooks/relacion/sanic_carp_cliente_conversacion.md` | `sanic_clienteid` → Conversación (opcional) | restringido | 3.1, 3.2 | RF-01, P-12 | pendiente |
-| 4.2 | `sanic_carp_cliente_arreglo` (REL-02) | `playbooks/relacion/sanic_carp_cliente_arreglo.md` | `sanic_clienteid` → Arreglo (requerido) | restringido | 3.1, 3.3 | RF-06, §6 Datos | pendiente |
-| 4.3 | `sanic_carp_conversacion_arreglo` (REL-03) | `playbooks/relacion/sanic_carp_conversacion_arreglo.md` | `sanic_conversacionid` → Arreglo (opcional) | restringido | 3.2, 3.3 | RF-06, §6 Datos | pendiente |
-| 4.4 | `sanic_carp_versionplantilla_arreglo` (REL-04) | `playbooks/relacion/sanic_carp_versionplantilla_arreglo.md` | `sanic_versionplantillaid` → Arreglo (requerido, auditado) | restringido | 3.5, 3.3 | RF-08, D-15 | pendiente |
-| 4.5 | `sanic_carp_arreglo_cuota` (REL-05) | `playbooks/relacion/sanic_carp_arreglo_cuota.md` | `sanic_arregloid` → Cuota (requerido) | **parental** | 3.3, 3.4 | RF-08, D-08 | pendiente |
-| 4.6 | `sanic_carp_arreglo_generacionformato` (REL-06) | `playbooks/relacion/sanic_carp_arreglo_generacionformato.md` | `sanic_arregloid` → Generación de formato (requerido, auditado) | **parental** | 3.3, 3.7 | RF-08, §6 Datos | pendiente |
-| 4.7 | `sanic_carp_versionplantilla_generacionformato` (REL-07) | `playbooks/relacion/sanic_carp_versionplantilla_generacionformato.md` | `sanic_versionplantillaid` → Generación de formato (requerido, auditado) | restringido | 3.5, 3.7 | RF-08, P-12 | pendiente |
-| 4.8 | `sanic_carp_versionplantilla_mapeocelda` (REL-08) | `playbooks/relacion/sanic_carp_versionplantilla_mapeocelda.md` | `sanic_versionplantillaid` → Mapeo de celda (requerido, auditado) | **parental** | 3.5, 3.6 | RF-09, P-12 | pendiente |
+| 4.1 | `sanic_carp_cliente_conversacion` (REL-01) | `playbooks/relacion/sanic_carp_cliente_conversacion.md` | `sanic_clienteid` → Conversación (opcional) | restringido | 3.1, 3.2 | RF-01, P-12 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.2 | `sanic_carp_cliente_arreglo` (REL-02) | `playbooks/relacion/sanic_carp_cliente_arreglo.md` | `sanic_clienteid` → Arreglo (requerido) | restringido | 3.1, 3.3 | RF-06, §6 Datos | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.3 | `sanic_carp_conversacion_arreglo` (REL-03) | `playbooks/relacion/sanic_carp_conversacion_arreglo.md` | `sanic_conversacionid` → Arreglo (opcional) | restringido | 3.2, 3.3 | RF-06, §6 Datos | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.4 | `sanic_carp_versionplantilla_arreglo` (REL-04) | `playbooks/relacion/sanic_carp_versionplantilla_arreglo.md` | `sanic_versionplantillaid` → Arreglo (requerido, auditado) | restringido | 3.5, 3.3 | RF-08, D-15 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.5 | `sanic_carp_arreglo_cuota` (REL-05) | `playbooks/relacion/sanic_carp_arreglo_cuota.md` | `sanic_arregloid` → Cuota (requerido) | **parental** | 3.3, 3.4 | RF-08, D-08 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.6 | `sanic_carp_arreglo_generacionformato` (REL-06) | `playbooks/relacion/sanic_carp_arreglo_generacionformato.md` | `sanic_arregloid` → Generación de formato (requerido, auditado) | **parental** | 3.3, 3.7 | RF-08, §6 Datos | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.7 | `sanic_carp_versionplantilla_generacionformato` (REL-07) | `playbooks/relacion/sanic_carp_versionplantilla_generacionformato.md` | `sanic_versionplantillaid` → Generación de formato (requerido, auditado) | restringido | 3.5, 3.7 | RF-08, P-12 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.8 | `sanic_carp_versionplantilla_mapeocelda` (REL-08) | `playbooks/relacion/sanic_carp_versionplantilla_mapeocelda.md` | `sanic_versionplantillaid` → Mapeo de celda (requerido, auditado) | **parental** | 3.5, 3.6 | RF-09, P-12 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
 | 4.9 | `sanic_carp_conversacion_conversacion` (REL-09) | `playbooks/relacion/sanic_carp_conversacion_conversacion.md` | `sanic_unidaaid` → Conversación (autorreferida, no jerárquica, H-04) | quitar_vinculo | 3.2 | RF-14, P-12 | pendiente |
-| 4.10 | `sanic_carp_systemuser_conversacion_oficialasignadoid` (REL-10) | `playbooks/relacion/sanic_carp_systemuser_conversacion_oficialasignadoid.md` | `sanic_oficialasignadoid` → Conversación (auditado) | restringido | 3.2 | RF-02, D-04, P-01 | pendiente |
-| 4.11 | `sanic_carp_systemuser_conversacion_finalizadoporid` (REL-11) | `playbooks/relacion/sanic_carp_systemuser_conversacion_finalizadoporid.md` | `sanic_finalizadoporid` → Conversación (auditado) | restringido | 3.2 | RF-15, D-30, P-01 | pendiente |
-| 4.12 | `sanic_carp_systemuser_arreglo_oficialid` (REL-12) | `playbooks/relacion/sanic_carp_systemuser_arreglo_oficialid.md` | `sanic_oficialid` → Arreglo (requerido) | restringido | 3.3 | RF-06, P-01 | pendiente |
-| 4.13 | `sanic_carp_systemuser_arreglo_formalizadoporid` (REL-13) | `playbooks/relacion/sanic_carp_systemuser_arreglo_formalizadoporid.md` | `sanic_formalizadoporid` → Arreglo (auditado, protegido) | restringido | 3.3 | RF-16, D-30, P-01 | pendiente |
-| 4.14 | `sanic_carp_systemuser_arreglo_descartadoporid` (REL-14) | `playbooks/relacion/sanic_carp_systemuser_arreglo_descartadoporid.md` | `sanic_descartadoporid` → Arreglo (auditado, protegido) | restringido | 3.3 | RF-16, D-30, P-01 | pendiente |
-| 4.15 | `sanic_carp_systemuser_arreglo_anuladoporid` (REL-15) | `playbooks/relacion/sanic_carp_systemuser_arreglo_anuladoporid.md` | `sanic_anuladoporid` → Arreglo (auditado, protegido) | restringido | 3.3 | RF-12, D-30, P-01 | pendiente |
-| 4.16 | `sanic_carp_systemuser_arreglo_reabiertoporid` (REL-16) | `playbooks/relacion/sanic_carp_systemuser_arreglo_reabiertoporid.md` | `sanic_reabiertoporid` → Arreglo (auditado, protegido) | restringido | 3.3 | RF-12, D-30, P-01 | pendiente |
-| 4.17 | `sanic_carp_systemuser_versionplantilla` (REL-17) | `playbooks/relacion/sanic_carp_systemuser_versionplantilla.md` | `sanic_aprobadoporid` → Versión de plantilla (auditado) | restringido | 3.5 | §6 Datos, P-01 | pendiente |
-| 4.18 | `sanic_carp_systemuser_generacionformato` (REL-18) | `playbooks/relacion/sanic_carp_systemuser_generacionformato.md` | `sanic_generadoporid` → Generación de formato (requerido, auditado) | restringido | 3.7 | D-26, P-01 | pendiente |
+| 4.10 | `sanic_carp_systemuser_conversacion_oficialasignadoid` (REL-10) | `playbooks/relacion/sanic_carp_systemuser_conversacion_oficialasignadoid.md` | `sanic_oficialasignadoid` → Conversación (auditado) | restringido | 3.2 | RF-02, D-04, P-01 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.11 | `sanic_carp_systemuser_conversacion_finalizadoporid` (REL-11) | `playbooks/relacion/sanic_carp_systemuser_conversacion_finalizadoporid.md` | `sanic_finalizadoporid` → Conversación (auditado) | restringido | 3.2 | RF-15, D-30, P-01 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.12 | `sanic_carp_systemuser_arreglo_oficialid` (REL-12) | `playbooks/relacion/sanic_carp_systemuser_arreglo_oficialid.md` | `sanic_oficialid` → Arreglo (requerido) | restringido | 3.3 | RF-06, P-01 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.13 | `sanic_carp_systemuser_arreglo_formalizadoporid` (REL-13) | `playbooks/relacion/sanic_carp_systemuser_arreglo_formalizadoporid.md` | `sanic_formalizadoporid` → Arreglo (auditado, solo sistema) | restringido | 3.3 | RF-16, D-30, P-01 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.14 | `sanic_carp_systemuser_arreglo_descartadoporid` (REL-14) | `playbooks/relacion/sanic_carp_systemuser_arreglo_descartadoporid.md` | `sanic_descartadoporid` → Arreglo (auditado, solo sistema) | restringido | 3.3 | RF-16, D-30, P-01 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.15 | `sanic_carp_systemuser_arreglo_anuladoporid` (REL-15) | `playbooks/relacion/sanic_carp_systemuser_arreglo_anuladoporid.md` | `sanic_anuladoporid` → Arreglo (auditado, solo sistema) | restringido | 3.3 | RF-12, D-30, P-01 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.16 | `sanic_carp_systemuser_arreglo_reabiertoporid` (REL-16) | `playbooks/relacion/sanic_carp_systemuser_arreglo_reabiertoporid.md` | `sanic_reabiertoporid` → Arreglo (auditado, solo sistema) | restringido | 3.3 | RF-12, D-30, P-01 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.17 | `sanic_carp_systemuser_versionplantilla` (REL-17) | `playbooks/relacion/sanic_carp_systemuser_versionplantilla.md` | `sanic_aprobadoporid` → Versión de plantilla (auditado) | restringido | 3.5 | §6 Datos, P-01 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 4.18 | `sanic_carp_systemuser_generacionformato` (REL-18) | `playbooks/relacion/sanic_carp_systemuser_generacionformato.md` | `sanic_generadoporid` → Generación de formato (requerido, auditado) | restringido | 3.7 | D-26, P-01 | hecho (creada en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
 | 4.19 | `sanic_carp_systemuser_email` (REL-19) | `playbooks/relacion/sanic_carp_systemuser_email.md` | `sanic_respondidoporid` → Email (tabla hija estándar, H-02) | restringido | 3.8 | RF-03, RF-04, D-05 | pendiente |
 
 Relación nativa, **no se crea** (NAT-01): Regarding de Email → Conversación. La plataforma la crea al activar actividades en 3.2. Propaga Assign, Share y Delete de la conversación a sus correos (diccionario §6.3).
@@ -114,9 +114,9 @@ Las tres usan solo columnas de texto, choice y entero, y ninguna usa un lookup. 
 
 | # | Componente | Playbook | Columnas | Depende de | Origen | Estado |
 |---|---|---|---|---|---|---|
-| 5.1 | `sanic_carp_key_conversacion_huellamessageid` (K-01) | `playbooks/clave/sanic_carp_key_conversacion_huellamessageid.md` | `sanic_huellamessageid` (128 de 900 bytes) | 3.2 | D-03, ítem 1 | pendiente |
-| 5.2 | `sanic_carp_key_arreglo_producto_numeroproducto_numeroarreglo` (K-02) | `playbooks/clave/sanic_carp_key_arreglo_producto_numeroproducto_numeroarreglo.md` | `sanic_producto`, `sanic_numeroproducto`, `sanic_numeroarreglo` (68 de 900 bytes) | 3.3, 2.3 | RF-07, D-09, D-33 | pendiente |
-| 5.3 | `sanic_carp_key_versionplantilla_nombre` (K-03) | `playbooks/clave/sanic_carp_key_versionplantilla_nombre.md` | `sanic_nombre` (20 de 900 bytes) | 3.5 | BP-PP-192, P-19 | pendiente |
+| 5.1 | `sanic_carp_key_conversacion_huellamessageid` (K-01) | `playbooks/clave/sanic_carp_key_conversacion_huellamessageid.md` | `sanic_huellamessageid` (128 de 900 bytes) | 3.2 | D-03, ítem 1 | hecho (creado en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 5.2 | `sanic_carp_key_arreglo_producto_numeroproducto_numeroarreglo` (K-02) | `playbooks/clave/sanic_carp_key_arreglo_producto_numeroproducto_numeroarreglo.md` | `sanic_producto`, `sanic_numeroproducto`, `sanic_numeroarreglo` (68 de 900 bytes) | 3.3, 2.3 | RF-07, D-09, D-33 | hecho (creado en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 5.3 | `sanic_carp_key_versionplantilla_nombre` (K-03) | `playbooks/clave/sanic_carp_key_versionplantilla_nombre.md` | `sanic_nombre` (20 de 900 bytes) | 3.5 | BP-PP-192, P-19 | hecho (creado en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
 
 La cédula del Cliente no lleva clave (D-07): una columna con seguridad por columna no puede ser parte de una clave (spike 2). No hay clave en Cuota (P-19).
 
@@ -126,7 +126,7 @@ La cédula del Cliente no lleva clave (D-07): una columna con seguridad por colu
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 6.1 | `CSP - CARP - Datos sensibles` (3 columnas: `sanic_cedula` leer, crear y actualizar; `sanic_cuentadebitar` leer, crear y actualizar; `sanic_instantaneacedula` solo leer). Sin nombre lógico | `playbooks/perfil-columnas/csp_carp_datos_sensibles.md` | 3.1 y 3.3 con `protegida: true` en las tres columnas | RNF-03, RNF-10, D-19, P-16; diccionario §8 | pendiente |
+| 6.1 | `CSP - CARP - Datos sensibles` (3 columnas: `sanic_cedula` leer, crear y actualizar; `sanic_cuentadebitar` leer, crear y actualizar; `sanic_instantaneacedula` solo leer). Sin nombre lógico | `playbooks/perfil-columnas/csp_carp_datos_sensibles.md` | 3.1 y 3.3 con `protegida: true` en las tres columnas | RNF-03, RNF-10, D-19, P-16; diccionario §8 | hecho (creado en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
 
 La asociación de los teams al perfil y su prueba de punta a punta no viajan en la solución: están en 13.8.
 

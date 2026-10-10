@@ -585,7 +585,7 @@ Un solo perfil. Las columnas protegidas son tres, y las tres tienen `protegida: 
 | Dato | Valor |
 |---|---|
 | Nombre | `CSP - CARP - Datos sensibles` (sin nombre lógico: BP-PP-185) |
-| Descripción | Lectura y escritura de la cédula del cliente y de la cuenta a debitar, y lectura de la cédula copiada en el arreglo. Se da al team ARP y al team ARP Jefatura. |
+| Descripción | Lectura y escritura de la cédula del cliente y de la cuenta a debitar, y lectura de la cédula copiada en el arreglo. Se da al team del área (el team del sistema de la business unit Arreglos de Pago) y al team Arreglos de Pago - Jefatura. |
 | Origen | RNF-03, RNF-10, D-19, D-30 |
 
 | Tabla | Columna | Leer | Crear | Actualizar | Motivo |
