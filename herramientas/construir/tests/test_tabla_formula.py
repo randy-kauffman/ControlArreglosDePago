@@ -364,14 +364,17 @@ class VerificacionDeLaFormula(Base):
         cliente = tt.armar(ClienteSimulado(), CONVERSACION)
         self.con_cliente(cliente, CONVERSACION, **self.kw())
         ruta = f"EntityDefinitions(LogicalName='{TABLA}')/Attributes(LogicalName='sanic_antiguedad')"
-        lecturas = [l["ruta"] for l in cliente.llamadas if l["ruta"].startswith(ruta + "?")]
+        # SourceTypeMask solo existe en el tipo concreto (Decimal/Integer): sin el cast la plataforma responde 400
+        # "Could not find a property named 'SourceTypeMask' on type 'Microsoft.Dynamics.CRM.AttributeMetadata'" (Dev, 2026-10-09).
+        self.assertEqual([], [l["ruta"] for l in cliente.llamadas if l["ruta"].startswith(ruta + "?")])
+        con_cast = [l["ruta"] for l in cliente.llamadas if l["ruta"].startswith(ruta + "/Microsoft.Dynamics.CRM.DecimalAttributeMetadata?")]
+        lecturas = [r for r in con_cast if "SourceTypeMask" in r]
         self.assertEqual(1, len(lecturas))
         for propiedad in ("LogicalName", "AttributeTypeName", "SourceType", "SourceTypeMask", "FormulaDefinition", "IsValidForCreate",
                           "IsValidForUpdate", "IsSecured", "IsAuditEnabled", "RequiredLevel", "DisplayName", "Description"):
             self.assertIn(propiedad, lecturas[0])
-        precision = [l["ruta"] for l in cliente.llamadas if l["ruta"].startswith(ruta + "/Microsoft.Dynamics.CRM.DecimalAttributeMetadata")]
+        precision = [r for r in con_cast if "Precision" in r]
         self.assertEqual(1, len(precision))
-        self.assertIn("Precision", precision[0])
 
     def test_una_formula_entera_no_pide_la_precision(self):
         datos = copy.deepcopy(CONVERSACION)
@@ -423,7 +426,8 @@ class VerificacionDeLaFormula(Base):
 
     def test_precision_distinta(self):
         cliente = ClienteSimulado()  # la regla específica va ANTES de las del camino feliz: gana la primera que coincide
-        cliente.responder("GET", lambda r: "sanic_antiguedad')/Microsoft.Dynamics.CRM.DecimalAttributeMetadata" in r, (200, {"LogicalName": "sanic_antiguedad", "Precision": 4}, {}))
+        cliente.responder("GET", lambda r: "sanic_antiguedad')/Microsoft.Dynamics.CRM.DecimalAttributeMetadata" in r and "SourceTypeMask" not in r,
+                          (200, {"LogicalName": "sanic_antiguedad", "Precision": 4}, {}))
         tt.armar(cliente, CONVERSACION)
         estado, _, detalle = self.con_cliente(cliente, CONVERSACION, **self.kw())
         self.assertEqual(estado, "difiere", detalle)
@@ -482,7 +486,7 @@ class VerificacionDeLaFormula(Base):
 
     def test_http_inesperado_al_leer_la_formula_es_error(self):
         cliente = ClienteSimulado()
-        cliente.responder("GET", lambda r: r.startswith(f"EntityDefinitions(LogicalName='{TABLA}')/Attributes(LogicalName='sanic_antiguedad')?"), (500, {"error": {"message": "boom"}}, {}))
+        cliente.responder("GET", lambda r: r.startswith(f"EntityDefinitions(LogicalName='{TABLA}')/Attributes(LogicalName='sanic_antiguedad')/Microsoft.Dynamics.CRM.DecimalAttributeMetadata?") and "SourceTypeMask" in r, (500, {"error": {"message": "boom"}}, {}))
         tt.armar(cliente, CONVERSACION)
         estado, _, detalle = self.con_cliente(cliente, CONVERSACION, **self.kw())
         self.assertEqual(estado, "error", detalle)

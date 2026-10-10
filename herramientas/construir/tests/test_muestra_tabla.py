@@ -494,3 +494,18 @@ class LecturaDelZipExportado(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class QuePlaybooksCompara(unittest.TestCase):
+    """Sin rutas, `main` compara los playbooks de `tabla/` de tipo `tabla`: un `columnas-estandar` (p. ej. `email.md`) vive en la misma
+    carpeta pero no es una tabla propia y no tiene muestra por tabla. Antes del 2026-10-09 lo leía y se caía con ErrorPlaybook."""
+
+    def test_sin_rutas_saltea_columnas_estandar_y_con_rutas_usa_las_dadas(self):
+        import tempfile
+        import muestra_tabla as mt
+        with tempfile.TemporaryDirectory() as d:
+            for nombre, tipo in (("a_tabla.md", "tabla"), ("email.md", "columnas-estandar")):
+                with open(os.path.join(d, nombre), "w", encoding="utf-8") as f:
+                    f.write(f'# x\n\n## 1. Identidad\n\n```json\n{{}}\n```\n\n## 2. Qué se crea\n\n```json\n{{"tipo": "{tipo}"}}\n```\n')
+            self.assertEqual([os.path.join(d, "a_tabla.md")], mt.rutas_a_comparar([], d))
+            self.assertEqual(["x.md"], mt.rutas_a_comparar(["x.md", "--guardar"], d))

@@ -76,7 +76,12 @@ def armar(cliente, datos, genericas=None, por_tipo=None, tabla=None, tabla_filas
     for c in datos["columnas"]:
         if c["tipo"] == "formula":
             ruta_f = f"{RUTA_ATRIBUTOS}(LogicalName='{c['nombre']}')"
-            cliente.responder("GET", lambda r, ruta_f=ruta_f: r.startswith(ruta_f + "?"), (200, (formulas or {}).get(c["nombre"], tt.cuerpo_formula(c)), {}))
+            # Como la plataforma (Dev, 2026-10-09): SourceTypeMask solo existe en el tipo concreto; sin el cast, 400.
+            cast_f = {"decimal": "Decimal", "entero": "Integer"}[c["resultado"]]
+            cliente.responder("GET", lambda r, ruta_f=ruta_f: r.startswith(ruta_f + "?") and "SourceTypeMask" in r,
+                              (400, {"error": "Could not find a property named 'SourceTypeMask' on type 'Microsoft.Dynamics.CRM.AttributeMetadata'."}, {}))
+            cliente.responder("GET", lambda r, ruta_f=ruta_f, cast_f=cast_f: r.startswith(f"{ruta_f}/Microsoft.Dynamics.CRM.{cast_f}AttributeMetadata?") and "SourceTypeMask" in r,
+                              (200, (formulas or {}).get(c["nombre"], tt.cuerpo_formula(c)), {}))
             cliente.responder("GET", lambda r, ruta_f=ruta_f: r.startswith(ruta_f + "/Microsoft.Dynamics.CRM.DecimalAttributeMetadata"),
                               (200, {"LogicalName": c["nombre"], "Precision": c.get("precision")}, {}))
     cliente.responder("GET", lambda r: es_ruta_solutioncomponents(r) and "componenttype eq 1" in r and META_EMAIL in r,

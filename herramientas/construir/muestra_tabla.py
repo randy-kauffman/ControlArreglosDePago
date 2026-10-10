@@ -42,7 +42,7 @@ _AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _AQUI)
 sys.path.insert(0, os.path.dirname(_AQUI))
 
-from _comun import carpeta_playbooks, dividir_secciones, escribir_metadatos, leer_texto, obtener_componente, obtener_identidad  # noqa: E402
+from _comun import carpeta_playbooks, dividir_secciones, obtener_bloque_json, escribir_metadatos, leer_texto, obtener_componente, obtener_identidad  # noqa: E402
 
 TIPO = "tabla"
 COMPONENTE_TABLA = "1"
@@ -280,13 +280,23 @@ def guardar_muestra(carpeta, nombre, customizations_xml, formulas):
     return escritos
 
 
+def rutas_a_comparar(argv, carpeta):
+    """Las rutas dadas, tal cual; sin rutas, los playbooks de `carpeta` de tipo `tabla`. Un `columnas-estandar` (p. ej. `email.md`) vive
+    en la misma carpeta pero no es una tabla propia: lo verifica `tabla.py`, no esta muestra."""
+    dadas = [a for a in argv if not a.startswith("--")]
+    if dadas:
+        return dadas
+    return [r for r in sorted(glob.glob(os.path.join(carpeta, "*.md")))
+            if obtener_bloque_json(dividir_secciones(leer_texto(r)), "2", "Qué se crea").get("tipo") == TIPO]
+
+
 def main():
     from dataverse_api import Dataverse
 
     argv = sys.argv[1:]
     guardar = "--guardar" in argv
     carpeta = os.path.join(carpeta_playbooks(), "tabla")
-    rutas = [a for a in argv if not a.startswith("--")] or sorted(glob.glob(os.path.join(carpeta, "*.md")))
+    rutas = rutas_a_comparar(argv, carpeta)
     playbooks = []
     for ruta in rutas:
         sec = dividir_secciones(leer_texto(ruta))

@@ -763,7 +763,8 @@ def _verificar_formula(dv, tabla, c, idiomas, en_entorno, por_familia, difs, not
     n = c["nombre"]
     consulta = f"la lectura de la fórmula '{n}' (GET EntityDefinitions '{tabla}' /Attributes '{n}')"
     ruta = f"EntityDefinitions(LogicalName='{tabla}')/Attributes(LogicalName='{n}')"
-    f = _get(dv, f"{ruta}?$select={SELECT_FORMULA}", consulta)
+    # Con el cast del tipo de su resultado: SourceTypeMask no existe en AttributeMetadata y sin el cast la plataforma responde 400 (Dev, 2026-10-09).
+    f = _get(dv, f"{ruta}/Microsoft.Dynamics.CRM.{CAST_DE_RESULTADO[c['resultado']]}AttributeMetadata?$select={SELECT_FORMULA}", consulta)
     # Primero la forma de TODO lo que se va a usar; recién después se decide.
     tipo_fuente = exigir_forma(f.get("SourceType"), int, consulta, "SourceType")
     mascara = exigir_forma(f.get("SourceTypeMask"), int, consulta, "SourceTypeMask")

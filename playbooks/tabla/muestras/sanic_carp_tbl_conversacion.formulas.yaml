@@ -1,0 +1,1 @@
+sanic_antiguedad: =DateDiff(sanic_sinrespuestadesde, Now(), TimeUnit.Minutes) / 60

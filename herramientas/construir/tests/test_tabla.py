@@ -215,7 +215,12 @@ def armar(cliente, datos, existe=True, genericas=None, por_tipo=None, tabla=None
         if c["tipo"] != "formula":
             continue
         ruta_f = f"EntityDefinitions(LogicalName='{datos['nombre']}')/Attributes(LogicalName='{c['nombre']}')"
-        cliente.responder("GET", lambda r, ruta_f=ruta_f: r.startswith(ruta_f + "?"), (200, (formulas or {}).get(c["nombre"], cuerpo_formula(c)), {}))
+        # Como la plataforma (Dev, 2026-10-09): SourceTypeMask solo existe en el tipo concreto; sin el cast, 400.
+        cast_f = {"decimal": "Decimal", "entero": "Integer"}[c["resultado"]]
+        cliente.responder("GET", lambda r, ruta_f=ruta_f: r.startswith(ruta_f + "?") and "SourceTypeMask" in r,
+                          (400, {"error": "Could not find a property named 'SourceTypeMask' on type 'Microsoft.Dynamics.CRM.AttributeMetadata'."}, {}))
+        cliente.responder("GET", lambda r, ruta_f=ruta_f, cast_f=cast_f: r.startswith(f"{ruta_f}/Microsoft.Dynamics.CRM.{cast_f}AttributeMetadata?") and "SourceTypeMask" in r,
+                          (200, (formulas or {}).get(c["nombre"], cuerpo_formula(c)), {}))
         cliente.responder("GET", lambda r, ruta_f=ruta_f: r.startswith(ruta_f + "/Microsoft.Dynamics.CRM.DecimalAttributeMetadata"),
                           (200, {"LogicalName": c["nombre"], "Precision": c.get("precision")}, {}))
     ruta_t = f"EntityDefinitions(LogicalName='{datos['nombre']}')/Attributes"
