@@ -167,7 +167,7 @@ Estas filas **no tienen playbook**. Cada pieza se especifica con pruebas de acep
 | 7.13 | Steps de Cliente: normalización, unicidad de la cédula al crear, vinculación por correo | — | 7.3, 7.10 | RF-05, D-07, P-06 | diseño detallado pendiente |
 | 7.14 | Steps de Arreglo: registro en borrador (versión Vigente, canal, montos), calendario de cuotas, congelamiento, desbloqueo, formalización, descarte, anulación, reapertura | — | 7.2, 7.4, 7.5, 7.10 | RF-06, RF-07, RF-12, RF-16, D-08 a D-10, D-25, D-30, ítems 7 a 12 | diseño detallado pendiente |
 | 7.15 | Steps de Cuota: solo pagos y solo con el arreglo Vigente; paso del arreglo a Terminado | — | 7.2, 7.10 | RF-10, D-10, ítem 11 | diseño detallado pendiente |
-| 7.16 | Steps de Versión de plantilla y Mapeo: publicación, inmutabilidad (Update y subida por bloques), borrado de mapeo solo en Borrador | — | 7.7, 7.10 | RF-09, D-15, ítem 15 | diseño detallado pendiente |
+| 7.16 | Steps de Versión de plantilla y Mapeo: publicación, inmutabilidad (Update, incluido un step de Update filtrado por `sanic_archivo`: la subida por bloques no admite steps propios pero provoca ese Update; V-4, 2026-10-11), borrado de mapeo solo en Borrador | — | 7.7, 7.10 | RF-09, D-15, ítem 15 | diseño detallado pendiente |
 | 7.17 | Propietario: fijar el team del sistema de la BU como dueño y rechazar otro. La definición lo fija para Cliente, Conversación y Arreglo; el diccionario lo amplía a las siete tablas (P-11) | — | 7.10 | D-31, P-11 | diseño detallado pendiente |
 | 7.18 | Plugin de la Custom API de generación del formato (8.2) | — | 7.8, 7.10 | RF-08, D-13, ítem 14 | diseño detallado pendiente |
 | 7.19 | Plugin de la Custom API de reconciliación de correos sin conversación (8.3), con la misma lógica de 7.11 | — | 7.11 | RF-01, D-03 | diseño detallado pendiente |
@@ -203,7 +203,7 @@ Familias de steps que la definición implica (contenido de 8.7; la lista cerrada
 | Arreglo, Create (pre y post) | Propietario, versión Vigente, canal, montos; calendario de cuotas | 7.14, 7.17 |
 | Arreglo, Update (pre) | Solo-sistema, congelamiento, gestos con motivo, reemplazo de cuotas | 7.14 |
 | Cuota, Update (pre) y paso a Terminado | Solo pagos, arreglo Vigente | 7.15 |
-| Versión de plantilla, Update y subida por bloques; Mapeo, Create, Update y Delete | Publicación, inmutabilidad, borrado solo en Borrador | 7.16 |
+| Versión de plantilla, Update (con un step filtrado por `sanic_archivo` para la subida de archivo, V-4); Mapeo, Create, Update y Delete | Publicación, inmutabilidad, borrado solo en Borrador | 7.16 |
 
 ## 9. Datos semilla y de configuración
 
