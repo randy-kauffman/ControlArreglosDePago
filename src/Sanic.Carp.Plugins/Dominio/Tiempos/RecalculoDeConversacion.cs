@@ -46,7 +46,10 @@ namespace Sanic.Carp.Plugins.Dominio.Tiempos
         /// <c>FechaPrimerCorreo</c> y <c>SinRespuestaDesde</c> son el mínimo de los no nulos (nulo si todos lo son);
         /// <c>CantidadRespuestas</c> es la cantidad de respuestas procesadas; <c>TiempoPrimeraRespuesta</c> es el tiempo de la respuesta
         /// procesada MÁS ANTIGUA (por <see cref="RespuestaProcesada.EnviadoEn"/>) entre las que tienen tiempo, sin importar el orden en que
-        /// vengan (nulo si ninguna lo tiene). Una colección nula lanza <see cref="ArgumentNullException"/>.
+        /// vengan (nulo si ninguna lo tiene). Si varias con tiempo comparten ese instante más antiguo, gana la de MENOR tiempo (PA-TIE-12):
+        /// <see cref="RespuestaProcesada"/> no trae el identificador del correo, y así el resultado no depende del orden de la lista.
+        /// Una colección nula lanza <see cref="ArgumentNullException"/>; un elemento nulo en <paramref name="respuestasProcesadas"/>, una
+        /// <see cref="ArgumentException"/> (PA-TIE-11). En las listas de fechas el <c>null</c> es un valor válido: esa conversación no tiene fecha.
         /// </summary>
         public static ResultadoDeRecalculo RecalcularTrasUnion(IEnumerable<DateTime?> fechasDePrimerCorreo, IEnumerable<DateTime?> sinRespuestaDesde,
             IEnumerable<RespuestaProcesada> respuestasProcesadas)
@@ -59,16 +62,25 @@ namespace Sanic.Carp.Plugins.Dominio.Tiempos
             RespuestaProcesada masAntiguaConTiempo = null;
             foreach (RespuestaProcesada respuesta in respuestasProcesadas)
             {
+                if (respuesta == null)
+                {
+                    throw new ArgumentException("Una respuesta procesada es nula; no se puede recalcular la conversación.", nameof(respuestasProcesadas));
+                }
+
                 cantidad++;
                 // Un recordatorio (sin tiempo) cuenta para la cantidad pero no fija la primera respuesta (1.4 paso 6c).
-                if (respuesta.Tiempo.HasValue && (masAntiguaConTiempo == null || respuesta.EnviadoEn < masAntiguaConTiempo.EnviadoEn))
-                {
-                    masAntiguaConTiempo = respuesta;
-                }
+                if (respuesta.Tiempo.HasValue && EsMejorPrimera(respuesta, masAntiguaConTiempo)) masAntiguaConTiempo = respuesta;
             }
 
             return new ResultadoDeRecalculo(Minimo(fechasDePrimerCorreo), Minimo(sinRespuestaDesde), cantidad,
                 masAntiguaConTiempo == null ? null : masAntiguaConTiempo.Tiempo);
+        }
+
+        // Más antigua gana; con el mismo instante, el menor tiempo (PA-TIE-12). Ambas tienen tiempo salvo la actual, que puede ser nula.
+        private static bool EsMejorPrimera(RespuestaProcesada candidata, RespuestaProcesada actual)
+        {
+            if (actual == null || candidata.EnviadoEn < actual.EnviadoEn) return true;
+            return candidata.EnviadoEn == actual.EnviadoEn && candidata.Tiempo.Value < actual.Tiempo.Value;
         }
 
         private static DateTime? Minimo(IEnumerable<DateTime?> fechas)

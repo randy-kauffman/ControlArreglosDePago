@@ -8,7 +8,8 @@ namespace Sanic.Carp.Plugins.Dominio
     /// pre-imagen. Estar presente con el mismo valor no es un cambio. Opera sobre diccionarios neutros (nombre lógico → valor) para
     /// no depender del SDK.
     /// <para>
-    /// Comparación de valores: <c>null</c> contra <c>null</c> es igual; <see cref="ValorDeOpcion"/> por su entero;
+    /// Comparación de valores: <c>null</c> contra <c>null</c> es igual, y el texto vacío es <c>null</c> (Dataverse guarda el texto vacío
+    /// como nulo; DC-01), pero un texto de espacios es un valor; <see cref="ValorDeOpcion"/> por su entero;
     /// <see cref="ReferenciaDeEntidad"/> por su Guid (no por la tabla); <see cref="ValorDeDinero"/> y <see cref="decimal"/> por valor
     /// (10.50 es igual a 10.5); <see cref="DateTime"/> por sus ticks (sin mirar <see cref="DateTimeKind"/>); texto ordinal (sensible
     /// a mayúsculas, a espacios y a la forma Unicode, nunca a la cultura).
@@ -36,9 +37,13 @@ namespace Sanic.Carp.Plugins.Dominio
             return !a.Equals(b);
         }
 
-        // Reduce los tipos neutros a lo que se compara (4.4: OptionSetValue→int, EntityReference→Guid, Money→decimal).
+        // Reduce los tipos neutros a lo que se compara (4.4: OptionSetValue→int, EntityReference→Guid, Money→decimal) y el texto vacío a
+        // nulo (DC-01: Dataverse no distingue los dos al guardar). Solo el vacío: un texto de espacios no es nulo.
         private static object Comparable(object valor)
         {
+            var texto = valor as string;
+            if (texto != null && texto.Length == 0) return null;
+
             var opcion = valor as ValorDeOpcion;
             if (opcion != null) return opcion.Valor;
 
@@ -52,10 +57,12 @@ namespace Sanic.Carp.Plugins.Dominio
         }
 
         /// <summary>
-        /// ¿Cambió <paramref name="columna"/>? Falso si no está en <paramref name="target"/>. Si está, se compara con el valor de
-        /// <paramref name="preImagen"/>; una clave ausente en la pre-imagen se trata como <c>null</c>, y una pre-imagen nula (un
-        /// <c>Create</c>) como vacía. La lectura de las columnas con seguridad por columna que la pre-imagen omite (DC-28) la hace el
-        /// step antes de llamar acá: esta función no consulta nada.
+        /// ¿Cambió <paramref name="columna"/>? Falso si no está en <paramref name="target"/>. Si está y la pre-imagen NO trae la clave,
+        /// es un cambio aunque el <c>Target</c> traiga <c>null</c>: una clave ausente significa "valor desconocido", no "nulo" (DC-01,
+        /// decisión del arquitecto del 2026-10-11), así que falla cerrado y un olvido del step se ve como rechazo en vez de pasar en
+        /// silencio. Una pre-imagen nula (un <c>Create</c>) equivale a una sin ninguna clave. Si la clave está, se compara su valor,
+        /// y <c>null</c> contra <c>null</c> no es un cambio. Esta función no consulta nada: el step garantiza antes que cada columna
+        /// vigilada del <c>Target</c> esté en la pre-imagen, leyéndola con SYSTEM si la seguridad por columna la omitió (DC-28).
         /// </summary>
         public static bool Distinto(IReadOnlyDictionary<string, object> target, IReadOnlyDictionary<string, object> preImagen, string columna)
         {
@@ -65,8 +72,8 @@ namespace Sanic.Carp.Plugins.Dominio
             object valorNuevo;
             if (!target.TryGetValue(columna, out valorNuevo)) return false;
 
-            object valorAnterior = null;
-            if (preImagen != null) preImagen.TryGetValue(columna, out valorAnterior);
+            object valorAnterior;
+            if (preImagen == null || !preImagen.TryGetValue(columna, out valorAnterior)) return true;
 
             return ValoresDistintos(valorNuevo, valorAnterior);
         }

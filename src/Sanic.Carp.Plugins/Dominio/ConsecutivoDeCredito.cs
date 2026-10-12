@@ -36,7 +36,9 @@ namespace Sanic.Carp.Plugins.Dominio
         public const int Maximo = 9999;
 
         /// <summary>
-        /// El máximo de los números no nulos más uno; 1 si no hay ninguno. No rellena huecos. Si el siguiente supera
+        /// El máximo de los números no nulos más uno; 1 si no hay ninguno. Los menores que 1 se ignoran igual que los nulos: no son
+        /// consecutivos válidos (el rango del dicc. §11.3 es 1 a 9999) y un dato corrupto no puede dar un siguiente menor que 1
+        /// (diseno/03 2.0.5, decisión del arquitecto del 2026-10-11). No rellena huecos. Si el siguiente supera
         /// <see cref="Maximo"/>, devuelve <c>CARP-ARR-023</c> (sin desbordar el entero). Una colección nula lanza
         /// <see cref="ArgumentNullException"/>.
         /// </summary>
@@ -48,7 +50,7 @@ namespace Sanic.Carp.Plugins.Dominio
             int? maximo = null;
             foreach (int? numero in numerosExistentes)
             {
-                if (numero.HasValue && (!maximo.HasValue || numero.Value > maximo.Value)) maximo = numero;
+                if (numero.HasValue && numero.Value >= 1 && (!maximo.HasValue || numero.Value > maximo.Value)) maximo = numero;
             }
 
             // Se compara antes de sumar: con int.MaxValue el +1 desbordaría.

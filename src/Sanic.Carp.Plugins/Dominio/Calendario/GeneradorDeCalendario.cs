@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Sanic.Carp.Plugins.Dominio.Calendario
 {
@@ -68,7 +69,7 @@ namespace Sanic.Carp.Plugins.Dominio.Calendario
         {
             if (plazo < 1 || plazo > PlazoMaximo)
             {
-                throw new ArgumentOutOfRangeException(nameof(plazo), plazo, "El plazo debe estar entre 1 y " + PlazoMaximo + "; CARP-ARR-003 lo valida antes.");
+                throw new ArgumentOutOfRangeException(nameof(plazo), plazo, "El plazo debe estar entre 1 y " + PlazoMaximo.ToString(CultureInfo.InvariantCulture) + "; CARP-ARR-003 lo valida antes.");
             }
         }
     }

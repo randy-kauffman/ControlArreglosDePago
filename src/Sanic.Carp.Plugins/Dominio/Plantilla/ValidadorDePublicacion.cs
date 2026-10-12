@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Sanic.Carp.Plugins.Dominio.Calendario;
 using Sanic.Carp.Plugins.Dominio.Errores;
 
 namespace Sanic.Carp.Plugins.Dominio.Plantilla
@@ -39,16 +40,20 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
     public static class ValidadorDePublicacion
     {
         /// <summary>
-        /// Devuelve TODOS los errores, no solo el primero; lista vacía si el mapeo se puede publicar.
+        /// Devuelve TODOS los errores, no solo el primero; lista vacía si el mapeo se puede publicar (diseno/03 2.0.7).
         /// <list type="number">
         /// <item>Mapeo nulo o vacío ⇒ <c>CARP-VER-007</c>.</item>
-        /// <item>Reglas del generador (<c>ValidarMapeo</c> del spike 1): celda A1 bien formada (A1 a XFD1048576), sin dos campos en la
-        /// misma celda de la misma hoja, bloque de cuotas con las cinco columnas, campo coherente con el tipo ⇒ <c>CARP-VER-007</c>,
-        /// un error por problema.</item>
-        /// <item>Tabla de compatibilidad de dicc. §3.1 (columna 4): las 19 primeras opciones y <c>Moneda</c> solo con ValorSimple;
-        /// <c>Cuota: …</c> (5) solo con ColumnaDeBloqueDeCuotas; <c>Total: …</c> (2) solo con TotalCalculado ⇒ <c>CARP-VER-007</c>.</item>
+        /// <item>Lista cerrada de reglas del generador (<c>ValidarMapeo</c> del spike 1, <c>ValidadorMapeo.cs</c>), un
+        /// <c>CARP-VER-007</c> por problema: hoja indicada y celda A1 bien formada, sin dos campos en la misma celda de la misma hoja,
+        /// campo coherente con el tipo (una fila con un problema de hoja, celda o coherencia da un solo error y no entra en las reglas
+        /// siguientes); y las del bloque de cuotas: una sola hoja (si no, es el único error del bloque), ninguna columna repetida, bloque
+        /// completo, misma fila inicial, filas máximas entre 1 y 60, el bloque no se sale de la hoja y ninguna otra celda lo pisa.</item>
+        /// <item>Tabla de compatibilidad de dicc. §3.1 (columna 4), como lista blanca (BP-PP-062): las 19 primeras opciones y
+        /// <c>Moneda</c> solo con ValorSimple; <c>Cuota: …</c> (5) solo con ColumnaDeBloqueDeCuotas; <c>Total: …</c> (2) solo con
+        /// TotalCalculado. Una opción que el enum no define no es compatible con ningún tipo ⇒ <c>CARP-VER-007</c>.</item>
         /// <item>Las filas máximas de las columnas del bloque no coinciden con <paramref name="capacidad"/> ⇒ UN solo error
-        /// <c>CARP-VER-008</c> (decisión del arquitecto: el texto no nombra la columna).</item>
+        /// <c>CARP-VER-008</c> (el texto no nombra la columna). Las filas máximas distintas entre columnas no son un 007 aparte: las
+        /// cubre esta regla.</item>
         /// </list>
         /// Cada error de la regla 1 a 3 es <c>CodigosDeError.VER_007</c> con el problema concreto en <c>{errores}</c>; el de la regla 4,
         /// <c>CodigosDeError.VER_008</c> con la capacidad.
@@ -72,7 +77,7 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
             }
 
             ValidarCeldasRepetidas(validas, errores);
-            ValidarBloqueCompleto(validas, errores);
+            ValidarBloque(validas, errores);
             ValidarCapacidad(capacidad, filasDeMapeo, errores);
             return errores;
         }
@@ -110,6 +115,14 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
                 return null;
             }
 
+            // Lista blanca (BP-PP-062): una opción nueva del choice que el código aún no conoce se frena al publicar, con su propio texto.
+            if (!Enum.IsDefined(typeof(CampoMapeable), fila.Campo))
+            {
+                errores.Add(CodigosDeError.VER_007.Crear("la celda " + Comillas(fila.Celda) + " de la hoja " + Comillas(fila.Hoja) + " usa el campo "
+                    + ((int)fila.Campo).ToString(CultureInfo.InvariantCulture) + ", que no es una opción conocida del mapeo"));
+                return null;
+            }
+
             if (!EsCompatible(fila.Campo, fila.Tipo))
             {
                 errores.Add(CodigosDeError.VER_007.Crear("la celda " + Comillas(fila.Celda) + " de la hoja " + Comillas(fila.Hoja) + " usa el tipo de mapeo "
@@ -125,7 +138,7 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         // La celda se compara ya interpretada, así "b7" y "B7" son la misma.
         private static void ValidarCeldasRepetidas(List<FilaValida> validas, List<ErrorDeNegocio> errores)
         {
-            var grupos = validas.GroupBy(v => v.Fila.Hoja.ToUpperInvariant() + "!" + v.Columna.ToString(CultureInfo.InvariantCulture) + ","
+            var grupos = validas.GroupBy(v => ClaveDeHoja(v.Fila.Hoja) + "!" + v.Columna.ToString(CultureInfo.InvariantCulture) + ","
                 + v.NumeroDeFila.ToString(CultureInfo.InvariantCulture), StringComparer.Ordinal);
 
             foreach (var grupo in grupos)
@@ -137,15 +150,83 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
             }
         }
 
-        // Las cinco columnas del bloque, una vez cada una. Un solo error que las nombra todas (spike: "Bloque de cuotas incompleto").
-        private static void ValidarBloqueCompleto(List<FilaValida> validas, List<ErrorDeNegocio> errores)
+        // Hoja sin distinguir mayúsculas y SIN recortar (b, d y j comparan igual).
+        private static string ClaveDeHoja(string hoja)
         {
-            var presentes = new HashSet<CampoMapeable>(validas.Where(v => v.Fila.Tipo == TipoDeMapeo.ColumnaDeBloqueDeCuotas).Select(v => v.Fila.Campo));
-            var faltantes = CamposDelBloque.Where(c => !presentes.Contains(c)).ToList();
-            if (faltantes.Count == 0) return;
+            return hoja.ToUpperInvariant();
+        }
 
-            errores.Add(CodigosDeError.VER_007.Crear("el bloque de cuotas está incompleto, faltan las columnas "
-                + string.Join(", ", faltantes.Select(EtiquetaDelCampo))));
+        // Reglas d a k de la lista cerrada (diseno/03 2.0.7 regla 2). Miran solo las filas de bloque que pasaron a y c. Las filas máximas
+        // nulas no dan error acá (k): las atrapa la regla 4.
+        private static void ValidarBloque(List<FilaValida> validas, List<ErrorDeNegocio> errores)
+        {
+            var delBloque = validas.Where(v => v.Fila.Tipo == TipoDeMapeo.ColumnaDeBloqueDeCuotas).ToList();
+
+            // d. Con el bloque repartido, los rangos no tienen sentido: es el único error del bloque (igual que el spike).
+            if (delBloque.Select(v => ClaveDeHoja(v.Fila.Hoja)).Distinct(StringComparer.Ordinal).Count() > 1)
+            {
+                errores.Add(CodigosDeError.VER_007.Crear("el bloque de cuotas debe estar en una sola hoja"));
+                return;
+            }
+
+            // e. Una columna mapeada más de una vez: un error por columna repetida.
+            foreach (var grupo in delBloque.GroupBy(v => v.Fila.Campo))
+            {
+                if (grupo.Count() > 1) errores.Add(CodigosDeError.VER_007.Crear("la columna de bloque " + EtiquetaDelCampo(grupo.Key) + " está mapeada más de una vez"));
+            }
+
+            // f. Las cinco columnas, una vez cada una. Un solo error que nombra todas las que faltan (spike: "Bloque de cuotas incompleto").
+            var presentes = new HashSet<CampoMapeable>(delBloque.Select(v => v.Fila.Campo));
+            var faltantes = CamposDelBloque.Where(c => !presentes.Contains(c)).ToList();
+            if (faltantes.Count > 0)
+            {
+                errores.Add(CodigosDeError.VER_007.Crear("el bloque de cuotas está incompleto, faltan las columnas "
+                    + string.Join(", ", faltantes.Select(EtiquetaDelCampo))));
+            }
+            if (delBloque.Count == 0) return;
+
+            // g. Todas las columnas empiezan en la misma fila.
+            if (delBloque.Select(v => v.NumeroDeFila).Distinct().Count() > 1)
+            {
+                errores.Add(CodigosDeError.VER_007.Crear("las columnas del bloque de cuotas deben empezar en la misma fila"));
+            }
+
+            // h e i. Filas máximas entre 1 y 60, y el bloque no se sale de la hoja. Aritmética de 64 bits: nada desborda.
+            foreach (var v in delBloque)
+            {
+                if (!v.Fila.FilasMaximas.HasValue) continue;   // k
+                int filas = v.Fila.FilasMaximas.Value;
+                if (filas < 1 || filas > GeneradorDeCalendario.PlazoMaximo)
+                {
+                    errores.Add(CodigosDeError.VER_007.Crear("las filas máximas del bloque en la celda " + Comillas(v.Fila.Celda) + " ("
+                        + filas.ToString(CultureInfo.InvariantCulture) + ") deben estar entre 1 y "
+                        + GeneradorDeCalendario.PlazoMaximo.ToString(CultureInfo.InvariantCulture)));
+                }
+                else if ((long)v.NumeroDeFila + filas - 1 > MaxFila)
+                {
+                    errores.Add(CodigosDeError.VER_007.Crear("el bloque de cuotas que empieza en la celda " + Comillas(v.Fila.Celda) + " se sale de la hoja"));
+                }
+            }
+
+            // j. Otra celda mapeada (valor simple o total) de la misma hoja dentro del rango de una columna del bloque: un error por pareja.
+            // Para el rango, filas máximas menores que 1 o nulas valen 1 y las mayores que 60 valen lo que traen (Math.Max(…, 1) del spike).
+            foreach (var otra in validas.Where(v => v.Fila.Tipo != TipoDeMapeo.ColumnaDeBloqueDeCuotas))
+            {
+                foreach (var columna in delBloque)
+                {
+                    if (ClaveDeHoja(otra.Fila.Hoja) != ClaveDeHoja(columna.Fila.Hoja)) continue;
+                    if (otra.Columna != columna.Columna) continue;
+
+                    long filas = Math.Max(columna.Fila.FilasMaximas ?? 1, 1);
+                    long ultima = columna.NumeroDeFila + filas - 1;
+                    if (otra.NumeroDeFila >= columna.NumeroDeFila && otra.NumeroDeFila <= ultima)
+                    {
+                        errores.Add(CodigosDeError.VER_007.Crear("la celda " + Comillas(otra.Fila.Celda) + " (" + EtiquetaDelCampo(otra.Fila.Campo)
+                            + ") se pisa con el bloque de cuotas (" + EtiquetaDelCampo(columna.Fila.Campo) + ", filas "
+                            + columna.NumeroDeFila.ToString(CultureInfo.InvariantCulture) + " a " + ultima.ToString(CultureInfo.InvariantCulture) + ")"));
+                    }
+                }
+            }
         }
 
         // ---- Regla 4 ----
@@ -160,6 +241,7 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
 
         // ---- Tabla de compatibilidad (dicc. §3.1, columna 4) ----
 
+        // Lista blanca (BP-PP-062, dicc. §3.1 columna 4): lo que no está en una de las tres listas no es compatible con ningún tipo.
         private static readonly CampoMapeable[] CamposDelBloque =
         {
             CampoMapeable.CuotaNumero, CampoMapeable.CuotaFechaDeVencimiento, CampoMapeable.CuotaMonto,
@@ -168,15 +250,22 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
 
         private static readonly CampoMapeable[] CamposDeTotal = { CampoMapeable.TotalMontosDeCuota, CampoMapeable.TotalMontosPagados };
 
+        private static readonly CampoMapeable[] CamposSimples =
+        {
+            CampoMapeable.FechaDeFormalizacion, CampoMapeable.OficialDeArreglo, CampoMapeable.NombreDelCliente, CampoMapeable.CedulaDelCliente,
+            CampoMapeable.CorreoDelCliente, CampoMapeable.CelularDelCliente, CampoMapeable.NumeroDePrestamoOTarjeta, CampoMapeable.TipoDeArreglo,
+            CampoMapeable.NumeroDeArreglo, CampoMapeable.SaldoInicial, CampoMapeable.MontoAbonado, CampoMapeable.SaldoRemanente,
+            CampoMapeable.PlazoEnCuotas, CampoMapeable.CuotaMensual, CampoMapeable.TotalAPagar, CampoMapeable.FechaDeInicio,
+            CampoMapeable.FechaDeFinalizacion, CampoMapeable.CuentaADebitar, CampoMapeable.Comentarios, CampoMapeable.Moneda
+        };
+
         private static bool EsCompatible(CampoMapeable campo, TipoDeMapeo tipo)
         {
-            bool esDeBloque = Array.IndexOf(CamposDelBloque, campo) >= 0;
-            bool esDeTotal = Array.IndexOf(CamposDeTotal, campo) >= 0;
             switch (tipo)
             {
-                case TipoDeMapeo.ValorSimple: return !esDeBloque && !esDeTotal;
-                case TipoDeMapeo.ColumnaDeBloqueDeCuotas: return esDeBloque;
-                case TipoDeMapeo.TotalCalculado: return esDeTotal;
+                case TipoDeMapeo.ValorSimple: return Array.IndexOf(CamposSimples, campo) >= 0;
+                case TipoDeMapeo.ColumnaDeBloqueDeCuotas: return Array.IndexOf(CamposDelBloque, campo) >= 0;
+                case TipoDeMapeo.TotalCalculado: return Array.IndexOf(CamposDeTotal, campo) >= 0;
                 default: return false;
             }
         }

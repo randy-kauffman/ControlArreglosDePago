@@ -47,7 +47,8 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
             int recibidos = valores == null ? 0 : valores.Length;
             if (esperados != recibidos)
             {
-                throw new ArgumentException(Codigo + " espera " + esperados + " valor(es) y recibio " + recibidos + ".", nameof(valores));
+                throw new ArgumentException(Codigo + " espera " + esperados.ToString(System.Globalization.CultureInfo.InvariantCulture) + " valor(es) y recibio "
+                    + recibidos.ToString(System.Globalization.CultureInfo.InvariantCulture) + ".", nameof(valores));
             }
             string mensaje = Texto;
             for (int i = 0; i < esperados; i++)

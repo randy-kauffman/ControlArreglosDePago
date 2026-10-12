@@ -2,7 +2,7 @@ using System;
 using Sanic.Carp.Plugins.Dominio.Montos;
 using Xunit;
 
-namespace Sanic.Carp.Plugins.Tests.Unitarias.Montos
+namespace Sanic.Carp.Plugins.Tests.Unitarias.MontosUnitarias
 {
     /// <summary>Casos de <see cref="ReglasDeMontos"/> que la aceptación (diseno/03 2.0.3) no fija.</summary>
     public class ReglasDeMontosUnitarias

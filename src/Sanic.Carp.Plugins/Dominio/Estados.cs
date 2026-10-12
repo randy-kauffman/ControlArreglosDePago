@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Sanic.Carp.Plugins.Dominio
 {
@@ -49,7 +50,8 @@ namespace Sanic.Carp.Plugins.Dominio
 
         public override string ToString()
         {
-            return StateCode + "/" + StatusCode;
+            // Cultura invariante: los enteros en textos no dependen de la cultura del hilo (diseno/03 0.6).
+            return StateCode.ToString(CultureInfo.InvariantCulture) + "/" + StatusCode.ToString(CultureInfo.InvariantCulture);
         }
     }
 
