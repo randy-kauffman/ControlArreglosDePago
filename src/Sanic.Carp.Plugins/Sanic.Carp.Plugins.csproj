@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Ensamblado y paquete de plugins `sanic_carp_pkg_plugins` (diseno/01-convenciones.md §5, diseno/03 §4.1).
+       net462 es el que ejecuta el sandbox de Dataverse; net8.0 existe para que las pruebas corran en el puesto Linux.
+       Prohibido usar APIs que no existan en net462. Sin firmar: en un paquete no hace falta. -->
+  <PropertyGroup>
+    <TargetFrameworks>net462;net8.0</TargetFrameworks>
+    <RootNamespace>Sanic.Carp.Plugins</RootNamespace>
+    <AssemblyName>Sanic.Carp.Plugins</AssemblyName>
+    <!-- 10.0 y no latest: lo nuevo del lenguaje que pide soporte del runtime (records, init) no existe en net462. -->
+    <LangVersion>10.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Con TreatWarningsAsErrors, un aviso de auditoria de NuGet sobre una dependencia transitiva del SDK de Dataverse
+         (que no controlamos) rompia la restauracion. Se siguen mostrando como aviso. -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- HAY QUE SUBIR EL TERCER NUMERO (el build) EN CADA DESPLIEGUE: sin version nueva, Dataverse sigue ejecutando el binario viejo
+         (verificado en Dev en el proyecto M-PPP, 2026-09-22). Solo build o revision: cambiar major o minor hace que Dataverse lo
+         trate como OTRO ensamblado y los steps registrados no se re-apuntan solos. -->
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 2.x y no 3.x: en net462 la 2.x no trae dependencias (usa System.IO.Packaging de WindowsBase); la 3.x suma ensamblados
+         dependientes. Validado en el spike 1b (diseno/01-convenciones.md §5). -->
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
+    <!-- Permite compilar net462 sin Windows ni Visual Studio. -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- SDK de Dataverse, uno por framework. Solo lo tocan Datos/, Infraestructura/, Api/ y Steps/: el dominio no lo conoce.
+       net462: Microsoft.CrmSdk.CoreAssemblies solo trae lib/net462; ya esta en el sandbox, asi que no viaja en el paquete (PrivateAssets=All).
+       net8.0: ese paquete no sirve (solo net462), y el SDK para .NET moderno viene dentro de Microsoft.PowerPlatform.Dataverse.Client
+       (Microsoft.Xrm.Sdk y Microsoft.Crm.Sdk.Proxy en lib/net8.0). Sin PrivateAssets: las pruebas (net8.0) lo heredan por la referencia de proyecto. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.60" PrivateAssets="All" />
+    <Reference Include="System.IO.Compression" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.26" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Las pruebas ven los miembros internal (Formato, Steps con constructor internal, apoyos de la aceptacion). -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Sanic.Carp.Plugins.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>

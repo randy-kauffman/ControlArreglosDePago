@@ -108,7 +108,16 @@ Variables de entorno que los plugins leen (def. L418; `seguridad.md` §2). Los n
 4. Team de jefatura: `team` con `name` = valor y `businessunitid` = la BU (`CARP-CFG-003`).
 5. Queue remitente: `queue` con `emailaddress` igual (sin distinguir mayúsculas) al buzón, no inactiva. Cero ⇒ `CARP-CFG-004`; más de una ⇒ `CARP-CFG-005` (el spike 3 vio dos queues sobre un buzón: indefine el propietario del Email).
 
-Los mensajes `CARP-CFG-*` nombran la variable o el elemento que falta, nunca un valor.
+Los mensajes `CARP-CFG-*` nombran la variable o el elemento que falta, nunca un valor. Texto fijado el 2026-10-11 (lote 1 del código):
+
+| Código | Mensaje |
+|---|---|
+| `CARP-CFG-001` | No se encontró la unidad de negocio del área, o hay más de una con ese nombre. Revise la variable de entorno sanic_carp_ev_nombrebu. |
+| `CARP-CFG-002` | No se encontró un único equipo propietario predeterminado en la unidad de negocio del área. |
+| `CARP-CFG-003` | No se encontró el equipo de jefatura en la unidad de negocio del área. Revise la variable de entorno sanic_carp_ev_nombreteamjefatura. |
+| `CARP-CFG-004` | No se encontró la cola del buzón del área. Revise la variable de entorno sanic_carp_ev_buzonarea. |
+| `CARP-CFG-005` | Hay más de una cola con la dirección del buzón del área. Revise la variable de entorno sanic_carp_ev_buzonarea y las colas del entorno. |
+| `CARP-CFG-006` | La variable de entorno {variable} no tiene valor. |
 
 ### 0.5 Errores
 
@@ -609,7 +618,7 @@ Normalizar: quitar todo espacio en blanco, quitar **un** `<` inicial y **un** `>
 1. `cuotaMensual <= 0` ⇒ error `CARP-ARR-007`.
 2. `montoAbonado > saldoInicial` ⇒ `CARP-ARR-004`.
 3. `saldoRemanente = saldoInicial − montoAbonado`.
-4. Si `cuotaMensual × (plazo − 1) >= saldoRemanente` ⇒ `CARP-ARR-005`: con una cuota menos ya se cubre el saldo. El mensaje indica con cuántas cuotas se cubre: `N = ceil(saldoRemanente / cuotaMensual)`. Si `saldoRemanente = 0`, el mensaje dice que no hay saldo por pagar.
+4. Si `cuotaMensual × (plazo − 1) >= saldoRemanente` ⇒ `CARP-ARR-005`: con una cuota menos ya se cubre el saldo. El mensaje indica con cuántas cuotas se cubre: `N = ceil(saldoRemanente / cuotaMensual)`. Si `saldoRemanente = 0`, el mensaje dice que no hay saldo por pagar, y esa frase reemplaza el mensaje entero (decisión del arquitecto, 2026-10-11).
 5. Si `cuotaMensual × plazo > saldoRemanente`: `totalPagar = saldoRemanente`; `montoUltimaCuota = saldoRemanente − cuotaMensual × (plazo − 1)` (siempre mayor que cero por la regla 4).
 6. Si no (alivio temporal): `totalPagar = cuotaMensual × plazo`; `montoUltimaCuota = cuotaMensual`.
 
