@@ -1,6 +1,6 @@
 # 03. Contratos de Custom API, plugins y máquinas de estado
 
-Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **borrador del arquitecto para revisión del aprobador** (2026-10-09); decisiones abiertas OA-1 a OA-12 resueltas por el usuario el 2026-10-10 (sección 6); supuestos de plataforma V-1 a V-7 verificados en Dev el 2026-10-11 (0.9, `spikes/verificaciones/RESULTADO.md`)
+Proyecto: 2026-003-control-arreglos-pago · Etapa 3 · Estado: **borrador del arquitecto para revisión del aprobador** (2026-10-09); decisiones abiertas OA-1 a OA-12 resueltas por el usuario el 2026-10-10 (sección 6); supuestos de plataforma V-1 a V-7 verificados en Dev el 2026-10-11 (0.9, `spikes/verificaciones/RESULTADO.md`); cuatro decisiones del usuario y la inconsistencia 16 del arquitecto, del 2026-10-11 (D-39 de `definicion.md`)
 
 Fuentes y forma de citar: `def.` = `definicion.md` (con línea `L###` o `ítem N` de §6 Lógica); `D-xx` = decisión de la definición; `dicc.` = `diseno/02-diccionario-datos.md` (con sección, `P-xx`, `R-xx`, `DD-xx`); `matriz` = `diseno/04-matriz-privilegios.md`; `inv.` = `diseno/06-inventario-componentes.md`; `conv.` = `diseno/01-convenciones.md`; `spike N` = `spikes/*/RESULTADO.md` (1 plantilla, 1b sandbox, 2 plataforma, 3 sincronización, 4 manual, roles). `M-PPP` = `/home/gmaker/projects/M-PPP/diseno/03-contratos-custom-api.md`, solo como modelo de forma.
 
@@ -558,9 +558,9 @@ No hay columna de actor para esta acción; la fila nueva y los movimientos queda
 - Los steps de gestos y de columnas solo-sistema siguen el esquema: (1) calcular en memoria las columnas **vigiladas que cambiaron** (DC-01); (2) si no hay ninguna, terminar; (3) recién entonces consultar identidad; (4) si es escritura del sistema, terminar (DC-03); (5) evaluar; (6) escribir en el `Target` las columnas que el sistema fija.
 - `ColumnSet` siempre con nombres. Nunca `ColumnSet(true)`.
 - Errores: `InvalidPluginExecutionException("CARP-…")` para negocio; cualquier otra excepción se traza y se relanza como `CARP-<ÁREA>-900` (0.5).
-- No se usa `Depth` para saltarse reglas. Sí se usa para la protección contra recursión donde un step escribe sobre su propia tabla (2.7).
+- No se usa `Depth` para saltarse reglas. ~~Sí se usa para la protección contra recursión donde un step escribe sobre su propia tabla (2.7).~~ **Corregido el 2026-10-11:** 2.7 no usa `Depth`, y ningún otro step tampoco: no hay protección contra recursión por profundidad porque ningún step de este documento vuelve a dispararse a sí mismo (`CuotaTerminarArregloStep`, el único que escribe sobre otra tabla con steps de Update, escribe sobre Arreglo como SYSTEM: `ArregloActualizarStep` termina sin reglas por DC-03 y `ArregloCalendarioStep` filtra columnas que esa escritura no trae). `Depth` solo aparece como dato del contexto simulado (4.5).
 - **Los steps de `Update` no asumen profundidad 1 (V-1, 2026-10-11).** Un `SetStateRequest` llega a los plugins como `SetStateDynamicEntity` y de ahí cae en un `Update` anidado, a profundidad 2, con `statecode` y `statuscode` en el `Target`; el gesto de estado debe evaluarse igual que en un PATCH (profundidad 1). Tampoco se mira el mensaje padre: un `Update` se evalúa por lo que trae el `Target`. No se registra ningún step de `SetState` (nunca se dispara); el `Update` anidado ya pasa por los steps de `Update`. Ningún step de este documento filtra por `Depth` (revisado el 2026-10-11).
-- **Una fila inactiva o congelada solo la protegen los plugins (V-2, 2026-10-11).** La plataforma deja escribir sobre filas inactivas a SYSTEM y a las personas. Cada tabla con estados cerrados tiene su regla en 2.3 (Conversación), 2.6 (Arreglo), 2.7 (Cuota, a través del estado del Arreglo) y 2.8 (Versión y Mapeo); un cambio de estado hecho por una persona con un PATCH directo pasa por la misma máquina de estados que el gesto (sección 3).
+- **Una fila inactiva o congelada solo la protegen los plugins (V-2, 2026-10-11).** La plataforma deja escribir sobre filas inactivas a SYSTEM y a las personas. Cada tabla con estados cerrados tiene su regla en 2.3 (Conversación), 2.6 (Arreglo), 2.7 (Cuota, a través del estado del Arreglo) y 2.8 (Versión y Mapeo); un cambio de estado hecho por una persona con un PATCH directo pasa por la misma máquina de estados que el gesto (sección 3). **Decisión del usuario del 2026-10-11:** en una Conversación Finalizada o Unida una persona no cambia ninguna columna sin reabrir (`CARP-CNV-009`, 2.3), y el `statecode` nativo de Cuota y de Versión de plantilla solo lo cambia SYSTEM (2.7, 2.8); en Arreglo, `sanic_nombre` es solo-sistema en todos los estados (2.0.8, 2.6).
 - Trazas: prefijo `[NombreDelStep]`, entrada y salida, solo ids. Nunca cédula, cuenta, nombre ni cuerpo.
 
 ### 2.0 Piezas de dominio puro (inv. 7.2 a 7.7)
@@ -708,10 +708,10 @@ Viven en `Dominio/Columnas`. La prueba `CatalogoDeColumnasAceptacion` lee `disen
 
 | Tabla | Solo-sistema | De gesto | Datos del acuerdo (se bloquean al congelar) | Libres |
 |---|---|---|---|---|
-| Conversación | `sanic_huellamessageid`, `sanic_fechaprimercorreo`, `sanic_asunto`, `sanic_remitente`, `sanic_sinrespuestadesde`, `sanic_correonuevoenfinalizada`, `sanic_fechafinalizacion`, `sanic_tiempoprimerarespuesta`, `sanic_tiempototal`, `sanic_cantidadrespuestas`, `sanic_unidaaid`, `sanic_finalizadoporid` | `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta` | — | `sanic_clienteid`, `sanic_nombre` (autonumérica). Aparte: `sanic_oficialasignadoid` (2.4), `ownerid` (2.1), `statecode`/`statuscode` (3.1), `sanic_antiguedad` (fórmula, no escribible) |
-| Arreglo | `sanic_numeroarreglo`, `sanic_numeroprovisional`, `sanic_saldoremanente`, `sanic_totalpagar`, `sanic_fechacongelamiento` (salvo el gesto Desbloquear), `sanic_instantaneanombre`, `sanic_instantaneacedula`, `sanic_instantaneacorreo`, `sanic_instantaneacelular`, `sanic_fechaformalizado`, `sanic_formalizadoporid`, `sanic_fechadescarte`, `sanic_descartadoporid`, `sanic_fechaanulacion`, `sanic_anuladoporid`, `sanic_fechareapertura`, `sanic_reabiertoporid`, `sanic_cantidadreaperturas`, `sanic_fechatermino`, `sanic_versionplantillaid` | `sanic_motivodescarte`, `sanic_motivoanulacion`, `sanic_motivoreapertura` | `sanic_producto`, `sanic_numeroproducto`, `sanic_tipo`, `sanic_moneda`, `sanic_canalorigen`, `sanic_saldoinicial`, `sanic_montoabonado`, `sanic_plazo`, `sanic_cuotamensual`, `sanic_fechainicio`, `sanic_fechafin`, `sanic_cuentadebitar`, `sanic_fechaformalizacion`, `sanic_comentarios`, `sanic_clienteid`, `sanic_oficialid` | `sanic_conversacionid`, `sanic_nombre`. Aparte: `ownerid`, `statecode`/`statuscode` |
-| Cuota | `sanic_nombre`, `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_arregloid` | — | — | de pago: `sanic_fechapago`, `sanic_montopagado` |
-| Versión de plantilla | `sanic_huella`, `sanic_fechaaprobacion`, `sanic_aprobadoporid` | `sanic_estado` (gesto Publicar) | — | `sanic_nombre`, `sanic_archivo`, `sanic_capacidad` (solo en Borrador) |
+| Conversación | `sanic_huellamessageid`, `sanic_fechaprimercorreo`, `sanic_asunto`, `sanic_remitente`, `sanic_sinrespuestadesde`, `sanic_correonuevoenfinalizada`, `sanic_fechafinalizacion`, `sanic_tiempoprimerarespuesta`, `sanic_tiempototal`, `sanic_cantidadrespuestas`, `sanic_unidaaid`, `sanic_finalizadoporid` | `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta` | — | `sanic_clienteid`, `sanic_nombre` (autonumérica). Aparte: `sanic_oficialasignadoid` (2.4), `ownerid` (2.1), `statecode`/`statuscode` (3.1), `sanic_antiguedad` (fórmula, no escribible). **Desde el 2026-10-11, en una Conversación Finalizada o Unida cuentan como vigiladas también `sanic_clienteid`, `sanic_nombre`, `sanic_oficialasignadoid` y `ownerid`** (2.3, `CARP-CNV-009`): en una Abierta siguen sin vigilancia en este step |
+| Arreglo | `sanic_numeroarreglo`, `sanic_numeroprovisional`, `sanic_saldoremanente`, `sanic_totalpagar`, `sanic_fechacongelamiento` (salvo el gesto Desbloquear), `sanic_instantaneanombre`, `sanic_instantaneacedula`, `sanic_instantaneacorreo`, `sanic_instantaneacelular`, `sanic_fechaformalizado`, `sanic_formalizadoporid`, `sanic_fechadescarte`, `sanic_descartadoporid`, `sanic_fechaanulacion`, `sanic_anuladoporid`, `sanic_fechareapertura`, `sanic_reabiertoporid`, `sanic_cantidadreaperturas`, `sanic_fechatermino`, `sanic_versionplantillaid`, `sanic_nombre` (autonumérica; solo-sistema en todos los estados desde el 2026-10-11) | `sanic_motivodescarte`, `sanic_motivoanulacion`, `sanic_motivoreapertura` | `sanic_producto`, `sanic_numeroproducto`, `sanic_tipo`, `sanic_moneda`, `sanic_canalorigen`, `sanic_saldoinicial`, `sanic_montoabonado`, `sanic_plazo`, `sanic_cuotamensual`, `sanic_fechainicio`, `sanic_fechafin`, `sanic_cuentadebitar`, `sanic_fechaformalizacion`, `sanic_comentarios`, `sanic_clienteid`, `sanic_oficialid` | `sanic_conversacionid` ~~, `sanic_nombre`~~ (movida a solo-sistema el 2026-10-11). Aparte: `ownerid`, `statecode`/`statuscode` |
+| Cuota | `sanic_nombre`, `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_arregloid` | — | — | de pago: `sanic_fechapago`, `sanic_montopagado`. Aparte: `statecode`/`statuscode` (solo SYSTEM desde el 2026-10-11, 2.7) |
+| Versión de plantilla | `sanic_huella`, `sanic_fechaaprobacion`, `sanic_aprobadoporid` | `sanic_estado` (gesto Publicar) | — | `sanic_nombre`, `sanic_archivo`, `sanic_capacidad` (solo en Borrador). Aparte: `statecode`/`statuscode` (solo SYSTEM desde el 2026-10-11, 2.8) |
 | Mapeo de celda | `sanic_nombre` (calculada), `sanic_versionplantillaid` | — | — | `sanic_hoja`, `sanic_celda`, `sanic_tipo`, `sanic_campo`, `sanic_filasmaximas` (solo en versión Borrador) |
 | Email (columnas propias) | `sanic_tiemporespuesta`, `sanic_respondidoporid` | — | — | — |
 
@@ -792,24 +792,25 @@ Vincular conversaciones al cliente **no** lo hace este step: lo hace la entrada 
 
 ### 2.3 Conversación: columnas solo-sistema y gestos Finalizar y Reabrir (inv. 7.12; D-30; def. ítem 6)
 
-**`ConversacionActualizarStep`** — Update · PreOperation · síncrono · orden 10 · **sin filtro** (a propósito: filtrar dejaría pasar justo las columnas que nadie declaró, M-PPP §5.1) · pre-imagen `PreImagen` con: `statecode`, `statuscode`, `sanic_huellamessageid`, `sanic_fechaprimercorreo`, `sanic_asunto`, `sanic_remitente`, `sanic_sinrespuestadesde`, `sanic_correonuevoenfinalizada`, `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`, `sanic_fechafinalizacion`, `sanic_tiempoprimerarespuesta`, `sanic_tiempototal`, `sanic_cantidadrespuestas`, `sanic_unidaaid`, `sanic_finalizadoporid`.
+**`ConversacionActualizarStep`** — Update · PreOperation · síncrono · orden 10 · **sin filtro** (a propósito: filtrar dejaría pasar justo las columnas que nadie declaró, M-PPP §5.1) · pre-imagen `PreImagen` con: `statecode`, `statuscode`, `sanic_huellamessageid`, `sanic_fechaprimercorreo`, `sanic_asunto`, `sanic_remitente`, `sanic_sinrespuestadesde`, `sanic_correonuevoenfinalizada`, `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`, `sanic_fechafinalizacion`, `sanic_tiempoprimerarespuesta`, `sanic_tiempototal`, `sanic_cantidadrespuestas`, `sanic_unidaaid`, `sanic_finalizadoporid`, y desde el 2026-10-11 `sanic_clienteid`, `sanic_nombre`, `sanic_oficialasignadoid` y `ownerid` (decisión del usuario, 2026-10-11: sin ellas DC-01 no puede decir si una columna libre cambió en una conversación inactiva). Son 21 columnas.
 
 Algoritmo (esquema común de los steps de gestos):
-1. Calcular las columnas vigiladas que cambiaron (solo-sistema, de gesto, `statecode`, `statuscode`), con DC-01 y el estado efectivo de DC-06. Ninguna ⇒ terminar.
-2. `EsEscrituraDelSistema` ⇒ terminar (DC-03).
-3. Si cambió alguna solo-sistema ⇒ `CARP-CNV-001` (nombra las columnas). Un usuario no puede fijar `finalizadoporid`, `fechafinalizacion` ni los tiempos ni siquiera dentro de un gesto.
-4. Estado: sea `de` el de la pre-imagen y `a` el efectivo.
+1. Calcular las columnas vigiladas que cambiaron (solo-sistema, de gesto, `statecode`, `statuscode`), con DC-01 y el estado efectivo de DC-06. **Si la pre-imagen es Finalizada o Unida, cuentan además `sanic_clienteid`, `sanic_nombre`, `sanic_oficialasignadoid` y `ownerid`** (2026-10-11). Ninguna ⇒ terminar. En una conversación Abierta esas cuatro siguen sin vigilancia aquí (camino barato, PA-CNV-15).
+2. `EsEscrituraDelSistema` ⇒ terminar (DC-03). Así pasan las escrituras del sistema sobre una Finalizada o una Unida (el indicador de RF-15, iniciar conversación nueva, el traslado de cliente y oficial al unir).
+3. **Conversación inactiva (decisión del usuario, 2026-10-11; mismo criterio que el paso 1 de 2.6: gana el primer paso que corresponde).** Si la pre-imagen es Finalizada o Unida y el `Target` cambió cualquier columna distinta de `statecode` y `statuscode` ⇒ `CARP-CNV-009`, salvo que sea el gesto **Reabrir** (pre-imagen Finalizada y estado efectivo Abierta), que sigue al paso 4 con las reglas de siempre (el gesto no gana restricciones nuevas). Este paso va antes que `CARP-CNV-001` y `CARP-CNV-005`: un cambio de columnas en una Finalizada o Unida da `CARP-CNV-009` aunque la columna sea solo-sistema o de gesto. Un cambio de estado sin otras columnas no cae aquí: lo resuelve el paso 5, con sus códigos de siempre (`CARP-CNV-002`, `CARP-CNV-006`).
+4. Si cambió alguna solo-sistema ⇒ `CARP-CNV-001` (nombra las columnas). Un usuario no puede fijar `finalizadoporid`, `fechafinalizacion` ni los tiempos ni siquiera dentro de un gesto.
+5. Estado: sea `de` el de la pre-imagen y `a` el efectivo.
    - `Abierta → Finalizada`: **Finalizar**. Exige `sanic_resultado` ⇒ `CARP-CNV-003`. Si es `SinRespuesta`, exige motivo y detalle no vacíos (recortados) ⇒ `CARP-CNV-004`. Si es otro resultado, se ponen en `null` motivo y detalle del `Target`.
    - `Finalizada → Abierta`: **Reabrir**. Si el `Target` trae resultado, motivo o detalle con valor distinto del actual ⇒ `CARP-CNV-005`.
    - `* → Unida` ⇒ `CARP-CNV-006` (solo la API de unir).
    - `Unida → *` ⇒ `CARP-CNV-002`.
    - Cualquier otra combinación con cambio de estado ⇒ `CARP-CNV-002`.
-   - Sin cambio de estado pero con resultado, motivo o detalle cambiados ⇒ `CARP-CNV-005`.
-5. Efectos escritos en el `Target`:
+   - Sin cambio de estado pero con resultado, motivo o detalle cambiados ⇒ `CARP-CNV-005` (en una Abierta; en una Finalizada o Unida ya lo capturó el paso 3).
+6. Efectos escritos en el `Target`:
    - **Finalizar**: `sanic_finalizadoporid = InitiatingUserId`; `sanic_fechafinalizacion = ahora`; `sanic_tiempototal = MinutosEntre(sanic_fechaprimercorreo, ahora)` (si la fecha del primer correo es nula, no se escribe); `sanic_sinrespuestadesde = null` (DC-10); `sanic_correonuevoenfinalizada` queda como está.
    - **Reabrir**: `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`, `sanic_fechafinalizacion`, `sanic_finalizadoporid`, `sanic_tiempototal` = `null`; `sanic_correonuevoenfinalizada = no`. **No** se toca `sanic_sinrespuestadesde`: si había un correo nuevo sin responder, sigue pendiente en la conversación ya abierta (DC-10; Inconsistencias, punto 3). `sanic_tiempoprimerarespuesta` y `sanic_cantidadrespuestas` no cambian.
 
-Quién: cualquier usuario del área con Write sobre Conversación (Oficial; el Jefe también). El step no pide jefatura.
+Quién: cualquier usuario del área con Write sobre Conversación (Oficial; el Jefe también). El step no pide jefatura. En una conversación Finalizada o Unida no hay ninguna otra excepción para la jefatura: lo único que una persona puede hacer es Reabrir una Finalizada (V-2: la plataforma no bloquea esas escrituras, así que este paso es la única barrera). Una Unida no se puede reabrir ni modificar.
 
 | Código | Mensaje |
 |---|---|
@@ -820,6 +821,9 @@ Quién: cualquier usuario del área con Write sobre Conversación (Oficial; el J
 | `CARP-CNV-005` | El resultado, el motivo y el detalle solo se registran al finalizar la conversación. |
 | `CARP-CNV-006` | Una conversación solo pasa a Unida con la acción "Unir conversaciones". |
 | `CARP-CNV-008` | Solo la jefatura puede reasignar una conversación o dejarla sin asignar. (Ver 2.4.) |
+| `CARP-CNV-009` | Una conversación finalizada o unida no se puede modificar. Para cambiar una finalizada, reábrala primero. |
+
+`CARP-CNV-009` es nuevo (decisión del usuario, 2026-10-11). El número 007 no está definido en ninguna fuente y no se reutiliza. El texto no ofrece reabrir una Unida porque una Unida no se reabre (`CARP-CNV-002`).
 
 | ID | Dado | Cuando | Entonces |
 |---|---|---|---|
@@ -835,20 +839,25 @@ Quién: cualquier usuario del área con Write sobre Conversación (Oficial; el J
 | PA-CNV-10 | Un Oficial manda `statecode=1, statuscode=159460001` | Update | `CARP-CNV-006` |
 | PA-CNV-11 | Unida → Abierta; Unida → Finalizada | Update | `CARP-CNV-002` |
 | PA-CNV-12 | Abierta sin cambio de estado, `resultado=ConArregloDePago` | Update | `CARP-CNV-005` |
-| PA-CNV-13 | Una prueba parametrizada por cada columna solo-sistema (12) con valor distinto | Update de un Oficial | `CARP-CNV-001` nombrando esa columna |
+| PA-CNV-13 | Conversación **Abierta** (aclarado el 2026-10-11: en una Finalizada o Unida gana `CARP-CNV-009`); una prueba parametrizada por cada columna solo-sistema (12) con valor distinto | Update de un Oficial | `CARP-CNV-001` nombrando esa columna |
 | PA-CNV-14 | El Target trae `sanic_cantidadrespuestas` con el mismo valor de la pre-imagen | Update | Pasa (no es un cambio, DC-01) |
-| PA-CNV-15 | Update solo de `sanic_clienteid` | Update | Pasa y **no** se consulta identidad (0 llamadas a `WhoAmI`) |
+| PA-CNV-15 | Conversación **Abierta** (aclarado el 2026-10-11) | Update solo de `sanic_clienteid` | Pasa y **no** se consulta identidad (0 llamadas a `WhoAmI`) |
 | PA-CNV-16 | Update del sistema (`InitiatingUserId` = SYSTEM) que cambia columnas solo-sistema y pasa a Unida | Update | Pasa sin modificar el `Target` |
-| PA-CNV-17 | Update de la cuenta de servicio (un usuario licenciado que no es SYSTEM) que cambia `sinrespuestadesde` (OA-12) | Update | `CARP-CNV-001`: no se reconoce ninguna cuenta de servicio |
-| PA-CNV-18 | Update de otro usuario que no es SYSTEM (por ejemplo, un usuario de aplicación) que cambia `sinrespuestadesde` (OA-12) | Update | Se trata como persona: `CARP-CNV-001`. Solo SYSTEM escribe columnas solo-sistema (DC-02) |
+| PA-CNV-17 | Conversación **Abierta** (aclarado el 2026-10-11); update de la cuenta de servicio (un usuario licenciado que no es SYSTEM) que cambia `sinrespuestadesde` (OA-12) | Update | `CARP-CNV-001`: no se reconoce ninguna cuenta de servicio |
+| PA-CNV-18 | Conversación **Abierta** (aclarado el 2026-10-11); update de otro usuario que no es SYSTEM (por ejemplo, un usuario de aplicación) que cambia `sinrespuestadesde` (OA-12) | Update | Se trata como persona: `CARP-CNV-001`. Solo SYSTEM escribe columnas solo-sistema (DC-02) |
 | PA-CNV-19 | Finalizar con `fechaprimercorreo` nula | Update | No se escribe `tiempototal`; el resto sí |
 | PA-CNV-20 | Finalizar y Reabrir hechos por un Oficial y por un Jefe | Update | Ambos pasan |
 | PA-CNV-21 | `UserId` ≠ `InitiatingUserId` | Finalizar | `finalizadoporid = InitiatingUserId` |
 | PA-CNV-22 | Un Oficial intenta escribir `finalizadoporid` y `fechafinalizacion` dentro de Finalizar | Update | `CARP-CNV-001` |
 | PA-CNV-23 | Finalizar | Update | Como máximo 1 `WhoAmI` y ninguna consulta de BU |
 | PA-CNV-24 | Finalizada con resultado, fecha, finalizador y tiempo (V-5, PATCH directo de un Oficial) | Update con **solo** `statecode = 0` (sin `statuscode`) | Estado efectivo Abierta (DC-06): es Reabrir y tiene los mismos efectos que PA-CNV-08 |
-| PA-CNV-25 | Conversación **Finalizada** (fila inactiva; V-2: la plataforma no la bloquea) | Un Oficial, por PATCH directo, cambia `sanic_resultado` sin cambio de estado; en otro caso, `sanic_tiempototal` | `CARP-CNV-005`; `CARP-CNV-001` |
+| PA-CNV-25 | Conversación **Finalizada** (fila inactiva; V-2: la plataforma no la bloquea) | Un Oficial, por PATCH directo, cambia `sanic_resultado` sin cambio de estado; en otro caso, `sanic_tiempototal` | ~~`CARP-CNV-005`; `CARP-CNV-001`~~ `CARP-CNV-009` en ambos casos (modificada el 2026-10-11: en una conversación inactiva gana el paso 3 de 2.3, antes que `-005` y `-001`) |
 | PA-CNV-26 | Abierta, y otra Finalizada (V-1) | Un `SetStateRequest` de una persona llega como `Update` anidado, `Depth = 2`, con `statecode = 1`, `statuscode = 2` y `sanic_resultado` (primer caso); con `statecode = 0` y `statuscode = 1` (segundo) | Se evalúa igual que a profundidad 1: Finalizar y Reabrir con sus efectos; el resultado no depende de `Depth` ni del mensaje padre |
+| PA-CNV-27 | Conversación **Finalizada**, y otra **Unida** (V-2: la plataforma no las bloquea; decisión del 2026-10-11) | Un Oficial, por PATCH directo, cambia `sanic_clienteid` a otro cliente (y, en otro caso, lo vacía); y cambia `sanic_nombre` | `CARP-CNV-009` en los seis casos; el `Target` no se modifica |
+| PA-CNV-28 | Conversación **Unida**, y otra **Finalizada** (pipeline simulado: S-17 y S-18) | Un Oficial se asigna a sí mismo desde vacío; asigna a otro; la deja vacía; y un Jefe la reasigna a B | `CARP-CNV-009` en los ocho casos; S-18 no llega a evaluar la jefatura (ni `CARP-CNV-008`) |
+| PA-CNV-29 | Conversación **Finalizada** con resultado, fecha, finalizador y tiempo | Un Oficial y un Jefe la reabren por el gesto: `statecode = 0` y `statuscode = 1`; y, en otro caso, solo `statecode = 0` (V-5) | Pasa: el paso 3 de 2.3 no se activa y se aplican los efectos de PA-CNV-08. Es el único cambio que una persona puede hacer sobre una Finalizada |
+| PA-CNV-30 | Conversación **Finalizada**, y otra **Unida** (RF-15, unir, iniciar conversación nueva) | El sistema (`InitiatingUserId` = SYSTEM) pone `sanic_correonuevoenfinalizada = sí` y `sanic_sinrespuestadesde`; limpia ambos (iniciar nueva); y cambia `sanic_clienteid` y `sanic_oficialasignadoid` | Pasa sin modificar el `Target` (DC-03); no se consulta jefatura |
+| PA-CNV-31 | Conversación **Finalizada**, y otra **Unida** | Un Oficial reenvía el mismo valor de `sanic_clienteid`, `sanic_nombre`, `sanic_oficialasignadoid` y `ownerid` (el team) que tiene la pre-imagen | Pasa: no es un cambio (DC-01); 0 llamadas a `WhoAmI` |
 
 ### 2.4 Conversación: asignación (inv. 7.12; D-04; def. ítem 2)
 
@@ -858,6 +867,8 @@ Quién: cualquier usuario del área con Write sobre Conversación (Oficial; el J
 2. `EsEscrituraDelSistema` ⇒ terminar (la unión traslada el oficial al destino, 1.4).
 3. Actual vacío y nuevo = `InitiatingUserId` ("Tomar") ⇒ pasa, sin consultar jefatura.
 4. Cualquier otro cambio (de uno a otro, a un tercero, a vacío) exige `EsJefatura()` ⇒ si no, `CARP-CNV-008`.
+
+En una conversación Finalizada o Unida este step no llega a evaluar el cambio de una persona: `ConversacionActualizarStep` (orden 10) lo rechaza antes con `CARP-CNV-009` (2.3, paso 3; decisión del 2026-10-11). Tampoco la jefatura puede reasignar una inactiva. Si el mismo `Update` es el gesto Reabrir, la asignación se evalúa con las reglas de arriba.
 
 La pertenencia al team de jefatura se consulta en `teammembership` (dicc. de supuestos: confianza media; plan B team de pertenencia manual, def. L502).
 
@@ -881,7 +892,7 @@ La pertenencia al team de jefatura se consulta en `teammembership` (dicc. de sup
 Un `EsEscrituraDelSistema` termina el step sin reglas (DC-03). Para una persona:
 
 1. Estado: si el `Target` trae `statecode`/`statuscode` y el efectivo no es Borrador ⇒ `CARP-ARR-008`. El alta sin `statuscode` toma el motivo 1 = Borrador (hecho verificado, dicc. §3.2).
-2. Si el `Target` trae alguna columna solo-sistema del Arreglo (2.0.8) ⇒ `CARP-ARR-009` (nombra las columnas). El formulario no debe someter esas columnas; las que muestre calculadas son solo de pantalla.
+2. Si el `Target` trae alguna columna solo-sistema del Arreglo (2.0.8) ⇒ `CARP-ARR-009` (nombra las columnas). El formulario no debe someter esas columnas; las que muestre calculadas son solo de pantalla. Desde el 2026-10-11 la lista incluye `sanic_nombre` (el código autonumérico): **supuesto sin verificar en Dev** de que la plataforma completa el autonumérico después del PreOperation de Create, de modo que el `Target` solo lo trae si lo envió el cliente; si lo trajera siempre, este paso rechazaría todas las altas y hay que escalarlo (no adaptar el código).
 3. Obligatorias para poder calcular: `sanic_numeroproducto` (tras normalizar), `sanic_saldoinicial`, `sanic_montoabonado`, `sanic_cuotamensual`, `sanic_plazo`, `sanic_fechainicio` ⇒ si falta alguna, `CARP-ARR-006` con la lista. (Que el resto de las columnas "requeridas" las exige la app, no el servicio, dicc. §0.)
 4. Normalizar `sanic_numeroproducto` (2.0.1) y escribirlo en el `Target`.
 5. Versión: buscar con SYSTEM las versiones con `sanic_estado = Vigente` y `statecode = 0`. Ninguna ⇒ `CARP-ARR-001`. Más de una ⇒ `CARP-ARR-002`. Escribir `sanic_versionplantillaid` en el `Target`.
@@ -928,7 +939,7 @@ El tiempo de 60 altas individuales dentro de la misma transacción se mide en De
 | PA-ARR-06 | Abonado 1500 con inicial 1000; cuota 0; cuota que cubre con una menos | Create | `CARP-ARR-004`; `-007`; `-005` con el N correcto |
 | PA-ARR-07 | Falta el saldo inicial y la fecha de inicio | Create | `CARP-ARR-006` nombrando ambos |
 | PA-ARR-08 | `statuscode = Vigente`; `statuscode = Borrador`; sin estado | Create | `CARP-ARR-008`; pasa; pasa |
-| PA-ARR-09 | Una prueba parametrizada con cada columna solo-sistema (20) con valor | Create de un Oficial | `CARP-ARR-009` nombrándola |
+| PA-ARR-09 | Una prueba parametrizada con cada columna solo-sistema (~~20~~ 21: se suma `sanic_nombre`, 2026-10-11) con valor | Create de un Oficial | `CARP-ARR-009` nombrándola |
 | PA-ARR-10 | Ya existe un Borrador del mismo crédito | Create | Pasa (OA-6: se permiten varios borradores) |
 | PA-ARR-11 | Alta del sistema con columnas solo-sistema | Create | Pasa sin cambios en el `Target` |
 | PA-CAL-01 | Arreglo recién creado `ARR-000123`, plazo 3, cuota 300, remanente 900, inicio 2026-11-05 | Post-create | 3 cuotas `ARR-000123-C01…C03`; números 1 a 3; fechas 11-05, 12-05, 01-05; montos 300; `arregloid`; `ownerid` = el del arreglo; pagos vacíos |
@@ -945,13 +956,13 @@ El tiempo de 60 altas individuales dentro de la misma transacción se mide en De
 
 #### `ArregloActualizarStep` — Update · PreOperation · síncrono · orden 10 · **sin filtro** · pre-imagen `PreImagen`
 
-Columnas de la pre-imagen: `statecode`, `statuscode`, `sanic_producto`, `sanic_numeroproducto`, `sanic_numeroarreglo`, `sanic_numeroprovisional`, `sanic_tipo`, `sanic_moneda`, `sanic_canalorigen`, `sanic_saldoinicial`, `sanic_montoabonado`, `sanic_saldoremanente`, `sanic_plazo`, `sanic_cuotamensual`, `sanic_totalpagar`, `sanic_fechainicio`, `sanic_fechafin`, `sanic_cuentadebitar`, `sanic_fechaformalizacion`, `sanic_comentarios`, `sanic_fechacongelamiento`, `sanic_instantaneanombre`, `sanic_instantaneacedula`, `sanic_instantaneacorreo`, `sanic_instantaneacelular`, `sanic_fechaformalizado`, `sanic_formalizadoporid`, `sanic_motivodescarte`, `sanic_fechadescarte`, `sanic_descartadoporid`, `sanic_motivoanulacion`, `sanic_fechaanulacion`, `sanic_anuladoporid`, `sanic_motivoreapertura`, `sanic_fechareapertura`, `sanic_reabiertoporid`, `sanic_cantidadreaperturas`, `sanic_fechatermino`, `sanic_versionplantillaid`, `sanic_clienteid`, `sanic_conversacionid`, `sanic_oficialid`. ~~(V-6: la pre-imagen trae también las columnas protegidas)~~ **V-6 (2026-10-11): solo las trae si el usuario con el que corre el step tiene el perfil de columna**; sin el perfil, `sanic_cuentadebitar` e `sanic_instantaneacedula` llegan ausentes (no nulas) y el step las lee con SYSTEM cuando el `Target` las trae (DC-28).
+Columnas de la pre-imagen (43; `sanic_nombre` se agregó el 2026-10-11, decisión del usuario): `statecode`, `statuscode`, `sanic_nombre`, `sanic_producto`, `sanic_numeroproducto`, `sanic_numeroarreglo`, `sanic_numeroprovisional`, `sanic_tipo`, `sanic_moneda`, `sanic_canalorigen`, `sanic_saldoinicial`, `sanic_montoabonado`, `sanic_saldoremanente`, `sanic_plazo`, `sanic_cuotamensual`, `sanic_totalpagar`, `sanic_fechainicio`, `sanic_fechafin`, `sanic_cuentadebitar`, `sanic_fechaformalizacion`, `sanic_comentarios`, `sanic_fechacongelamiento`, `sanic_instantaneanombre`, `sanic_instantaneacedula`, `sanic_instantaneacorreo`, `sanic_instantaneacelular`, `sanic_fechaformalizado`, `sanic_formalizadoporid`, `sanic_motivodescarte`, `sanic_fechadescarte`, `sanic_descartadoporid`, `sanic_motivoanulacion`, `sanic_fechaanulacion`, `sanic_anuladoporid`, `sanic_motivoreapertura`, `sanic_fechareapertura`, `sanic_reabiertoporid`, `sanic_cantidadreaperturas`, `sanic_fechatermino`, `sanic_versionplantillaid`, `sanic_clienteid`, `sanic_conversacionid`, `sanic_oficialid`. ~~(V-6: la pre-imagen trae también las columnas protegidas)~~ **V-6 (2026-10-11): solo las trae si el usuario con el que corre el step tiene el perfil de columna**; sin el perfil, `sanic_cuentadebitar` e `sanic_instantaneacedula` llegan ausentes (no nulas) y el step las lee con SYSTEM cuando el `Target` las trae (DC-28).
 
 La lógica vive en `ReglasDeArreglo.EvaluarActualizacion(pedido)` (pura; los puertos `IConsecutivos` y `IJefatura` los implementa `Steps/`), que devuelve permitido/rechazado y las columnas a escribir.
 
-**Paso 0.** Calcular las columnas cambiadas entre todas las categorías excepto "libres" (DC-01). Si una columna con seguridad por columna (`sanic_cuentadebitar`, `sanic_instantaneacedula`) está en el `Target` y falta en la pre-imagen, se lee con el servicio de SYSTEM antes de comparar (DC-28, 2026-10-11); si la pre-imagen la trae, no hay consulta extra. **En un arreglo Terminado, Anulado o Descartado cuenta además como cambio la columna libre `sanic_conversacionid`** (V-2, 2026-10-11: la plataforma no bloquea las filas inactivas; el repunte al unir lo hace SYSTEM, 1.4). Ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar (DC-03; así pasan la generación del formato, el paso a Terminado y la unión, incluido su repunte de arreglos cerrados).
+**Paso 0.** Calcular las columnas cambiadas entre todas las categorías excepto "libres" (DC-01). `sanic_nombre` (el código interno autonumérico `ARR-000123`) es solo-sistema en todos los estados desde el 2026-10-11: su cambio por una persona se rechaza con `CARP-ARR-009` en Borrador y en Vigente (paso 4), y con `CARP-ARR-022` en un Terminado, Anulado o Descartado (paso 1); reenviar el mismo valor no es un cambio. Si una columna con seguridad por columna (`sanic_cuentadebitar`, `sanic_instantaneacedula`) está en el `Target` y falta en la pre-imagen, se lee con el servicio de SYSTEM antes de comparar (DC-28, 2026-10-11); si la pre-imagen la trae, no hay consulta extra. **En un arreglo Terminado, Anulado o Descartado cuenta además como cambio la columna libre `sanic_conversacionid`** (V-2, 2026-10-11: la plataforma no bloquea las filas inactivas; el repunte al unir lo hace SYSTEM, 1.4). Ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar (DC-03; así pasan la generación del formato, el paso a Terminado y la unión, incluido su repunte de arreglos cerrados).
 
-**Paso 1: estados inactivos.** Si el arreglo es Anulado o Descartado, cualquier cambio ⇒ `CARP-ARR-022` ("no se reactiva"; incluye un PATCH a Vigente o Borrador, que la plataforma aceptaría: V-2, V-5). Si es Terminado, solo se acepta el gesto Reabrir; todo lo demás ⇒ `CARP-ARR-022`. (Conflicto abierto con la tabla de 3.2 y la lista del paso 2 sobre el código de Terminado → Borrador y Terminado → Anulado: inconsistencia 16.)
+**Paso 1: estados inactivos.** Si el arreglo es Anulado o Descartado, cualquier cambio ⇒ `CARP-ARR-022` ("no se reactiva"; incluye un PATCH a Vigente o Borrador, que la plataforma aceptaría: V-2, V-5). Si es Terminado, solo se acepta el gesto Reabrir; todo lo demás ⇒ `CARP-ARR-022`. **Los pasos se evalúan en orden y gana el primero que corresponde** (inconsistencia 16, resuelta el 2026-10-11 por el arquitecto): para un Terminado, todo lo que no sea el gesto Reabrir da `CARP-ARR-022` aquí, también Terminado → Borrador y Terminado → Anulado; esas transiciones no llegan al paso 2.
 
 **Paso 2: identificar el gesto** (DC-04, DC-05). Hay a lo sumo uno. Si hay dos ⇒ `CARP-ARR-012`.
 
@@ -965,7 +976,7 @@ La lógica vive en `ReglasDeArreglo.EvaluarActualizacion(pedido)` (pura; los pue
 | Desbloquear | `sanic_fechacongelamiento` pasa a `null` y el estado no cambió |
 | Edición | ningún cambio de estado, ni motivos, ni desbloqueo |
 
-Cualquier otro cambio de estado (por ejemplo Vigente→Terminado, Vigente→Borrador, Terminado→Anulado, Borrador→Anulado, Borrador→Terminado) ⇒ `CARP-ARR-010`.
+Cualquier otro cambio de estado (por ejemplo Vigente→Terminado, Vigente→Borrador, Borrador→Anulado, Borrador→Terminado) ⇒ `CARP-ARR-010`. ~~Terminado→Anulado~~ (retirado de la lista el 2026-10-11, inconsistencia 16): las transiciones que salen de un Terminado, un Anulado o un Descartado ya las capturó el paso 1 con `CARP-ARR-022`, salvo el gesto Reabrir; a este paso solo llegan los estados de origen Borrador y Vigente (y el Terminado que reabre).
 
 **Paso 3: reglas de cada gesto.** Cada gesto admite **solo** sus columnas (`statecode`, `statuscode` y su motivo); otra columna cambiada ⇒ `CARP-ARR-012`. El actor es `InitiatingUserId`; `ahora` del reloj.
 
@@ -1043,7 +1054,7 @@ La clave K-02 es la última barrera ante dos formalizaciones simultáneas: la pl
 | PA-ARR-42 | El sistema congela (escribe `fechacongelamiento` e instantánea) y marca Terminado | Update | Pasa sin tocar el `Target` |
 | PA-ARR-43 | El crédito ya tiene 9999 | Formalizar | `CARP-ARR-023` |
 | PA-ARR-44 | Reabrir con jefatura | Update | Una sola consulta de pertenencia a jefatura |
-| PA-ARR-45 | Update que solo cambia `sanic_conversacionid` y `sanic_nombre` | Update | No consulta identidad |
+| PA-ARR-45 | Update que solo cambia `sanic_conversacionid` ~~y `sanic_nombre`~~ (modificada el 2026-10-11: `sanic_nombre` pasó a solo-sistema y ahora sí consulta identidad, PA-ARR-59) | Update | No consulta identidad |
 | PA-ARR-46 | Alta de un Oficial con `fechafin` distinta del vencimiento de la última cuota (OA-5) | Create | Target con `fechafin` = la calculada |
 | PA-ARR-47 | Borrador sin congelar | Update de un Oficial que cambia solo `fechafin` a una fecha distinta de la del calendario (OA-5) | Target con `fechafin` = la calculada |
 | PA-ARR-48 | Borrador sin congelar; llamador **sin** el perfil de columna (la pre-imagen no trae `sanic_cuentadebitar` ni `sanic_instantaneacedula`, el doble las omite, V-6) | Update que reenvía `sanic_cuentadebitar` con el valor guardado | No es un cambio (DC-28): pasa; el valor guardado se leyó con el servicio de SYSTEM, una consulta con solo esas columnas |
@@ -1052,18 +1063,21 @@ La clave K-02 es la última barrera ante dos formalizaciones simultáneas: la pl
 | PA-ARR-51 | Arreglo Terminado, Anulado y Descartado (parametrizada; V-2: la plataforma no los bloquea) | Un Oficial, por PATCH directo, cambia solo `sanic_conversacionid` | `CARP-ARR-022` en los tres |
 | PA-ARR-52 | Los mismos tres estados | El sistema (`InitiatingUserId` = SYSTEM) cambia `sanic_conversacionid` | Pasa sin tocar el `Target` (DC-03); es el repunte de 1.4 |
 | PA-ARR-53 | Vigente congelado | Un Oficial, por PATCH directo, cambia cada columna de datos del acuerdo (parametrizada) | `CARP-ARR-011` nombrando la columna; el arreglo no se reabre solo |
-| PA-ARR-54 | Terminado (V-5) | PATCH directo con **solo** `statecode = 0`, hecho por un Oficial y por la jefatura con motivo | Estado efectivo Borrador (DC-06): Terminado → Borrador, rechazo `CARP-ARR-010` en ambos (código en conflicto con el paso 1, que daría `CARP-ARR-022`: inconsistencia 16); no se reabre |
-| PA-ARR-55 | Terminado | PATCH directo con `statecode = 0`, `statuscode = Borrador` | Rechazo, mismo código y misma nota que PA-ARR-54 |
+| PA-ARR-54 | Terminado (V-5) | PATCH directo con **solo** `statecode = 0`, hecho por un Oficial y por la jefatura con motivo | Estado efectivo Borrador (DC-06): Terminado → Borrador, rechazo `CARP-ARR-022` en ambos (paso 1: gana el primer paso; ~~`CARP-ARR-010`~~, inconsistencia 16 resuelta el 2026-10-11); no se reabre |
+| PA-ARR-55 | Terminado | PATCH directo con `statecode = 0`, `statuscode = Borrador` | Rechazo `CARP-ARR-022` (~~`CARP-ARR-010`~~, 2026-10-11), misma nota que PA-ARR-54 |
 | PA-ARR-56 | Anulado y Descartado (V-2, V-5) | Un Oficial, y luego la jefatura, por PATCH directo: Anulado → Vigente (`0` / Vigente) y Descartado → Borrador (`0` / `1`) | `CARP-ARR-022` en los cuatro casos: no se reactivan |
 | PA-ARR-57 | Borrador, y Vigente | PATCH directo con **solo** `statecode = 1` (botón nativo de desactivar) | Estado efectivo Terminado (DC-06): `CARP-ARR-010`; no queda ni Descartado ni Anulado |
 | PA-ARR-58 | Borrador congelado, y Vigente (V-1) | Un `SetStateRequest` de una persona llega como `Update` anidado, `Depth = 2`, con `statecode = 0` y `statuscode = Vigente` (Formalizar, primer caso) o con `statecode = 1` y `statuscode = Terminado` (segundo caso) | Se evalúa igual que a profundidad 1: Formalizar con sus efectos; `CARP-ARR-010` |
+| PA-ARR-59 | Arreglo Borrador (sin congelar y congelado) y Vigente congelado; y en otro grupo Terminado, Anulado y Descartado (parametrizada; decisión del 2026-10-11) | Un Oficial, por PATCH directo, cambia `sanic_nombre` a otro valor | `CARP-ARR-009` nombrando `sanic_nombre` en los tres primeros; `CARP-ARR-022` en los tres inactivos (paso 1); el `Target` no se modifica |
+| PA-ARR-60 | Arreglo Borrador, Vigente y Terminado | El sistema (`InitiatingUserId` = SYSTEM) cambia `sanic_nombre` | Pasa sin tocar el `Target` (DC-03) |
+| PA-ARR-61 | Arreglo Borrador | Un Oficial reenvía `sanic_nombre` con el mismo valor de la pre-imagen | Pasa: no es un cambio (DC-01); 0 llamadas a `WhoAmI` |
 
 ### 2.7 Cuota (inv. 7.15; def. ítem 11; D-08, D-10; dicc. R-01, R-02)
 
-#### `CuotaActualizarStep` — Update · PreOperation · síncrono · orden 10 · sin filtro · pre-imagen `PreImagen` (`sanic_nombre`, `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_fechapago`, `sanic_montopagado`, `sanic_arregloid`)
+#### `CuotaActualizarStep` — Update · PreOperation · síncrono · orden 10 · sin filtro · pre-imagen `PreImagen` (`sanic_nombre`, `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_fechapago`, `sanic_montopagado`, `sanic_arregloid`, `statecode`, `statuscode`; las dos últimas se agregaron el 2026-10-11, decisión del usuario)
 
-1. Columnas cambiadas (DC-01). Ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar.
-2. Si cambió alguna columna distinta de `sanic_fechapago` y `sanic_montopagado` ⇒ `CARP-CUO-001` (nombra la columna). El oficial solo registra pagos.
+1. Columnas cambiadas (DC-01), incluidos `statecode` y `statuscode`. Ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar.
+2. Si cambió alguna columna distinta de `sanic_fechapago` y `sanic_montopagado` ⇒ `CARP-CUO-001` (nombra la columna). El oficial solo registra pagos. Esto incluye el `statecode` y el `statuscode` nativos (**decisión del usuario, 2026-10-11**): una persona no activa ni desactiva una cuota, solo SYSTEM lo hace; si cambian los dos, el mensaje nombra ambos. Ningún proceso de este diseño cambia el estado de una cuota: la purga la elimina con `Delete` (BulkDelete), el calendario la borra y la crea, y el paso a Terminado escribe sobre el Arreglo, no sobre la cuota.
 3. Leer el arreglo (`statecode`, `statuscode`). Si no está **Vigente** ⇒ `CARP-CUO-002`. Esto incluye al Borrador: la solo-lectura nativa del registro inactivo no se hereda a la hija (def. ítem 11). V-2 (2026-10-11) va más lejos: la plataforma tampoco bloquea la escritura sobre el propio arreglo inactivo, así que esta regla (y las de 2.6) son la única barrera sobre las cuotas de un arreglo cerrado o congelado.
 4. Pago registrado (DC-21, decidido el 2026-10-10, OA-8, opción B): con los valores efectivos de `sanic_fechapago` y `sanic_montopagado` (pre-imagen más `Target`), ambos o ninguno ⇒ si solo uno tiene valor, `CARP-CUO-003`; si `sanic_montopagado` tiene valor y no es mayor que cero ⇒ `CARP-CUO-003`. **Sin tope superior**: un monto mayor que el de la cuota pasa (puede ser un adelanto). Se evalúa solo si cambió alguna de las dos columnas (paso 1) y después de `CARP-CUO-001` y `CARP-CUO-002`.
 
@@ -1105,6 +1119,9 @@ Códigos que estuvieron reservados para decisiones abiertas: `CARP-CUO-003` (OA-
 | PA-CUO-18 | Arreglo Vigente, cuota de 300 sin pago | Un Oficial registra fecha y `montopagado` de 500 (OA-8, sin tope) | Pasa |
 | PA-CUO-19 | Arreglo Vigente, cuota sin pago | Un Oficial envía `fechapago` y `montopagado` ambos vacíos (OA-8) | Pasa; no hay cambio (DC-01) y ambos o ninguno se cumple |
 | PA-CUO-20 | Arreglo Vigente, cuota con pago | Un Oficial vacía solo `fechapago`, y en otra llamada solo `montopagado` (OA-8) | `CARP-CUO-003` en ambos |
+| PA-CUO-21 | Arreglo Vigente, cuota activa sin pago (V-2: la plataforma no bloquea la desactivación; decisión del 2026-10-11) | Un Oficial, por PATCH directo, desactiva la cuota con **solo** `statecode = 1` (botón nativo) y, en otra llamada, con `statecode = 1` y `statuscode = 2` | `CARP-CUO-001` en ambos, nombrando `statecode` (y `statuscode` en el segundo); la cuota sigue activa |
+| PA-CUO-22 | Cuota activa, y otra inactiva | El sistema (`InitiatingUserId` = SYSTEM) cambia `statecode` y `statuscode` | Pasa sin tocar el `Target` (DC-03) |
+| PA-CUO-23 | Cuota activa | Un Oficial reenvía `statecode = 0` y `statuscode = 1` con los mismos valores de la pre-imagen, junto con el pago de fecha y monto | Pasa: el estado no es un cambio (DC-01); solo cuenta el pago |
 
 ### 2.8 Versión de plantilla y Mapeo de celda (inv. 7.16; def. ítem 15; D-14, D-15, D-16)
 
@@ -1112,16 +1129,17 @@ Códigos que estuvieron reservados para decisiones abiertas: `CARP-CUO-003` (OA-
 
 Para una persona (el sistema pasa): (1) `sanic_estado` ausente o `Borrador`; otro ⇒ `CARP-VER-001`. Una versión **siempre nace en Borrador**, también por API (DC-19). (2) `sanic_huella`, `sanic_fechaaprobacion` o `sanic_aprobadoporid` presentes ⇒ `CARP-VER-002`. (3) `sanic_nombre` debe cumplir `^v[0-9]{2,3}$` ⇒ `CARP-VER-012` (la plataforma no valida el patrón; la unicidad la da K-03).
 
-#### `VersionPlantillaActualizarStep` — Update · PreOperation · síncrono · orden 10 · sin filtro · pre-imagen `PreImagen` (`statecode`, `sanic_nombre`, `sanic_estado`, `sanic_capacidad`, `sanic_huella`, `sanic_fechaaprobacion`, `sanic_aprobadoporid`)
+#### `VersionPlantillaActualizarStep` — Update · PreOperation · síncrono · orden 10 · sin filtro · pre-imagen `PreImagen` (`statecode`, `statuscode`, `sanic_nombre`, `sanic_estado`, `sanic_capacidad`, `sanic_huella`, `sanic_fechaaprobacion`, `sanic_aprobadoporid`; `statuscode` se agregó el 2026-10-11)
 
-Columnas cambiadas (DC-01); ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar (así pasa el paso Vigente → Histórica). Para una persona, según el estado anterior:
+Columnas cambiadas (DC-01), incluidos `statecode` y `statuscode`; ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ terminar (así pasa el paso Vigente → Histórica, que escribe `sanic_estado`, no el `statecode`). **Decisión del usuario, 2026-10-11: el `statecode` y el `statuscode` nativos de la versión solo los cambia SYSTEM.** Para una persona, según el estado anterior:
 
 - **Borrador**:
+  - Cambió `statecode` o `statuscode` ⇒ `CARP-VER-014`. Se evalúa primero: ~~se puede desactivar (`statecode`) el borrador~~ (retirado el 2026-10-11). Con esto una versión Borrador desactivada ya no puede existir por la acción de una persona (inconsistencia 17).
   - Cambió `sanic_huella`, `sanic_fechaaprobacion` o `sanic_aprobadoporid` ⇒ `CARP-VER-002`.
   - Cambió `sanic_estado`: solo `Borrador → Vigente` es válido (**Publicar**); cualquier otro ⇒ `CARP-VER-004`. Publicar no admite otras columnas en el mismo guardado ⇒ `CARP-VER-013`.
-  - Si no cambió el estado: edición libre de `sanic_nombre` (con el patrón, `-012`), `sanic_capacidad` y el archivo; se puede desactivar (`statecode`) el borrador.
+  - Si no cambió el estado: edición libre de `sanic_nombre` (con el patrón, `-012`), `sanic_capacidad` y el archivo. ~~Se puede desactivar (`statecode`) el borrador.~~
 - **Vigente**: cualquier cambio ⇒ `CARP-VER-003` (inmutable, también desactivarla).
-- **Histórica**: solo se acepta cambiar `statecode` (desactivar o reactivar el catálogo); otro cambio ⇒ `CARP-VER-003`.
+- **Histórica**: cualquier cambio ⇒ `CARP-VER-003`. ~~Solo se acepta cambiar `statecode` (desactivar o reactivar el catálogo).~~ Retirado el 2026-10-11: el `statecode` solo lo cambia SYSTEM, también en una Histórica.
 
 **Publicar** (con SYSTEM para lo que sigue):
 1. Descargar el archivo (`InitializeFileBlocksDownload` + `DownloadBlock`). Sin archivo ⇒ `CARP-VER-005`.
@@ -1163,6 +1181,7 @@ Columnas cambiadas (DC-01); ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ te
 | `CARP-VER-010` | Quedó más de una versión vigente. Avise al equipo de soporte. |
 | `CARP-VER-012` | El número de versión debe tener el formato v07 (la letra v y 2 o 3 dígitos). |
 | `CARP-VER-013` | Publicar no admite otros cambios en el mismo guardado. |
+| `CARP-VER-014` | Una versión de plantilla no se activa ni se desactiva a mano: lo gestiona el sistema. |
 | `CARP-MAP-001` | Solo se puede modificar el mapeo de una versión en Borrador. |
 | `CARP-MAP-002` | La celda "{celda}" no está bien escrita. Use notación como B7. |
 | `CARP-MAP-003` | El campo "{campo}" no es compatible con el tipo de mapeo elegido. |
@@ -1182,7 +1201,7 @@ Columnas cambiadas (DC-01); ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ te
 | PA-VER-08 | Mapeo apuntando a la hoja `"FORMATO"` (sin el espacio inicial) | Publicar | `CARP-VER-009`; el mensaje lista las hojas reales entre comillas |
 | PA-VER-09 | Publicar y cambiar `sanic_capacidad` a la vez | Update | `CARP-VER-013` |
 | PA-VER-10 | Versión Vigente | Update de cualquier columna; desactivarla | `CARP-VER-003` |
-| PA-VER-11 | Versión Histórica | Editar la capacidad; desactivarla | `CARP-VER-003`; pasa |
+| PA-VER-11 | Versión Histórica | Editar la capacidad; desactivarla | `CARP-VER-003`; ~~pasa~~ `CARP-VER-003` (modificada el 2026-10-11: el `statecode` solo lo cambia SYSTEM) |
 | PA-VER-12 | Borrador | Editar la capacidad; escribir `huella`; pasar a Histórica; pasar a Borrador desde Vigente | pasa; `-002`; `-004`; `-003` |
 | PA-VER-13 | Una escritura del sistema pasa Vigente → Histórica | Update | Pasa sin validar |
 | PA-VER-14 | Tras publicar queda otra Vigente (dato inconsistente) | Publicar | `CARP-VER-010`; al restaurar, la versión sigue en Borrador |
@@ -1195,6 +1214,9 @@ Columnas cambiadas (DC-01); ninguna ⇒ terminar. `EsEscrituraDelSistema` ⇒ te
 | PA-VER-21 | Los casos de PA-VER-15 y PA-VER-19 | Ejecutar con `Depth = 1` y con `Depth = 2`, y con otro mensaje padre | Mismo resultado: el step no filtra por profundidad ni por mensaje padre (V-1) |
 | PA-VER-22 | Versión Histórica | Un Jefe escribe `sanic_estado = Vigente`; y otro, `sanic_estado = Borrador` (PATCH directo) | `CARP-VER-003` en ambos |
 | PA-VER-23 | Versión Vigente | Un Jefe escribe `sanic_estado = Histórica` (PATCH directo) | `CARP-VER-003` (esa transición es solo del sistema) |
+| PA-VER-24 | Versión Borrador (V-2: la plataforma no bloquea la desactivación; decisión del 2026-10-11) | Un Jefe, por PATCH directo, la desactiva con **solo** `statecode = 1`; en otra llamada, con `statecode = 1` y `statuscode = 2`; y publica con `statecode = 1` en el mismo guardado | `CARP-VER-014` en los tres casos (el primer paso gana sobre `CARP-VER-013`); la versión sigue activa y en Borrador |
+| PA-VER-25 | Versión Histórica | Un Jefe la reactiva (de inactiva a activa), y otro la desactiva | `CARP-VER-003` en ambos |
+| PA-VER-26 | Versión Borrador, Vigente e Histórica | El sistema (`InitiatingUserId` = SYSTEM) cambia `statecode` y `statuscode` | Pasa sin validar (DC-03) en los tres estados |
 | PA-MAP-01 | Versión Borrador | Create de `hoja = " FORMATO ARP ELECTRONICO"`, `celda = "b7"` | `sanic_nombre = " FORMATO ARP ELECTRONICO!B7"`; hoja sin recortar; celda `"B7"` |
 | PA-MAP-02 | Versión Vigente o Histórica | Create, Update, Delete | `CARP-MAP-001` |
 | PA-MAP-03 | Celdas `B0`, `7B`, `XFE1`, `""` | Create | `CARP-MAP-002` |
@@ -1368,6 +1390,7 @@ Los estados son `statecode`/`statuscode` del diccionario §3.2 (0.7). Las transi
 | Finalizada | Finalizada | API iniciar nueva (sistema) | `iniciarconversacionnueva` | — | indicador `no`, `sinrespuestadesde = null` (no es cambio de estado) | `CNV-001` para un usuario |
 | Unida | cualquiera | nadie | — | — | — | `CNV-002` |
 | Abierta | Abierta | cualquiera | edición libre | `sanic_clienteid`; asignación (2.4) | — | `CNV-005` si trae resultado, motivo o detalle |
+| Finalizada, Unida | la misma | nadie (solo SYSTEM) | cualquier cambio de columnas de una persona, incluidos `sanic_clienteid`, `sanic_nombre` y `sanic_oficialasignadoid` (decisión del 2026-10-11); el único gesto es Reabrir una Finalizada | — | — | `CNV-009` |
 
 Asignación (columna `sanic_oficialasignadoid`, no cambia el estado): vacío → uno mismo lo hace cualquier usuario (API Tomar); todo otro cambio, solo Jefatura (2.4).
 
@@ -1404,9 +1427,8 @@ Anulado y Descartado son finales: no se reabren ni se reactivan (D-10). **Desde 
 | Vigente | Terminado | Sistema (2.7) | Todas las cuotas con `fechapago` | — | `statecode/statuscode`, `fechatermino` | `ARR-010` para un usuario |
 | Terminado | Vigente (sin congelar) | **Jefatura** | **Reabrir**: estado efectivo Vigente; el `Target` debe traer `statecode = 0` **y** `statuscode = Vigente` (V-5; con solo `statecode = 0` sería un Terminado → Borrador) | `sanic_motivoreapertura` | `reabiertoporid`, `fechareapertura`, contador +1, `fechatermino`, congelamiento, instantáneas y provisional = null | `ARR-015`, `ARR-016` |
 | Vigente (congelado) | Vigente (sin congelar) | **Jefatura** | **Reabrir**: `sanic_motivoreapertura` | `sanic_motivoreapertura` | Igual, sin cambio de estado | `ARR-015`, `ARR-016`, `ARR-017` |
-| Vigente, Terminado | Borrador | nadie | — | — | — | `ARR-010` (para Terminado el paso 1 de 2.6 daría `ARR-022`: inconsistencia 16) |
-| Anulado, Descartado | cualquiera | nadie | — | — | — | `ARR-022` |
-
+| Vigente | Borrador | nadie | — | — | — | `ARR-010` |
+| Terminado, Anulado, Descartado | cualquiera (salvo Reabrir un Terminado) | nadie | — | — | — | `ARR-022` (el paso 1 de 2.6 gana; inconsistencia 16, resuelta el 2026-10-11; ~~Vigente, Terminado → Borrador: `ARR-010`~~) |
 Qué se puede editar según el estado:
 
 | Estado | Datos del acuerdo | Cuotas (monto, fechas) | Pagos de cuota |
@@ -1429,7 +1451,8 @@ Qué se puede editar según el estado:
 | ∅ | Borrador | Jefe | Alta (siempre Borrador) | `VER-001`, `VER-002`, `VER-012` |
 | Borrador | Vigente | Jefe | **Publicar**: `sanic_estado = Vigente` | `VER-005` a `VER-010`, `VER-013` |
 | Vigente | Histórica | Sistema, al publicar otra | — | `VER-003` para un usuario |
-| Borrador, Histórica | desactivar (`statecode`) | Jefe | Desactivar el catálogo | Histórica sí; Vigente no (`VER-003`) |
+| ~~Borrador, Histórica~~ | ~~desactivar (`statecode`)~~ | ~~Jefe~~ | ~~Desactivar el catálogo~~ | ~~Histórica sí; Vigente no (`VER-003`)~~ |
+| cualquiera | desactivar o reactivar (`statecode`/`statuscode`) | solo SYSTEM (decisión del 2026-10-11, reemplaza la fila tachada) | — | `VER-014` en Borrador; `VER-003` en Vigente e Histórica |
 | cualquiera | cualquiera otra | nadie | — | `VER-003`, `VER-004` |
 
 ---
@@ -1616,11 +1639,11 @@ Pre-imágenes con sus columnas, resumidas (el playbook las copia de 2.3, 2.6, 2.
 
 | Step | Columnas de `PreImagen` |
 |---|---|
-| S-17 | `statecode`, `statuscode`, `sanic_huellamessageid`, `sanic_fechaprimercorreo`, `sanic_asunto`, `sanic_remitente`, `sanic_sinrespuestadesde`, `sanic_correonuevoenfinalizada`, `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`, `sanic_fechafinalizacion`, `sanic_tiempoprimerarespuesta`, `sanic_tiempototal`, `sanic_cantidadrespuestas`, `sanic_unidaaid`, `sanic_finalizadoporid` |
+| S-17 | `statecode`, `statuscode`, `sanic_huellamessageid`, `sanic_fechaprimercorreo`, `sanic_asunto`, `sanic_remitente`, `sanic_sinrespuestadesde`, `sanic_correonuevoenfinalizada`, `sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`, `sanic_fechafinalizacion`, `sanic_tiempoprimerarespuesta`, `sanic_tiempototal`, `sanic_cantidadrespuestas`, `sanic_unidaaid`, `sanic_finalizadoporid`, y desde el 2026-10-11 `sanic_clienteid`, `sanic_nombre`, `sanic_oficialasignadoid`, `ownerid` (21 en total) |
 | S-18 | `sanic_oficialasignadoid` |
-| S-21 | las 42 de 2.6 |
-| S-23 | `sanic_nombre`, `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_fechapago`, `sanic_montopagado`, `sanic_arregloid` |
-| S-26 | `statecode`, `sanic_nombre`, `sanic_estado`, `sanic_capacidad`, `sanic_huella`, `sanic_fechaaprobacion`, `sanic_aprobadoporid` |
+| S-21 | las 43 de 2.6 (~~42~~; se suma `sanic_nombre`, 2026-10-11) |
+| S-23 | `sanic_nombre`, `sanic_numero`, `sanic_fechavencimiento`, `sanic_monto`, `sanic_fechapago`, `sanic_montopagado`, `sanic_arregloid`, y desde el 2026-10-11 `statecode`, `statuscode` |
+| S-26 | `statecode`, `statuscode` (agregada el 2026-10-11), `sanic_nombre`, `sanic_estado`, `sanic_capacidad`, `sanic_huella`, `sanic_fechaaprobacion`, `sanic_aprobadoporid` |
 | S-29 | `sanic_versionplantillaid`, `sanic_hoja`, `sanic_celda`, `sanic_tipo`, `sanic_campo`, `sanic_filasmaximas` |
 | S-30 | `sanic_versionplantillaid` |
 
@@ -1839,7 +1862,8 @@ No se resolvieron en silencio. Para cada una, qué sigue este documento y, desde
 | 13 | `06-inventario-componentes.md:150` | Dice que el directorio `src/` no existe; ya existe `src/Sanic.Carp.Plugins/Dominio/Choices.g.cs` | Se parte de lo que hay | Decidida en este documento. El inventario (L150) todavía dice que `src/` no existe |
 | 14 | `definicion.md:292` y `02-diccionario-datos.md:47` (DD-12) frente a `definicion.md:311` | Los montos se calculan "al crear el arreglo y al modificar el borrador". Un Vigente reabierto (descongelado) también admite modificar datos (ítem 10) y quedaría con montos sin recalcular | Se recalculan en todo arreglo editable, no solo en Borrador (2.6, paso 4) | Decidida en este documento (2.6, paso 4) |
 | 15 | `definicion.md:282` frente a `definicion.md:471` (D-10) y `02-diccionario-datos.md:275` | "Repunta los arreglos vinculados", pero un arreglo Terminado, Anulado o Descartado es inactivo y de solo lectura | ~~Se repuntan los activos; los inactivos no (V-2)~~ Se repuntan **todos** los arreglos del origen, activos e inactivos (Terminado, Anulado, Descartado); lo hace SYSTEM dentro de la API de unir y no habilita a ninguna persona a editar un arreglo cerrado (1.4 paso 6b, 2.6 paso 0) | **Resuelta el 2026-10-11 por decisión del usuario**, apoyada en V-2 (la plataforma deja escribir sobre filas inactivas). `definicion.md` (ítem 5) alineada; D-38 |
-| 16 | `03-contratos-custom-api.md` 2.6 (paso 1) frente a 2.6 (paso 2, lista de otros cambios de estado) y 3.2 | Para un **Terminado**, el paso 1 dice que todo lo que no sea Reabrir da `CARP-ARR-022`; la lista del paso 2 pone Terminado → Anulado en `CARP-ARR-010` y la tabla de 3.2 pone Vigente/Terminado → Borrador en `CARP-ARR-010`. PA-ARR-29 espera `-022` para Terminado → Anular y PA-ARR-54 y PA-ARR-55 (V-5) esperan `-010` para Terminado → Borrador | Se escribió cada PA con el código que ya traía su documento y no se eligió | **Abierta (2026-10-11).** Falta decidir qué código gana para un Terminado que cambia de estado sin ser el gesto Reabrir |
+| 16 | `03-contratos-custom-api.md` 2.6 (paso 1) frente a 2.6 (paso 2, lista de otros cambios de estado) y 3.2 | Para un **Terminado**, el paso 1 dice que todo lo que no sea Reabrir da `CARP-ARR-022`; la lista del paso 2 pone Terminado → Anulado en `CARP-ARR-010` y la tabla de 3.2 pone Vigente/Terminado → Borrador en `CARP-ARR-010`. PA-ARR-29 espera `-022` para Terminado → Anular y PA-ARR-54 y PA-ARR-55 (V-5) esperan `-010` para Terminado → Borrador | ~~Se escribió cada PA con el código que ya traía su documento y no se eligió~~ Gana el primer paso: para un Terminado, todo lo que no sea el gesto Reabrir da `CARP-ARR-022` (2.6, paso 1). Se corrigieron la lista del paso 2, la tabla de 3.2, `PA-ARR-54` y `PA-ARR-55`; `PA-ARR-29` queda como estaba (`-010` para un Borrador, `-022` para un Terminado) | ~~**Abierta (2026-10-11).** Falta decidir qué código gana para un Terminado que cambia de estado sin ser el gesto Reabrir~~ **Resuelta el 2026-10-11 por el arquitecto: "gana el primer paso".** |
+| 17 | Revisión del 2026-10-11, tras V-2 | "Una versión de plantilla Borrador desactivada sigue editable y publicable": la plataforma deja a una persona desactivar una versión (y una cuota) con un PATCH, y los steps de Versión lo permitían a propósito para Borrador e Histórica | El `statecode` y el `statuscode` nativos de Cuota y de Versión de plantilla solo los cambia SYSTEM (2.7, 2.8; `CARP-CUO-001`, `CARP-VER-014`, `CARP-VER-003`) | **Resuelta el 2026-10-11 por decisión del usuario (D-39).** Ningún proceso del diseño cambia ese `statecode`: la purga hace `Delete`, publicar y pasar a Histórica escriben `sanic_estado`. Queda sin actor la desactivación del catálogo "se desactivan, nunca se purgan" (`definicion.md` §6 Datos, `02-diccionario-datos.md` §4.5): hoy solo la haría SYSTEM (un administrador también queda rechazado, porque el step solo reconoce a SYSTEM, 0.3) y no hay gesto previsto; no se resolvió |
 
 ---
 
@@ -1875,9 +1899,9 @@ Lo que el doble no puede probar (pipeline real, transacción, seguridad) se prue
 | Máquinas de estado | 3 (Conversación, Arreglo, Versión de plantilla) |
 | Piezas de dominio puro | 8 (2.0.1 a 2.0.8) |
 | Pruebas de aceptación `PA-…` | ver el recuento al final de esta sección |
-| Decisiones de diseño `DC-nn` | 28 (DC-02 y DC-21 reescritas el 2026-10-10; el 2026-10-11 se agregó DC-28 y se anotaron DC-01 y DC-06 con V-5 y V-6; ninguna retirada) |
+| Decisiones de diseño `DC-nn` | 28 (DC-02 y DC-21 reescritas el 2026-10-10; el 2026-10-11 se agregó DC-28 y se anotaron DC-01 y DC-06 con V-5 y V-6; ninguna retirada; las decisiones del 2026-10-11 de D-39 no agregan ninguna `DC`, siguen siendo 28) |
 | Supuestos de plataforma `V-n` | 7, todos verificados el 2026-10-11: 5 confirmados (V-1, V-2, V-3, V-5, V-7), 1 refutado con sustituto (V-4), 1 parcial (V-6) |
 | Decisiones abiertas `OA-n` | 0 (las 12 decididas el 2026-10-10) |
-| Inconsistencias | 16 (la 15 resuelta el 2026-10-11; la 16, nueva y abierta) |
+| Inconsistencias | 17 (la 15, la 16 y la 17 resueltas el 2026-10-11; la 16 por el arquitecto: "gana el primer paso"; la 17 por decisión del usuario, D-39) |
 
-Pruebas de aceptación numeradas `PA-…`: **380** en 26 áreas (ARR 58, ASG 10, CAL 9, CLI 13, CNV 26, COL 2, CON 5, CUO 20, EML 8, ENT 23, ESI 4, FEC 7, GEN 27, HUE 5, INI 15, MAP 10, MON 14, NOR 8, PRO 11, PUB 9, REC 15, RES 14, TIE 10, TOM 9, UNI 25, VER 23). Eran 356 el 2026-10-10: el 2026-10-11 (V-1 a V-7 y decisiones del usuario) se agregaron 24: ARR 11 (`PA-ARR-48` a `-58`), CLI 2 (`PA-CLI-12` y `-13`), CNV 3 (`PA-CNV-24` a `-26`), UNI 2 (`PA-UNI-24` y `-25`) y VER 6 (`PA-VER-18` a `-23`); se modificaron `PA-ARR-32`, `PA-UNI-15` y `PA-VER-15`. Antes, eran 346 el 2026-10-09: el 2026-10-10 se agregaron 2 de ARR (`PA-ARR-46` y `-47`, OA-5), 6 de CUO (`PA-CUO-15` a `-20`, OA-8) y 2 de UNI (`PA-UNI-22` y `-23`, OA-11); se modificaron `PA-CNV-17`, `PA-CNV-18`, `PA-CUO-01`, `-10`, `-11`, `PA-GEN-19`, `PA-UNI-03`, `-09` y `-19`.
+Pruebas de aceptación numeradas `PA-…`: **394** en 26 áreas (ARR 61, ASG 10, CAL 9, CLI 13, CNV 31, COL 2, CON 5, CUO 23, EML 8, ENT 23, ESI 4, FEC 7, GEN 27, HUE 5, INI 15, MAP 10, MON 14, NOR 8, PRO 11, PUB 9, REC 15, RES 14, TIE 10, TOM 9, UNI 25, VER 26). Eran 380 antes de las decisiones del usuario del 2026-10-11 posteriores a la revisión (D-39): ese día se agregaron 14, ARR 3 (`PA-ARR-59` a `-61`), CNV 5 (`PA-CNV-27` a `-31`), CUO 3 (`PA-CUO-21` a `-23`) y VER 3 (`PA-VER-24` a `-26`); se modificaron `PA-ARR-09` (21 columnas solo-sistema), `PA-ARR-45`, `PA-ARR-54`, `PA-ARR-55` (ahora `CARP-ARR-022`), `PA-CNV-25` (ahora `CARP-CNV-009`), `PA-VER-11` (la desactivación da `CARP-VER-003`) y se aclaró que `PA-CNV-13`, `-15`, `-17` y `-18` son sobre una Abierta. Eran 356 el 2026-10-10: el 2026-10-11 (V-1 a V-7 y decisiones del usuario) se agregaron 24: ARR 11 (`PA-ARR-48` a `-58`), CLI 2 (`PA-CLI-12` y `-13`), CNV 3 (`PA-CNV-24` a `-26`), UNI 2 (`PA-UNI-24` y `-25`) y VER 6 (`PA-VER-18` a `-23`); se modificaron `PA-ARR-32`, `PA-UNI-15` y `PA-VER-15`. Antes, eran 346 el 2026-10-09: el 2026-10-10 se agregaron 2 de ARR (`PA-ARR-46` y `-47`, OA-5), 6 de CUO (`PA-CUO-15` a `-20`, OA-8) y 2 de UNI (`PA-UNI-22` y `-23`, OA-11); se modificaron `PA-CNV-17`, `PA-CNV-18`, `PA-CUO-01`, `-10`, `-11`, `PA-GEN-19`, `PA-UNI-03`, `-09` y `-19`.

@@ -262,6 +262,8 @@ No son choices globales. Se declaran en el playbook de la tabla correspondiente.
 | 1 Inactivo | 2 | Finalizada | Motivo por defecto 2 renombrado | Gesto Finalizar, con resultado |
 | 1 Inactivo | 159460001 | Unida | Agregado | Solo la Custom API "Unir conversaciones" |
 
+Una conversación Finalizada o Unida no se modifica sin reabrir: el plugin rechaza cualquier cambio de una persona (`CARP-CNV-009`), salvo el gesto Reabrir de una Finalizada (D-39, 2026-10-11).
+
 **Arreglo** (D-10, RF-16)
 
 | `statecode` | `statuscode` | Etiqueta (1033 y 3082) | Origen del valor | Cómo se llega |
@@ -361,7 +363,7 @@ Los valores de *Req* tomados del mockup v3 (el mockup valida como obligatorio ca
 
 | Nombre lógico | Display name | Tipo y forma | Req | Aud | Seg | Sis | Descripción | Origen |
 |---|---|---|---|---|---|---|---|---|
-| `sanic_nombre` | Codigo interno | primaria autonumérica `ARR-{SEQNUM:6}` | No | Sí (hereda) | No | No | Código interno correlativo del arreglo, asignado por el sistema al crear, también en borrador. No es el número de arreglo del crédito. | BP-PP-192, DD-07 |
+| `sanic_nombre` | Codigo interno | primaria autonumérica `ARR-{SEQNUM:6}` | No | Sí (hereda) | No | **Sí** (desde el 2026-10-11, D-39; ~~No~~) | Código interno correlativo del arreglo, asignado por el sistema al crear, también en borrador. No es el número de arreglo del crédito. Una persona no lo cambia en ningún estado. | BP-PP-192, DD-07 |
 | `sanic_producto` | Producto crediticio | choice `sanic_carp_ch_productocrediticio` | Sí | No | No | No | Producto sobre el que se hace el arreglo: préstamo o tarjeta. No se cambia una vez que el borrador se congela. | RF-06, RF-17, D-33 |
 | `sanic_numeroproducto` | Numero de prestamo o tarjeta | texto T(30); sin espacios y en mayúscula | Sí | **No** | **No** | No | Número del préstamo o de la tarjeta, en claro. Forma parte de la clave alterna del número de arreglo y se busca con quick find. Su tratamiento queda pendiente de Cumplimiento (R-09). | RF-06, RF-07, RF-13, D-20, D-29 |
 | `sanic_numeroarreglo` | Numero de arreglo | entero [1..9999] | No (vacío en borrador) | Sí | No | **Sí** | Consecutivo por crédito (cuántas veces ese préstamo o tarjeta tuvo arreglo). Vacío en borrador; lo fija el sistema al formalizar. Parte de la clave alterna. | RF-07, D-09, D-30, D-33 |
@@ -431,7 +433,7 @@ Estado: `statecode`/`statuscode` según la sección 3.2, ambos auditados. Los pa
 | `sanic_fechapago` | Fecha de pago | **fecha DO** | No | **Sí** | No | No | Día en que se registró el pago de la cuota. Solo fecha: el formato tiene un par fecha y monto por cuota. | RF-10, D-08, DD-04 |
 | `sanic_montopagado` | Monto pagado | decimal(2) [0..999999999.99] | No | **Sí** | No | No | Monto pagado de la cuota, en la moneda del arreglo; puede ser parcial. Un pago parcial saca la cuota de la lista de riesgo. Se registra junto con la fecha de pago: ambos o ninguno, monto mayor que cero y sin tope superior (OA-8, 2026-10-10; `CARP-CUO-003`). | RF-10, RF-11, D-08 |
 
-Lookup: `sanic_arregloid` (Arreglo), **requerido**, sin auditoría, relación REL-05 (parental, Cascade All en delete; D-08). El oficial tiene solo Read y Write sobre Cuota; el plugin limita la escritura a fecha y monto de pago, y solo con el arreglo Vigente. Altas y bajas las hace el sistema. **Moneda**: la cuota no lleva columna de moneda; hereda la de su arreglo (`sanic_moneda`, D-36) y `sanic_monto` y `sanic_montopagado` se expresan en ella.
+Lookup: `sanic_arregloid` (Arreglo), **requerido**, sin auditoría, relación REL-05 (parental, Cascade All en delete; D-08). El oficial tiene solo Read y Write sobre Cuota; el plugin limita la escritura a fecha y monto de pago, y solo con el arreglo Vigente; el `statecode`/`statuscode` nativos de la cuota solo los cambia SYSTEM (D-39, 2026-10-11). Altas y bajas las hace el sistema. **Moneda**: la cuota no lleva columna de moneda; hereda la de su arreglo (`sanic_moneda`, D-36) y `sanic_monto` y `sanic_montopagado` se expresan en ella.
 
 ### 4.5 `sanic_carp_tbl_versionplantilla`
 
@@ -454,7 +456,7 @@ Lookup: `sanic_arregloid` (Arreglo), **requerido**, sin auditoría, relación RE
 | `sanic_estado` | Estado de la version | choice `sanic_carp_ch_estadoversionplantilla`; defecto Borrador | Sí | **Sí** | No | No | Borrador, Vigente o Historica. Hay una sola Vigente a la vez; al publicar, la anterior pasa a Historica. | DD-03, D-15, ítem 15 |
 | `sanic_fechaaprobacion` | Fecha de aprobacion | fechahora UL | No | **Sí** | No | No (la escribe el plugin de publicación) | Fecha y hora de aprobación de la versión al publicarla. | §6 Datos (Versión de plantilla) |
 
-Lookup: `sanic_aprobadoporid` (Aprobado por, `systemuser`), opcional (vacío en Borrador), auditado, relación REL-17. Estado `statecode`/`statuscode` estándar (Activo/Inactivo, sin motivos propios): la desactivación del catálogo.
+Lookup: `sanic_aprobadoporid` (Aprobado por, `systemuser`), opcional (vacío en Borrador), auditado, relación REL-17. Estado `statecode`/`statuscode` estándar (Activo/Inactivo, sin motivos propios): la desactivación del catálogo. Desde el 2026-10-11 (D-39) solo SYSTEM lo cambia: una persona no activa ni desactiva una versión en ningún estado (`CARP-VER-014`, `CARP-VER-003`).
 
 ### 4.6 `sanic_carp_tbl_mapeocelda`
 

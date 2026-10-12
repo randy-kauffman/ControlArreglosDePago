@@ -163,11 +163,11 @@ Estas filas **no tienen playbook**. Cada pieza se especifica con pruebas de acep
 | 7.9 | Doble de prueba en memoria de `IOrganizationService` (proyecto de pruebas), validado contra respuestas reales exportadas | — | 7.1 | Convenciones §5 | pendiente |
 | 7.10 | Datos: repositorios sobre `IOrganizationService` | — | 7.1 a 7.9, 3.x, 4.x | §6 Lógica | diseño detallado pendiente |
 | 7.11 | Steps de Email: registro de correos entrantes en conversaciones (asíncrono), registro de respuesta enviada y cálculo de tiempos (asíncrono), remitente fijado a la queue del área (pre-create) | — | 7.2, 7.3, 7.6, 7.10, 3.8 | RF-01, RF-03, D-03, D-05, D-28, ítems 1 y 3 | diseño detallado pendiente |
-| 7.12 | Steps de Conversación: columnas solo-sistema, asignación (vacío → uno mismo; otro cambio solo Jefatura), finalizar y reabrir | — | 7.2, 7.10 | RF-02, RF-15, D-04, D-30, ítems 2 y 6 | diseño detallado pendiente |
+| 7.12 | Steps de Conversación: columnas solo-sistema, asignación (vacío → uno mismo; otro cambio solo Jefatura), finalizar y reabrir, y una Finalizada o Unida que una persona no modifica sin reabrir (`CARP-CNV-009`, D-39, 2026-10-11) | — | 7.2, 7.10 | RF-02, RF-15, D-04, D-30, ítems 2 y 6 | diseño detallado pendiente |
 | 7.13 | Steps de Cliente: normalización, unicidad de la cédula al crear, vinculación por correo | — | 7.3, 7.10 | RF-05, D-07, P-06 | diseño detallado pendiente |
 | 7.14 | Steps de Arreglo: registro en borrador (versión Vigente, canal, montos), calendario de cuotas, congelamiento, desbloqueo, formalización, descarte, anulación, reapertura | — | 7.2, 7.4, 7.5, 7.10 | RF-06, RF-07, RF-12, RF-16, D-08 a D-10, D-25, D-30, ítems 7 a 12 | diseño detallado pendiente |
-| 7.15 | Steps de Cuota: solo pagos y solo con el arreglo Vigente; paso del arreglo a Terminado | — | 7.2, 7.10 | RF-10, D-10, ítem 11 | diseño detallado pendiente |
-| 7.16 | Steps de Versión de plantilla y Mapeo: publicación, inmutabilidad (Update, incluido un step de Update filtrado por `sanic_archivo`: la subida por bloques no admite steps propios pero provoca ese Update; V-4, 2026-10-11), borrado de mapeo solo en Borrador | — | 7.7, 7.10 | RF-09, D-15, ítem 15 | diseño detallado pendiente |
+| 7.15 | Steps de Cuota: solo pagos y solo con el arreglo Vigente (el `statecode` nativo solo lo cambia SYSTEM, D-39, 2026-10-11); paso del arreglo a Terminado | — | 7.2, 7.10 | RF-10, D-10, ítem 11 | diseño detallado pendiente |
+| 7.16 | Steps de Versión de plantilla y Mapeo: publicación, inmutabilidad (Update, incluido un step de Update filtrado por `sanic_archivo`: la subida por bloques no admite steps propios pero provoca ese Update; V-4, 2026-10-11), borrado de mapeo solo en Borrador, y el `statecode` nativo de la versión solo lo cambia SYSTEM (`CARP-VER-014`, D-39, 2026-10-11) | — | 7.7, 7.10 | RF-09, D-15, ítem 15 | diseño detallado pendiente |
 | 7.17 | Propietario: fijar el team del sistema de la BU como dueño y rechazar otro. La definición lo fija para Cliente, Conversación y Arreglo; el diccionario lo amplía a las siete tablas (P-11) | — | 7.10 | D-31, P-11 | diseño detallado pendiente |
 | 7.18 | Plugin de la Custom API de generación del formato (8.2) | — | 7.8, 7.10 | RF-08, D-13, ítem 14 | diseño detallado pendiente |
 | 7.19 | Plugin de la Custom API de reconciliación de correos sin conversación (8.3), con la misma lógica de 7.11 | — | 7.11 | RF-01, D-03 | diseño detallado pendiente |
@@ -198,7 +198,7 @@ Familias de steps que la definición implica (contenido de 8.7; la lista cerrada
 | Email, Create (asíncrono, post) | Registrar el correo entrante en su conversación | 7.11 |
 | Email, Create (síncrono, pre) | Fijar la queue del área como remitente de toda respuesta con Regarding a una Conversación | 7.11 |
 | Email, estado Enviado (asíncrono) | Tiempo de la respuesta, quién respondió, recalcular la conversación | 7.11 |
-| Conversación, Update (pre) | Columnas solo-sistema, asignación, gestos Finalizar y Reabrir, propietario | 7.12, 7.17 |
+| Conversación, Update (pre) | Columnas solo-sistema, asignación, gestos Finalizar y Reabrir, inmutabilidad de Finalizada y Unida, propietario | 7.12, 7.17 |
 | Cliente, Create y Update | Normalización, unicidad de la cédula, vinculación, propietario | 7.13, 7.17 |
 | Arreglo, Create (pre y post) | Propietario, versión Vigente, canal, montos; calendario de cuotas | 7.14, 7.17 |
 | Arreglo, Update (pre) | Solo-sistema, congelamiento, gestos con motivo, reemplazo de cuotas | 7.14 |
