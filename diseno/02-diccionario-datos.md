@@ -35,7 +35,7 @@ No son decisiones nuevas: son la lectura, columna por columna, de lo que la defi
 |---|---|---|
 | DD-01 | **Las siete tablas propias son de propiedad "Usuario o equipo"** (`OwnershipType = UserOwned`; el playbook de tabla lo escribe `propiedad: "usuario"`). La definición las llama "de propiedad de team": en Dataverse un team es un propietario válido de una tabla UserOwned. La propiedad es **irreversible**; una tabla de organización cerraría para siempre la posibilidad de que el team sea el dueño. El propietario real (team ARP) lo fija un plugin (D-31) | §6 Datos ("todas de propiedad de team"), D-04, D-31, BP-PP-013 |
 | DD-02 | **Conversación y Arreglo modelan su estado con `statecode`/`statuscode`**, no con un choice propio. Los motivos de estado están en la sección 3.2. Los choices de la sección 3.1 no duplican esos estados | D-03, D-10, RF-15, RF-16 |
-| DD-03 | **La versión de plantilla sí lleva un choice propio de estado** (Borrador, Vigente, Histórica), además de su `statecode` Activo/Inactivo, porque la definición lo describe como columna ("estado (Borrador, Vigente o Histórica)") y la desactivación del catálogo es otra cosa (§6 "se desactivan, nunca se purgan") | §6 Datos (Versión de plantilla) |
+| DD-03 | **La versión de plantilla sí lleva un choice propio de estado** (Borrador, Vigente, Histórica), además de su `statecode` Activo/Inactivo, porque la definición lo describe como columna ("estado (Borrador, Vigente o Histórica)") y ~~la desactivación del catálogo es otra cosa (§6 "se desactivan, nunca se purgan")~~ el `statecode` no es el modo de retirar una versión: el catálogo se retira pasando a Histórica y nunca se purga (§6 Datos, D-40, 2026-10-11) | §6 Datos (Versión de plantilla) |
 | DD-04 | **Fechas**: todo instante (llegada de un correo, finalización, congelamiento, formalización, anulación, generación, aprobación) es `fechahora UL` (BP-PP-191). Un día de calendario es `fecha DO`: vencimiento y pago de una cuota, inicio y fin del arreglo, fecha del formato. El spike 2 verificó que la vista de riesgo (D-11) funciona sobre cuotas con fecha `DO` | BP-PP-191, D-11, spike 2 (pregunta 5) |
 | DD-05 | **Tiempos en minutos, enteros y persistidos** en Conversación y en Email. La antigüedad no se persiste: es una columna de fórmula en minutos dividida por 60 (`DateDiff` en horas cuenta cambios de hora de reloj; spike 2, pregunta 4) | RF-03, RF-04, D-27, spike 2 |
 | DD-06 | **Columnas sensibles**: la cédula del Cliente, la cuenta a debitar y la cédula copiada en la instantánea llevan seguridad por columna y **no se auditan**; ninguna entra en una clave alterna (el spike 2 probó que la plataforma lo rechaza). El número de producto va en claro, sin seguridad por columna y sin auditoría, y sí entra en una clave | D-07, D-19, D-20, D-29, spike 2 (2a) |
@@ -262,7 +262,7 @@ No son choices globales. Se declaran en el playbook de la tabla correspondiente.
 | 1 Inactivo | 2 | Finalizada | Motivo por defecto 2 renombrado | Gesto Finalizar, con resultado |
 | 1 Inactivo | 159460001 | Unida | Agregado | Solo la Custom API "Unir conversaciones" |
 
-Una conversación Finalizada o Unida no se modifica sin reabrir: el plugin rechaza cualquier cambio de una persona (`CARP-CNV-009`), salvo el gesto Reabrir de una Finalizada (D-39, 2026-10-11).
+Una conversación Finalizada o Unida no se modifica sin reabrir: el plugin rechaza cualquier cambio de una persona (`CARP-CNV-009`), salvo el gesto Reabrir de una Finalizada (D-39, 2026-10-11). Reabrir no admite otro cambio en el mismo guardado (cliente, nombre, oficial asignado o propietario; `CARP-CNV-010`, D-40, 2026-10-11).
 
 **Arreglo** (D-10, RF-16)
 
@@ -274,7 +274,7 @@ Una conversación Finalizada o Unida no se modifica sin reabrir: el plugin recha
 | 1 Inactivo | 159460002 | Anulado | Agregado | Gesto Anular (solo desde Vigente), con motivo |
 | 1 Inactivo | 159460003 | Descartado | Agregado | Gesto Descartar (solo desde Borrador), con motivo |
 
-Anulado y Descartado no se reabren (D-10, ítem 10). Las transiciones las impone el plugin (D-30), no la transición de motivos de la plataforma.
+Anulado y Descartado no se reabren (D-10, ítem 10). Las transiciones las impone el plugin (D-30), no la transición de motivos de la plataforma. Los dos gestos Reabrir (de un Terminado y de un Vigente congelado) no admiten otro cambio en el mismo guardado (`CARP-ARR-012`; D-40, 2026-10-11).
 
 ## 4. Tablas
 
@@ -300,7 +300,7 @@ Cada tabla trae sus datos de playbook (`power-platform-especificar/references/ta
 | `sanic_correo` | Correo | texto T(320), formato Email; en minúscula y sin espacios | No | No | No | No | Correo electrónico del cliente. Si coincide con el remitente de un correo entrante, el plugin vincula la conversación al cliente. | RF-05, §6 Datos (Cliente) |
 | `sanic_celular` | Celular | texto T(20), formato Texto | No | No | No | No | Número de celular del cliente. | RF-05 |
 
-Lookups: ninguno. Quick find de Cliente: cédula, nombre, correo y celular (D-12; se configura en la vista de búsqueda rápida, no en el playbook de tabla). El plugin pre-create fija el team ARP como propietario (D-31).
+Lookups: ninguno. Estado: el `statecode`/`statuscode` nativos del cliente solo los cambia SYSTEM; una persona no activa ni desactiva un cliente (`CARP-CLI-004`; D-40, decisión del usuario del 2026-10-11). La purga elimina clientes con `Delete` y no se ve afectada. Quick find de Cliente: cédula, nombre, correo y celular (D-12; se configura en la vista de búsqueda rápida, no en el playbook de tabla). El plugin pre-create fija el team ARP como propietario (D-31).
 
 ### 4.2 `sanic_carp_tbl_conversacion`
 
@@ -363,7 +363,7 @@ Los valores de *Req* tomados del mockup v3 (el mockup valida como obligatorio ca
 
 | Nombre lógico | Display name | Tipo y forma | Req | Aud | Seg | Sis | Descripción | Origen |
 |---|---|---|---|---|---|---|---|---|
-| `sanic_nombre` | Codigo interno | primaria autonumérica `ARR-{SEQNUM:6}` | No | Sí (hereda) | No | **Sí** (desde el 2026-10-11, D-39; ~~No~~) | Código interno correlativo del arreglo, asignado por el sistema al crear, también en borrador. No es el número de arreglo del crédito. Una persona no lo cambia en ningún estado. | BP-PP-192, DD-07 |
+| `sanic_nombre` | Codigo interno | primaria autonumérica `ARR-{SEQNUM:6}` | No | Sí (hereda) | No | **Sí** (desde el 2026-10-11, D-39; ~~No~~) | Código interno correlativo del arreglo, asignado por el sistema al crear, también en borrador. No es el número de arreglo del crédito. Una persona no lo cambia en ningún estado. **En el Create la plataforma lo completa antes de PreValidation y guarda tal cual el valor que envíe la persona (V-8, 2026-10-11)**, así que el plugin de alta rechaza un valor que no cumpla `^ARR-[0-9]{6,16}$` (`CARP-ARR-009`; D-40); un `ARR-nnnnnn` falsificado por API pasa (riesgo aceptado). | BP-PP-192, DD-07 |
 | `sanic_producto` | Producto crediticio | choice `sanic_carp_ch_productocrediticio` | Sí | No | No | No | Producto sobre el que se hace el arreglo: préstamo o tarjeta. No se cambia una vez que el borrador se congela. | RF-06, RF-17, D-33 |
 | `sanic_numeroproducto` | Numero de prestamo o tarjeta | texto T(30); sin espacios y en mayúscula | Sí | **No** | **No** | No | Número del préstamo o de la tarjeta, en claro. Forma parte de la clave alterna del número de arreglo y se busca con quick find. Su tratamiento queda pendiente de Cumplimiento (R-09). | RF-06, RF-07, RF-13, D-20, D-29 |
 | `sanic_numeroarreglo` | Numero de arreglo | entero [1..9999] | No (vacío en borrador) | Sí | No | **Sí** | Consecutivo por crédito (cuántas veces ese préstamo o tarjeta tuvo arreglo). Vacío en borrador; lo fija el sistema al formalizar. Parte de la clave alterna. | RF-07, D-09, D-30, D-33 |
@@ -426,21 +426,21 @@ Estado: `statecode`/`statuscode` según la sección 3.2, ambos auditados. Los pa
 
 | Nombre lógico | Display name | Tipo y forma | Req | Aud | Seg | Sis | Descripción | Origen |
 |---|---|---|---|---|---|---|---|---|
-| `sanic_nombre` | Codigo | primaria calculada, texto T(30) | Sí | Sí (hereda) | No | No | Código de la cuota: el código interno del arreglo y el número de cuota. Lo calcula el plugin que crea el calendario. | BP-PP-192 |
-| `sanic_numero` | Numero de cuota | entero [1..60] | Sí | No | No | No | Número de orden de la cuota dentro del arreglo. | RF-06, RF-08 |
-| `sanic_fechavencimiento` | Fecha de vencimiento | **fecha DO** | Sí | No | No | No | Día en que vence la cuota. Solo fecha: la lista de riesgo compara por día (probado en el spike 2). La regla de cálculo de fechas de vencimiento está decidida (R-03). | RF-08, RF-11, D-11, DD-04 |
-| `sanic_monto` | Monto | decimal(2) [0..999999999.99] | Sí | No | No | No | Monto de la cuota, en la moneda del arreglo. Todas las cuotas valen la cuota mensual, salvo la **última**, que se achica a lo que queda cuando cuota × plazo supera el saldo remanente: saldo remanente − cuota × (plazo − 1). Lo fija el plugin del calendario. | RF-08, R-04 |
+| `sanic_nombre` | Codigo | primaria calculada, texto T(30) | Sí | Sí (hereda) | No | **Sí** (desde el 2026-10-11, alineado con `03` 2.0.8; ~~No~~) | Código de la cuota: el código interno del arreglo y el número de cuota. Lo calcula el plugin que crea el calendario. | BP-PP-192 |
+| `sanic_numero` | Numero de cuota | entero [1..60] | Sí | No | No | **Sí** (desde el 2026-10-11, alineado con `03` 2.0.8; ~~No~~) | Número de orden de la cuota dentro del arreglo. | RF-06, RF-08 |
+| `sanic_fechavencimiento` | Fecha de vencimiento | **fecha DO** | Sí | No | No | **Sí** (desde el 2026-10-11, alineado con `03` 2.0.8; ~~No~~) | Día en que vence la cuota. Solo fecha: la lista de riesgo compara por día (probado en el spike 2). La regla de cálculo de fechas de vencimiento está decidida (R-03). | RF-08, RF-11, D-11, DD-04 |
+| `sanic_monto` | Monto | decimal(2) [0..999999999.99] | Sí | No | No | **Sí** (desde el 2026-10-11, alineado con `03` 2.0.8; ~~No~~) | Monto de la cuota, en la moneda del arreglo. Todas las cuotas valen la cuota mensual, salvo la **última**, que se achica a lo que queda cuando cuota × plazo supera el saldo remanente: saldo remanente − cuota × (plazo − 1). Lo fija el plugin del calendario. | RF-08, R-04 |
 | `sanic_fechapago` | Fecha de pago | **fecha DO** | No | **Sí** | No | No | Día en que se registró el pago de la cuota. Solo fecha: el formato tiene un par fecha y monto por cuota. | RF-10, D-08, DD-04 |
 | `sanic_montopagado` | Monto pagado | decimal(2) [0..999999999.99] | No | **Sí** | No | No | Monto pagado de la cuota, en la moneda del arreglo; puede ser parcial. Un pago parcial saca la cuota de la lista de riesgo. Se registra junto con la fecha de pago: ambos o ninguno, monto mayor que cero y sin tope superior (OA-8, 2026-10-10; `CARP-CUO-003`). | RF-10, RF-11, D-08 |
 
-Lookup: `sanic_arregloid` (Arreglo), **requerido**, sin auditoría, relación REL-05 (parental, Cascade All en delete; D-08). El oficial tiene solo Read y Write sobre Cuota; el plugin limita la escritura a fecha y monto de pago, y solo con el arreglo Vigente; el `statecode`/`statuscode` nativos de la cuota solo los cambia SYSTEM (D-39, 2026-10-11). Altas y bajas las hace el sistema. **Moneda**: la cuota no lleva columna de moneda; hereda la de su arreglo (`sanic_moneda`, D-36) y `sanic_monto` y `sanic_montopagado` se expresan en ella.
+Lookup: `sanic_arregloid` (Arreglo), **requerido**, sin auditoría, **Sis = Sí** (desde el 2026-10-11, alineado con `03` 2.0.8; ~~No~~), relación REL-05 (parental, Cascade All en delete; D-08). El oficial tiene solo Read y Write sobre Cuota; el plugin limita la escritura a fecha y monto de pago (`CARP-CUO-001` rechaza el cambio de cualquier otra columna, por eso las cinco de arriba son solo-sistema), y solo con el arreglo Vigente; el `statecode`/`statuscode` nativos de la cuota solo los cambia SYSTEM (D-39, 2026-10-11). Altas y bajas las hace el sistema. **Moneda**: la cuota no lleva columna de moneda; hereda la de su arreglo (`sanic_moneda`, D-36) y `sanic_monto` y `sanic_montopagado` se expresan en ella.
 
 ### 4.5 `sanic_carp_tbl_versionplantilla`
 
 | Dato | Valor |
 |---|---|
 | Display name singular / plural | `Version de plantilla` / `Versiones de plantilla` |
-| Descripción | Versión de la plantilla Excel del formato F-NIC-0000052 con su archivo, su huella y su estado. Es catálogo: se desactiva, nunca se purga. |
+| Descripción | Versión de la plantilla Excel del formato F-NIC-0000052 con su archivo, su huella y su estado. Es catálogo: se retira pasando a Histórica (`sanic_estado`), no desactivándose, y nunca se purga (D-40, 2026-10-11). ~~Es catálogo: se desactiva, nunca se purga.~~ |
 | Propiedad | usuario o equipo (DD-01) |
 | Notas / Actividades | no / no |
 | Auditoría de tabla | **Sí** (D-20) |
@@ -451,12 +451,12 @@ Lookup: `sanic_arregloid` (Arreglo), **requerido**, sin auditoría, relación RE
 |---|---|---|---|---|---|---|---|---|
 | `sanic_nombre` | Numero de version | primaria = clave de negocio, texto T(10); patrón `^v[0-9]{2,3}$` | Sí | Sí (hereda) | No | No | Número de la versión de la plantilla, por ejemplo v07. Es el identificador que ve el jefe y el que se cita al hablar de un formato. | §6 Datos (Versión de plantilla), BP-PP-192 |
 | `sanic_archivo` | Archivo de plantilla | archivo; `MaxSizeInKB` = 5120 | **No** (una columna de archivo nunca es requerida) | No | No | No | Archivo .xlsx de la plantilla. Se guarda solo en Dataverse (RNF-03). Una versión que no es Borrador es inmutable, el archivo incluido. | RF-09, D-14, D-15, RNF-03 |
-| `sanic_huella` | Huella | texto T(64) (SHA-256 en hexadecimal, minúscula) | No (vacía en Borrador) | **Sí** | No | No (la escribe el plugin de publicación, ítem 15) | Huella SHA-256 del archivo, calculada al publicar. El generador la valida en cada generación: es la segunda barrera de inmutabilidad. | D-15, ítem 14 |
+| `sanic_huella` | Huella | texto T(64) (SHA-256 en hexadecimal, minúscula) | No (vacía en Borrador) | **Sí** | No | **Sí** (desde el 2026-10-11, alineado con `03` 2.0.8; ~~No~~): la escribe el plugin de publicación (ítem 15) y una persona que la envíe recibe `CARP-VER-002` | Huella SHA-256 del archivo, calculada al publicar. El generador la valida en cada generación: es la segunda barrera de inmutabilidad. | D-15, ítem 14 |
 | `sanic_capacidad` | Capacidad de cuotas | entero [1..60] | Sí | **Sí** | No | No | Filas del bloque de cuotas que admite la plantilla. Un plazo mayor se rechaza al registrar el arreglo. | §6 Datos (Versión de plantilla), ítem 7, spike 1 |
 | `sanic_estado` | Estado de la version | choice `sanic_carp_ch_estadoversionplantilla`; defecto Borrador | Sí | **Sí** | No | No | Borrador, Vigente o Historica. Hay una sola Vigente a la vez; al publicar, la anterior pasa a Historica. | DD-03, D-15, ítem 15 |
-| `sanic_fechaaprobacion` | Fecha de aprobacion | fechahora UL | No | **Sí** | No | No (la escribe el plugin de publicación) | Fecha y hora de aprobación de la versión al publicarla. | §6 Datos (Versión de plantilla) |
+| `sanic_fechaaprobacion` | Fecha de aprobacion | fechahora UL | No | **Sí** | No | **Sí** (desde el 2026-10-11, alineado con `03` 2.0.8; ~~No~~): la escribe el plugin de publicación | Fecha y hora de aprobación de la versión al publicarla. | §6 Datos (Versión de plantilla) |
 
-Lookup: `sanic_aprobadoporid` (Aprobado por, `systemuser`), opcional (vacío en Borrador), auditado, relación REL-17. Estado `statecode`/`statuscode` estándar (Activo/Inactivo, sin motivos propios): la desactivación del catálogo. Desde el 2026-10-11 (D-39) solo SYSTEM lo cambia: una persona no activa ni desactiva una versión en ningún estado (`CARP-VER-014`, `CARP-VER-003`).
+Lookup: `sanic_aprobadoporid` (Aprobado por, `systemuser`), opcional (vacío en Borrador), auditado, **Sis = Sí** (desde el 2026-10-11, alineado con `03` 2.0.8; ~~No~~: lo escribe el plugin de publicación y `CARP-VER-002` rechaza el envío de una persona), relación REL-17. Estado `statecode`/`statuscode` estándar (Activo/Inactivo, sin motivos propios). ~~La desactivación del catálogo.~~ Desde el 2026-10-11 (D-39) solo SYSTEM lo cambia: una persona no activa ni desactiva una versión en ningún estado (`CARP-VER-014`, `CARP-VER-003`), y ningún proceso del diseño lo hace: **el catálogo no se desactiva, se retira pasando a Histórica** (`sanic_estado`, al publicar otra versión) y nunca se purga (decisión del arquitecto, 2026-10-11, D-40; resuelve la inconsistencia 17 de `03`).
 
 ### 4.6 `sanic_carp_tbl_mapeocelda`
 
@@ -479,7 +479,7 @@ Lookup: `sanic_aprobadoporid` (Aprobado por, `systemuser`), opcional (vacío en 
 | `sanic_campo` | Campo de origen | choice `sanic_carp_ch_campomapeable` | Sí | **Sí** | No | No | Dato del arreglo que se escribe en la celda. La lista la mantiene el equipo de la solución. | D-14 |
 | `sanic_filasmaximas` | Filas maximas | entero [1..60] | No (solo en columnas de bloque) | **Sí** | No | No | Filas máximas del bloque de cuotas a partir de la celda inicial. | §6 Datos (Mapeo de celda), RF-06 |
 
-Lookup: `sanic_versionplantillaid` (Version de plantilla), **requerido**, auditado, relación REL-08 (parental). El jefe puede borrar un mapeo solo en una versión Borrador (el plugin bloquea el resto).
+Lookup: `sanic_versionplantillaid` (Version de plantilla), **requerido**, auditado, **Sis = Sí** (desde el 2026-10-11, alineado con `03` 2.0.8: `CARP-MAP-006` rechaza mover un mapeo a otra versión), relación REL-08 (parental). El jefe puede borrar un mapeo solo en una versión Borrador (el plugin bloquea el resto). El `statecode`/`statuscode` nativos del mapeo solo los cambia SYSTEM: una persona no activa ni desactiva un mapeo (`CARP-MAP-007`; D-40, decisión del usuario del 2026-10-11). Los mapeos se retiran con su versión, que pasa a Histórica; no se purgan.
 
 ### 4.7 `sanic_carp_tbl_generacionformato`
 
