@@ -318,7 +318,7 @@ Lookups: ninguno. Estado: el `statecode`/`statuscode` nativos del cliente solo l
 
 | Nombre lógico | Display name | Tipo y forma | Req | Aud | Seg | Sis | Descripción | Origen |
 |---|---|---|---|---|---|---|---|---|
-| `sanic_nombre` | Numero | primaria autonumérica `CONV-{SEQNUM:6}` (P-02) | No | Sí (hereda) | No | No | Número correlativo de la conversación, que el área cita al hablar de ella. Lo asigna el sistema al crear. | BP-PP-192 |
+| `sanic_nombre` | Numero | primaria autonumérica `CONV-{SEQNUM:6}` (P-02) | No | Sí (hereda) | No | **Sí** (desde el 2026-10-11, D-41; ~~No~~) | Número correlativo de la conversación, que el área cita al hablar de ella. Lo asigna el sistema al crear. **La plataforma lo completa antes de los plugins y guarda tal cual el valor que envíe la persona (V-8 en el Arreglo; por verificar en Conversación, H-14)**, así que el plugin de alta rechaza un valor que no cumpla `^CONV-[0-9]{6,15}$` (15 y no 16 dígitos porque la columna mide 20; `CARP-CNV-001`); un `CONV-nnnnnn` falsificado por API pasa (riesgo aceptado). En el Update una persona no lo cambia en ningún estado (`CARP-CNV-001`; en una Finalizada o Unida, `CARP-CNV-009`). Las altas del sistema (entrada de correo, iniciar conversación nueva) no se ven afectadas. | BP-PP-192, D-41 |
 | `sanic_huellamessageid` | Huella del Message-ID | texto T(64) (SHA-256 en hexadecimal, minúscula) | Sí | No | No | **Sí** | Huella SHA-256 del Message-ID normalizado del primer correo. Es la clave alterna que garantiza que un correo reprocesado no cree dos conversaciones; la huella evita que un Message-ID largo supere el límite de tamaño de la clave. | D-03, D-30, ítem 1 |
 | `sanic_fechaprimercorreo` | Fecha del primer correo | fechahora UL | Sí | No | No | **Sí** | Fecha y hora de llegada del primer correo, tomada de `actualend` del Email (coincide con la recepción en Exchange; spike 3) y no de `createdon`, para no sumar la demora de la sincronización. Inicio del tiempo total. | RF-03, D-03, D-30, spike 3 |
 | `sanic_asunto` | Asunto | texto T(400) | No | No | No | **Sí** | Asunto del primer correo de la conversación, copiado por el sistema al crearla. Permite que la vista de conversaciones muestre de qué se trata sin abrir el timeline. | RF-04, P-10 |
@@ -472,7 +472,7 @@ Lookup: `sanic_aprobadoporid` (Aprobado por, `systemuser`), opcional (vacío en 
 
 | Nombre lógico | Display name | Tipo y forma | Req | Aud | Seg | Sis | Descripción | Origen |
 |---|---|---|---|---|---|---|---|---|
-| `sanic_nombre` | Hoja y celda | primaria calculada, texto T(50) | Sí | Sí (hereda) | No | No | Hoja y celda del mapeo. La calcula el sistema; nadie la digita. | BP-PP-192 |
+| `sanic_nombre` | Hoja y celda | primaria calculada, texto T(50) | Sí | Sí (hereda) | No | **Sí** (desde el 2026-10-11, D-41, alineado con `03` 2.0.8; ~~No~~): la calcula el plugin a partir de la hoja y la celda, y una persona que la cambie recibe `CARP-MAP-008` | Hoja y celda del mapeo. La calcula el sistema; nadie la digita. Si cambia la hoja o la celda, el plugin la recalcula. | BP-PP-192, D-41 |
 | `sanic_hoja` | Hoja | texto T(31) | Sí | **Sí** | No | No | Nombre exacto de la hoja del libro. Se compara tal cual: la hoja del formato se llama " FORMATO ARP ELECTRONICO", con un espacio al inicio (spike 1). El límite de Excel para un nombre de hoja es 31 caracteres. | §6 Datos (Mapeo de celda), spike 1 |
 | `sanic_celda` | Celda | texto T(10); notación A1, mayúscula | Sí | **Sí** | No | No | Celda en notación A1. Para un bloque de cuotas, la celda de la primera cuota. El plugin de publicación valida que esté bien formada y que no haya dos campos en la misma celda. | §6 Datos (Mapeo de celda), ítem 15 |
 | `sanic_tipo` | Tipo de mapeo | choice `sanic_carp_ch_tipomapeo` | Sí | **Sí** | No | No | Valor simple, total calculado o columna de bloque de cuotas. | §6 Datos (Mapeo de celda), D-16 |
@@ -495,7 +495,7 @@ Lookup: `sanic_versionplantillaid` (Version de plantilla), **requerido**, audita
 
 | Nombre lógico | Display name | Tipo y forma | Req | Aud | Seg | Sis | Descripción | Origen |
 |---|---|---|---|---|---|---|---|---|
-| `sanic_nombre` | Numero | primaria autonumérica `GEN-{SEQNUM:8}` | No | Sí (hereda) | No | No | Número correlativo de la generación, asignado por el sistema. | BP-PP-192 |
+| `sanic_nombre` | Numero | primaria autonumérica `GEN-{SEQNUM:8}` | No | Sí (hereda) | No | No | Número correlativo de la generación, asignado por el sistema. Ningún humano la escribe (ningún rol humano tiene Create ni Write sobre esta tabla: la crea el sistema, D-26), así que no necesita regla de plugin y queda con Sis = No (D-41, 2026-10-11). | BP-PP-192 |
 | `sanic_fechageneracion` | Fecha de generacion | fechahora UL | Sí | **Sí** | No | No | Fecha y hora en que se generó el formato. Explícita porque la bitácora la escribe el sistema (D-26) y `createdon` no distingue a quien generó. | §6 Datos (Generación de formato), D-26 |
 
 Lookups: `sanic_arregloid` (Arreglo, **requerido**, auditado, REL-06 parental, Cascade All; se purga con el arreglo), `sanic_versionplantillaid` (Version de plantilla usada, **requerida**, auditada, REL-07), `sanic_generadoporid` (Generado por, `systemuser`, **requerido**, auditado, REL-18; lo escribe el sistema con el `InitiatingUserId`, D-26).
