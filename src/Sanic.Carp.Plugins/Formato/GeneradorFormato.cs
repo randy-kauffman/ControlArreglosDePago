@@ -113,10 +113,15 @@ namespace Sanic.Carp.Plugins.Formato
                     }
                     EscribirBloque(escritor, bloque, datos);
 
-                    escritor.CerrarTablaDeTextos();
+                    // Las hojas que el mapeo no nombra no se tocan, pero cuentan: calcChain y sharedStrings son del libro entero
+                    // (diseno/03 4.3 puntos 13 y 18).
+                    var noMapeadas = HojasNoMapeadas.Explorar(libro, hojas.Values.ToArray());
+                    escritor.CerrarTablaDeTextos(noMapeadas.CeldasDeTextoCompartido);
                     // calcChain lista celdas con fórmula: si una pasó a valor, Excel pediría "reparar" (spike 1, hallazgo 7). Excel la reconstruye solo.
                     if (libro.CalculationChainPart != null) libro.DeletePart(libro.CalculationChainPart);
-                    recalculo = hojas.Values.Any(h => h.TieneFormulas());
+                    // Sin cadena, Excel necesita recalcular si queda una fórmula en CUALQUIER hoja: una de resumen sin mapear que apunte a una
+                    // celda mapeada mostraría el valor viejo.
+                    recalculo = noMapeadas.TieneFormulas || hojas.Values.Any(h => h.TieneFormulas());
                     if (recalculo) MarcarRecalculoAlAbrir(libro);
                     escritor.AgregarAdvertenciasDeFechas();
                     libro.Workbook.Save();
@@ -126,7 +131,13 @@ namespace Sanic.Carp.Plugins.Formato
             }
         }
 
-        /// <summary>El .xlsx es un ZIP externo: se acota cantidad de partes y tamaño descomprimido antes de abrirlo.</summary>
+        /// <summary>
+        /// El .xlsx es un ZIP externo: se acota la cantidad de partes y el tamaño descomprimido antes de abrirlo. El tamaño se mide sobre
+        /// los bytes REALMENTE leídos de cada entrada y no sobre lo que declara el directorio central (diseno/03 4.3 punto 11, BP-PP-062):
+        /// un archivo hostil declara poco y ocupa mucho, y la BCL no lo recorta en todos los casos (entradas almacenadas; en net462,
+        /// ninguna). Una entrada ilegible rechaza la plantilla aunque el libro no use esa parte, y cualquier excepción al verificar el
+        /// contenedor, no solo <see cref="InvalidDataException"/>, sale como <see cref="PlantillaInvalidaException"/> (punto 14).
+        /// </summary>
         private static void VerificarContenedor(byte[] plantilla)
         {
             try
@@ -138,19 +149,40 @@ namespace Sanic.Carp.Plugins.Formato
                         throw new PlantillaInvalidaException("La plantilla tiene " + Num(zip.Entries.Count) + " partes; el máximo admitido es " + Num(MaxPartes) + ".");
                     }
                     long total = 0;
+                    var buffer = new byte[81920];
                     foreach (var e in zip.Entries)
                     {
-                        total += e.Length;
-                        if (total > MaxBytesDescomprimidos)
+                        using (var flujo = e.Open())
                         {
-                            throw new PlantillaInvalidaException("La plantilla descomprimida supera el tamaño máximo admitido (" + Num(MaxBytesDescomprimidos / (1024 * 1024)) + " MB).");
+                            while (true)
+                            {
+                                // Se pide como mucho un byte más que lo que queda de tope: en cuanto se pasa, se corta, sin guardar nada.
+                                var pedir = (int)Math.Min(buffer.Length, MaxBytesDescomprimidos - total + 1);
+                                var leidos = flujo.Read(buffer, 0, pedir);
+                                if (leidos <= 0) break;
+                                total += leidos;
+                                if (total > MaxBytesDescomprimidos)
+                                {
+                                    throw new PlantillaInvalidaException("La plantilla descomprimida supera el tamaño máximo admitido (" + Num(MaxBytesDescomprimidos / (1024 * 1024)) + " MB).");
+                                }
+                            }
                         }
                     }
                 }
             }
-            catch (InvalidDataException ex)
+            catch (FormatoException)
             {
-                throw new PlantillaInvalidaException("La plantilla no es un archivo .xlsx (contenedor ZIP) válido.", ex);
+                throw;
+            }
+            catch (OutOfMemoryException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // Frontera con la BCL: según el runtime, un ZIP dañado sale como InvalidDataException, IOException o NotSupportedException.
+                throw new PlantillaInvalidaException("La plantilla no es un archivo .xlsx (contenedor ZIP) válido o tiene una parte ilegible ("
+                    + ex.GetType().Name + ": " + ex.Message + ").", ex);
             }
         }
 
@@ -237,11 +269,21 @@ namespace Sanic.Carp.Plugins.Formato
             {
                 throw new DatosInvalidosException(donde + " tiene un texto de " + Num(texto.Length) + " caracteres (el máximo de una celda es " + Num(MaxLargoTexto) + "), tipo string.");
             }
-            foreach (var ch in texto)
+            // diseno/03 4.3 punto 12: XML 1.0 no admite un sustituto suelto; solo vale dentro de un par bien formado (alto y luego bajo).
+            // Es un error de DATOS (CARP-GEN-011): si llegara al escritor de XML saldría como "la plantilla está mal" (CARP-GEN-009).
+            // El mensaje da el código del carácter y no el texto, que puede ser un dato del cliente (0.5).
+            for (int i = 0; i < texto.Length; i++)
             {
-                if (!XmlConvert.IsXmlChar(ch) && !char.IsSurrogate(ch))
+                var ch = texto[i];
+                if (char.IsHighSurrogate(ch) && i + 1 < texto.Length && char.IsLowSurrogate(texto[i + 1]))
                 {
-                    throw new DatosInvalidosException(donde + " tiene un texto con un carácter no válido (U+" + ((int)ch).ToString("X4", CultureInfo.InvariantCulture) + "), tipo string.");
+                    i++;
+                    continue;
+                }
+                if (!XmlConvert.IsXmlChar(ch))
+                {
+                    throw new DatosInvalidosException(donde + " tiene un texto con un carácter no válido (U+" + ((int)ch).ToString("X4", CultureInfo.InvariantCulture)
+                        + ", posición " + Num(i + 1) + "), tipo string.");
                 }
             }
         }
@@ -300,6 +342,7 @@ namespace Sanic.Carp.Plugins.Formato
         private static Dictionary<string, HojaEditable> ResolverHojas(WorkbookPart libro, IReadOnlyList<MapeoCelda> mapeo)
         {
             var disponibles = libro.Workbook.Sheets.Elements<Sheet>().ToList();
+            VerificarIndiceDeHojas(disponibles);
             var resultado = new Dictionary<string, HojaEditable>(StringComparer.Ordinal);
             var errores = new List<string>();
             foreach (var nombre in mapeo.Select(m => m.Hoja).Distinct(StringComparer.Ordinal))
@@ -315,6 +358,27 @@ namespace Sanic.Carp.Plugins.Formato
             }
             if (errores.Count > 0) throw new MapeoInvalidoException(errores);
             return resultado;
+        }
+
+        private const string NsRelaciones = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+
+        /// <summary>
+        /// Todo <c>&lt;sheet&gt;</c> del libro tiene que traer <c>name</c> y <c>r:id</c>, también los de hojas que el mapeo no nombra: un índice
+        /// de hojas malformado no es confiable (diseno/03 4.3 punto 15b). Se lee el texto crudo del atributo, no el getter tipado del SDK.
+        /// </summary>
+        private static void VerificarIndiceDeHojas(List<Sheet> hojas)
+        {
+            for (int i = 0; i < hojas.Count; i++)
+            {
+                var faltan = new List<string>();
+                if (HojaEditable.Atributo(hojas[i], "name") == null) faltan.Add("name");
+                if (!hojas[i].GetAttributes().Any(a => a.LocalName == "id" && a.NamespaceUri == NsRelaciones)) faltan.Add("r:id");
+                if (faltan.Count > 0)
+                {
+                    throw new PlantillaInvalidaException("workbook.xml: el elemento sheet número " + Num(i + 1) + " no tiene "
+                        + (faltan.Count == 1 ? "el atributo " : "los atributos ") + string.Join(" ni ", faltan) + ".");
+                }
+            }
         }
 
         /// <summary>Una celda mapeada dentro de una combinación, que no sea la primera, escribiría en un lugar que no se ve ni se imprime.</summary>
@@ -344,10 +408,27 @@ namespace Sanic.Carp.Plugins.Formato
             if (errores.Count > 0) throw new MapeoInvalidoException(errores);
         }
 
+        /// <summary>
+        /// <c>date1904</c> es un booleano de XML Schema: <c>1</c>, <c>0</c>, <c>true</c> o <c>false</c>. Se lee el texto crudo (el getter tipado
+        /// del SDK lanza <see cref="FormatException"/>) y cualquier otro valor es plantilla inválida, con el atributo en el mensaje (punto 15a).
+        /// </summary>
         private static bool EsSistema1904(WorkbookPart libro)
         {
             var props = libro.Workbook.WorkbookProperties;
-            return props != null && props.Date1904 != null && props.Date1904.Value;
+            if (props == null) return false;
+            var texto = HojaEditable.Atributo(props, "date1904");
+            if (texto == null) return false;
+            switch (texto)
+            {
+                case "1":
+                case "true":
+                    return true;
+                case "0":
+                case "false":
+                    return false;
+                default:
+                    throw new PlantillaInvalidaException("workbook.xml: el atributo date1904 de workbookPr ('" + texto + "') no es un booleano válido (use 1, 0, true o false).");
+            }
         }
 
         private static void MarcarRecalculoAlAbrir(WorkbookPart libro)
@@ -499,11 +580,11 @@ namespace Sanic.Carp.Plugins.Formato
                 }
             }
 
-            /// <summary>Actualiza count y uniqueCount de sharedStrings.xml con lo que realmente hay.</summary>
-            public void CerrarTablaDeTextos()
+            /// <summary>Actualiza count (celdas de texto de todo el libro) y uniqueCount (cantidad de textos) de sharedStrings.xml con lo que realmente hay.</summary>
+            public void CerrarTablaDeTextos(int celdasEnHojasNoMapeadas)
             {
                 _tabla.UniqueCount = (uint)_tabla.Elements<SharedStringItem>().Count();
-                _tabla.Count = (uint)_hojas.Values.Sum(h => h.CantidadCeldasDeTextoCompartido());
+                _tabla.Count = (uint)(_hojas.Values.Sum(h => h.CantidadCeldasDeTextoCompartido()) + celdasEnHojasNoMapeadas);
             }
         }
     }

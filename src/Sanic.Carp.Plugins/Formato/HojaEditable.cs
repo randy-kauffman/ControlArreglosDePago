@@ -46,6 +46,9 @@ namespace Sanic.Carp.Plugins.Formato
             if (_hoja == null) throw new PlantillaInvalidaException("La hoja '" + nombre + "' está vacía o no se pudo leer.");
             _datos = _hoja.GetFirstChild<SheetData>();
             if (_datos == null) throw new PlantillaInvalidaException("La hoja '" + nombre + "' no tiene sheetData.");
+            // diseno/03 4.3 punto 15c: las definiciones de columna con estilo se validan SIEMPRE, no solo cuando hay que crear una celda
+            // (si no, que el archivo se rechace dependería de los datos y del mapeo).
+            CargarColumnas();
         }
 
         /// <summary>Devuelve la celda; si no existe la crea con el estilo de columna, si lo hay.</summary>
@@ -190,27 +193,7 @@ namespace Sanic.Carp.Plugins.Formato
 
         private uint? EstiloDeColumna(int columna)
         {
-            if (_columnas == null)
-            {
-                _columnas = new List<ColumnaConEstilo>();
-                var cols = _hoja.GetFirstChild<Columns>();
-                if (cols != null)
-                {
-                    foreach (var c in cols.Elements<Column>())
-                    {
-                        var estilo = Atributo(c, "style");
-                        if (estilo == null) continue;
-                        uint e; int min, max;
-                        if (!uint.TryParse(estilo, NumberStyles.None, CultureInfo.InvariantCulture, out e)
-                            || !int.TryParse(Atributo(c, "min"), NumberStyles.None, CultureInfo.InvariantCulture, out min)
-                            || !int.TryParse(Atributo(c, "max"), NumberStyles.None, CultureInfo.InvariantCulture, out max))
-                        {
-                            throw new PlantillaInvalidaException("La hoja '" + Nombre + "' tiene una definición de columna (cols) inválida (estilo '" + estilo + "').");
-                        }
-                        _columnas.Add(new ColumnaConEstilo { Min = min, Max = max, Estilo = e });
-                    }
-                }
-            }
+            CargarColumnas();
             foreach (var c in _columnas)
             {
                 if (c.Min <= columna && columna <= c.Max) return c.Estilo;
@@ -218,8 +201,54 @@ namespace Sanic.Carp.Plugins.Formato
             return null;
         }
 
+        /// <summary>
+        /// Lee las definiciones de columna que traen <c>style</c> (las únicas que sirven para dar estilo a una celda nueva). Una
+        /// definición sin <c>style</c> se ignora a propósito: sus <c>min</c> y <c>max</c> no se interpretan (diseno/03 4.3 punto 15c).
+        /// </summary>
+        private void CargarColumnas()
+        {
+            if (_columnas != null) return;
+            var lista = new List<ColumnaConEstilo>();
+            var cols = _hoja.GetFirstChild<Columns>();
+            if (cols != null)
+            {
+                foreach (var c in cols.Elements<Column>())
+                {
+                    var estilo = Atributo(c, "style");
+                    if (estilo == null) continue;
+                    uint e; int min, max;
+                    if (!uint.TryParse(estilo, NumberStyles.None, CultureInfo.InvariantCulture, out e))
+                    {
+                        throw ColumnaInvalida("style", estilo);
+                    }
+                    var textoMin = Atributo(c, "min");
+                    var textoMax = Atributo(c, "max");
+                    if (!int.TryParse(textoMin, NumberStyles.None, CultureInfo.InvariantCulture, out min)) throw ColumnaInvalida("min", textoMin);
+                    if (!int.TryParse(textoMax, NumberStyles.None, CultureInfo.InvariantCulture, out max)) throw ColumnaInvalida("max", textoMax);
+                    if (min < 1)
+                    {
+                        throw new PlantillaInvalidaException("La hoja '" + Nombre + "' tiene una definición de columna (cols) inválida: el atributo min ('"
+                            + textoMin + "') debe ser 1 o más.");
+                    }
+                    if (min > max)
+                    {
+                        throw new PlantillaInvalidaException("La hoja '" + Nombre + "' tiene una definición de columna (cols) inválida: el atributo min ('"
+                            + textoMin + "') es mayor que max ('" + textoMax + "').");
+                    }
+                    lista.Add(new ColumnaConEstilo { Min = min, Max = max, Estilo = e });
+                }
+            }
+            _columnas = lista;
+        }
+
+        private PlantillaInvalidaException ColumnaInvalida(string atributo, string valor)
+        {
+            return new PlantillaInvalidaException("La hoja '" + Nombre + "' tiene una definición de columna (cols) inválida: el atributo " + atributo
+                + (valor == null ? " falta." : " ('" + valor + "') no es un entero válido."));
+        }
+
         /// <summary>Valor crudo de un atributo sin namespace, o null si no está (el getter tipado del SDK lanza si el texto es inválido).</summary>
-        private static string Atributo(OpenXmlElement e, string nombre)
+        internal static string Atributo(OpenXmlElement e, string nombre)
         {
             foreach (var a in e.GetAttributes())
             {

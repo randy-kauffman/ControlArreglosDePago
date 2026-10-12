@@ -53,7 +53,18 @@ namespace Sanic.Carp.Plugins.Formato
             var causa = ex.InnerException;
             if (_trazar == null || causa == null) return;
 
-            _trazar("Generador del formato: " + ex.GetType().Name + " con causa interna " + causa.GetType().Name + ": " + causa.Message);
+            // Un observador nunca altera el resultado (diseno/03 4.3 punto 10): el delegado es ajeno (en producción, el ITracingService)
+            // y si lanza, su excepción se descarta para que salga la original del generador. Si saliera la del observador, la Custom
+            // API devolvería CARP-GEN-900 (reintentar) por un error que reintentar no arregla y se perdería CARP-GEN-009. Por eso el
+            // catch es general a propósito: vale para cualquier tipo de excepción del delegado.
+            try
+            {
+                _trazar("Generador del formato: " + ex.GetType().Name + " con causa interna " + causa.GetType().Name + ": " + causa.Message);
+            }
+            catch (Exception)
+            {
+                // Se traga a propósito (ver arriba).
+            }
         }
     }
 }
