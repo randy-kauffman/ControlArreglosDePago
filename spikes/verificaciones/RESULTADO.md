@@ -65,3 +65,87 @@ Entorno de desarrollo (`https://org36e60d9d.crm.dynamics.com/`, único entorno t
 ## Cómo reproducir
 
 `python3 v00_linea_base.py` (línea base) → `v10_metadatos.py` (V-3, V-4 metadatos) → compilar `src/Zzv.Probe` con `dotnet build -c Release` → `v20_registrar_paquete.py` → `v21_registrar_steps.py` → `v30_estado_v1_v2_v5.py` (V-1, V-2, V-5) → `v40_v6_pre_imagen.py` (V-6, habilita al usuario y lo agrega al perfil) → `v50_v7_principal_access.py` (V-7) → `v60_v4_archivo.py` y `v61_extras.py` (V-4, V-6 con suplantación) → `v90_limpieza.py` y `v91_verificar_limpieza.py`. `reasignar.py` reatribuye trazas de un JSON de corrida. Las credenciales salen de las variables y archivos ya configurados del estudio (`herramientas/credenciales.py`); ningún script imprime secretos ni tokens.
+
+
+## V-8 (2026-10-11): autonumérico de Arreglo en el Create
+
+Misma infraestructura y mismas reglas que V-1 a V-7 (Dev, único entorno; plugin fuera de la solución; datos `ZZV-…`; todo releído). Pregunta: la primaria `sanic_nombre` de `sanic_carp_tbl_arreglo` es autonumérica (`ARR-{SEQNUM:6}`, 20 caracteres, opcional, válida para Create y Update). ¿Qué trae el `Target` de un `Create` en cada etapa, con y sin valor del llamador? Cierra el "supuesto sin verificar en Dev" de `diseno/03-contratos-custom-api.md` §2.5 (`ArregloCrearStep`, paso 2).
+
+### Veredicto
+
+| Supuesto | Veredicto | Evidencia | Qué significa para el diseño |
+|---|---|---|---|
+| **V-8** "La plataforma completa el autonumérico **después** del PreOperation de Create, así que el `Target` solo trae `sanic_nombre` si lo envió el cliente" (diseno 03, §2.5 `ArregloCrearStep`, paso 2) | **REFUTADO** | Sin enviarlo, el `Target` ya trae `sanic_nombre = ARR-00xxxx` en **PreValidation (10)**, en PreOperation (20) y en PostOperation (40); la fila guarda ese valor (A1, A3, A4, A5, N1, N3). Enviándolo (`ZZV-NOMBRE`), el `Target` trae `ZZV-NOMBRE` en las tres etapas y **la fila guarda `ZZV-NOMBRE`**, no el autonumérico (A2, N4). `null` y `''` equivalen a no enviarlo (A4, A5): la plataforma pone el autonumérico. El `Target` tiene la misma forma con y sin valor del llamador (las mismas 22 claves en PreValidation). | El paso 2 tal como está escrito **rechazaría todas las altas** (la clave `sanic_nombre` siempre está). Hay que reescribir la regla: ver "Qué significa para el diseño". |
+
+### Resultados por caso
+
+Etapas observadas por `ZzvNombre` (steps `Create` en 10, 20 y 40, síncronos; `Update` en 20 con filtro `sanic_nombre`). "Fila" es la relectura con `GET` después de cada paso. Detalle por traza en `evidencia/70_v8_autonumerico.json` (y las trazas completas en `70_v8_trazas.json` y `70_v8_trazas_2.json`).
+
+| Caso | Quién | El llamador envía | `Target.sanic_nombre` en 10 / 20 / 40 | Fila releída |
+|---|---|---|---|---|
+| A1 | admin | nada | `ARR-001002` / `ARR-001002` / `ARR-001002` | `ARR-001002` |
+| A2 | admin | `ZZV-NOMBRE` | `ZZV-NOMBRE` en las tres | **`ZZV-NOMBRE`** (se guarda el de la persona) |
+| A3 | admin | nada (tras A2) | `ARR-001003` en las tres | `ARR-001003`: el valor enviado en A2 **no consumió** número |
+| A4 / A5 | admin | `null` / `''` | `ARR-001004` / `ARR-001005` en las tres | igual |
+| A6 (extra) | admin | `Update` con `sanic_nombre = ZZV-UPD` | PreOperation trae `ZZV-UPD` (y solo `sanic_nombre` + auditoría) | `ZZV-UPD`: **el Update también lo permite** |
+| N3 | no admin (Oficial) | nada | `ARR-001013` en las tres | `ARR-001013` |
+| N4 | no admin | `ZZV-NOMBRE` | `ZZV-NOMBRE` en las tres | **`ZZV-NOMBRE`** |
+| N1 / N2 | no admin | nada / `ZZV-NOMBRE`, con las dos columnas protegidas | 10 y 20 con el valor; **no hay PostOperation** | **403** `does not have create permissions to … secured field on entity Arreglo`: el Oficial sin perfil no puede enviar `sanic_cuentadebitar` / `sanic_instantaneacedula` (V-6). El error ocurre **después** de PreOperation. Sin fila |
+
+Con la forma de la plataforma:
+
+| Caso | Quién | El llamador envía | Fila releída |
+|---|---|---|---|
+| B0 | admin | `ARR-777777` | **`ARR-777777`** (se guarda; la plataforma no valida el formato) |
+| B0b | admin | nada | `ARR-001007`: el secuencial siguió donde iba, no saltó a 777778 |
+| N5 | no admin | `ARR-777778` | **`ARR-777778`** |
+
+Qué puede hacer un plugin con la columna (steps de prueba de rango 2, de a uno; los observadores de rango 1 ven el antes y las etapas siguientes ven el después):
+
+| Caso | Plugin | El llamador envía | Lo que ven PreOp / PostOp | Fila releída |
+|---|---|---|---|---|
+| B1 | **quita** `sanic_nombre` en **PreValidation** | `ZZV-NOMBRE` | `ARR-001008` / `ARR-001008` | **`ARR-001008`**: la plataforma **vuelve a asignar** el autonumérico |
+| B1b | quita en PreValidation | nada | PreVal tenía `ARR-001009`; PreOp ve `ARR-001010` | `ARR-001010`: **se descartó el 001009** (un número perdido por alta) |
+| B2 / B2b | **quita** en **PreOperation** | `ZZV-NOMBRE` / nada | PostOp: la clave **no está** | **vacío (`null`)** en ambos: en PreOperation la plataforma ya no completa. Peligroso: deja la primaria sin valor |
+| B3 / B3b | **fija** `ZZV-FIJO` en PreOperation | nada / `ZZV-NOMBRE` | PostOp ve `ZZV-FIJO` | `ZZV-FIJO` en ambos: sobrescribir en PreOperation funciona |
+
+Los números se consumen aunque el alta falle o el plugin los descarte: el 403 de N1 gastó `ARR-001006` y no quedó fila con él.
+
+### Respuestas a las tres preguntas
+
+1. **Sin valor del llamador**: sí, el `Target` trae `sanic_nombre`, con el autonumérico ya asignado (`ARR-001002`), tanto en PreValidation como en PreOperation.
+2. **Con valor del llamador** (`ZZV-NOMBRE`): el `Target` lo trae tal cual y **se guarda ese valor**; el autonumérico no se asigna ni se consume. Lo mismo para un valor con la forma de la plataforma (`ARR-777777`) y para el no administrador.
+3. **PostOperation**: el `Target` trae el valor definitivo (el autonumérico, o el de la persona; o `ZZV-FIJO` si un plugin lo fijó). Salvo que un plugin lo haya quitado en PreOperation, y entonces no hay clave y la fila queda vacía.
+
+### Qué significa para el diseño
+
+- **El paso 2 de `ArregloCrearStep` (§2.5) está mal planteado**: `sanic_nombre` figura siempre en el `Target`, así que "si trae alguna columna solo-sistema ⇒ `CARP-ARR-009`" rechazaría todas las altas (el diseño ya decía "hay que escalarlo"). La presencia de la clave **no distingue** a la persona de la plataforma: el `Target` de PreValidation es idéntico en forma con y sin valor del llamador, y en el `Target` no hay ninguna marca que diga quién puso el valor (no se miraron las variables compartidas del contexto).
+- **Única diferencia observable: el formato.** El valor de la plataforma cumple `^ARR-\d{6}$` (formato `ARR-{SEQNUM:6}`; no se probó qué pasa si la secuencia pasa de 999999); el de una persona puede ser cualquier cosa. Una persona que envíe exactamente `ARR-nnnnnn` es **indistinguible** de la plataforma en el Create (B0, N5), también siendo no administrador.
+- **Etapa**: la decisión se puede tomar en PreValidation o en PreOperation si solo se rechaza (el valor está en el `Target` en ambas). Si se quiere **neutralizar** en lugar de rechazar, tiene que ser en **PreValidation**: quitar la clave allí hace que la plataforma asigne un autonumérico nuevo (B1), y quitarla en PreOperation deja la primaria vacía (B2). El costo de quitar siempre en PreValidation es un número perdido por cada alta en que el llamador no envió nada (B1b); los huecos ya son normales (altas fallidas, N1).
+- **Opciones, con su compromiso**: (a) rechazar en el Create (`CARP-ARR-009`) cuando el valor **no** cumple `^ARR-\d{6}$`: claro para el cliente, pero deja pasar un `ARR-nnnnnn` falsificado; (b) quitar `sanic_nombre` del `Target` en PreValidation para toda persona (la plataforma reasigna): hermético, sin error, con huecos en la secuencia y sin avisar al cliente que mandó el valor; (c) combinar las dos, con ambos costos. Decisión del usuario.
+- **Update**: aquí sí se distingue sin ambigüedad. La plataforma no agrega `sanic_nombre` a un `Update`, así que si el `Target` lo trae, lo mandó una persona (A6); un step de `Update` con filtro `sanic_nombre` lo rechaza limpiamente (la plataforma no lo impide por sí sola: la fila quedó con `ZZV-UPD`).
+- **Hallazgo lateral**: un Oficial sin el perfil `CSP - CARP - Datos sensibles` no puede **crear** un Arreglo que envíe `sanic_cuentadebitar` o `sanic_instantaneacedula` (403 de seguridad por columna, después de PreOperation; N1, N2). El alta del Borrador por una persona exige que esas columnas estén en su perfil con permiso de creación, o que no se envíen. No se probó qué permisos concede el perfil.
+
+### Lo que no se probó
+
+- El `Create` se hizo siempre por Web API (`POST`), que el diseño toma como equivalente de `Xrm.WebApi` y del formulario (V-1). No se probó un `Create` desde un plugin ni desde un cliente SDK; otro camino podría completar el autonumérico en otro punto. No se probó un `Create` de Arreglo desde un formulario real (no hay navegador).
+- No se probó si el número de `GetNextAutoNumberValue` serviría para distinguir (sería una carrera con altas concurrentes).
+
+### Limpieza (releída con `v70_91_verificar_limpieza.py`, `evidencia/70_limpieza_verificada.json`)
+
+| Elemento | Antes | Después |
+|---|---|---|
+| Componentes de la solución `sanic_carp_sol_controlarreglospago` | 26 | 26, ninguno nuevo y ninguno faltante (también se comparó justo después de registrar el paquete y los steps) |
+| Paquete `sanic_ZZVProbe`, ensamblado `Zzv.Probe`, sus 3 tipos | no existían | GET devuelve 404 en los cinco; la lista de paquetes y de ensamblados no administrados es idéntica a la inicial |
+| Steps `ZZV-…` (7: 4 observadores y 3 mutadores) | 0 | 0 (sin imágenes); los steps sobre Arreglo vuelven a ser 38, todos de la plataforma |
+| Filas de prueba (20: Arreglo, Cliente, Versión) | todas las tablas vacías | todas las tablas vacías (también Conversación, Cuota, Generación de formato y Mapeo) |
+| Trazas de `Zzv.Probe.*` | 0 | 0 (59 borradas; se repitió la lectura 25 s después) |
+| `plugintracelogsetting` de la organización | 2 | 2: no se cambió |
+| Usuario de aplicación de correo | deshabilitado, `accessmode` 4, BU `Arreglos de Pago`, sin roles propios, solo en el team por defecto | idéntico, comparado campo por campo (`usuario_igual: true`) |
+| Perfil `CSP - CARP - Datos sensibles` y team Jefatura: miembros | 0 y 0 | 0 y 0 (no se tocaron) |
+
+Efectos que **no** se pueden revertir: (1) el contador del autonumérico de Arreglo quedó adelantado (el último número usado fue `ARR-001013`): el primer Arreglo real de Dev saldrá con `ARR-001014` o más (no se reinició la semilla: sería cambiar configuración de la org); (2) las filas de auditoría de las filas de prueba (valores `ZZV-…`, `ARR-…`) quedan en `audit`.
+
+### Cómo reproducir
+
+`python3 v70_00_linea_base.py` → compilar `src/Zzv.Probe` (`dotnet build -c Release`; la clase nueva es `Nombre.cs`) → `v70_10_registrar.py` → `v70_20_v8_autonumerico.py` (administrador y no administrador; habilita al usuario) → `v70_30_actualizar_y_mutadores.py` (versión 1.0.3.0 con los modos `#quitar` y `#fijar`) → `v70_40_v8_mutadores_y_no_admin.py` → `v70_90_limpieza.py` y `v70_91_verificar_limpieza.py`. `v70_lib.py` reutiliza `vlib.py` y guarda su estado en `estado_v70.json` (solo GUIDs; no toca `estado.json`). `Zzv.Probe.csproj` pasó a la versión de ensamblado 1.0.3.0.

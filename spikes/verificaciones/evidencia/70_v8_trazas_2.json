@@ -1,0 +1,700 @@
+{
+ "pasos": [
+  {
+   "paso": "B0 ADMIN: Create CON sanic_nombre='ARR-777777' (forma de la plataforma)",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": "ARR-777777",
+    "sanic_nombre": "ARR-777777"
+   },
+   "t_ini": "2026-10-12T04:10:20Z",
+   "t_fin": "2026-10-12T04:10:21Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:10:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "560a399f-8205-49e6-92d6-edfc88e9e802",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=5049abd5-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-777777'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:20.663Z"
+    },
+    {
+     "createdon": "2026-10-12T04:10:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "560a399f-8205-49e6-92d6-edfc88e9e802",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=5049abd5-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-777777'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:20.773Z"
+    },
+    {
+     "createdon": "2026-10-12T04:10:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "560a399f-8205-49e6-92d6-edfc88e9e802",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=5049abd5-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-777777'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:20.803Z"
+    }
+   ]
+  },
+  {
+   "paso": "B0b ADMIN: Create SIN sanic_nombre (la secuencia sigue o salta?)",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": "ARR-001007",
+    "sanic_nombre": "ARR-001007"
+   },
+   "t_ini": "2026-10-12T04:10:23Z",
+   "t_fin": "2026-10-12T04:10:24Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:10:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "e90f3791-ad1d-4371-9d69-dee555a30b6f",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=5249abd5-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001007'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:23.927Z"
+    },
+    {
+     "createdon": "2026-10-12T04:10:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "e90f3791-ad1d-4371-9d69-dee555a30b6f",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=5249abd5-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001007'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:23.96Z"
+    },
+    {
+     "createdon": "2026-10-12T04:10:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "e90f3791-ad1d-4371-9d69-dee555a30b6f",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=5249abd5-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001007'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:23.99Z"
+    }
+   ]
+  },
+  {
+   "paso": "B1 ADMIN + plugin QUITA en PreValidation: Create CON 'ZZV-NOMBRE'",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": "ARR-001008",
+    "sanic_nombre": "ARR-001008"
+   },
+   "t_ini": "2026-10-12T04:10:37Z",
+   "t_fin": "2026-10-12T04:10:37Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:11:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "85dec25c-3d57-49a2-a4cb-31728db9583d",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=74a18ce0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:37.543Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "85dec25c-3d57-49a2-a4cb-31728db9583d",
+     "lineas": [
+      "ZZV|v8:mut:preval10#quitar|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=74a18ce0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]",
+      "ZZV|v8:mut:preval10#quitar|accion=quitado|contieneNombreAhora=False"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:37.557Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "85dec25c-3d57-49a2-a4cb-31728db9583d",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=74a18ce0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001008'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:37.637Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "85dec25c-3d57-49a2-a4cb-31728db9583d",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=74a18ce0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001008'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:37.683Z"
+    }
+   ]
+  },
+  {
+   "paso": "B1b ADMIN + plugin QUITA en PreValidation: Create SIN sanic_nombre",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": "ARR-001010",
+    "sanic_nombre": "ARR-001010"
+   },
+   "t_ini": "2026-10-12T04:10:39Z",
+   "t_fin": "2026-10-12T04:10:41Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:11:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "64522e9e-f30b-444c-848d-cae54505ff75",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=76a18ce0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001009'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:40.713Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "64522e9e-f30b-444c-848d-cae54505ff75",
+     "lineas": [
+      "ZZV|v8:mut:preval10#quitar|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=76a18ce0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001009'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]",
+      "ZZV|v8:mut:preval10#quitar|accion=quitado|contieneNombreAhora=False"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:40.73Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "64522e9e-f30b-444c-848d-cae54505ff75",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=76a18ce0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001010'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:40.76Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "64522e9e-f30b-444c-848d-cae54505ff75",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=76a18ce0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001010'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:10:40.777Z"
+    }
+   ]
+  },
+  {
+   "paso": "B2 ADMIN + plugin QUITA en PreOperation: Create CON 'ZZV-NOMBRE'",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": null,
+    "sanic_nombre": null
+   },
+   "t_ini": "2026-10-12T04:11:04Z",
+   "t_fin": "2026-10-12T04:11:04Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:11:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "cf0faf0e-fbce-4094-acb0-f251ca747353",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=03fabcf0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:04.717Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "cf0faf0e-fbce-4094-acb0-f251ca747353",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=03fabcf0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:04.78Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "cf0faf0e-fbce-4094-acb0-f251ca747353",
+     "lineas": [
+      "ZZV|v8:mut:preop20#quitar|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=03fabcf0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]",
+      "ZZV|v8:mut:preop20#quitar|accion=quitado|contieneNombreAhora=False"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:04.81Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "cf0faf0e-fbce-4094-acb0-f251ca747353",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=03fabcf0-f2c5-f111-a05a-000d3a33c780|contieneNombre=False|valorNombre=(no esta la clave)|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:04.843Z"
+    }
+   ]
+  },
+  {
+   "paso": "B2b ADMIN + plugin QUITA en PreOperation: Create SIN sanic_nombre",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": null,
+    "sanic_nombre": null
+   },
+   "t_ini": "2026-10-12T04:11:07Z",
+   "t_fin": "2026-10-12T04:11:08Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:11:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "dacf6622-1b9b-43e7-bbed-188071f3130a",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=05fabcf0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001011'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:07.797Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "dacf6622-1b9b-43e7-bbed-188071f3130a",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=05fabcf0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001011'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:07.843Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "dacf6622-1b9b-43e7-bbed-188071f3130a",
+     "lineas": [
+      "ZZV|v8:mut:preop20#quitar|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=05fabcf0-f2c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001011'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]",
+      "ZZV|v8:mut:preop20#quitar|accion=quitado|contieneNombreAhora=False"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:07.86Z"
+    },
+    {
+     "createdon": "2026-10-12T04:11:31Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "dacf6622-1b9b-43e7-bbed-188071f3130a",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=05fabcf0-f2c5-f111-a05a-000d3a33c780|contieneNombre=False|valorNombre=(no esta la clave)|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:07.89Z"
+    }
+   ]
+  },
+  {
+   "paso": "B3 ADMIN + plugin FIJA 'ZZV-FIJO' en PreOperation: Create SIN sanic_nombre",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": "ZZV-FIJO",
+    "sanic_nombre": "ZZV-FIJO"
+   },
+   "t_ini": "2026-10-12T04:11:31Z",
+   "t_fin": "2026-10-12T04:11:31Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "dfd9dafc-582d-4684-9fa3-817de4a46840",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=7a532401-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001012'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:32.24Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "dfd9dafc-582d-4684-9fa3-817de4a46840",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=7a532401-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001012'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:32.3Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "dfd9dafc-582d-4684-9fa3-817de4a46840",
+     "lineas": [
+      "ZZV|v8:mut:preop20#fijar=ZZV-FIJO|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=7a532401-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001012'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]",
+      "ZZV|v8:mut:preop20#fijar=ZZV-FIJO|accion=fijado|valor='ZZV-FIJO'"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:32.333Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "dfd9dafc-582d-4684-9fa3-817de4a46840",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=7a532401-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-FIJO'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:32.38Z"
+    }
+   ]
+  },
+  {
+   "paso": "B3b ADMIN + plugin FIJA 'ZZV-FIJO' en PreOperation: Create CON 'ZZV-NOMBRE'",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": "ZZV-FIJO",
+    "sanic_nombre": "ZZV-FIJO"
+   },
+   "t_ini": "2026-10-12T04:11:34Z",
+   "t_fin": "2026-10-12T04:11:35Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "7f91bf09-58a1-42a1-8c21-8ae89e6d6fe2",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=7c532401-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:35.38Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "7f91bf09-58a1-42a1-8c21-8ae89e6d6fe2",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=7c532401-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:35.413Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "7f91bf09-58a1-42a1-8c21-8ae89e6d6fe2",
+     "lineas": [
+      "ZZV|v8:mut:preop20#fijar=ZZV-FIJO|msg=Create|stage=20|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=7c532401-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]",
+      "ZZV|v8:mut:preop20#fijar=ZZV-FIJO|accion=fijado|valor='ZZV-FIJO'"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:35.583Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "7f91bf09-58a1-42a1-8c21-8ae89e6d6fe2",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=ffc778df-d287-f111-8075-70a8a5af5a32|init=ffc778df-d287-f111-8075-70a8a5af5a32|Target.Id=7c532401-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-FIJO'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuentadebitar,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_instantaneacedula,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:35.617Z"
+    }
+   ]
+  },
+  {
+   "paso": "N3 NO ADMIN: Create SIN sanic_nombre (sin columnas protegidas)",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": "ARR-001013",
+    "sanic_nombre": "ARR-001013"
+   },
+   "t_ini": "2026-10-12T04:11:51Z",
+   "t_fin": "2026-10-12T04:11:52Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "2ca8dac4-40fb-4658-89aa-d25ecd3a8825",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|Target.Id=0441260d-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001013'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:52.383Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "2ca8dac4-40fb-4658-89aa-d25ecd3a8825",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|Target.Id=0441260d-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001013'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:52.477Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "2ca8dac4-40fb-4658-89aa-d25ecd3a8825",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|Target.Id=0441260d-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-001013'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:52.51Z"
+    }
+   ]
+  },
+  {
+   "paso": "N4 NO ADMIN: Create CON sanic_nombre='ZZV-NOMBRE' (sin columnas protegidas)",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": "ZZV-NOMBRE",
+    "sanic_nombre": "ZZV-NOMBRE"
+   },
+   "t_ini": "2026-10-12T04:11:54Z",
+   "t_fin": "2026-10-12T04:11:55Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "92cdf300-2a86-44cc-932c-0dd0f1b642ee",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|Target.Id=0641260d-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:55.617Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "92cdf300-2a86-44cc-932c-0dd0f1b642ee",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|Target.Id=0641260d-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:55.65Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "92cdf300-2a86-44cc-932c-0dd0f1b642ee",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|Target.Id=0641260d-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ZZV-NOMBRE'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:55.68Z"
+    }
+   ]
+  },
+  {
+   "paso": "N5 NO ADMIN: Create CON sanic_nombre='ARR-777778' (forma de la plataforma)",
+   "http": 201,
+   "error": null,
+   "relectura": {
+    "respuesta_sanic_nombre": "ARR-777778",
+    "sanic_nombre": "ARR-777778"
+   },
+   "t_ini": "2026-10-12T04:11:58Z",
+   "t_fin": "2026-10-12T04:11:58Z",
+   "trazas": [
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "1bc1f4be-9046-4f08-b206-9ce5dfa4e849",
+     "lineas": [
+      "ZZV|v8:create:preval10|msg=Create|stage=10|mode=0|depth=1|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|Target.Id=0841260d-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-777778'|claves=[ownerid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:58.607Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "1bc1f4be-9046-4f08-b206-9ce5dfa4e849",
+     "lineas": [
+      "ZZV|v8:create:preop20|msg=Create|stage=20|mode=0|depth=1|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|Target.Id=0841260d-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-777778'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:58.637Z"
+    },
+    {
+     "createdon": "2026-10-12T04:12:01Z",
+     "typename": "0, Culture=neutral, PublicKeyToken=null",
+     "messagename": "Create",
+     "primaryentity": "sanic_carp_tbl_arreglo",
+     "depth": 1,
+     "mode": 0,
+     "correlationid": "1bc1f4be-9046-4f08-b206-9ce5dfa4e849",
+     "lineas": [
+      "ZZV|v8:create:postop40|msg=Create|stage=40|mode=0|depth=1|user=32122bbd-56c3-f111-a05a-000d3a35abca|init=32122bbd-56c3-f111-a05a-000d3a35abca|Target.Id=0841260d-f3c5-f111-a05a-000d3a33c780|contieneNombre=True|valorNombre='ARR-777778'|claves=[createdby,createdon,modifiedby,modifiedon,modifiedonbehalfby,ownerid,owningbusinessunit,sanic_canalorigen,sanic_cantidadreaperturas,sanic_carp_tbl_arregloid,sanic_clienteid,sanic_cuotamensual,sanic_fechafin,sanic_fechaformalizacion,sanic_fechainicio,sanic_moneda,sanic_montoabonado,sanic_nombre,sanic_numeroproducto,sanic_oficialid,sanic_plazo,sanic_producto,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode,timezoneruleversionnumber]"
+     ],
+     "excepcion": "",
+     "inicio": "2026-10-12T04:11:58.653Z"
+    }
+   ]
+  }
+ ],
+ "trazas_sin_paso": []
+}
