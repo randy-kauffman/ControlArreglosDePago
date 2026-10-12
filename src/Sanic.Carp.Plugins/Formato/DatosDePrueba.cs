@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Sanic.Carp.Plugins.Dominio;
 
 namespace Sanic.Carp.Plugins.Formato
 {
@@ -20,7 +23,54 @@ namespace Sanic.Carp.Plugins.Formato
         /// </summary>
         public static DatosArreglo Crear(int capacidad)
         {
-            throw new NotImplementedException("Lote 2: datos sintéticos de la publicación (diseno/03 2.8, DC-19).");
+            if (capacidad < 1 || capacidad > Campos.CapacidadMaxima)
+            {
+                throw new ArgumentOutOfRangeException(nameof(capacidad), capacidad,
+                    "La capacidad de la generación de prueba debe estar entre 1 y " + Campos.CapacidadMaxima.ToString(CultureInfo.InvariantCulture) + ".");
+            }
+
+            // Todo fijo: sin reloj ni números aleatorios (diseno/03 0.6). Fechas solo-fecha con día 15, que existe en todos los meses.
+            var formalizacion = new DateTime(2026, 1, 15);
+            var inicio = new DateTime(2026, 2, 15);
+            decimal cuota = 1234.56m;
+
+            var cuotas = new List<CuotaDato>(capacidad);
+            // La primera mitad (redondeando hacia arriba) trae pago completo y el resto ninguno: con una sola cuota queda pagada
+            // (hay al menos un pago completo) y con más de una siempre queda alguna sin pago (diseno/03 4.3, punto 8).
+            int pagadas = (capacidad + 1) / 2;
+            for (int i = 1; i <= capacidad; i++)
+            {
+                var vencimiento = inicio.AddMonths(i - 1);
+                if (i <= pagadas) cuotas.Add(new CuotaDato(i, vencimiento, cuota, vencimiento, cuota));
+                else cuotas.Add(new CuotaDato(i, vencimiento, cuota));
+            }
+
+            // Una clave por cada opción de valor simple de diseno/03 1.1 (las 20, con moneda); ninguna en nulo.
+            var valores = new Dictionary<string, object>(StringComparer.Ordinal)
+            {
+                { "fechaFormalizacion", formalizacion },
+                { "oficial", "OFICIAL DE PRUEBA" },
+                { "clienteNombre", "CLIENTE DE PRUEBA" },
+                { "clienteCedula", "PRUEBA 0000000000000" },
+                { "clienteCorreo", "prueba@example.com" },
+                { "clienteCelular", "PRUEBA 00000000" },
+                { "numeroProducto", "PRUEBA-0000001" },
+                { "tipo", ClavesDelGenerador.TextoFormal(TipoDeArreglo.Temporal) },
+                { "numeroArreglo", 1 },
+                { "saldoInicial", 250000.75m },
+                { "montoAbonado", 10000.25m },
+                { "saldoRemanente", 240000.50m },
+                { "plazo", capacidad },
+                { "cuota", cuota },
+                { "totalPagar", cuota * capacidad },
+                { "fechaInicio", inicio },
+                { "fechaFin", cuotas[capacidad - 1].Fecha },
+                { "cuentaDebitar", "CUENTA PRUEBA 0000000000" },
+                { "comentarios", "COMENTARIO DE PRUEBA" },
+                { "moneda", ClavesDelGenerador.TextoFormal(Moneda.Cordobas) }
+            };
+
+            return new DatosArreglo(valores, capacidad, cuotas);
         }
     }
 }

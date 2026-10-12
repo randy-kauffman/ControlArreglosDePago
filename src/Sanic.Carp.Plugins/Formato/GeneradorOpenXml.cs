@@ -19,19 +19,41 @@ namespace Sanic.Carp.Plugins.Formato
     /// </summary>
     internal sealed class GeneradorOpenXml : IGeneradorDeFormato
     {
+        private readonly Action<string> _trazar;
+
         public GeneradorOpenXml(Action<string> trazar)
         {
-            throw new NotImplementedException("Lote 2: adaptador de diseno/03 4.3 punto 4.");
+            _trazar = trazar;
         }
 
         public ResultadoGeneracion Generar(byte[] plantilla, string huellaEsperada, IReadOnlyList<MapeoCelda> mapeo, DatosArreglo datos)
         {
-            throw new NotImplementedException("Lote 2: adaptador de diseno/03 4.3 punto 4.");
+            try
+            {
+                return GeneradorFormato.GenerarConInforme(plantilla, huellaEsperada, mapeo, datos);
+            }
+            catch (FormatoException ex)
+            {
+                // Solo los errores controlados del generador: lo demás (por ejemplo ArgumentNullException) sale sin tocar.
+                TrazarCausa(ex);
+                throw;
+            }
         }
 
         public string CalcularHuella(byte[] contenido)
         {
-            throw new NotImplementedException("Lote 2: adaptador de diseno/03 4.3 punto 4.");
+            return GeneradorFormato.CalcularHuella(contenido);
+        }
+
+        // Una sola llamada con el tipo del error del generador y el tipo y el mensaje de la causa (4.3 punto 7), tal como vienen. Los
+        // mensajes de la causa son los del SDK/BCL sobre la estructura del archivo; los datos del arreglo no pasan por ahí (la validación
+        // de datos precede al SDK).
+        private void TrazarCausa(FormatoException ex)
+        {
+            var causa = ex.InnerException;
+            if (_trazar == null || causa == null) return;
+
+            _trazar("Generador del formato: " + ex.GetType().Name + " con causa interna " + causa.GetType().Name + ": " + causa.Message);
         }
     }
 }
