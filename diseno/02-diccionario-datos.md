@@ -294,7 +294,7 @@ Cada tabla trae sus datos de playbook (`power-platform-especificar/references/ta
 
 | Nombre lógico | Display name | Tipo y forma | Req | Aud | Seg | Sis | Descripción | Origen |
 |---|---|---|---|---|---|---|---|---|
-| `sanic_nombre` | Nombre | texto T(200); primaria calculada: copia del nombre completo normalizado (sin espacios dobles) | Sí | No | No | No | Nombre con el que se muestra el cliente en listas y lookups. Lo calcula el sistema a partir del nombre completo; nadie lo digita. | BP-PP-192 |
+| `sanic_nombre` | Nombre | texto T(200); primaria calculada: copia del nombre completo normalizado (sin espacios dobles) | Sí | No | No | **Sí** (desde el 2026-10-11, inconsistencia 24 de `03`; ~~No~~): una persona que lo cambie recibe `CARP-CLI-005` | Nombre con el que se muestra el cliente en listas y lookups. Lo calcula el sistema a partir del nombre completo; nadie lo digita. | BP-PP-192 |
 | `sanic_nombrecompleto` | Nombre completo | texto T(200) | Sí | No | No | No | Nombre completo del cliente tal como lo digita el oficial. | RF-05 |
 | `sanic_cedula` | Cedula | texto T(20); normalizada por plugin | Sí | **No** | **Sí** | No | Número de cédula del cliente. Dato sensible protegido con seguridad por columna; su unicidad la valida un plugin al crear, porque una columna protegida no puede ser parte de una clave alterna. | RF-05, D-07, D-19, D-20 |
 | `sanic_correo` | Correo | texto T(320), formato Email; en minúscula y sin espacios | No | No | No | No | Correo electrónico del cliente. Si coincide con el remitente de un correo entrante, el plugin vincula la conversación al cliente. | RF-05, §6 Datos (Cliente) |
