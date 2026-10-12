@@ -128,6 +128,97 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
             Assert.Equal(40, r.TiempoPrimeraRespuesta);
         }
 
+        // 2.0.6 (decisión del arquitecto, 2026-10-11): un elemento null en las respuestas procesadas es ArgumentException, no NullReferenceException.
+        // ThrowsAny acepta una derivada (ArgumentNullException); lo que no se acepta es NullReferenceException.
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void PA_TIE_11_UnaRespuestaProcesadaNulaLanzaArgumentException(int posicion)
+        {
+            var respuestas = new[] { new RespuestaProcesada(Hora(11, 0), 40), new RespuestaProcesada(Hora(12, 0), 15), new RespuestaProcesada(Hora(13, 0), 5) };
+            respuestas[posicion] = null;
+
+            Assert.ThrowsAny<ArgumentException>(() => TiemposDeConversacion.RecalcularTrasUnion(
+                new DateTime?[] { Hora(10, 0) }, new DateTime?[] { null }, respuestas));
+        }
+
+        // El null de las listas de fechas es un valor válido ("esa conversación no tiene fecha"): PA-TIE-10 lo usa. No se rechaza.
+        [Fact]
+        public void ARQ_TIE_UnNuloEnLasListasDeFechasEsUnValorValidoYNoUnaExcepcion()
+        {
+            var r = TiemposDeConversacion.RecalcularTrasUnion(
+                new DateTime?[] { null, null }, new DateTime?[] { null, Hora(10, 0), null }, new RespuestaProcesada[0]);
+
+            Assert.Null(r.FechaPrimerCorreo);
+            Assert.Equal(Hora(10, 0), r.SinRespuestaDesde);
+        }
+
+        // PA-TIE-12 (decisión del arquitecto, 2026-10-11): con el mismo EnviadoEn más antiguo, gana la de MENOR tiempo, en cualquier orden.
+        // RespuestaProcesada no tiene identificador, así que el desempate sale de sus propios datos. Cálculo a mano: tiempos 9 y 7 ⇒ 7.
+        [Fact]
+        public void PA_TIE_12_ConElMismoInstanteGanaLaDeMenorTiempoSinImportarElOrden()
+        {
+            var mismoInstante = Hora(11, 0);
+
+            var nueveAntes = TiemposDeConversacion.RecalcularTrasUnion(new DateTime?[0], new DateTime?[0],
+                new[] { new RespuestaProcesada(mismoInstante, 9), new RespuestaProcesada(mismoInstante, 7) });
+            var sieteAntes = TiemposDeConversacion.RecalcularTrasUnion(new DateTime?[0], new DateTime?[0],
+                new[] { new RespuestaProcesada(mismoInstante, 7), new RespuestaProcesada(mismoInstante, 9) });
+
+            Assert.Equal(7, nueveAntes.TiempoPrimeraRespuesta);
+            Assert.Equal(7, sieteAntes.TiempoPrimeraRespuesta);
+            Assert.Equal(2, nueveAntes.CantidadRespuestas);
+            Assert.Equal(2, sieteAntes.CantidadRespuestas);
+        }
+
+        // Las seis ordenaciones de tres respuestas empatadas (tiempos 12, 0 y 30) dan lo mismo: 0 (un tiempo de cero es un tiempo).
+        [Fact]
+        public void ARQ_TIE_ElDesempateNoDependeDeNingunaOrdenacionDeLaLista()
+        {
+            var mismoInstante = Hora(11, 0);
+            var tiempos = new[] { 12, 0, 30 };
+            var ordenaciones = new[]
+            {
+                new[] { 0, 1, 2 }, new[] { 0, 2, 1 }, new[] { 1, 0, 2 }, new[] { 1, 2, 0 }, new[] { 2, 0, 1 }, new[] { 2, 1, 0 }
+            };
+
+            foreach (var orden in ordenaciones)
+            {
+                var respuestas = new[]
+                {
+                    new RespuestaProcesada(mismoInstante, tiempos[orden[0]]),
+                    new RespuestaProcesada(mismoInstante, tiempos[orden[1]]),
+                    new RespuestaProcesada(mismoInstante, tiempos[orden[2]])
+                };
+
+                var r = TiemposDeConversacion.RecalcularTrasUnion(new DateTime?[0], new DateTime?[0], respuestas);
+
+                Assert.True(r.TiempoPrimeraRespuesta == 0, "Orden " + string.Join(",", orden) + ": se esperaba 0 y dio " + r.TiempoPrimeraRespuesta);
+                Assert.Equal(3, r.CantidadRespuestas);
+            }
+        }
+
+        // Una respuesta del mismo instante pero sin tiempo (un recordatorio) no compite: solo desempatan las que tienen tiempo.
+        // El empate solo cuenta en el instante más antiguo: un empate posterior no influye.
+        [Fact]
+        public void ARQ_TIE_SoloDesempatanLasQueTienenTiempoYSoloEnElInstanteMasAntiguo()
+        {
+            var r = TiemposDeConversacion.RecalcularTrasUnion(new DateTime?[0], new DateTime?[0],
+                new[]
+                {
+                    new RespuestaProcesada(Hora(12, 0), 1),    // empate posterior con el menor tiempo de todos: no influye
+                    new RespuestaProcesada(Hora(12, 0), 2),
+                    new RespuestaProcesada(Hora(11, 0), null), // mismo instante que las ganadoras, pero sin tiempo
+                    new RespuestaProcesada(Hora(11, 0), 9),
+                    new RespuestaProcesada(Hora(11, 0), 7),
+                    new RespuestaProcesada(Hora(11, 0), 8)
+                });
+
+            Assert.Equal(7, r.TiempoPrimeraRespuesta);
+            Assert.Equal(6, r.CantidadRespuestas);
+        }
+
         // ---- Casos de borde del arquitecto ----
 
         // DC-11: truncar, no redondear. 59,9999999 segundos siguen siendo 0 minutos; 60 segundos exactos son 1.

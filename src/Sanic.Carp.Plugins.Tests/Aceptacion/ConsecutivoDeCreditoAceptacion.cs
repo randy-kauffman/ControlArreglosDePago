@@ -59,7 +59,56 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
             Assert.Equal("Este crédito alcanzó el máximo de 9.999 arreglos.", r.Error.Mensaje);
         }
 
+        // 2.0.5 (decisión del arquitecto, 2026-10-11): los valores menores que 1 no son consecutivos válidos y se ignoran, como los nulos.
+        [Fact]
+        public void PA_CON_06_UnValorMenorQueUnoSeIgnora()
+        {
+            AssertNumero(1, Siguiente(-5));
+        }
+
+        [Fact]
+        public void PA_CON_07_ElCeroSeIgnora()
+        {
+            AssertNumero(4, Siguiente(0, 3));
+        }
+
         // ---- Casos de borde del arquitecto ----
+
+        // Solo valores menores que 1 (y nulos) equivale a no tener ninguno: el primero es 1. Nunca 0 ni un negativo.
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        [InlineData(int.MinValue)]
+        public void ARQ_CON_UnSoloValorMenorQueUnoDaElPrimero(int valor)
+        {
+            AssertNumero(1, Siguiente(valor));
+            AssertNumero(1, Siguiente(null, valor, null));
+        }
+
+        [Fact]
+        public void ARQ_CON_VariosValoresMenoresQueUnoMasNulosDanElPrimero()
+        {
+            AssertNumero(1, Siguiente(-3, 0, null, -1, 0));
+        }
+
+        // Frontera: el 1 sí es un consecutivo válido (el rango del dicc. §11.3 empieza en 1), así que el siguiente es 2.
+        [Fact]
+        public void ARQ_CON_ElUnoSiCuentaComoConsecutivo()
+        {
+            AssertNumero(2, Siguiente(1));
+            AssertNumero(2, Siguiente(0, 1, -7));
+        }
+
+        // Los inválidos no estorban a los válidos, estén antes o después, y no disimulan el agotamiento del rango.
+        [Fact]
+        public void ARQ_CON_LosMenoresQueUnoNoAlteranElMaximoNiElAgotamiento()
+        {
+            AssertNumero(4, Siguiente(-9, 3, 0, 2, null));
+
+            var r = Siguiente(-5, 9999, 0);
+            Assert.False(r.Ok);
+            Assert.Equal("CARP-ARR-023", r.Error.Codigo);
+        }
 
         // 2.0.5 "máximo de los no nulos más uno": el orden de la lista no importa y los repetidos no suman.
         [Fact]

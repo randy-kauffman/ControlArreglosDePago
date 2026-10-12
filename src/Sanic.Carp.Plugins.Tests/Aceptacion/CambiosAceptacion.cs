@@ -30,6 +30,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
             yield return new object[] { true, true };
             yield return new object[] { "abc", "abc" };
             yield return new object[] { "", "" };
+            // DC-01 (2026-10-11): el texto vacío es nulo (Dataverse guarda el texto vacío como nulo).
+            yield return new object[] { "", null };
+            yield return new object[] { null, "" };
             yield return new object[] { new ValorDeOpcion(159460001), new ValorDeOpcion(159460001) };       // dos instancias, mismo entero
             yield return new object[] { new ReferenciaDeEntidad("systemuser", id), new ReferenciaDeEntidad("systemuser", id) };
             yield return new object[] { new ReferenciaDeEntidad("systemuser", id), new ReferenciaDeEntidad("otratabla", id) };   // EntityReference→Guid
@@ -55,6 +58,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
             yield return new object[] { "é", "é" };     // "é" precompuesta frente a "e" + acento combinado: iguales para la cultura, distintos en ordinal
             yield return new object[] { "abc", null };
             yield return new object[] { null, "abc" };
+            yield return new object[] { "", "abc" };
+            yield return new object[] { "abc", "" };
+            yield return new object[] { " ", null };               // solo el texto VACÍO es nulo: un espacio es un valor (DC-01)
+            yield return new object[] { " ", "" };
             yield return new object[] { new ValorDeOpcion(159460001), new ValorDeOpcion(159460002) };
             yield return new object[] { new ValorDeOpcion(1), null };
             yield return new object[] { new ReferenciaDeEntidad("systemuser", id), new ReferenciaDeEntidad("systemuser", otro) };
@@ -163,21 +170,77 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
             Assert.True(Cambios.Distinto(distinto, pre, "sanic_oficialasignadoid"));
         }
 
-        // Create: sin pre-imagen (nula) o vacía, toda columna con valor del Target es un cambio y una en null no lo es.
-        // DUDA: DC-28 dice que "una columna ausente [de la pre-imagen] nunca se compara contra nulo". Aquí la ausencia en la pre-imagen se
-        // trata como nulo porque Cambios no consulta nada: el step lee con SYSTEM las columnas con seguridad por columna y las agrega a la
-        // pre-imagen ANTES de llamar a esta función (DC-28). Si se prefiere que Cambios lo distinga, hay que cambiar la firma.
+        // DC-01 y DC-28 (decisión del arquitecto, 2026-10-11): AUSENTE NO ES NULO. Una clave que falta en la pre-imagen significa "valor
+        // desconocido" y Distinto devuelve true (falla cerrado) aunque el Target traiga null: si un step olvida una columna en su
+        // pre-imagen, o un llamador sin perfil no la recibe (V-6), el error es un rechazo visible y no un cambio que pasa en silencio.
+        // Una pre-imagen nula (un Create) equivale a una pre-imagen sin ninguna clave. (Antes esta prueba fijaba lo contrario: ausente
+        // se trataba como nulo y un null contra ausente no era cambio.)
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void ARQ_CAM_SinPreImagenLasColumnasConValorSonCambios(bool preImagenNula)
+        public void ARQ_CAM_SinPreImagenToda_ColumnaDelTargetEsUnCambioAunqueSeaNula(bool preImagenNula)
         {
-            var target = Fila("sanic_plazo", 12, "sanic_comentarios", null);
+            var target = Fila("sanic_plazo", 12, "sanic_comentarios", null, "sanic_motivodescarte", "");
             IReadOnlyDictionary<string, object> pre = preImagenNula ? null : new Dictionary<string, object>();
 
             Assert.True(Cambios.Distinto(target, pre, "sanic_plazo"));
-            Assert.False(Cambios.Distinto(target, pre, "sanic_comentarios"));
-            Assert.False(Cambios.Distinto(target, pre, "sanic_otra"));
+            Assert.True(Cambios.Distinto(target, pre, "sanic_comentarios"), "null contra ausente es un cambio (desconocido)");
+            Assert.True(Cambios.Distinto(target, pre, "sanic_motivodescarte"), "texto vacío contra ausente es un cambio (desconocido)");
+            Assert.False(Cambios.Distinto(target, pre, "sanic_otra"), "una columna que no está en el Target nunca cambió");
+        }
+
+        public static IEnumerable<object[]> ValoresDelTargetContraUnaClaveAusente()
+        {
+            yield return new object[] { null };
+            yield return new object[] { "" };
+            yield return new object[] { "abc" };
+            yield return new object[] { 0 };
+            yield return new object[] { new ValorDeOpcion(1) };
+            yield return new object[] { new ReferenciaDeEntidad("systemuser", new Guid("aaaaaaaa-0000-0000-0000-000000000001")) };
+            yield return new object[] { 10.50m };
+        }
+
+        // La pre-imagen existe y trae OTRAS columnas, pero no la vigilada (el caso de V-6: un llamador sin el perfil recibe la pre-imagen
+        // sin sanic_cuentadebitar): sea cual sea el valor del Target, incluido null y "", es un cambio.
+        [Theory]
+        [MemberData(nameof(ValoresDelTargetContraUnaClaveAusente))]
+        public void ARQ_CAM_UnaClaveAusenteDeLaPreImagenEsDesconocidaYSiempreEsUnCambio(object valorDelTarget)
+        {
+            var target = Fila("sanic_cuentadebitar", valorDelTarget);
+            var pre = Fila("sanic_plazo", 12);
+
+            Assert.True(Cambios.Distinto(target, pre, "sanic_cuentadebitar"));
+        }
+
+        // Contraste: la clave PRESENTE en la pre-imagen con valor nulo sí se compara (null contra null no es un cambio).
+        [Fact]
+        public void ARQ_CAM_UnaClavePresenteConNuloContraNuloNoEsUnCambioPeroAusenteContraNuloSi()
+        {
+            var target = Fila("sanic_comentarios", null);
+
+            Assert.False(Cambios.Distinto(target, Fila("sanic_comentarios", null), "sanic_comentarios"));
+            Assert.True(Cambios.Distinto(target, Fila("sanic_plazo", 12), "sanic_comentarios"));
+        }
+
+        // DC-01: texto vacío es nulo. "" contra null o contra "" no es un cambio; "" contra un valor sí; "" contra ausente sí (regla de arriba).
+        [Fact]
+        public void ARQ_CAM_ElTextoVacioEsNuloEnLaPreImagenYEnElTarget()
+        {
+            Assert.False(Cambios.Distinto(Fila("sanic_comentarios", ""), Fila("sanic_comentarios", null), "sanic_comentarios"));
+            Assert.False(Cambios.Distinto(Fila("sanic_comentarios", ""), Fila("sanic_comentarios", ""), "sanic_comentarios"));
+            Assert.False(Cambios.Distinto(Fila("sanic_comentarios", null), Fila("sanic_comentarios", ""), "sanic_comentarios"));
+            Assert.True(Cambios.Distinto(Fila("sanic_comentarios", ""), Fila("sanic_comentarios", "algo"), "sanic_comentarios"));
+            Assert.True(Cambios.Distinto(Fila("sanic_comentarios", null), Fila("sanic_comentarios", "algo"), "sanic_comentarios"));
+            Assert.True(Cambios.Distinto(Fila("sanic_comentarios", ""), Fila("sanic_plazo", 12), "sanic_comentarios"));
+        }
+
+        // Solo el texto vacío es nulo: una cadena de espacios es un valor (ordinal, sensible a espacios; DC-01).
+        [Fact]
+        public void ARQ_CAM_UnTextoDeEspaciosNoEsNulo()
+        {
+            Assert.True(Cambios.Distinto(Fila("sanic_comentarios", " "), Fila("sanic_comentarios", null), "sanic_comentarios"));
+            Assert.True(Cambios.Distinto(Fila("sanic_comentarios", null), Fila("sanic_comentarios", " "), "sanic_comentarios"));
+            Assert.True(Cambios.Distinto(Fila("sanic_comentarios", " "), Fila("sanic_comentarios", ""), "sanic_comentarios"));
         }
 
         [Fact]
@@ -222,6 +285,19 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
 
             Assert.Empty(Cambios.Cambiadas(target, pre, new[] { "sanic_plazo", "sanic_saldoinicial" }));
             Assert.Empty(Cambios.Cambiadas(target, pre, new string[0]));
+        }
+
+        // Cambiadas aplica la misma regla: una vigilada que está en el Target y falta en la pre-imagen se cuenta como cambiada,
+        // aunque traiga null o "" (el step olvidó la columna: que se vea).
+        [Fact]
+        public void ARQ_CAM_CambiadasCuentaLasVigiladasAusentesDeLaPreImagenAunqueSeanNulas()
+        {
+            var target = Fila("sanic_cuentadebitar", null, "sanic_plazo", 12, "sanic_comentarios", "", "sanic_fechainicio", null);
+            var pre = Fila("sanic_plazo", 12, "sanic_fechainicio", null);   // faltan sanic_cuentadebitar y sanic_comentarios
+
+            var cambiadas = Cambios.Cambiadas(target, pre, new[] { "sanic_cuentadebitar", "sanic_plazo", "sanic_comentarios", "sanic_fechainicio" });
+
+            Assert.Equal(new[] { "sanic_cuentadebitar", "sanic_comentarios" }, cambiadas.ToArray());
         }
 
         [Fact]

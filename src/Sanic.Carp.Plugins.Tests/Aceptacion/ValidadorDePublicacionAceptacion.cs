@@ -223,9 +223,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
         [Fact]
         public void PA_PUB_07_UnaColumnaDelBloqueConMenosFilasQueLaCapacidadDaCARP_VER_008()
         {
-            // DUDA: la regla 2 (portada del spike) también exige "las mismas filas máximas" en todo el bloque, así que 59 en una columna
-            // y 60 en las otras podría dar además un CARP-VER-007. El documento solo dice "CARP-VER-008": esta prueba exige el 008 y NO
-            // dice nada sobre un 007 adicional.
+            // Decisión del arquitecto (2026-10-11, 2.0.7 regla 2): "mismas filas máximas en todo el bloque" NO genera un CARP-VER-007 aparte
+            // (el spike lo tenía); lo cubre la regla 4. 59 en una columna y 60 en las otras da EXACTAMENTE un 008 y ningún 007.
             var mapeo = MapeoV07().Select(f => f.Campo == CampoMapeable.CuotaMonto ? Bloque(f.Hoja, f.Celda, f.Campo, 59) : f).ToList();
 
             var errores = Validar(60, mapeo);
@@ -233,6 +232,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
             var ver008 = errores.Where(e => e.Codigo == "CARP-VER-008").ToList();
             Assert.True(ver008.Count == 1, "Se esperaba un solo CARP-VER-008 y hubo " + ver008.Count + ": " + Detalle(errores));
             Assert.Equal("La capacidad de la versión (60) no coincide con las filas máximas del bloque de cuotas.", ver008[0].Mensaje);
+            Assert.DoesNotContain(errores, e => e.Codigo == "CARP-VER-007");
+            Assert.True(errores.Count == 1, "No debe haber ningún otro error (ni un 007 por filas máximas distintas): " + Detalle(errores));
         }
 
         [Fact]
@@ -256,6 +257,238 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
             var errores = Validar(60, MapeoV07());
 
             Assert.Empty(errores);
+        }
+
+        // ---- Decisiones del arquitecto del 2026-10-11 (2.0.7, reglas 2 y 3 ampliadas; PA-PUB-10 a -17) ----
+
+        private static List<FilaDeMapeo> SinCampo(List<FilaDeMapeo> mapeo, CampoMapeable campo)
+        {
+            return mapeo.Where(f => f.Campo != campo).ToList();
+        }
+
+        /// <summary>El mapeo v07 con los dos totales corridos a la fila <paramref name="fila"/> (para que no caigan dentro de un bloque distinto del de 60 filas).</summary>
+        private static List<FilaDeMapeo> ConTotalesEn(List<FilaDeMapeo> mapeo, int fila)
+        {
+            var copia = mapeo.Where(f => f.Tipo != TipoDeMapeo.TotalCalculado).ToList();
+            copia.Add(Total(HojaControl, "C" + fila, CampoMapeable.TotalMontosDeCuota));
+            copia.Add(Total(HojaControl, "E" + fila, CampoMapeable.TotalMontosPagados));
+            return copia;
+        }
+
+        private static int Cuenta(IEnumerable<ErrorDeNegocio> errores, string codigo)
+        {
+            return errores.Count(e => e.Codigo == codigo);
+        }
+
+        // PA-PUB-10: la tabla de compatibilidad es una LISTA BLANCA (BP-PP-062). Un CampoMapeable que el enum no define (una opción nueva
+        // del choice que el código no conoce) no es compatible con ningún tipo. Hoy ValorSimple admite "todo lo que no es de bloque ni de
+        // total", y deja pasar el 999.
+        [Theory]
+        [InlineData(TipoDeMapeo.ValorSimple, 999)]
+        [InlineData(TipoDeMapeo.ValorSimple, 0)]
+        [InlineData(TipoDeMapeo.ValorSimple, -1)]
+        [InlineData(TipoDeMapeo.ColumnaDeBloqueDeCuotas, 999)]
+        [InlineData(TipoDeMapeo.TotalCalculado, 999)]
+        public void PA_PUB_10_UnCampoNoDefinidoEnElEnumDaCARP_VER_007(TipoDeMapeo tipo, int campoNumerico)
+        {
+            var campo = (CampoMapeable)campoNumerico;
+            Assert.False(Enum.IsDefined(typeof(CampoMapeable), campo));
+
+            bool enBloque = tipo == TipoDeMapeo.ColumnaDeBloqueDeCuotas;
+            var extra = new FilaDeMapeo(enBloque ? HojaControl : HojaFormato, enBloque ? "Z7" : "Z90", tipo, campo, enBloque ? 60 : (int?)null);
+
+            AssertUnErrorEnLaCelda("CARP-VER-007", extra.Celda, Validar(60, Mas(MapeoV07(), extra)));
+        }
+
+        // PA-PUB-11 (regla 2, d): el bloque está en una sola hoja. Si no, es el ÚNICO error del bloque: no se evalúan las demás reglas del
+        // bloque (el spike hace return tras este error). Aquí la columna movida además empieza en otra fila (C8): eso NO da un segundo error.
+        [Fact]
+        public void PA_PUB_11_UnaColumnaDelBloqueEnOtraHojaDaUnSoloCARP_VER_007()
+        {
+            var mapeo = SinCampo(MapeoV07(), CampoMapeable.CuotaMonto);
+            mapeo.Add(Bloque("OTRA HOJA", "C7", CampoMapeable.CuotaMonto, 60));
+
+            var errores = Validar(60, mapeo);
+
+            Assert.True(errores.Count == 1, "Se esperaba un solo error (bloque repartido en dos hojas) y hubo " + errores.Count + ": " + Detalle(errores));
+            Assert.Equal("CARP-VER-007", errores[0].Codigo);
+        }
+
+        [Fact]
+        public void ARQ_PUB_ConElBloqueEnDosHojasNoSeEvaluanLasDemasReglasDelBloque()
+        {
+            // Además de estar en otra hoja, la columna empieza en la fila 8 y tiene 59 filas (el 008 sí viaja, es la regla 4).
+            var mapeo = SinCampo(MapeoV07(), CampoMapeable.CuotaMonto);
+            mapeo.Add(Bloque("OTRA HOJA", "C8", CampoMapeable.CuotaMonto, 59));
+
+            var errores = Validar(60, mapeo);
+
+            Assert.True(Cuenta(errores, "CARP-VER-007") == 1, "Solo el error de la hoja: " + Detalle(errores));
+            Assert.True(Cuenta(errores, "CARP-VER-008") == 1, Detalle(errores));
+            Assert.True(errores.Count == 2, Detalle(errores));
+        }
+
+        // La hoja del bloque se compara sin distinguir mayúsculas (y sin recortar), como en el resto de las reglas.
+        [Fact]
+        public void ARQ_PUB_ElBloqueConLaHojaEscritaConOtrasMayusculasSigueSiendoUnaSolaHoja()
+        {
+            var mapeo = SinCampo(MapeoV07(), CampoMapeable.CuotaMonto);
+            mapeo.Add(Bloque("control de pagos", "C7", CampoMapeable.CuotaMonto, 60));
+
+            var errores = Validar(60, mapeo);
+
+            Assert.True(errores.Count == 0, Detalle(errores));
+        }
+
+        // PA-PUB-12 (regla 2, e): ninguna columna del bloque mapeada más de una vez. F7 es una segunda columna "Cuota: monto" con la misma
+        // fila inicial y las mismas filas máximas: es el único problema.
+        [Fact]
+        public void PA_PUB_12_UnaColumnaDelBloqueMapeadaDosVecesDaUnErrorQueLaNombra()
+        {
+            var mapeo = Mas(MapeoV07(), Bloque(HojaControl, "F7", CampoMapeable.CuotaMonto, 60));
+
+            var errores = Validar(60, mapeo);
+
+            Assert.True(errores.Count == 1, "Se esperaba un solo error y hubo " + errores.Count + ": " + Detalle(errores));
+            Assert.Equal("CARP-VER-007", errores[0].Codigo);
+            Assert.Contains("Cuota: monto", errores[0].Mensaje);
+        }
+
+        // PA-PUB-13 (regla 2, g): todas las columnas del bloque empiezan en la misma fila. Cuota: monto baja a C8 (C8:C67); los totales se
+        // corren a la fila 100 para que ninguno caiga dentro del rango. Las filas máximas son las mismas (60): ningún 008.
+        [Fact]
+        public void PA_PUB_13_UnaColumnaDelBloqueQueEmpiezaEnOtraFilaDaUnSoloCARP_VER_007()
+        {
+            var mapeo = ConTotalesEn(SinCampo(MapeoV07(), CampoMapeable.CuotaMonto), 100);
+            mapeo.Add(Bloque(HojaControl, "C8", CampoMapeable.CuotaMonto, 60));
+
+            var errores = Validar(60, mapeo);
+
+            Assert.True(errores.Count == 1, "Se esperaba un solo error (fila inicial distinta) y hubo " + errores.Count + ": " + Detalle(errores));
+            Assert.Equal("CARP-VER-007", errores[0].Codigo);
+        }
+
+        // PA-PUB-14 (regla 2, h): filas máximas de cada columna entre 1 y 60. Se cambia la columna D (Cuota: fecha de pago), que no comparte
+        // columna con los totales (C y E), así que no hay solapes. Cálculo a mano: cada valor fuera de 1..60 da un 007 que nombra D7, y como
+        // difiere de la capacidad 60, también el 008. Los valores 61 y mayores no llegan a la regla "se sale de la hoja" (solo se evalúa si h se cumple).
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        [InlineData(61)]
+        [InlineData(100)]
+        [InlineData(int.MaxValue)]
+        public void PA_PUB_14_UnaColumnaConFilasMaximasFueraDeUnoASesentaDaCARP_VER_007Y008(int filas)
+        {
+            var mapeo = SinCampo(MapeoV07(), CampoMapeable.CuotaFechaDePago);
+            mapeo.Add(Bloque(HojaControl, "D7", CampoMapeable.CuotaFechaDePago, filas));
+
+            var errores = Validar(60, mapeo);
+
+            var ver007 = errores.Where(e => e.Codigo == "CARP-VER-007").ToList();
+            Assert.True(ver007.Count == 1, "Filas " + filas + ": se esperaba un solo 007 y hubo " + ver007.Count + ": " + Detalle(errores));
+            Assert.Contains("D7", ver007[0].Mensaje);
+            Assert.True(Cuenta(errores, "CARP-VER-008") == 1, "Filas " + filas + ": " + Detalle(errores));
+            Assert.True(errores.Count == 2, "Filas " + filas + ": " + Detalle(errores));
+        }
+
+        // Las filas máximas nulas no dan 007 (ni en h ni en i): las atrapa la regla 4 con UN solo 008.
+        [Fact]
+        public void ARQ_PUB_LasFilasMaximasNulasDeTodoElBloqueDanSoloUnCARP_VER_008()
+        {
+            var mapeo = MapeoV07().Select(f => f.Tipo == TipoDeMapeo.ColumnaDeBloqueDeCuotas ? new FilaDeMapeo(f.Hoja, f.Celda, f.Tipo, f.Campo, null) : f).ToList();
+
+            var errores = Validar(60, mapeo);
+
+            Assert.True(errores.Count == 1, Detalle(errores));
+            Assert.Equal("CARP-VER-008", errores[0].Codigo);
+        }
+
+        // PA-PUB-15 (regla 2, i): el bloque no se sale de la hoja. 60 filas desde la fila S terminan en S + 59: con S = 1048517 llegan justo
+        // a 1048576 (válido); con S = 1048518 terminan en 1048577 (se pasan) y con S = 1048576 en 1048635. Un error por columna, que nombra su celda.
+        [Theory]
+        [InlineData(1048517, 0)]
+        [InlineData(1048518, 5)]
+        [InlineData(1048576, 5)]
+        public void PA_PUB_15_UnBloqueQueSeSaleDeLaHojaDaUnCARP_VER_007PorColumna(int filaInicial, int erroresEsperados)
+        {
+            var mapeo = MapeoV07().Where(f => f.Tipo != TipoDeMapeo.ColumnaDeBloqueDeCuotas).ToList();
+            mapeo.Add(Bloque(HojaControl, "A" + filaInicial, CampoMapeable.CuotaNumero, 60));
+            mapeo.Add(Bloque(HojaControl, "B" + filaInicial, CampoMapeable.CuotaFechaDeVencimiento, 60));
+            mapeo.Add(Bloque(HojaControl, "C" + filaInicial, CampoMapeable.CuotaMonto, 60));
+            mapeo.Add(Bloque(HojaControl, "D" + filaInicial, CampoMapeable.CuotaFechaDePago, 60));
+            mapeo.Add(Bloque(HojaControl, "E" + filaInicial, CampoMapeable.CuotaMontoPagado, 60));
+
+            var errores = Validar(60, mapeo);
+
+            Assert.True(errores.Count == erroresEsperados, "Fila inicial " + filaInicial + ": se esperaban " + erroresEsperados + " errores y hubo " + errores.Count + ": " + Detalle(errores));
+            Assert.All(errores, e => Assert.Equal("CARP-VER-007", e.Codigo));
+            if (erroresEsperados > 0)
+            {
+                foreach (var columna in new[] { "A", "B", "C", "D", "E" })
+                {
+                    string celda = columna + filaInicial;
+                    Assert.True(errores.Count(e => e.Mensaje.Contains(celda)) == 1, "Debe haber exactamente un error que nombre " + celda + ": " + Detalle(errores));
+                }
+            }
+        }
+
+        // PA-PUB-16 (regla 2, j): otra celda mapeada de la MISMA hoja (valor simple o total) dentro del rango de una columna del bloque
+        // (misma columna, filas 7 a 66 en el mapeo v07). La hoja se compara sin distinguir mayúsculas. Un error por celda pisada.
+        [Theory]
+        [InlineData("CONTROL DE PAGOS", "B30", TipoDeMapeo.ValorSimple, CampoMapeable.Comentarios)]
+        [InlineData("CONTROL DE PAGOS", "A66", TipoDeMapeo.ValorSimple, CampoMapeable.Moneda)]          // la última fila del rango (7 + 60 − 1)
+        [InlineData("CONTROL DE PAGOS", "E40", TipoDeMapeo.TotalCalculado, CampoMapeable.TotalMontosPagados)]
+        [InlineData("control de pagos", "B30", TipoDeMapeo.ValorSimple, CampoMapeable.Comentarios)]     // otra escritura de la misma hoja
+        public void PA_PUB_16_UnaCeldaMapeadaDentroDelRangoDelBloqueDaUnCARP_VER_007(string hoja, string celda, TipoDeMapeo tipo, CampoMapeable campo)
+        {
+            var extra = new FilaDeMapeo(hoja, celda, tipo, campo);
+
+            AssertUnErrorEnLaCelda("CARP-VER-007", celda, Validar(60, Mas(MapeoV07(), extra)));
+        }
+
+        // Lo que NO se pisa: la fila anterior al bloque (A6), la siguiente al último (A67), otra columna de la misma hoja (F30) y la misma
+        // columna y fila en OTRA hoja (B30 en la hoja del formato).
+        [Fact]
+        public void PA_PUB_16_LasCeldasFueraDelRangoDelBloqueNoDanError()
+        {
+            var mapeo = Mas(MapeoV07(),
+                Simple(HojaControl, "A6", CampoMapeable.Comentarios),
+                Simple(HojaControl, "A67", CampoMapeable.Moneda),
+                Simple(HojaControl, "F30", CampoMapeable.SaldoInicial),
+                Simple(HojaFormato, "B30", CampoMapeable.NombreDelCliente));
+
+            var errores = Validar(60, mapeo);
+
+            Assert.True(errores.Count == 0, Detalle(errores));
+        }
+
+        // PA-PUB-17: varias violaciones juntas, todas en la misma respuesta. Cálculo a mano sobre el mapeo v07:
+        //   1. Z90 con un campo no definido (999) y ValorSimple ............................ 007 (regla 3)
+        //   2. Cuota: monto mapeada otra vez, en F8 (60 filas) .............................. 007 (columna repetida)
+        //   3. ... y por empezar en la fila 8 y no en la 7 .................................. 007 (fila inicial distinta)
+        //   4. Comentarios en B30 de la hoja del bloque: cae dentro de B7:B66 ............... 007 (celda pisada)
+        //   5. Cuota: fecha de pago (D7) con 0 filas máximas ................................ 007 (fuera de 1..60) y 008 (0 ≠ 60)
+        // Total: cinco 007 y un 008. Los totales (C67, E67) y F8:F67 no chocan con nada.
+        [Fact]
+        public void PA_PUB_17_VariasViolacionesDelBloqueViajanJuntasEnLaMismaRespuesta()
+        {
+            var mapeo = SinCampo(MapeoV07(), CampoMapeable.CuotaFechaDePago);
+            mapeo.Add(Bloque(HojaControl, "D7", CampoMapeable.CuotaFechaDePago, 0));
+            mapeo.Add(Simple(HojaFormato, "Z90", (CampoMapeable)999));
+            mapeo.Add(Bloque(HojaControl, "F8", CampoMapeable.CuotaMonto, 60));
+            mapeo.Add(Simple(HojaControl, "B30", CampoMapeable.Comentarios));
+
+            var errores = Validar(60, mapeo);
+
+            Assert.True(Cuenta(errores, "CARP-VER-007") == 5, "Se esperaban 5 errores 007 y hubo " + Cuenta(errores, "CARP-VER-007") + ": " + Detalle(errores));
+            Assert.True(Cuenta(errores, "CARP-VER-008") == 1, "Se esperaba 1 error 008: " + Detalle(errores));
+            Assert.True(errores.Count == 6, Detalle(errores));
+            // El texto del error de "fila inicial distinta" no está fijado (no nombra una celda), así que se pide que cada pista aparezca
+            // en algún error, y los conteos de arriba garantizan que no hay errores de más ni de menos.
+            foreach (var pista in new[] { "Z90", "B30", "D7", "Cuota: monto" })
+            {
+                Assert.True(errores.Any(e => e.Codigo == "CARP-VER-007" && e.Mensaje.Contains(pista)), "Debe haber un error 007 que nombre " + pista + ": " + Detalle(errores));
+            }
         }
 
         // ---- Casos de borde del arquitecto ----
