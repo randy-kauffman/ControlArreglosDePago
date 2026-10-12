@@ -65,13 +65,29 @@ namespace Sanic.Carp.Plugins.Dominio
         /// <summary><c>statecode</c> Inactivo.</summary>
         public const int Inactivo = 1;
 
+        // Tabla de diseno/03 0.7. Son los únicos lugares donde aparecen estos números (conv. §6: nunca el literal suelto en otro código).
+        private static readonly EstadoEfectivo Abierta = new EstadoEfectivo(0, 1);
+        private static readonly EstadoEfectivo Finalizada = new EstadoEfectivo(1, 2);
+        private static readonly EstadoEfectivo Unida = new EstadoEfectivo(1, 159460001);
+        private static readonly EstadoEfectivo Borrador = new EstadoEfectivo(0, 1);
+        private static readonly EstadoEfectivo Vigente = new EstadoEfectivo(0, 159460001);
+        private static readonly EstadoEfectivo Terminado = new EstadoEfectivo(1, 2);
+        private static readonly EstadoEfectivo Anulado = new EstadoEfectivo(1, 159460002);
+        private static readonly EstadoEfectivo Descartado = new EstadoEfectivo(1, 159460003);
+
         /// <summary>
         /// Motivo por defecto de un <c>statecode</c> sin <c>statuscode</c> en el <c>Target</c> (DC-06, verificado en V-5): Activo ⇒ 1,
         /// Inactivo ⇒ 2. Cualquier otro <c>statecode</c> lanza <see cref="ArgumentOutOfRangeException"/>.
         /// </summary>
         public static int StatusPorDefecto(int stateCode)
         {
-            throw new NotImplementedException();
+            switch (stateCode)
+            {
+                case Activo: return 1;
+                case Inactivo: return 2;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(stateCode), stateCode, "statecode solo admite 0 (Activo) o 1 (Inactivo).");
+            }
         }
 
         /// <summary>
@@ -81,31 +97,61 @@ namespace Sanic.Carp.Plugins.Dominio
         /// </summary>
         public static EstadoEfectivo Efectivo(int stateCode, int? statusCode)
         {
-            throw new NotImplementedException();
+            // El motivo por defecto solo se consulta si hace falta. Con statuscode en el Target se devuelve lo que trae, aunque la
+            // combinación no exista: la regla del gesto (DeConversacion/DeArreglo devuelven null) es la que la rechaza con su código CARP.
+            return new EstadoEfectivo(stateCode, statusCode.HasValue ? statusCode.Value : StatusPorDefecto(stateCode));
         }
 
         /// <summary>Los códigos de cada estado de la Conversación (tabla 0.7).</summary>
         public static EstadoEfectivo De(EstadoDeConversacion estado)
         {
-            throw new NotImplementedException();
+            switch (estado)
+            {
+                case EstadoDeConversacion.Abierta: return Abierta;
+                case EstadoDeConversacion.Finalizada: return Finalizada;
+                case EstadoDeConversacion.Unida: return Unida;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(estado), estado, "Estado de conversación desconocido.");
+            }
         }
 
         /// <summary>Los códigos de cada estado del Arreglo (tabla 0.7).</summary>
         public static EstadoEfectivo De(EstadoDeArreglo estado)
         {
-            throw new NotImplementedException();
+            switch (estado)
+            {
+                case EstadoDeArreglo.Borrador: return Borrador;
+                case EstadoDeArreglo.Vigente: return Vigente;
+                case EstadoDeArreglo.Terminado: return Terminado;
+                case EstadoDeArreglo.Anulado: return Anulado;
+                case EstadoDeArreglo.Descartado: return Descartado;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(estado), estado, "Estado de arreglo desconocido.");
+            }
         }
 
         /// <summary>El estado de Conversación que corresponde a un par de códigos, o <c>null</c> si la combinación no existe.</summary>
         public static EstadoDeConversacion? DeConversacion(EstadoEfectivo estado)
         {
-            throw new NotImplementedException();
+            if (estado == null) throw new ArgumentNullException(nameof(estado));
+
+            if (estado.Equals(Abierta)) return EstadoDeConversacion.Abierta;
+            if (estado.Equals(Finalizada)) return EstadoDeConversacion.Finalizada;
+            if (estado.Equals(Unida)) return EstadoDeConversacion.Unida;
+            return null;
         }
 
         /// <summary>El estado de Arreglo que corresponde a un par de códigos, o <c>null</c> si la combinación no existe.</summary>
         public static EstadoDeArreglo? DeArreglo(EstadoEfectivo estado)
         {
-            throw new NotImplementedException();
+            if (estado == null) throw new ArgumentNullException(nameof(estado));
+
+            if (estado.Equals(Borrador)) return EstadoDeArreglo.Borrador;
+            if (estado.Equals(Vigente)) return EstadoDeArreglo.Vigente;
+            if (estado.Equals(Terminado)) return EstadoDeArreglo.Terminado;
+            if (estado.Equals(Anulado)) return EstadoDeArreglo.Anulado;
+            if (estado.Equals(Descartado)) return EstadoDeArreglo.Descartado;
+            return null;
         }
     }
 }

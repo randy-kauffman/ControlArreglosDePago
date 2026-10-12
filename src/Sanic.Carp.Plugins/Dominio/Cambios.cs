@@ -19,7 +19,36 @@ namespace Sanic.Carp.Plugins.Dominio
         /// <summary>¿Son distintos dos valores neutros? Ver la regla de comparación en la descripción de la clase.</summary>
         public static bool ValoresDistintos(object actual, object anterior)
         {
-            throw new NotImplementedException();
+            object a = Comparable(actual);
+            object b = Comparable(anterior);
+
+            if (a == null || b == null) return !(a == null && b == null);
+
+            // Dos tipos distintos (por ejemplo un entero y un texto) nunca son el mismo valor: no se fuerza ninguna conversión.
+            if (a.GetType() != b.GetType()) return true;
+
+            var textoA = a as string;
+            if (textoA != null) return !string.Equals(textoA, (string)b, StringComparison.Ordinal);
+
+            if (a is DateTime) return ((DateTime)a).Ticks != ((DateTime)b).Ticks;   // sin mirar DateTimeKind
+
+            // int, decimal, bool y Guid: Equals compara por valor. Para decimal, 10.50m y 10.5m son iguales (la escala no cuenta).
+            return !a.Equals(b);
+        }
+
+        // Reduce los tipos neutros a lo que se compara (4.4: OptionSetValue→int, EntityReference→Guid, Money→decimal).
+        private static object Comparable(object valor)
+        {
+            var opcion = valor as ValorDeOpcion;
+            if (opcion != null) return opcion.Valor;
+
+            var referencia = valor as ReferenciaDeEntidad;
+            if (referencia != null) return referencia.Id;
+
+            var dinero = valor as ValorDeDinero;
+            if (dinero != null) return dinero.Valor;
+
+            return valor;
         }
 
         /// <summary>
@@ -30,7 +59,16 @@ namespace Sanic.Carp.Plugins.Dominio
         /// </summary>
         public static bool Distinto(IReadOnlyDictionary<string, object> target, IReadOnlyDictionary<string, object> preImagen, string columna)
         {
-            throw new NotImplementedException();
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (columna == null) throw new ArgumentNullException(nameof(columna));
+
+            object valorNuevo;
+            if (!target.TryGetValue(columna, out valorNuevo)) return false;
+
+            object valorAnterior = null;
+            if (preImagen != null) preImagen.TryGetValue(columna, out valorAnterior);
+
+            return ValoresDistintos(valorNuevo, valorAnterior);
         }
 
         /// <summary>
@@ -40,7 +78,17 @@ namespace Sanic.Carp.Plugins.Dominio
         public static IReadOnlyList<string> Cambiadas(IReadOnlyDictionary<string, object> target, IReadOnlyDictionary<string, object> preImagen,
             IEnumerable<string> columnasVigiladas)
         {
-            throw new NotImplementedException();
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (columnasVigiladas == null) throw new ArgumentNullException(nameof(columnasVigiladas));
+
+            var cambiadas = new List<string>();
+            var vistas = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string columna in columnasVigiladas)
+            {
+                if (columna == null) throw new ArgumentNullException(nameof(columnasVigiladas), "Una columna vigilada es nula.");
+                if (vistas.Add(columna) && Distinto(target, preImagen, columna)) cambiadas.Add(columna);
+            }
+            return cambiadas;
         }
     }
 }

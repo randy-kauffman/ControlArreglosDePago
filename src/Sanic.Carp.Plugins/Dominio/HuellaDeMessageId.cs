@@ -1,4 +1,7 @@
 using System;
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Sanic.Carp.Plugins.Dominio
 {
@@ -12,7 +15,21 @@ namespace Sanic.Carp.Plugins.Dominio
         /// </summary>
         public static string Normalizar(string messageId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(messageId)) return string.Empty;
+
+            var sb = new StringBuilder(messageId.Length);
+            foreach (char c in messageId)
+            {
+                if (!char.IsWhiteSpace(c)) sb.Append(c);
+            }
+
+            // UN corchete de cada extremo (DC-13): "<<abc>>" queda "<abc>", no "abc".
+            int desde = 0;
+            int hasta = sb.Length;
+            if (hasta > 0 && sb[0] == '<') desde = 1;
+            if (hasta > desde && sb[hasta - 1] == '>') hasta--;
+
+            return sb.ToString(desde, hasta - desde).ToLowerInvariant();
         }
 
         /// <summary>
@@ -21,7 +38,22 @@ namespace Sanic.Carp.Plugins.Dominio
         /// </summary>
         public static string Calcular(string messageId, Guid emailId)
         {
-            throw new NotImplementedException();
+            string normalizado = Normalizar(messageId);
+            if (normalizado.Length == 0)
+            {
+                // Sin Message-ID el respaldo da idempotencia al correo raro (DC-13): una huella por Email, estable entre reintentos.
+                normalizado = "sin-messageid:" + emailId.ToString("D", CultureInfo.InvariantCulture).ToLowerInvariant();
+            }
+
+            byte[] hash;
+            using (SHA256 sha = SHA256.Create())
+            {
+                hash = sha.ComputeHash(Encoding.UTF8.GetBytes(normalizado));
+            }
+
+            var hex = new StringBuilder(hash.Length * 2);
+            foreach (byte b in hash) hex.Append(b.ToString("x2", CultureInfo.InvariantCulture));
+            return hex.ToString();
         }
     }
 }

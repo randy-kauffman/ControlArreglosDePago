@@ -51,7 +51,34 @@ namespace Sanic.Carp.Plugins.Dominio.Tiempos
         public static ResultadoDeRecalculo RecalcularTrasUnion(IEnumerable<DateTime?> fechasDePrimerCorreo, IEnumerable<DateTime?> sinRespuestaDesde,
             IEnumerable<RespuestaProcesada> respuestasProcesadas)
         {
-            throw new NotImplementedException();
+            if (fechasDePrimerCorreo == null) throw new ArgumentNullException(nameof(fechasDePrimerCorreo));
+            if (sinRespuestaDesde == null) throw new ArgumentNullException(nameof(sinRespuestaDesde));
+            if (respuestasProcesadas == null) throw new ArgumentNullException(nameof(respuestasProcesadas));
+
+            int cantidad = 0;
+            RespuestaProcesada masAntiguaConTiempo = null;
+            foreach (RespuestaProcesada respuesta in respuestasProcesadas)
+            {
+                cantidad++;
+                // Un recordatorio (sin tiempo) cuenta para la cantidad pero no fija la primera respuesta (1.4 paso 6c).
+                if (respuesta.Tiempo.HasValue && (masAntiguaConTiempo == null || respuesta.EnviadoEn < masAntiguaConTiempo.EnviadoEn))
+                {
+                    masAntiguaConTiempo = respuesta;
+                }
+            }
+
+            return new ResultadoDeRecalculo(Minimo(fechasDePrimerCorreo), Minimo(sinRespuestaDesde), cantidad,
+                masAntiguaConTiempo == null ? null : masAntiguaConTiempo.Tiempo);
+        }
+
+        private static DateTime? Minimo(IEnumerable<DateTime?> fechas)
+        {
+            DateTime? minimo = null;
+            foreach (DateTime? fecha in fechas)
+            {
+                if (fecha.HasValue && (!minimo.HasValue || fecha.Value < minimo.Value)) minimo = fecha;
+            }
+            return minimo;
         }
     }
 }

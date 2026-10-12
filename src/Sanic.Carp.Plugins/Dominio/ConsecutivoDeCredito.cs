@@ -42,7 +42,19 @@ namespace Sanic.Carp.Plugins.Dominio
         /// </summary>
         public static ResultadoDeConsecutivo Siguiente(IEnumerable<int?> numerosExistentes)
         {
-            throw new NotImplementedException();
+            if (numerosExistentes == null) throw new ArgumentNullException(nameof(numerosExistentes));
+
+            // Una sola pasada: la entrada puede ser una consulta diferida.
+            int? maximo = null;
+            foreach (int? numero in numerosExistentes)
+            {
+                if (numero.HasValue && (!maximo.HasValue || numero.Value > maximo.Value)) maximo = numero;
+            }
+
+            // Se compara antes de sumar: con int.MaxValue el +1 desbordaría.
+            if (maximo.HasValue && maximo.Value >= Maximo) return ResultadoDeConsecutivo.Fallo(CodigosDeError.ARR_023.Crear());
+
+            return ResultadoDeConsecutivo.Exito(maximo.HasValue ? maximo.Value + 1 : 1);
         }
     }
 }

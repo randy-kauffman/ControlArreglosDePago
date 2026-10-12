@@ -27,7 +27,11 @@ namespace Sanic.Carp.Plugins.Dominio.Tiempos
         /// <summary>Parte entera (truncada hacia abajo) de los minutos entre dos instantes; si <paramref name="hasta"/> es anterior a <paramref name="desde"/>, 0 (DC-11).</summary>
         public static int MinutosEntre(DateTime desde, DateTime hasta)
         {
-            throw new NotImplementedException();
+            if (hasta <= desde) return 0;
+
+            // Aritmética entera sobre ticks: truncar los minutos con un double podría redondear hacia arriba justo en la frontera (DC-11).
+            // checked: un intervalo de más de unos 4.000 años no cabe en un int y debe fallar, no dar un número cualquiera.
+            return checked((int)((hasta - desde).Ticks / TimeSpan.TicksPerMinute));
         }
 
         /// <summary>
@@ -41,7 +45,21 @@ namespace Sanic.Carp.Plugins.Dominio.Tiempos
         public static ResultadoDeRespuesta AplicarRespuestaEnviada(EstadoDeConversacion estado, DateTime? sinRespuestaDesde, int cantidad,
             int? primeraRespuesta, DateTime enviadoEn)
         {
-            throw new NotImplementedException();
+            int nuevaCantidad = cantidad + 1;
+
+            // Solo una Abierta calcula tiempo. Finalizada (OA-10) y Unida solo suman al contador: para marcar respondido se reabre.
+            bool contestaUnPendiente = estado == EstadoDeConversacion.Abierta
+                && sinRespuestaDesde.HasValue
+                && sinRespuestaDesde.Value <= enviadoEn;
+
+            if (!contestaUnPendiente)
+            {
+                // Sin pendiente, o pendiente posterior al envío (DC-11): no se vacía nada, el pendiente real sigue esperando.
+                return new ResultadoDeRespuesta(null, sinRespuestaDesde, nuevaCantidad, primeraRespuesta);
+            }
+
+            int tiempo = MinutosEntre(sinRespuestaDesde.Value, enviadoEn);
+            return new ResultadoDeRespuesta(tiempo, null, nuevaCantidad, primeraRespuesta ?? tiempo);
         }
     }
 }

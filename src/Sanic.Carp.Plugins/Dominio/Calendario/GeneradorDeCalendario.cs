@@ -36,7 +36,14 @@ namespace Sanic.Carp.Plugins.Dominio.Calendario
         /// </summary>
         public static IReadOnlyList<CuotaDeCalendario> Generar(DateTime fechaInicio, int plazo, decimal cuotaMensual, decimal montoUltimaCuota)
         {
-            throw new NotImplementedException();
+            ValidarPlazo(plazo);
+
+            var cuotas = new CuotaDeCalendario[plazo];
+            for (int n = 1; n <= plazo; n++)
+            {
+                cuotas[n - 1] = new CuotaDeCalendario(n, Vencimiento(fechaInicio, n), n == plazo ? montoUltimaCuota : cuotaMensual);
+            }
+            return cuotas;
         }
 
         /// <summary>
@@ -46,7 +53,23 @@ namespace Sanic.Carp.Plugins.Dominio.Calendario
         /// </summary>
         public static DateTime FechaFin(DateTime fechaInicio, int plazo)
         {
-            throw new NotImplementedException();
+            ValidarPlazo(plazo);
+            return Vencimiento(fechaInicio, plazo);
+        }
+
+        // OA-5 opción A: siempre se cuenta desde la fecha de inicio. Encadenar mes a mes arrastraría el tope de un mes corto
+        // (31 de enero, 28 de febrero, 28 de marzo...) y es justo lo que la decisión descarta. AddMonths ya topa en el último día del mes.
+        private static DateTime Vencimiento(DateTime fechaInicio, int numero)
+        {
+            return fechaInicio.Date.AddMonths(numero - 1);
+        }
+
+        private static void ValidarPlazo(int plazo)
+        {
+            if (plazo < 1 || plazo > PlazoMaximo)
+            {
+                throw new ArgumentOutOfRangeException(nameof(plazo), plazo, "El plazo debe estar entre 1 y " + PlazoMaximo + "; CARP-ARR-003 lo valida antes.");
+            }
         }
     }
 }
