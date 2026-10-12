@@ -11,6 +11,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>$(WarningsNotAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- xUnit1026 (parametro de [Theory] sin usar): las pruebas del spike 1 portadas a Aceptacion/Formato llevan un primer parametro
+         "caso" que solo da nombre al caso en el reporte; se conservan tal cual (diseno/03 4.3). -->
+    <NoWarn>$(NoWarn);xUnit1026</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Fixtures: plantilla v07 y respuestas reales exportadas de Dev (diseno/03 §4.5). Aun no hay ninguno; la carpeta se copia al salir. -->
+    <!-- Fixtures: plantillas v07 (F-NIC-0000052_v07.xlsx) y v06, copias exactas de las del spike 1 (diseno/03 §4.3), y respuestas reales
+         exportadas de Dev (§4.5). Todo lo que haya bajo Fixtures/ se copia al directorio de salida. -->
     <None Include="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
