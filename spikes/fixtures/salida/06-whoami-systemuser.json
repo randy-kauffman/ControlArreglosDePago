@@ -1,0 +1,781 @@
+{
+  "cabecera": {
+    "fixture": "06-whoami-systemuser",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "generado_utc": "2026-10-14",
+    "filas": "REALES anonimizadas (solo lectura)",
+    "advertencia": "Dentro de un plugin (sandbox) la deserializacion puede diferir, sobre todo DateTime.Kind. No se capturo desde un plugin.",
+    "notas": [
+      "SYSTEM es la fila con fullname 'SYSTEM' (se conserva el texto SYSTEM). No se puede obtener 'WhoAmI elevado' desde un cliente; el SYSTEM del plugin es solo esta fila.",
+      "El usuario conectado es el usuario de aplicacion de administracion (PP_CLIENT_*)."
+    ]
+  },
+  "contenido": {
+    "WhoAmIResponse_del_usuario_conectado": {
+      "tipo": "Microsoft.Crm.Sdk.Messages.WhoAmIResponse",
+      "ResponseName": "WhoAmI",
+      "Results": {
+        "BusinessUnitId": {
+          "tipo": "System.Guid",
+          "valor": "0fff0003-0000-4000-8000-000000000009"
+        },
+        "OrganizationId": {
+          "tipo": "System.Guid",
+          "valor": "0fff0005-0000-4000-8000-000000000024"
+        },
+        "UserId": {
+          "tipo": "System.Guid",
+          "valor": "0fff0001-0000-4000-8000-000000000008"
+        }
+      }
+    },
+    "systemuser_SYSTEM": {
+      "tipo": "Microsoft.Xrm.Sdk.Entity",
+      "LogicalName": "systemuser",
+      "Id": "0fff0001-0000-4000-8000-000000000004",
+      "RowVersion": "1943784",
+      "KeyAttributes": {},
+      "EntityState": null,
+      "atributos": {
+        "accessmode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "azurestate": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "businessunitid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "businessunit",
+            "id": "0fff0003-0000-4000-8000-000000000009",
+            "name": "ZZF BU 1"
+          }
+        },
+        "caltype": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "createdon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-01-11T13:25:39.0000000Z",
+          "kind": "Utc"
+        },
+        "defaultfilterspopulated": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "defaultodbfoldername": {
+          "tipo": "System.String",
+          "valor": "ZZF-texto-defaultodbfoldername 1"
+        },
+        "deletedstate": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "domainname": {
+          "tipo": "System.String",
+          "valor": ""
+        },
+        "emailrouteraccessapproval": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "firstname": {
+          "tipo": "System.String",
+          "valor": ""
+        },
+        "fullname": {
+          "tipo": "System.String",
+          "valor": "SYSTEM"
+        },
+        "identityid": {
+          "tipo": "System.Int32",
+          "valor": 1
+        },
+        "incomingemaildeliverymethod": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "invitestatuscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "isdisabled": {
+          "tipo": "System.Boolean",
+          "valor": true
+        },
+        "isemailaddressapprovedbyo365admin": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "isintegrationuser": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "islicensed": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "issyncwithdirectory": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "lastname": {
+          "tipo": "System.String",
+          "valor": "SYSTEM"
+        },
+        "modifiedon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-01-11T13:25:39.0000000Z",
+          "kind": "Utc"
+        },
+        "organizationid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0005-0000-4000-8000-000000000024"
+        },
+        "outgoingemaildeliverymethod": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "setupuser": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "systemmanagedusertype": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "systemuserid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0001-0000-4000-8000-000000000004"
+        },
+        "userlicensetype": {
+          "tipo": "System.Int32",
+          "valor": 3
+        }
+      },
+      "FormattedValues": {
+        "accessmode": "Read-Write",
+        "azurestate": "Exists",
+        "businessunitid": "ZZF BU 1",
+        "caltype": "Professional",
+        "createdon": "1/11/2026 1:25 PM",
+        "defaultfilterspopulated": "No",
+        "deletedstate": "Not deleted",
+        "emailrouteraccessapproval": "Empty",
+        "identityid": "1",
+        "incomingemaildeliverymethod": "Microsoft Dynamics 365 for Outlook",
+        "invitestatuscode": "Invitation Not Sent",
+        "isdisabled": "Disabled",
+        "isemailaddressapprovedbyo365admin": "No",
+        "isintegrationuser": "No",
+        "islicensed": "No",
+        "issyncwithdirectory": "No",
+        "modifiedon": "1/11/2026 1:25 PM",
+        "outgoingemaildeliverymethod": "Microsoft Dynamics 365 for Outlook",
+        "setupuser": "No",
+        "systemmanagedusertype": "Entra User",
+        "userlicensetype": "3"
+      }
+    },
+    "systemuser_ordinario_usuario_de_aplicacion_conectado": {
+      "tipo": "Microsoft.Xrm.Sdk.Entity",
+      "LogicalName": "systemuser",
+      "Id": "0fff0001-0000-4000-8000-000000000008",
+      "RowVersion": "5709812",
+      "KeyAttributes": {},
+      "EntityState": null,
+      "atributos": {
+        "accessmode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 4
+        },
+        "address1_addressid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-000000000030"
+        },
+        "address1_addresstypecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "address1_shippingmethodcode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "address2_addressid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-000000000031"
+        },
+        "address2_addresstypecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "address2_shippingmethodcode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "applicationid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-000000000032"
+        },
+        "applicationiduri": {
+          "tipo": "System.String",
+          "valor": "0fff0009-0000-4000-8000-000000000032"
+        },
+        "azureactivedirectoryobjectid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-000000000033"
+        },
+        "azurestate": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "businessunitid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "businessunit",
+            "id": "0fff0003-0000-4000-8000-000000000009",
+            "name": "ZZF BU 1"
+          }
+        },
+        "calendarid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "calendar",
+            "id": "0fff0009-0000-4000-8000-000000000034",
+            "name": null
+          }
+        },
+        "caltype": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "createdby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000028",
+            "name": "ZZF Usuario 3"
+          }
+        },
+        "createdon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-07-25T02:45:20.0000000Z",
+          "kind": "Utc"
+        },
+        "defaultfilterspopulated": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "defaultmailbox": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "mailbox",
+            "id": "0fff0009-0000-4000-8000-000000000035",
+            "name": "ZZF-texto-mailbox 3"
+          }
+        },
+        "defaultodbfoldername": {
+          "tipo": "System.String",
+          "valor": "ZZF-texto-defaultodbfoldername 1"
+        },
+        "deletedstate": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "displayinserviceviews": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "domainname": {
+          "tipo": "System.String",
+          "valor": "zzf-buzon6@example.com"
+        },
+        "emailrouteraccessapproval": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "firstname": {
+          "tipo": "System.String",
+          "valor": "ZZFNombre1"
+        },
+        "fullname": {
+          "tipo": "System.String",
+          "valor": "ZZF Usuario 2"
+        },
+        "identityid": {
+          "tipo": "System.Int32",
+          "valor": 166
+        },
+        "incomingemaildeliverymethod": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "internalemailaddress": {
+          "tipo": "System.String",
+          "valor": "zzf-buzon6@example.com"
+        },
+        "invitestatuscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "isallowedbyipfirewall": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "isdisabled": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "isemailaddressapprovedbyo365admin": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "isintegrationuser": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "islicensed": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "issyncwithdirectory": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "lastname": {
+          "tipo": "System.String",
+          "valor": "ZZFApellido1"
+        },
+        "modifiedby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000028",
+            "name": "ZZF Usuario 3"
+          }
+        },
+        "modifiedon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-07-25T02:45:20.0000000Z",
+          "kind": "Utc"
+        },
+        "organizationid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0005-0000-4000-8000-000000000024"
+        },
+        "outgoingemaildeliverymethod": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "preferredaddresscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "preferredemailcode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "preferredphonecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "queueid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "queue",
+            "id": "0fff0004-0000-4000-8000-000000000036",
+            "name": "ZZF Cola 6"
+          }
+        },
+        "setupuser": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "systemmanagedusertype": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "systemuserid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0001-0000-4000-8000-000000000008"
+        },
+        "userlicensetype": {
+          "tipo": "System.Int32",
+          "valor": 3
+        },
+        "windowsliveid": {
+          "tipo": "System.String",
+          "valor": "zzf-buzon6@example.com"
+        },
+        "yomifullname": {
+          "tipo": "System.String",
+          "valor": "ZZF Usuario 2"
+        }
+      },
+      "FormattedValues": {
+        "accessmode": "Non-interactive",
+        "address1_addresstypecode": "Default Value",
+        "address1_shippingmethodcode": "Default Value",
+        "address2_addresstypecode": "Default Value",
+        "address2_shippingmethodcode": "Default Value",
+        "azurestate": "Exists",
+        "businessunitid": "ZZF BU 1",
+        "caltype": "Professional",
+        "createdby": "ZZF Usuario 3",
+        "createdon": "7/25/2026 2:45 AM",
+        "defaultfilterspopulated": "No",
+        "defaultmailbox": "ZZF-texto-mailbox 3",
+        "deletedstate": "Not deleted",
+        "displayinserviceviews": "No",
+        "emailrouteraccessapproval": "Empty",
+        "identityid": "166",
+        "incomingemaildeliverymethod": "Microsoft Dynamics 365 for Outlook",
+        "invitestatuscode": "Invitation Not Sent",
+        "isallowedbyipfirewall": "No",
+        "isdisabled": "Enabled",
+        "isemailaddressapprovedbyo365admin": "No",
+        "isintegrationuser": "No",
+        "islicensed": "No",
+        "issyncwithdirectory": "No",
+        "modifiedby": "ZZF Usuario 3",
+        "modifiedon": "7/25/2026 2:45 AM",
+        "outgoingemaildeliverymethod": "Microsoft Dynamics 365 for Outlook",
+        "preferredaddresscode": "Mailing Address",
+        "preferredemailcode": "Default Value",
+        "preferredphonecode": "Main Phone",
+        "queueid": "ZZF Cola 6",
+        "setupuser": "No",
+        "systemmanagedusertype": "Entra User",
+        "userlicensetype": "3"
+      }
+    },
+    "systemuser_usuario_de_aplicacion_no_administrador": {
+      "tipo": "Microsoft.Xrm.Sdk.Entity",
+      "LogicalName": "systemuser",
+      "Id": "0fff0001-0000-4000-8000-000000000022",
+      "RowVersion": "12898108",
+      "KeyAttributes": {},
+      "EntityState": null,
+      "atributos": {
+        "accessmode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 4
+        },
+        "address1_addressid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-000000000037"
+        },
+        "address1_addresstypecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "address1_shippingmethodcode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "address2_addressid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-000000000038"
+        },
+        "address2_addresstypecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "address2_shippingmethodcode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "applicationid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-000000000039"
+        },
+        "applicationiduri": {
+          "tipo": "System.String",
+          "valor": "0fff0009-0000-4000-8000-000000000039"
+        },
+        "azureactivedirectoryobjectid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-00000000003a"
+        },
+        "azurestate": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "businessunitid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "businessunit",
+            "id": "0fff0003-0000-4000-8000-000000000019",
+            "name": "ZZF BU 2"
+          }
+        },
+        "calendarid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "calendar",
+            "id": "0fff0009-0000-4000-8000-00000000003b",
+            "name": null
+          }
+        },
+        "caltype": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "createdby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "createdon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-08T20:27:54.0000000Z",
+          "kind": "Utc"
+        },
+        "defaultfilterspopulated": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "defaultmailbox": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "mailbox",
+            "id": "0fff0009-0000-4000-8000-00000000003c",
+            "name": "ZZF-texto-mailbox 4"
+          }
+        },
+        "defaultodbfoldername": {
+          "tipo": "System.String",
+          "valor": "ZZF-texto-defaultodbfoldername 1"
+        },
+        "deletedstate": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "displayinserviceviews": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "domainname": {
+          "tipo": "System.String",
+          "valor": "zzf-buzon7@example.com"
+        },
+        "emailrouteraccessapproval": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 2
+        },
+        "firstname": {
+          "tipo": "System.String",
+          "valor": "ZZFNombre2"
+        },
+        "fullname": {
+          "tipo": "System.String",
+          "valor": "ZZF Usuario 4"
+        },
+        "identityid": {
+          "tipo": "System.Int32",
+          "valor": 173
+        },
+        "incomingemaildeliverymethod": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "internalemailaddress": {
+          "tipo": "System.String",
+          "valor": "zzf-buzon8@example.com"
+        },
+        "invitestatuscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "isallowedbyipfirewall": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "isdisabled": {
+          "tipo": "System.Boolean",
+          "valor": true
+        },
+        "isemailaddressapprovedbyo365admin": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "isintegrationuser": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "islicensed": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "issyncwithdirectory": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "lastname": {
+          "tipo": "System.String",
+          "valor": "ZZFApellido2"
+        },
+        "modifiedby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "modifiedon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-12T04:13:44.0000000Z",
+          "kind": "Utc"
+        },
+        "organizationid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0005-0000-4000-8000-000000000024"
+        },
+        "outgoingemaildeliverymethod": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "preferredaddresscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "preferredemailcode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "preferredphonecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "queueid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "queue",
+            "id": "0fff0004-0000-4000-8000-00000000003d",
+            "name": "ZZF Cola 7"
+          }
+        },
+        "setupuser": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "systemmanagedusertype": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "systemuserid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0001-0000-4000-8000-000000000022"
+        },
+        "userlicensetype": {
+          "tipo": "System.Int32",
+          "valor": 3
+        },
+        "windowsliveid": {
+          "tipo": "System.String",
+          "valor": "zzf-buzon7@example.com"
+        },
+        "yomifullname": {
+          "tipo": "System.String",
+          "valor": "ZZF Usuario 4"
+        }
+      },
+      "FormattedValues": {
+        "accessmode": "Non-interactive",
+        "address1_addresstypecode": "Default Value",
+        "address1_shippingmethodcode": "Default Value",
+        "address2_addresstypecode": "Default Value",
+        "address2_shippingmethodcode": "Default Value",
+        "azurestate": "Exists",
+        "businessunitid": "ZZF BU 2",
+        "caltype": "Professional",
+        "createdby": "ZZF Usuario 2",
+        "createdon": "10/8/2026 8:27 PM",
+        "defaultfilterspopulated": "No",
+        "defaultmailbox": "ZZF-texto-mailbox 4",
+        "deletedstate": "Not deleted",
+        "displayinserviceviews": "No",
+        "emailrouteraccessapproval": "Pending Approval",
+        "identityid": "173",
+        "incomingemaildeliverymethod": "Microsoft Dynamics 365 for Outlook",
+        "invitestatuscode": "Invitation Not Sent",
+        "isallowedbyipfirewall": "No",
+        "isdisabled": "Disabled",
+        "isemailaddressapprovedbyo365admin": "No",
+        "isintegrationuser": "No",
+        "islicensed": "No",
+        "issyncwithdirectory": "No",
+        "modifiedby": "ZZF Usuario 2",
+        "modifiedon": "10/12/2026 4:13 AM",
+        "outgoingemaildeliverymethod": "Microsoft Dynamics 365 for Outlook",
+        "preferredaddresscode": "Mailing Address",
+        "preferredemailcode": "Default Value",
+        "preferredphonecode": "Main Phone",
+        "queueid": "ZZF Cola 7",
+        "setupuser": "No",
+        "systemmanagedusertype": "Entra User",
+        "userlicensetype": "3"
+      }
+    },
+    "retrievemultiple_columnas_del_diseno_usuario_conectado": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "systemuser",
+      "MoreRecords": false,
+      "PagingCookie": "",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 1,
+      "Entities": [
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "systemuser",
+          "Id": "0fff0001-0000-4000-8000-000000000008",
+          "RowVersion": "5709812",
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "accessmode": {
+              "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+              "valor": 4
+            },
+            "businessunitid": {
+              "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+              "valor": {
+                "logicalName": "businessunit",
+                "id": "0fff0003-0000-4000-8000-000000000009",
+                "name": "ZZF BU 1"
+              }
+            },
+            "fullname": {
+              "tipo": "System.String",
+              "valor": "ZZF Usuario 2"
+            },
+            "isdisabled": {
+              "tipo": "System.Boolean",
+              "valor": false
+            },
+            "systemuserid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0001-0000-4000-8000-000000000008"
+            }
+          },
+          "FormattedValues": {
+            "accessmode": "Non-interactive",
+            "businessunitid": "ZZF BU 1",
+            "isdisabled": "Enabled"
+          }
+        }
+      ]
+    }
+  }
+}

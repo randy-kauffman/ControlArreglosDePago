@@ -1,0 +1,981 @@
+{
+ "atributos_clave": [
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "statuscode",
+   "tipo": "OptionSetValue",
+   "detalle": "4"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "statecode",
+   "tipo": "OptionSetValue",
+   "detalle": "1"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "directioncode",
+   "tipo": "Boolean",
+   "detalle": "False"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "messageid",
+   "tipo": "String",
+   "detalle": "<zzf-msg2@example.com>"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "inreplyto",
+   "tipo": "String",
+   "detalle": "<zzf-msg1@example.com>"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "actualend",
+   "tipo": "DateTime",
+   "detalle": "Kind=Utc 2026-09-28T22:08:17.0000000Z"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "senton",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "createdby",
+   "tipo": "EntityReference",
+   "detalle": "-> systemuser (Name presente)"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "regardingobjectid",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "ownerid",
+   "tipo": "EntityReference",
+   "detalle": "-> systemuser (Name presente)"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "from",
+   "tipo": "EntityCollection",
+   "detalle": ""
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real entrante",
+   "atributo": "to",
+   "tipo": "EntityCollection",
+   "detalle": ""
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "statuscode",
+   "tipo": "OptionSetValue",
+   "detalle": "3"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "statecode",
+   "tipo": "OptionSetValue",
+   "detalle": "1"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "directioncode",
+   "tipo": "Boolean",
+   "detalle": "True"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "messageid",
+   "tipo": "String",
+   "detalle": "<zzf-msg4@example.com>"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "inreplyto",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "actualend",
+   "tipo": "DateTime",
+   "detalle": "Kind=Utc 2026-09-28T20:28:10.0000000Z"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "senton",
+   "tipo": "DateTime",
+   "detalle": "Kind=Utc 2026-09-28T22:05:48.0000000Z"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "createdby",
+   "tipo": "EntityReference",
+   "detalle": "-> systemuser (Name presente)"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "regardingobjectid",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "ownerid",
+   "tipo": "EntityReference",
+   "detalle": "-> systemuser (Name presente)"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "from",
+   "tipo": "EntityCollection",
+   "detalle": ""
+  },
+  {
+   "fixture": "01",
+   "entidad": "email real saliente",
+   "atributo": "to",
+   "tipo": "EntityCollection",
+   "detalle": ""
+  },
+  {
+   "fixture": "01",
+   "entidad": "email sintetico entrante",
+   "atributo": "regardingobjectid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_conversacion (Name presente)"
+  },
+  {
+   "fixture": "01",
+   "entidad": "email sintetico saliente",
+   "atributo": "regardingobjectid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_conversacion (Name presente)"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "statecode",
+   "tipo": "OptionSetValue",
+   "detalle": "0"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "statuscode",
+   "tipo": "OptionSetValue",
+   "detalle": "1"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "sanic_clienteid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_cliente (Name presente)"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "sanic_unidaaid",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "sanic_finalizadoporid",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "sanic_resultado",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "sanic_fechaprimercorreo",
+   "tipo": "DateTime",
+   "detalle": "Kind=Utc 2026-10-14T15:06:51.0000000Z"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "sanic_fechafinalizacion",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "sanic_cantidadrespuestas",
+   "tipo": "Int32",
+   "detalle": "0"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "sanic_correonuevoenfinalizada",
+   "tipo": "Boolean",
+   "detalle": "False"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "ownerid",
+   "tipo": "EntityReference",
+   "detalle": "-> team (Name presente)"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "createdon",
+   "tipo": "DateTime",
+   "detalle": "Kind=Utc 2026-10-14T15:06:51.0000000Z"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion abierta",
+   "atributo": "Entity.RowVersion",
+   "tipo": "String",
+   "detalle": "13059426"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion finalizada",
+   "atributo": "statecode",
+   "tipo": "OptionSetValue",
+   "detalle": "1"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion finalizada",
+   "atributo": "statuscode",
+   "tipo": "OptionSetValue",
+   "detalle": "2"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion finalizada",
+   "atributo": "sanic_unidaaid",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion finalizada",
+   "atributo": "sanic_finalizadoporid",
+   "tipo": "EntityReference",
+   "detalle": "-> systemuser (Name presente)"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion finalizada",
+   "atributo": "sanic_resultado",
+   "tipo": "OptionSetValue",
+   "detalle": "159460003"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion finalizada",
+   "atributo": "sanic_fechafinalizacion",
+   "tipo": "DateTime",
+   "detalle": "Kind=Utc 2026-10-14T15:06:52.0000000Z"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion finalizada",
+   "atributo": "Entity.RowVersion",
+   "tipo": "String",
+   "detalle": "13059444"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion unida",
+   "atributo": "statecode",
+   "tipo": "OptionSetValue",
+   "detalle": "1"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion unida",
+   "atributo": "statuscode",
+   "tipo": "OptionSetValue",
+   "detalle": "159460001"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion unida",
+   "atributo": "sanic_unidaaid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_conversacion (Name presente)"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion unida",
+   "atributo": "sanic_finalizadoporid",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion unida",
+   "atributo": "sanic_resultado",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion unida",
+   "atributo": "sanic_fechafinalizacion",
+   "tipo": "DateTime",
+   "detalle": "Kind=Utc 2026-10-14T15:06:52.0000000Z"
+  },
+  {
+   "fixture": "02",
+   "entidad": "conversacion unida",
+   "atributo": "Entity.RowVersion",
+   "tipo": "String",
+   "detalle": "13059460"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "statecode",
+   "tipo": "OptionSetValue",
+   "detalle": "0"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "statuscode",
+   "tipo": "OptionSetValue",
+   "detalle": "1"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_producto",
+   "tipo": "OptionSetValue",
+   "detalle": "159460001"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_saldoinicial",
+   "tipo": "Decimal",
+   "detalle": "'1000.5000000000'"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_cuotamensual",
+   "tipo": "Decimal",
+   "detalle": "'150.0400000000'"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_plazo",
+   "tipo": "Int32",
+   "detalle": "6"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_fechainicio",
+   "tipo": "DateTime",
+   "detalle": "Kind=Unspecified 2026-11-01T00:00:00.0000000"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_fechaformalizacion",
+   "tipo": "DateTime",
+   "detalle": "Kind=Unspecified 2026-10-10T00:00:00.0000000"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_fechacongelamiento",
+   "tipo": "DateTime",
+   "detalle": "Kind=Utc 2026-10-14T15:07:27.0000000Z"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_numeroarreglo",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_oficialid",
+   "tipo": "EntityReference",
+   "detalle": "-> systemuser (Name presente)"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_clienteid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_cliente (Name presente)"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_conversacionid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_conversacion (Name presente)"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo borrador congelado",
+   "atributo": "sanic_versionplantillaid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_versionplantilla (Name presente)"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "statecode",
+   "tipo": "OptionSetValue",
+   "detalle": "0"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "statuscode",
+   "tipo": "OptionSetValue",
+   "detalle": "159460001"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_producto",
+   "tipo": "OptionSetValue",
+   "detalle": "159460001"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_saldoinicial",
+   "tipo": "Decimal",
+   "detalle": "'1000.5000000000'"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_cuotamensual",
+   "tipo": "Decimal",
+   "detalle": "'150.0400000000'"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_plazo",
+   "tipo": "Int32",
+   "detalle": "6"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_fechainicio",
+   "tipo": "DateTime",
+   "detalle": "Kind=Unspecified 2026-11-01T00:00:00.0000000"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_fechaformalizacion",
+   "tipo": "DateTime",
+   "detalle": "Kind=Unspecified 2026-10-10T00:00:00.0000000"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_fechacongelamiento",
+   "tipo": "(AUSENTE: la columna no viene en Attributes)",
+   "detalle": ""
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_fechaformalizado",
+   "tipo": "DateTime",
+   "detalle": "Kind=Utc 2026-10-14T15:07:28.0000000Z"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_numeroarreglo",
+   "tipo": "Int32",
+   "detalle": "1"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_oficialid",
+   "tipo": "EntityReference",
+   "detalle": "-> systemuser (Name presente)"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_clienteid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_cliente (Name presente)"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_conversacionid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_conversacion (Name presente)"
+  },
+  {
+   "fixture": "03",
+   "entidad": "arreglo vigente",
+   "atributo": "sanic_versionplantillaid",
+   "tipo": "EntityReference",
+   "detalle": "-> sanic_carp_tbl_versionplantilla (Name presente)"
+  },
+  {
+   "fixture": "04",
+   "entidad": "teammembership",
+   "atributo": "systemuserid",
+   "tipo": "Guid",
+   "detalle": ""
+  },
+  {
+   "fixture": "04",
+   "entidad": "teammembership",
+   "atributo": "teamid",
+   "tipo": "Guid",
+   "detalle": ""
+  },
+  {
+   "fixture": "04",
+   "entidad": "teammembership",
+   "atributo": "teammembershipid",
+   "tipo": "Guid",
+   "detalle": ""
+  },
+  {
+   "fixture": "04",
+   "entidad": "team",
+   "atributo": "isdefault",
+   "tipo": "Boolean",
+   "detalle": "True"
+  },
+  {
+   "fixture": "04",
+   "entidad": "team",
+   "atributo": "teamtype",
+   "tipo": "OptionSetValue",
+   "detalle": "0"
+  },
+  {
+   "fixture": "04",
+   "entidad": "team",
+   "atributo": "businessunitid",
+   "tipo": "EntityReference",
+   "detalle": "-> businessunit (Name presente)"
+  },
+  {
+   "fixture": "04",
+   "entidad": "team",
+   "atributo": "name",
+   "tipo": "String",
+   "detalle": "ZZF Team 1"
+  },
+  {
+   "fixture": "04",
+   "entidad": "queue",
+   "atributo": "emailaddress",
+   "tipo": "String",
+   "detalle": "zzf-buzon4@example.com"
+  },
+  {
+   "fixture": "05",
+   "entidad": "environmentvariabledefinition",
+   "atributo": "schemaname",
+   "tipo": "String",
+   "detalle": "sanic_zzfevtexto"
+  },
+  {
+   "fixture": "05",
+   "entidad": "environmentvariabledefinition",
+   "atributo": "type",
+   "tipo": "OptionSetValue",
+   "detalle": "100000000"
+  },
+  {
+   "fixture": "05",
+   "entidad": "environmentvariabledefinition",
+   "atributo": "defaultvalue",
+   "tipo": "String",
+   "detalle": "ZZF-defecto"
+  },
+  {
+   "fixture": "05",
+   "entidad": "environmentvariablevalue",
+   "atributo": "value",
+   "tipo": "String",
+   "detalle": "ZZF-valor"
+  },
+  {
+   "fixture": "05",
+   "entidad": "environmentvariablevalue",
+   "atributo": "environmentvariabledefinitionid",
+   "tipo": "EntityReference",
+   "detalle": "-> environmentvariabledefinition (Name presente)"
+  },
+  {
+   "fixture": "05",
+   "entidad": "environmentvariablevalue",
+   "atributo": "schemaname",
+   "tipo": "String",
+   "detalle": "sanic_zzfevtexto"
+  },
+  {
+   "fixture": "06",
+   "entidad": "WhoAmIResponse.Results",
+   "atributo": "BusinessUnitId",
+   "tipo": "Guid",
+   "detalle": ""
+  },
+  {
+   "fixture": "06",
+   "entidad": "WhoAmIResponse.Results",
+   "atributo": "OrganizationId",
+   "tipo": "Guid",
+   "detalle": ""
+  },
+  {
+   "fixture": "06",
+   "entidad": "WhoAmIResponse.Results",
+   "atributo": "UserId",
+   "tipo": "Guid",
+   "detalle": ""
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser SYSTEM",
+   "atributo": "fullname",
+   "tipo": "String",
+   "detalle": "SYSTEM"
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser SYSTEM",
+   "atributo": "isdisabled",
+   "tipo": "Boolean",
+   "detalle": "True"
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser SYSTEM",
+   "atributo": "businessunitid",
+   "tipo": "EntityReference",
+   "detalle": "-> businessunit (Name presente)"
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser SYSTEM",
+   "atributo": "accessmode",
+   "tipo": "OptionSetValue",
+   "detalle": "0"
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser SYSTEM",
+   "atributo": "systemuserid",
+   "tipo": "Guid",
+   "detalle": ""
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser ordinario (app conectada)",
+   "atributo": "fullname",
+   "tipo": "String",
+   "detalle": "ZZF Usuario 2"
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser ordinario (app conectada)",
+   "atributo": "isdisabled",
+   "tipo": "Boolean",
+   "detalle": "False"
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser ordinario (app conectada)",
+   "atributo": "businessunitid",
+   "tipo": "EntityReference",
+   "detalle": "-> businessunit (Name presente)"
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser ordinario (app conectada)",
+   "atributo": "accessmode",
+   "tipo": "OptionSetValue",
+   "detalle": "4"
+  },
+  {
+   "fixture": "06",
+   "entidad": "systemuser ordinario (app conectada)",
+   "atributo": "systemuserid",
+   "tipo": "Guid",
+   "detalle": ""
+  },
+  {
+   "fixture": "08",
+   "entidad": "arreglo + joins",
+   "atributo": "cli.sanic_nombre",
+   "tipo": "AliasedValue -> String",
+   "detalle": "ZZF-cli-1"
+  },
+  {
+   "fixture": "08",
+   "entidad": "arreglo + joins",
+   "atributo": "cli.statecode",
+   "tipo": "AliasedValue -> OptionSetValue",
+   "detalle": "0"
+  },
+  {
+   "fixture": "08",
+   "entidad": "arreglo + joins",
+   "atributo": "cli.createdby",
+   "tipo": "AliasedValue -> EntityReference",
+   "detalle": "-> systemuser (Name presente)"
+  },
+  {
+   "fixture": "08",
+   "entidad": "arreglo + joins",
+   "atributo": "cli.createdon",
+   "tipo": "AliasedValue -> DateTime",
+   "detalle": "Kind=Utc 2026-10-14T15:06:51.0000000Z"
+  },
+  {
+   "fixture": "08",
+   "entidad": "arreglo + joins",
+   "atributo": "ver.sanic_estado",
+   "tipo": "AliasedValue -> OptionSetValue",
+   "detalle": "159460002"
+  },
+  {
+   "fixture": "08",
+   "entidad": "arreglo + joins",
+   "atributo": "ver.sanic_capacidad",
+   "tipo": "AliasedValue -> Int32",
+   "detalle": "60"
+  },
+  {
+   "fixture": "08",
+   "entidad": "arreglo + joins",
+   "atributo": "ver.sanic_aprobadoporid",
+   "tipo": "AliasedValue -> EntityReference",
+   "detalle": "-> systemuser (Name presente)"
+  },
+  {
+   "fixture": "08",
+   "entidad": "arreglo + joins",
+   "atributo": "conv.statuscode",
+   "tipo": "AliasedValue -> OptionSetValue",
+   "detalle": "1"
+  },
+  {
+   "fixture": "08",
+   "entidad": "arreglo + joins",
+   "atributo": "conv.sanic_fechaprimercorreo",
+   "tipo": "AliasedValue -> DateTime",
+   "detalle": "Kind=Utc 2026-10-14T15:06:51.0000000Z"
+  },
+  {
+   "fixture": "08",
+   "entidad": "fetchxml agregado",
+   "atributo": "total",
+   "tipo": "AliasedValue -> Int32",
+   "detalle": "4"
+  },
+  {
+   "fixture": "08",
+   "entidad": "fetchxml agregado",
+   "atributo": "ultima",
+   "tipo": "AliasedValue -> DateTime",
+   "detalle": "Kind=Utc 2026-10-14T15:06:52.0000000Z"
+  },
+  {
+   "fixture": "08",
+   "entidad": "fetchxml agregado",
+   "atributo": "suma",
+   "tipo": "AliasedValue -> Int32",
+   "detalle": "0"
+  },
+  {
+   "fixture": "08",
+   "entidad": "fetchxml groupby",
+   "atributo": "estado",
+   "tipo": "AliasedValue -> OptionSetValue",
+   "detalle": "1"
+  }
+ ],
+ "fallas": [
+  {
+   "caso": "K-01 (clave alterna)",
+   "tipo_exterior": "System.ServiceModel.FaultException<OrganizationServiceFault>",
+   "cadena_de_tipos_largo": 1,
+   "exterior_es_FaultException_OSF": true,
+   "ErrorCode_dec": -2147088238,
+   "ErrorCode_hex": "0x80060892",
+   "claves_ErrorDetails": {
+    "0": "String",
+    "1": "String",
+    "ApiActivityIdKey": "Guid",
+    "ApiDepthKey": "Int32",
+    "ApiExceptionCategory": "String",
+    "ApiExceptionHttpStatusCode": "Int32",
+    "ApiExceptionMessageName": "String",
+    "ApiExceptionOwnerKey": "String",
+    "ApiExceptionSourceKey": "String",
+    "ApiOriginalExceptionKey": "String",
+    "ApiPluginSolutionNameKey": "String",
+    "ApiSourceActivityKey": "String",
+    "ApiStepKey": "Guid",
+    "ApiStepSolutionNameKey": "String",
+    "DuplicateAttributes": "String",
+    "DuplicateEntity": "String"
+   },
+   "tiene_InnerFault": true,
+   "Timestamp_Kind": "Utc"
+  },
+  {
+   "caso": "version de fila no coincide",
+   "tipo_exterior": "System.ServiceModel.FaultException<OrganizationServiceFault>",
+   "cadena_de_tipos_largo": 1,
+   "exterior_es_FaultException_OSF": true,
+   "ErrorCode_dec": -2147088254,
+   "ErrorCode_hex": "0x80060882",
+   "claves_ErrorDetails": {
+    "ApiActivityIdKey": "Guid",
+    "ApiDepthKey": "Int32",
+    "ApiExceptionCategory": "String",
+    "ApiExceptionHttpStatusCode": "Int32",
+    "ApiExceptionMessageName": "String",
+    "ApiExceptionOwnerKey": "String",
+    "ApiExceptionSourceKey": "String",
+    "ApiOriginalExceptionKey": "String",
+    "ApiPluginSolutionNameKey": "String",
+    "ApiSourceActivityKey": "String",
+    "ApiStepKey": "Guid",
+    "ApiStepSolutionNameKey": "String"
+   },
+   "tiene_InnerFault": true,
+   "Timestamp_Kind": "Utc"
+  },
+  {
+   "caso": "Retrieve de fila inexistente",
+   "tipo_exterior": "System.ServiceModel.FaultException<OrganizationServiceFault>",
+   "cadena_de_tipos_largo": 1,
+   "exterior_es_FaultException_OSF": true,
+   "ErrorCode_dec": -2147220969,
+   "ErrorCode_hex": "0x80040217",
+   "claves_ErrorDetails": {
+    "ApiActivityIdKey": "Guid",
+    "ApiDepthKey": "Int32",
+    "ApiExceptionCategory": "String",
+    "ApiExceptionHttpStatusCode": "Int32",
+    "ApiExceptionMessageName": "String",
+    "ApiExceptionOwnerKey": "String",
+    "ApiExceptionSourceKey": "String",
+    "ApiOriginalExceptionKey": "String",
+    "ApiPluginSolutionNameKey": "String",
+    "ApiSourceActivityKey": "String",
+    "ApiStepKey": "Guid",
+    "ApiStepSolutionNameKey": "String"
+   },
+   "tiene_InnerFault": true,
+   "Timestamp_Kind": "Utc"
+  }
+ ],
+ "paginacion": {
+  "pagina_1": {
+   "cantidad": 2,
+   "MoreRecords": true,
+   "TotalRecordCount": 4,
+   "TotalRecordCountLimitExceeded": false,
+   "PagingCookie_forma": "<cookie page=\"1\"><createdon la",
+   "MinActiveRowVersion": "-1"
+  },
+  "pagina_2": {
+   "cantidad": 2,
+   "MoreRecords": false,
+   "TotalRecordCount": 4,
+   "TotalRecordCountLimitExceeded": false,
+   "PagingCookie_forma": "<cookie page=\"2\"><createdon la",
+   "MinActiveRowVersion": "-1"
+  },
+  "pagina_1_sin_ReturnTotalRecordCount": {
+   "MoreRecords": true,
+   "TotalRecordCount": -1,
+   "tiene_PagingCookie": true
+  }
+ },
+ "EntityReference_Name_nulo_por_tabla_destino": {
+  "activitypointer": 8,
+  "systemuser": 19,
+  "mailbox": 2,
+  "team": 7,
+  "businessunit": 1,
+  "calendar": 2
+ },
+ "EntityReference_Name_presente_por_tabla_destino": {
+  "queue": 10,
+  "email": 2,
+  "systemuser": 71,
+  "contact": 2,
+  "businessunit": 21,
+  "sanic_carp_tbl_conversacion": 5,
+  "team": 7,
+  "sanic_carp_tbl_cliente": 7,
+  "sanic_carp_tbl_versionplantilla": 2,
+  "mailbox": 4,
+  "organization": 2,
+  "environmentvariabledefinition": 1
+ }
+}

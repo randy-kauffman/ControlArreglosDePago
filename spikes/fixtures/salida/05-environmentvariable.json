@@ -1,0 +1,296 @@
+{
+  "cabecera": {
+    "fixture": "05-environmentvariable",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "generado_utc": "2026-10-14",
+    "filas": "SINTETICAS sanic_zzf... (no existian variables sanic_carp_ev_*; se creo una definicion de texto descartable FUERA de la solucion y se borra al final)",
+    "advertencia": "Dentro de un plugin (sandbox) la deserializacion puede diferir, sobre todo DateTime.Kind. No se capturo desde un plugin.",
+    "notas": [
+      "type = OptionSetValue(100000000) = Texto.",
+      "El valor y el valor por defecto son 'ZZF-...'."
+    ]
+  },
+  "contenido": {
+    "definiciones_del_proyecto_sanic_carp_ev_": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "environmentvariabledefinition",
+      "MoreRecords": false,
+      "PagingCookie": "",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 0,
+      "Entities": []
+    },
+    "definicion_descartable": {
+      "tipo": "Microsoft.Xrm.Sdk.Entity",
+      "LogicalName": "environmentvariabledefinition",
+      "Id": "0fff0009-0000-4000-8000-00000000002b",
+      "RowVersion": "13059585",
+      "KeyAttributes": {},
+      "EntityState": null,
+      "atributos": {
+        "componentstate": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "createdby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "createdon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:07:28.0000000Z",
+          "kind": "Utc"
+        },
+        "defaultvalue": {
+          "tipo": "System.String",
+          "valor": "ZZF-defecto"
+        },
+        "displayname": {
+          "tipo": "System.String",
+          "valor": "ZZF-ev texto"
+        },
+        "environmentvariabledefinitionid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-00000000002b"
+        },
+        "environmentvariabledefinitionidunique": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-00000000002c"
+        },
+        "introducedversion": {
+          "tipo": "System.String",
+          "valor": "ZZF-texto-introducedversion 1"
+        },
+        "iscustomizable": {
+          "tipo": "Microsoft.Xrm.Sdk.BooleanManagedProperty",
+          "valor": {
+            "Value": true,
+            "CanBeChanged": true,
+            "ManagedPropertyLogicalName": "iscustomizableanddeletable"
+          }
+        },
+        "ismanaged": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "isrequired": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "modifiedby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "modifiedon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:07:28.0000000Z",
+          "kind": "Utc"
+        },
+        "ownerid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "owningbusinessunit": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "businessunit",
+            "id": "0fff0003-0000-4000-8000-000000000009",
+            "name": "ZZF BU 1"
+          }
+        },
+        "owninguser": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": null
+          }
+        },
+        "schemaname": {
+          "tipo": "System.String",
+          "valor": "sanic_zzfevtexto"
+        },
+        "secretstore": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "solutionid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-00000000002d"
+        },
+        "statecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "statuscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "type": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 100000000
+        }
+      },
+      "FormattedValues": {
+        "componentstate": "Published",
+        "createdby": "ZZF Usuario 2",
+        "createdon": "10/14/2026 3:07 PM",
+        "iscustomizable": "True",
+        "ismanaged": "Unmanaged",
+        "isrequired": "No",
+        "modifiedby": "ZZF Usuario 2",
+        "modifiedon": "10/14/2026 3:07 PM",
+        "ownerid": "ZZF Usuario 2",
+        "owningbusinessunit": "ZZF BU 1",
+        "secretstore": "Azure Key Vault",
+        "statecode": "Active",
+        "statuscode": "Active",
+        "type": "String"
+      }
+    },
+    "valor_descartable": {
+      "tipo": "Microsoft.Xrm.Sdk.Entity",
+      "LogicalName": "environmentvariablevalue",
+      "Id": "0fff0009-0000-4000-8000-00000000002e",
+      "RowVersion": "13059604",
+      "KeyAttributes": {},
+      "EntityState": null,
+      "atributos": {
+        "componentstate": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "createdby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "createdon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:07:29.0000000Z",
+          "kind": "Utc"
+        },
+        "environmentvariabledefinitionid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "environmentvariabledefinition",
+            "id": "0fff0009-0000-4000-8000-00000000002b",
+            "name": "ZZF-texto-environmentvariabledefinition 1"
+          }
+        },
+        "environmentvariablevalueid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-00000000002e"
+        },
+        "environmentvariablevalueidunique": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-00000000002f"
+        },
+        "introducedversion": {
+          "tipo": "System.String",
+          "valor": "ZZF-texto-introducedversion 1"
+        },
+        "iscustomizable": {
+          "tipo": "Microsoft.Xrm.Sdk.BooleanManagedProperty",
+          "valor": {
+            "Value": true,
+            "CanBeChanged": true,
+            "ManagedPropertyLogicalName": "iscustomizableanddeletable"
+          }
+        },
+        "ismanaged": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "modifiedby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "modifiedon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:07:29.0000000Z",
+          "kind": "Utc"
+        },
+        "ownerid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": null
+          }
+        },
+        "owningbusinessunit": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "businessunit",
+            "id": "0fff0003-0000-4000-8000-000000000009",
+            "name": null
+          }
+        },
+        "owninguser": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": null
+          }
+        },
+        "schemaname": {
+          "tipo": "System.String",
+          "valor": "sanic_zzfevtexto"
+        },
+        "solutionid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-00000000002d"
+        },
+        "statecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "statuscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "value": {
+          "tipo": "System.String",
+          "valor": "ZZF-valor"
+        }
+      },
+      "FormattedValues": {
+        "componentstate": "Published",
+        "createdby": "ZZF Usuario 2",
+        "createdon": "10/14/2026 3:07 PM",
+        "environmentvariabledefinitionid": "ZZF-texto-environmentvariabledefinition 1",
+        "iscustomizable": "True",
+        "ismanaged": "Unmanaged",
+        "modifiedby": "ZZF Usuario 2",
+        "modifiedon": "10/14/2026 3:07 PM",
+        "statecode": "Active",
+        "statuscode": "Active"
+      }
+    }
+  }
+}

@@ -1,0 +1,725 @@
+{
+  "cabecera": {
+    "fixture": "08-aliased-y-agregados",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "generado_utc": "2026-10-14",
+    "filas": "SINTETICAS ZZF-",
+    "advertencia": "Dentro de un plugin (sandbox) la deserializacion puede diferir, sobre todo DateTime.Kind. No se capturo desde un plugin.",
+    "notas": [
+      "Extra al item 6 del diseno: AliasedValue de joins de QueryExpression (alias.columna) y de agregados de FetchXML.",
+      "El doble 'no usa joins'; este fixture documenta la forma por si se llega a necesitar."
+    ]
+  },
+  "contenido": {
+    "querybyexpression_con_joins_alias_cli_ver_conv": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "sanic_carp_tbl_arreglo",
+      "MoreRecords": false,
+      "PagingCookie": "<cookie page=\"1\"><sanic_carp_tbl_arregloid last=\"{0fff0009-0000-4000-8000-00000000001f}\" first=\"{0fff0009-0000-4000-8000-00000000001d}\" /></cookie>",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 2,
+      "Entities": [
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "sanic_carp_tbl_arreglo",
+          "Id": "0fff0009-0000-4000-8000-00000000001d",
+          "RowVersion": "13059568",
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "cli.createdby": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "createdby",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+                  "valor": {
+                    "logicalName": "systemuser",
+                    "id": "0fff0001-0000-4000-8000-000000000008",
+                    "name": "ZZF Usuario 2"
+                  }
+                }
+              }
+            },
+            "cli.createdby_createdbyyominame": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "createdbyyominame",
+                "valor": {
+                  "tipo": "System.String",
+                  "valor": "ZZF-texto-createdbyyominame 1"
+                }
+              }
+            },
+            "cli.createdon": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "createdon",
+                "valor": {
+                  "tipo": "System.DateTime",
+                  "valor": "2026-10-14T15:06:51.0000000Z",
+                  "kind": "Utc"
+                }
+              }
+            },
+            "cli.sanic_nombre": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "sanic_nombre",
+                "valor": {
+                  "tipo": "System.String",
+                  "valor": "ZZF-cli-1"
+                }
+              }
+            },
+            "cli.statecode": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "statecode",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 0
+                }
+              }
+            },
+            "conv.sanic_cantidadrespuestas": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_cantidadrespuestas",
+                "valor": {
+                  "tipo": "System.Int32",
+                  "valor": 0
+                }
+              }
+            },
+            "conv.sanic_clienteid": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_clienteid",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+                  "valor": {
+                    "logicalName": "sanic_carp_tbl_cliente",
+                    "id": "0fff0009-0000-4000-8000-00000000001a",
+                    "name": "ZZF-cli-1"
+                  }
+                }
+              }
+            },
+            "conv.sanic_fechaprimercorreo": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_fechaprimercorreo",
+                "valor": {
+                  "tipo": "System.DateTime",
+                  "valor": "2026-10-14T15:06:51.0000000Z",
+                  "kind": "Utc"
+                }
+              }
+            },
+            "conv.statecode": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "statecode",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 0
+                }
+              }
+            },
+            "conv.statuscode": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "statuscode",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 1
+                }
+              }
+            },
+            "sanic_carp_tbl_arregloid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0009-0000-4000-8000-00000000001d"
+            },
+            "sanic_fechainicio": {
+              "tipo": "System.DateTime",
+              "valor": "2026-11-01T00:00:00.0000000",
+              "kind": "Unspecified"
+            },
+            "sanic_nombre": {
+              "tipo": "System.String",
+              "valor": "ARR-001018"
+            },
+            "sanic_saldoinicial": {
+              "tipo": "System.Decimal",
+              "valor": "1000.5000000000"
+            },
+            "statuscode": {
+              "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+              "valor": 1
+            },
+            "ver.sanic_aprobadoporid": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_aprobadoporid",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+                  "valor": {
+                    "logicalName": "systemuser",
+                    "id": "0fff0001-0000-4000-8000-000000000008",
+                    "name": "ZZF Usuario 2"
+                  }
+                }
+              }
+            },
+            "ver.sanic_aprobadoporid_sanic_aprobadoporidyominame": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_aprobadoporidyominame",
+                "valor": {
+                  "tipo": "System.String",
+                  "valor": "ZZF-texto-sanic_aprobadoporidyominame 1"
+                }
+              }
+            },
+            "ver.sanic_capacidad": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_capacidad",
+                "valor": {
+                  "tipo": "System.Int32",
+                  "valor": 60
+                }
+              }
+            },
+            "ver.sanic_estado": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_estado",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 159460002
+                }
+              }
+            },
+            "ver.sanic_fechaaprobacion": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_fechaaprobacion",
+                "valor": {
+                  "tipo": "System.DateTime",
+                  "valor": "2026-10-14T15:06:51.0000000Z",
+                  "kind": "Utc"
+                }
+              }
+            }
+          },
+          "FormattedValues": {
+            "cli.createdby": "ZZF Usuario 2",
+            "cli.createdon": "10/14/2026 3:06 PM",
+            "cli.statecode": "Active",
+            "conv.sanic_cantidadrespuestas": "0",
+            "conv.sanic_clienteid": "ZZF-cli-1",
+            "conv.sanic_fechaprimercorreo": "10/14/2026 3:06 PM",
+            "conv.statecode": "Active",
+            "conv.statuscode": "Abierta",
+            "sanic_fechainicio": "11/1/2026",
+            "sanic_saldoinicial": "1,000.50",
+            "statuscode": "Borrador",
+            "ver.sanic_aprobadoporid": "ZZF Usuario 2",
+            "ver.sanic_capacidad": "60",
+            "ver.sanic_estado": "Vigente",
+            "ver.sanic_fechaaprobacion": "10/14/2026 3:06 PM"
+          }
+        },
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "sanic_carp_tbl_arreglo",
+          "Id": "0fff0009-0000-4000-8000-00000000001f",
+          "RowVersion": "13059576",
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "cli.createdby": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "createdby",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+                  "valor": {
+                    "logicalName": "systemuser",
+                    "id": "0fff0001-0000-4000-8000-000000000008",
+                    "name": "ZZF Usuario 2"
+                  }
+                }
+              }
+            },
+            "cli.createdby_createdbyyominame": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "createdbyyominame",
+                "valor": {
+                  "tipo": "System.String",
+                  "valor": "ZZF-texto-createdbyyominame 1"
+                }
+              }
+            },
+            "cli.createdon": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "createdon",
+                "valor": {
+                  "tipo": "System.DateTime",
+                  "valor": "2026-10-14T15:06:51.0000000Z",
+                  "kind": "Utc"
+                }
+              }
+            },
+            "cli.sanic_nombre": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "sanic_nombre",
+                "valor": {
+                  "tipo": "System.String",
+                  "valor": "ZZF-cli-1"
+                }
+              }
+            },
+            "cli.statecode": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_cliente",
+                "attributeLogicalName": "statecode",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 0
+                }
+              }
+            },
+            "conv.sanic_cantidadrespuestas": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_cantidadrespuestas",
+                "valor": {
+                  "tipo": "System.Int32",
+                  "valor": 0
+                }
+              }
+            },
+            "conv.sanic_clienteid": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_clienteid",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+                  "valor": {
+                    "logicalName": "sanic_carp_tbl_cliente",
+                    "id": "0fff0009-0000-4000-8000-00000000001a",
+                    "name": "ZZF-cli-1"
+                  }
+                }
+              }
+            },
+            "conv.sanic_fechaprimercorreo": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_fechaprimercorreo",
+                "valor": {
+                  "tipo": "System.DateTime",
+                  "valor": "2026-10-14T15:06:51.0000000Z",
+                  "kind": "Utc"
+                }
+              }
+            },
+            "conv.statecode": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "statecode",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 0
+                }
+              }
+            },
+            "conv.statuscode": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "statuscode",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 1
+                }
+              }
+            },
+            "sanic_carp_tbl_arregloid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0009-0000-4000-8000-00000000001f"
+            },
+            "sanic_fechainicio": {
+              "tipo": "System.DateTime",
+              "valor": "2026-11-01T00:00:00.0000000",
+              "kind": "Unspecified"
+            },
+            "sanic_nombre": {
+              "tipo": "System.String",
+              "valor": "ARR-001019"
+            },
+            "sanic_saldoinicial": {
+              "tipo": "System.Decimal",
+              "valor": "1000.5000000000"
+            },
+            "statuscode": {
+              "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+              "valor": 159460001
+            },
+            "ver.sanic_aprobadoporid": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_aprobadoporid",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+                  "valor": {
+                    "logicalName": "systemuser",
+                    "id": "0fff0001-0000-4000-8000-000000000008",
+                    "name": "ZZF Usuario 2"
+                  }
+                }
+              }
+            },
+            "ver.sanic_aprobadoporid_sanic_aprobadoporidyominame": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_aprobadoporidyominame",
+                "valor": {
+                  "tipo": "System.String",
+                  "valor": "ZZF-texto-sanic_aprobadoporidyominame 1"
+                }
+              }
+            },
+            "ver.sanic_capacidad": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_capacidad",
+                "valor": {
+                  "tipo": "System.Int32",
+                  "valor": 60
+                }
+              }
+            },
+            "ver.sanic_estado": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_estado",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 159460002
+                }
+              }
+            },
+            "ver.sanic_fechaaprobacion": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_versionplantilla",
+                "attributeLogicalName": "sanic_fechaaprobacion",
+                "valor": {
+                  "tipo": "System.DateTime",
+                  "valor": "2026-10-14T15:06:51.0000000Z",
+                  "kind": "Utc"
+                }
+              }
+            }
+          },
+          "FormattedValues": {
+            "cli.createdby": "ZZF Usuario 2",
+            "cli.createdon": "10/14/2026 3:06 PM",
+            "cli.statecode": "Active",
+            "conv.sanic_cantidadrespuestas": "0",
+            "conv.sanic_clienteid": "ZZF-cli-1",
+            "conv.sanic_fechaprimercorreo": "10/14/2026 3:06 PM",
+            "conv.statecode": "Active",
+            "conv.statuscode": "Abierta",
+            "sanic_fechainicio": "11/1/2026",
+            "sanic_saldoinicial": "1,000.50",
+            "statuscode": "Vigente",
+            "ver.sanic_aprobadoporid": "ZZF Usuario 2",
+            "ver.sanic_capacidad": "60",
+            "ver.sanic_estado": "Vigente",
+            "ver.sanic_fechaaprobacion": "10/14/2026 3:06 PM"
+          }
+        }
+      ]
+    },
+    "querybyexpression_definicion_con_valor_alias_val": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "environmentvariabledefinition",
+      "MoreRecords": false,
+      "PagingCookie": "<cookie page=\"1\"><environmentvariabledefinitionid last=\"{0fff0009-0000-4000-8000-00000000002b}\" first=\"{0fff0009-0000-4000-8000-00000000002b}\" /></cookie>",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 1,
+      "Entities": [
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "environmentvariabledefinition",
+          "Id": "0fff0009-0000-4000-8000-00000000002b",
+          "RowVersion": "13059585",
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "environmentvariabledefinitionid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0009-0000-4000-8000-00000000002b"
+            },
+            "schemaname": {
+              "tipo": "System.String",
+              "valor": "sanic_zzfevtexto"
+            },
+            "type": {
+              "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+              "valor": 100000000
+            },
+            "val.schemaname": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "environmentvariablevalue",
+                "attributeLogicalName": "schemaname",
+                "valor": {
+                  "tipo": "System.String",
+                  "valor": "sanic_zzfevtexto"
+                }
+              }
+            },
+            "val.value": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "environmentvariablevalue",
+                "attributeLogicalName": "value",
+                "valor": {
+                  "tipo": "System.String",
+                  "valor": "ZZF-valor"
+                }
+              }
+            }
+          },
+          "FormattedValues": {
+            "type": "String"
+          }
+        }
+      ]
+    },
+    "fetchxml_agregado_count_max_sum": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "sanic_carp_tbl_conversacion",
+      "MoreRecords": false,
+      "PagingCookie": "",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 1,
+      "Entities": [
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "sanic_carp_tbl_conversacion",
+          "Id": "00000000-0000-0000-0000-000000000000",
+          "RowVersion": null,
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "suma": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_cantidadrespuestas",
+                "valor": {
+                  "tipo": "System.Int32",
+                  "valor": 0
+                }
+              }
+            },
+            "total": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_carp_tbl_conversacionid",
+                "valor": {
+                  "tipo": "System.Int32",
+                  "valor": 4
+                }
+              }
+            },
+            "ultima": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_fechaprimercorreo",
+                "valor": {
+                  "tipo": "System.DateTime",
+                  "valor": "2026-10-14T15:06:52.0000000Z",
+                  "kind": "Utc"
+                }
+              }
+            }
+          },
+          "FormattedValues": {
+            "suma": "0",
+            "total": "4",
+            "ultima": "10/14/2026 3:06 PM"
+          }
+        }
+      ]
+    },
+    "fetchxml_agregado_groupby_statuscode": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "sanic_carp_tbl_conversacion",
+      "MoreRecords": false,
+      "PagingCookie": "",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 3,
+      "Entities": [
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "sanic_carp_tbl_conversacion",
+          "Id": "00000000-0000-0000-0000-000000000000",
+          "RowVersion": null,
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "cuantas": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_carp_tbl_conversacionid",
+                "valor": {
+                  "tipo": "System.Int32",
+                  "valor": 2
+                }
+              }
+            },
+            "estado": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "statuscode",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 1
+                }
+              }
+            }
+          },
+          "FormattedValues": {
+            "cuantas": "2",
+            "estado": "Abierta"
+          }
+        },
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "sanic_carp_tbl_conversacion",
+          "Id": "00000000-0000-0000-0000-000000000000",
+          "RowVersion": null,
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "cuantas": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_carp_tbl_conversacionid",
+                "valor": {
+                  "tipo": "System.Int32",
+                  "valor": 1
+                }
+              }
+            },
+            "estado": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "statuscode",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 2
+                }
+              }
+            }
+          },
+          "FormattedValues": {
+            "cuantas": "1",
+            "estado": "Finalizada"
+          }
+        },
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "sanic_carp_tbl_conversacion",
+          "Id": "00000000-0000-0000-0000-000000000000",
+          "RowVersion": null,
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "cuantas": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "sanic_carp_tbl_conversacionid",
+                "valor": {
+                  "tipo": "System.Int32",
+                  "valor": 1
+                }
+              }
+            },
+            "estado": {
+              "tipo": "Microsoft.Xrm.Sdk.AliasedValue",
+              "valor": {
+                "entityLogicalName": "sanic_carp_tbl_conversacion",
+                "attributeLogicalName": "statuscode",
+                "valor": {
+                  "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                  "valor": 159460001
+                }
+              }
+            }
+          },
+          "FormattedValues": {
+            "cuantas": "1",
+            "estado": "Unida"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,558 @@
+{
+  "cabecera": {
+    "fixture": "04-teammembership-team-queue",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "generado_utc": "2026-10-14",
+    "filas": "REALES anonimizadas (solo lectura)",
+    "advertencia": "Dentro de un plugin (sandbox) la deserializacion puede diferir, sobre todo DateTime.Kind. No se capturo desde un plugin.",
+    "notas": [
+      "teammembership se consulta por RetrieveMultiple sobre la tabla intersect, sin join.",
+      "El usuario de aplicacion no administrador esta deshabilitado en Dev (estado inicial de los spikes anteriores)."
+    ]
+  },
+  "contenido": {
+    "teammembership_de_usuario_conectado": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "teammembership",
+      "MoreRecords": false,
+      "PagingCookie": "<cookie page=\"1\"><teammembershipid last=\"{0fff0002-0000-4000-8000-000000000021}\" first=\"{0fff0002-0000-4000-8000-000000000021}\" /></cookie>",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 1,
+      "Entities": [
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "teammembership",
+          "Id": "0fff0002-0000-4000-8000-000000000021",
+          "RowVersion": "5709815",
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "systemuserid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0001-0000-4000-8000-000000000008"
+            },
+            "teamid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0002-0000-4000-8000-000000000020"
+            },
+            "teammembershipid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0002-0000-4000-8000-000000000021"
+            }
+          },
+          "FormattedValues": {}
+        }
+      ]
+    },
+    "teammembership_de_usuario_de_aplicacion_no_administrador": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "teammembership",
+      "MoreRecords": false,
+      "PagingCookie": "<cookie page=\"1\"><teammembershipid last=\"{0fff0002-0000-4000-8000-000000000023}\" first=\"{0fff0002-0000-4000-8000-000000000023}\" /></cookie>",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 1,
+      "Entities": [
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "teammembership",
+          "Id": "0fff0002-0000-4000-8000-000000000023",
+          "RowVersion": "12778121",
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "systemuserid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0001-0000-4000-8000-000000000022"
+            },
+            "teamid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0002-0000-4000-8000-000000000018"
+            },
+            "teammembershipid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0002-0000-4000-8000-000000000023"
+            }
+          },
+          "FormattedValues": {}
+        }
+      ]
+    },
+    "teammembership_de_un_team_por_teamid": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "teammembership",
+      "MoreRecords": false,
+      "PagingCookie": "",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 1,
+      "Entities": [
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "teammembership",
+          "Id": "0fff0002-0000-4000-8000-000000000023",
+          "RowVersion": "12778121",
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "systemuserid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0001-0000-4000-8000-000000000022"
+            },
+            "teamid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0002-0000-4000-8000-000000000018"
+            },
+            "teammembershipid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0002-0000-4000-8000-000000000023"
+            }
+          },
+          "FormattedValues": {}
+        }
+      ]
+    },
+    "team_isdefault_de_la_BU_Arreglos_de_Pago": {
+      "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+      "EntityName": "team",
+      "MoreRecords": false,
+      "PagingCookie": "<cookie page=\"1\"><teamid last=\"{0fff0002-0000-4000-8000-000000000018}\" first=\"{0fff0002-0000-4000-8000-000000000018}\" /></cookie>",
+      "TotalRecordCount": -1,
+      "TotalRecordCountLimitExceeded": false,
+      "MinActiveRowVersion": "-1",
+      "cantidad": 1,
+      "Entities": [
+        {
+          "tipo": "Microsoft.Xrm.Sdk.Entity",
+          "LogicalName": "team",
+          "Id": "0fff0002-0000-4000-8000-000000000018",
+          "RowVersion": "12630727",
+          "KeyAttributes": {},
+          "EntityState": null,
+          "atributos": {
+            "administratorid": {
+              "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+              "valor": {
+                "logicalName": "systemuser",
+                "id": "0fff0001-0000-4000-8000-000000000008",
+                "name": "ZZF Usuario 2"
+              }
+            },
+            "businessunitid": {
+              "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+              "valor": {
+                "logicalName": "businessunit",
+                "id": "0fff0003-0000-4000-8000-000000000019",
+                "name": "ZZF BU 2"
+              }
+            },
+            "createdon": {
+              "tipo": "System.DateTime",
+              "valor": "2026-10-09T15:55:53.0000000Z",
+              "kind": "Utc"
+            },
+            "description": {
+              "tipo": "System.String",
+              "valor": "ZZF-cuerpo 11"
+            },
+            "isdefault": {
+              "tipo": "System.Boolean",
+              "valor": true
+            },
+            "issastokenset": {
+              "tipo": "System.Boolean",
+              "valor": false
+            },
+            "membershiptype": {
+              "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+              "valor": 0
+            },
+            "modifiedon": {
+              "tipo": "System.DateTime",
+              "valor": "2026-10-09T15:55:54.0000000Z",
+              "kind": "Utc"
+            },
+            "name": {
+              "tipo": "System.String",
+              "valor": "ZZF Team 1"
+            },
+            "organizationid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0005-0000-4000-8000-000000000024"
+            },
+            "queueid": {
+              "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+              "valor": {
+                "logicalName": "queue",
+                "id": "0fff0004-0000-4000-8000-000000000025",
+                "name": "ZZF Cola 3"
+              }
+            },
+            "systemmanaged": {
+              "tipo": "System.Boolean",
+              "valor": false
+            },
+            "teamid": {
+              "tipo": "System.Guid",
+              "valor": "0fff0002-0000-4000-8000-000000000018"
+            },
+            "teamtype": {
+              "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+              "valor": 0
+            }
+          },
+          "FormattedValues": {
+            "administratorid": "ZZF Usuario 2",
+            "businessunitid": "ZZF BU 2",
+            "createdon": "10/9/2026 3:55 PM",
+            "isdefault": "Yes",
+            "issastokenset": "No",
+            "membershiptype": "Members and guests",
+            "modifiedon": "10/9/2026 3:55 PM",
+            "queueid": "ZZF Cola 3",
+            "systemmanaged": "No",
+            "teamtype": "Owner"
+          }
+        }
+      ]
+    },
+    "queue_con_emailaddress": [
+      {
+        "tipo": "Microsoft.Xrm.Sdk.Entity",
+        "LogicalName": "queue",
+        "Id": "0fff0004-0000-4000-8000-000000000027",
+        "RowVersion": "9932783",
+        "KeyAttributes": {},
+        "EntityState": null,
+        "atributos": {
+          "allowemailcredentials": {
+            "tipo": "System.Boolean",
+            "valor": false
+          },
+          "createdby": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "systemuser",
+              "id": "0fff0001-0000-4000-8000-000000000008",
+              "name": "ZZF Usuario 2"
+            }
+          },
+          "createdon": {
+            "tipo": "System.DateTime",
+            "valor": "2026-09-28T20:22:15.0000000Z",
+            "kind": "Utc"
+          },
+          "defaultmailbox": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "mailbox",
+              "id": "0fff0009-0000-4000-8000-000000000026",
+              "name": "ZZF-texto-mailbox 1"
+            }
+          },
+          "description": {
+            "tipo": "System.String",
+            "valor": "ZZF-cuerpo 12"
+          },
+          "emailaddress": {
+            "tipo": "System.String",
+            "valor": "zzf-buzon4@example.com"
+          },
+          "emailrouteraccessapproval": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 1
+          },
+          "ignoreunsolicitedemail": {
+            "tipo": "System.Boolean",
+            "valor": false
+          },
+          "incomingemaildeliverymethod": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 0
+          },
+          "incomingemailfilteringmethod": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 0
+          },
+          "isemailaddressapprovedbyo365admin": {
+            "tipo": "System.Boolean",
+            "valor": true
+          },
+          "isfaxqueue": {
+            "tipo": "System.Boolean",
+            "valor": false
+          },
+          "modifiedby": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "systemuser",
+              "id": "0fff0001-0000-4000-8000-000000000008",
+              "name": "ZZF Usuario 2"
+            }
+          },
+          "modifiedon": {
+            "tipo": "System.DateTime",
+            "valor": "2026-09-28T22:04:26.0000000Z",
+            "kind": "Utc"
+          },
+          "name": {
+            "tipo": "System.String",
+            "valor": "ZZF Cola 4"
+          },
+          "numberofitems": {
+            "tipo": "System.Int32",
+            "valor": 0
+          },
+          "organizationid": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "organization",
+              "id": "0fff0005-0000-4000-8000-000000000024",
+              "name": "ZZF Org 1"
+            }
+          },
+          "outgoingemaildeliverymethod": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 0
+          },
+          "ownerid": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "systemuser",
+              "id": "0fff0001-0000-4000-8000-000000000008",
+              "name": "ZZF Usuario 2"
+            }
+          },
+          "owningbusinessunit": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "businessunit",
+              "id": "0fff0003-0000-4000-8000-000000000009",
+              "name": "ZZF BU 1"
+            }
+          },
+          "owninguser": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "systemuser",
+              "id": "0fff0001-0000-4000-8000-000000000008",
+              "name": null
+            }
+          },
+          "queueid": {
+            "tipo": "System.Guid",
+            "valor": "0fff0004-0000-4000-8000-000000000027"
+          },
+          "queuetypecode": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 1
+          },
+          "queueviewtype": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 0
+          },
+          "statecode": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 0
+          },
+          "statuscode": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 1
+          }
+        },
+        "FormattedValues": {
+          "allowemailcredentials": "No",
+          "createdby": "ZZF Usuario 2",
+          "createdon": "9/28/2026 8:22 PM",
+          "defaultmailbox": "ZZF-texto-mailbox 1",
+          "emailrouteraccessapproval": "Approved",
+          "ignoreunsolicitedemail": "All incoming Emails",
+          "incomingemaildeliverymethod": "None",
+          "incomingemailfilteringmethod": "All email messages",
+          "isemailaddressapprovedbyo365admin": "Yes",
+          "isfaxqueue": "Non-fax Queue",
+          "modifiedby": "ZZF Usuario 2",
+          "modifiedon": "9/28/2026 10:04 PM",
+          "numberofitems": "0",
+          "organizationid": "ZZF Org 1",
+          "outgoingemaildeliverymethod": "None",
+          "ownerid": "ZZF Usuario 2",
+          "owningbusinessunit": "ZZF BU 1",
+          "queuetypecode": "Default Value",
+          "queueviewtype": "Public",
+          "statecode": "Active",
+          "statuscode": "Active"
+        }
+      },
+      {
+        "tipo": "Microsoft.Xrm.Sdk.Entity",
+        "LogicalName": "queue",
+        "Id": "0fff0004-0000-4000-8000-00000000002a",
+        "RowVersion": "3752762",
+        "KeyAttributes": {},
+        "EntityState": null,
+        "atributos": {
+          "allowemailcredentials": {
+            "tipo": "System.Boolean",
+            "valor": false
+          },
+          "createdby": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "systemuser",
+              "id": "0fff0001-0000-4000-8000-000000000028",
+              "name": "ZZF Usuario 3"
+            }
+          },
+          "createdon": {
+            "tipo": "System.DateTime",
+            "valor": "2026-04-05T20:34:22.0000000Z",
+            "kind": "Utc"
+          },
+          "defaultmailbox": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "mailbox",
+              "id": "0fff0009-0000-4000-8000-000000000029",
+              "name": "ZZF-texto-mailbox 2"
+            }
+          },
+          "emailaddress": {
+            "tipo": "System.String",
+            "valor": "zzf-buzon5@example.com"
+          },
+          "emailrouteraccessapproval": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 1
+          },
+          "ignoreunsolicitedemail": {
+            "tipo": "System.Boolean",
+            "valor": false
+          },
+          "incomingemaildeliverymethod": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 2
+          },
+          "incomingemailfilteringmethod": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 0
+          },
+          "isemailaddressapprovedbyo365admin": {
+            "tipo": "System.Boolean",
+            "valor": true
+          },
+          "isfaxqueue": {
+            "tipo": "System.Boolean",
+            "valor": false
+          },
+          "modifiedby": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "systemuser",
+              "id": "0fff0001-0000-4000-8000-000000000028",
+              "name": "ZZF Usuario 3"
+            }
+          },
+          "modifiedon": {
+            "tipo": "System.DateTime",
+            "valor": "2026-04-05T21:39:29.0000000Z",
+            "kind": "Utc"
+          },
+          "name": {
+            "tipo": "System.String",
+            "valor": "ZZF Cola 5"
+          },
+          "numberofitems": {
+            "tipo": "System.Int32",
+            "valor": 1
+          },
+          "organizationid": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "organization",
+              "id": "0fff0005-0000-4000-8000-000000000024",
+              "name": "ZZF Org 1"
+            }
+          },
+          "outgoingemaildeliverymethod": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 2
+          },
+          "ownerid": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "systemuser",
+              "id": "0fff0001-0000-4000-8000-000000000028",
+              "name": "ZZF Usuario 3"
+            }
+          },
+          "owningbusinessunit": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "businessunit",
+              "id": "0fff0003-0000-4000-8000-000000000009",
+              "name": "ZZF BU 1"
+            }
+          },
+          "owninguser": {
+            "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+            "valor": {
+              "logicalName": "systemuser",
+              "id": "0fff0001-0000-4000-8000-000000000028",
+              "name": null
+            }
+          },
+          "queueid": {
+            "tipo": "System.Guid",
+            "valor": "0fff0004-0000-4000-8000-00000000002a"
+          },
+          "queuetypecode": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 1
+          },
+          "queueviewtype": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 0
+          },
+          "statecode": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 0
+          },
+          "statuscode": {
+            "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+            "valor": 1
+          }
+        },
+        "FormattedValues": {
+          "allowemailcredentials": "No",
+          "createdby": "ZZF Usuario 3",
+          "createdon": "4/5/2026 8:34 PM",
+          "defaultmailbox": "ZZF-texto-mailbox 2",
+          "emailrouteraccessapproval": "Approved",
+          "ignoreunsolicitedemail": "All incoming Emails",
+          "incomingemaildeliverymethod": "Server-Side Synchronization or Email Router",
+          "incomingemailfilteringmethod": "All email messages",
+          "isemailaddressapprovedbyo365admin": "Yes",
+          "isfaxqueue": "Non-fax Queue",
+          "modifiedby": "ZZF Usuario 3",
+          "modifiedon": "4/5/2026 9:39 PM",
+          "numberofitems": "1",
+          "organizationid": "ZZF Org 1",
+          "outgoingemaildeliverymethod": "Server-Side Synchronization or Email Router",
+          "ownerid": "ZZF Usuario 3",
+          "owningbusinessunit": "ZZF BU 1",
+          "queuetypecode": "Default Value",
+          "queueviewtype": "Public",
+          "statecode": "Active",
+          "statuscode": "Active"
+        }
+      }
+    ]
+  }
+}

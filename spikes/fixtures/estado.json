@@ -1,0 +1,323 @@
+{
+  "linea_base": {
+    "organizationid": "88c7cdef-44ef-f011-aa23-6045bd003e24",
+    "whoami": {
+      "UserId": "ffc778df-d287-f111-8075-70a8a5af5a32",
+      "BusinessUnitId": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+      "OrganizationId": "88c7cdef-44ef-f011-aa23-6045bd003e24"
+    },
+    "bu_id": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+    "team_def_id": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+    "solucion_id": "ce4baec7-36c4-f111-a05a-7ced8d3c456b",
+    "componentes_solucion": [
+      {
+        "@odata.etag": "W/\u002212711492\u0022",
+        "componenttype": 1,
+        "rootcomponentbehavior": 0,
+        "objectid": "5ae78132-3fc4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "583f4247-3fc4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212696340\u0022",
+        "componenttype": 1,
+        "rootcomponentbehavior": 0,
+        "objectid": "6023621c-3ac4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "13121229-3ac4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212725034\u0022",
+        "componenttype": 1,
+        "rootcomponentbehavior": 1,
+        "objectid": "60696d5d-4d78-4712-b4e0-6cbef3df4906",
+        "solutioncomponentid": "a714e59e-49c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212691550\u0022",
+        "componenttype": 1,
+        "rootcomponentbehavior": 0,
+        "objectid": "7d064901-3ac4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "2a98970d-3ac4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212657521\u0022",
+        "componenttype": 1,
+        "rootcomponentbehavior": 0,
+        "objectid": "81770123-38c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "2a3bb13d-38c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212688761\u0022",
+        "componenttype": 1,
+        "rootcomponentbehavior": 1,
+        "objectid": "95ae88b3-cc0c-45ac-a2db-655dceec238b",
+        "solutioncomponentid": "dbfecd37-39c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212659611\u0022",
+        "componenttype": 1,
+        "rootcomponentbehavior": 0,
+        "objectid": "97d2b14d-38c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "6e116a61-38c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212661878\u0022",
+        "componenttype": 1,
+        "rootcomponentbehavior": 0,
+        "objectid": "b3347768-38c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "fd52a273-38c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212665646\u0022",
+        "componenttype": 1,
+        "rootcomponentbehavior": 0,
+        "objectid": "c094877c-38c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "33bd5389-38c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212696431\u0022",
+        "componenttype": 2,
+        "rootcomponentbehavior": 0,
+        "objectid": "350c7e31-3ac4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "370c7e31-3ac4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212740775\u0022",
+        "componenttype": 2,
+        "rootcomponentbehavior": 0,
+        "objectid": "91129943-90b8-4170-bf27-883f303280b7",
+        "solutioncomponentid": "938497d0-4cc4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212654637\u0022",
+        "componenttype": 9,
+        "rootcomponentbehavior": 0,
+        "objectid": "0ea987ff-36c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "13a987ff-36c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212654955\u0022",
+        "componenttype": 9,
+        "rootcomponentbehavior": 0,
+        "objectid": "2d021b06-37c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "32021b06-37c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212655081\u0022",
+        "componenttype": 9,
+        "rootcomponentbehavior": 0,
+        "objectid": "34021b06-37c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "39021b06-37c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212654733\u0022",
+        "componenttype": 9,
+        "rootcomponentbehavior": 0,
+        "objectid": "38a987ff-36c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "3da987ff-36c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212654859\u0022",
+        "componenttype": 9,
+        "rootcomponentbehavior": 0,
+        "objectid": "3fa987ff-36c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "2b021b06-37c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212654257\u0022",
+        "componenttype": 9,
+        "rootcomponentbehavior": 0,
+        "objectid": "44940af8-36c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "49940af8-36c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212654384\u0022",
+        "componenttype": 9,
+        "rootcomponentbehavior": 0,
+        "objectid": "4b940af8-36c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "50940af8-36c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212654479\u0022",
+        "componenttype": 9,
+        "rootcomponentbehavior": 0,
+        "objectid": "52940af8-36c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "57940af8-36c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212654098\u0022",
+        "componenttype": 9,
+        "rootcomponentbehavior": 0,
+        "objectid": "69a91df0-36c4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "6ea91df0-36c4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212740776\u0022",
+        "componenttype": 10,
+        "rootcomponentbehavior": 0,
+        "objectid": "3ebce2c9-4cc4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "948497d0-4cc4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212741065\u0022",
+        "componenttype": 20,
+        "rootcomponentbehavior": 0,
+        "objectid": "a4ed3f99-4ec4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "aeed3f99-4ec4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212740961\u0022",
+        "componenttype": 20,
+        "rootcomponentbehavior": 0,
+        "objectid": "ca75358f-4ec4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "d475358f-4ec4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212740842\u0022",
+        "componenttype": 20,
+        "rootcomponentbehavior": 0,
+        "objectid": "eaba6888-4ec4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "f4ba6888-4ec4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212741162\u0022",
+        "componenttype": 20,
+        "rootcomponentbehavior": 0,
+        "objectid": "feed3f99-4ec4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "08ee3f99-4ec4-f111-a05a-7ced8d3c456b"
+      },
+      {
+        "@odata.etag": "W/\u002212734712\u0022",
+        "componenttype": 70,
+        "rootcomponentbehavior": 0,
+        "objectid": "d06b299c-4bc4-f111-a05a-7ced8d3c456b",
+        "solutioncomponentid": "d16b299c-4bc4-f111-a05a-7ced8d3c456b"
+      }
+    ],
+    "residuales_zzf": {},
+    "filas_tablas_proyecto": {
+      "conversacion": 0,
+      "arreglo": 0,
+      "cliente": 0,
+      "versionplantilla": 0,
+      "cuota": 0,
+      "generacionformato": 0,
+      "mapeocelda": 0
+    },
+    "steps_plataforma_ignorados": 154,
+    "steps_no_administrados_sobre_tablas": 0,
+    "claves_conversacion": [
+      {
+        "LogicalName": "sanic_carp_key_conversacion_huellamessageid",
+        "EntityKeyIndexStatus": "Active"
+      }
+    ],
+    "conversacion_optimistic_concurrency": true,
+    "system_ids": [
+      "fc1957c4-d896-4ad5-b165-2814799fdd23"
+    ],
+    "usuario_no_admin_id": "32122bbd-56c3-f111-a05a-000d3a35abca",
+    "usuario_no_admin_isdisabled": true,
+    "teams_isdefault_en_bu": [
+      "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+    ],
+    "teams_isdefault_total": 2,
+    "colas_total": 281,
+    "colas_con_emailaddress": [
+      "40928a49-7abb-f111-aaad-000d3a301e02",
+      "65abb4d3-2e31-f111-88b4-6045bd09bb04"
+    ],
+    "ev_definiciones_proyecto": [],
+    "emails_total": 560,
+    "emails_por_estado": {
+      "statuscode=3,directioncode=True,statecode=1": 547,
+      "statuscode=1,directioncode=True,statecode=0": 1,
+      "statuscode=4,directioncode=False,statecode=1": 12
+    },
+    "emails_candidatos_conteo": {
+      "entrante": 11,
+      "saliente": 2
+    },
+    "emails_candidatos": {
+      "entrante": [
+        "ff922b1c-89bb-f111-aaad-000d3a301e02",
+        "6508b4e3-88bb-f111-aaad-000d3a301e02"
+      ],
+      "saliente": [
+        "f02c7218-7bbb-f111-aaad-000d3a301e02",
+        "797cdef7-88bb-f111-aaad-000d3a301e02"
+      ]
+    },
+    "emails_candidatos_puntos": {
+      "entrante": [
+        2,
+        1
+      ],
+      "saliente": [
+        1,
+        1
+      ]
+    }
+  },
+  "filas": [
+    [
+      "cliente",
+      "sanic_carp_tbl_cliente",
+      "1e3b65dd-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "version",
+      "sanic_carp_tbl_versionplantilla",
+      "1f3b65dd-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "conv-abierta",
+      "sanic_carp_tbl_conversacion",
+      "213b65dd-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "conv-finalizada",
+      "sanic_carp_tbl_conversacion",
+      "233b65dd-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "conv-unida",
+      "sanic_carp_tbl_conversacion",
+      "263b65dd-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "conv-k01",
+      "sanic_carp_tbl_conversacion",
+      "293b65dd-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "email-entrante-sintetico",
+      "email",
+      "2b3b65dd-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "email-saliente-sintetico",
+      "email",
+      "29cceef5-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "arreglo-borrador",
+      "sanic_carp_tbl_arreglo",
+      "2ecceef5-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "arreglo-vigente",
+      "sanic_carp_tbl_arreglo",
+      "30cceef5-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "ev-definicion",
+      "environmentvariabledefinition",
+      "33cceef5-e0c7-f111-a05a-000d3a3b5b91"
+    ],
+    [
+      "ev-valor",
+      "environmentvariablevalue",
+      "3acceef5-e0c7-f111-a05a-000d3a3b5b91"
+    ]
+  ]
+}

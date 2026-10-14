@@ -1,0 +1,446 @@
+{
+  "cabecera": {
+    "fixture": "02-conversacion",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "generado_utc": "2026-10-14",
+    "filas": "SINTETICAS ZZF- (creadas por el exportador y borradas al final)",
+    "advertencia": "Dentro de un plugin (sandbox) la deserializacion puede diferir, sobre todo DateTime.Kind. No se capturo desde un plugin.",
+    "notas": [
+      "Abierta = statecode 0 / statuscode 1; Finalizada = 1 / 2; Unida = 1 / 159460001 con sanic_unidaaid apuntando a la Abierta.",
+      "Los steps del proyecto no estan registrados: ninguna regla de negocio actuo sobre estas filas.",
+      "sanic_nombre es autonumerico (CONV-nnnnnn); se deja tal cual porque solo existe en filas sinteticas."
+    ]
+  },
+  "contenido": {
+    "abierta": {
+      "tipo": "Microsoft.Xrm.Sdk.Entity",
+      "LogicalName": "sanic_carp_tbl_conversacion",
+      "Id": "0fff0009-0000-4000-8000-000000000016",
+      "RowVersion": "13059426",
+      "KeyAttributes": {},
+      "EntityState": null,
+      "atributos": {
+        "createdby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "createdon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:51.0000000Z",
+          "kind": "Utc"
+        },
+        "modifiedby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "modifiedon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:51.0000000Z",
+          "kind": "Utc"
+        },
+        "ownerid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "team",
+            "id": "0fff0002-0000-4000-8000-000000000018",
+            "name": "ZZF Team 1"
+          }
+        },
+        "owningbusinessunit": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "businessunit",
+            "id": "0fff0003-0000-4000-8000-000000000019",
+            "name": "ZZF BU 2"
+          }
+        },
+        "owningteam": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "team",
+            "id": "0fff0002-0000-4000-8000-000000000018",
+            "name": null
+          }
+        },
+        "sanic_asunto": {
+          "tipo": "System.String",
+          "valor": "ZZF-asunto abierta"
+        },
+        "sanic_cantidadrespuestas": {
+          "tipo": "System.Int32",
+          "valor": 0
+        },
+        "sanic_carp_tbl_conversacionid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-000000000016"
+        },
+        "sanic_clienteid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "sanic_carp_tbl_cliente",
+            "id": "0fff0009-0000-4000-8000-00000000001a",
+            "name": "ZZF-cli-1"
+          }
+        },
+        "sanic_correonuevoenfinalizada": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "sanic_fechaprimercorreo": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:51.0000000Z",
+          "kind": "Utc"
+        },
+        "sanic_huellamessageid": {
+          "tipo": "System.String",
+          "valor": "ZZF-h-abierta"
+        },
+        "sanic_nombre": {
+          "tipo": "System.String",
+          "valor": "CONV-001011"
+        },
+        "sanic_remitente": {
+          "tipo": "System.String",
+          "valor": "zzf-remitente@example.com"
+        },
+        "statecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 0
+        },
+        "statuscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "timezoneruleversionnumber": {
+          "tipo": "System.Int32",
+          "valor": 4
+        }
+      },
+      "FormattedValues": {
+        "createdby": "ZZF Usuario 2",
+        "createdon": "10/14/2026 3:06 PM",
+        "modifiedby": "ZZF Usuario 2",
+        "modifiedon": "10/14/2026 3:06 PM",
+        "ownerid": "ZZF Team 1",
+        "owningbusinessunit": "ZZF BU 2",
+        "sanic_cantidadrespuestas": "0",
+        "sanic_clienteid": "ZZF-cli-1",
+        "sanic_correonuevoenfinalizada": "No",
+        "sanic_fechaprimercorreo": "10/14/2026 3:06 PM",
+        "statecode": "Active",
+        "statuscode": "Abierta",
+        "timezoneruleversionnumber": "4"
+      }
+    },
+    "finalizada": {
+      "tipo": "Microsoft.Xrm.Sdk.Entity",
+      "LogicalName": "sanic_carp_tbl_conversacion",
+      "Id": "0fff0009-0000-4000-8000-00000000001b",
+      "RowVersion": "13059444",
+      "KeyAttributes": {},
+      "EntityState": null,
+      "atributos": {
+        "createdby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "createdon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:51.0000000Z",
+          "kind": "Utc"
+        },
+        "modifiedby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "modifiedon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:52.0000000Z",
+          "kind": "Utc"
+        },
+        "ownerid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "team",
+            "id": "0fff0002-0000-4000-8000-000000000018",
+            "name": "ZZF Team 1"
+          }
+        },
+        "owningbusinessunit": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "businessunit",
+            "id": "0fff0003-0000-4000-8000-000000000019",
+            "name": "ZZF BU 2"
+          }
+        },
+        "owningteam": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "team",
+            "id": "0fff0002-0000-4000-8000-000000000018",
+            "name": null
+          }
+        },
+        "sanic_asunto": {
+          "tipo": "System.String",
+          "valor": "ZZF-asunto finalizada"
+        },
+        "sanic_cantidadrespuestas": {
+          "tipo": "System.Int32",
+          "valor": 0
+        },
+        "sanic_carp_tbl_conversacionid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-00000000001b"
+        },
+        "sanic_clienteid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "sanic_carp_tbl_cliente",
+            "id": "0fff0009-0000-4000-8000-00000000001a",
+            "name": "ZZF-cli-1"
+          }
+        },
+        "sanic_correonuevoenfinalizada": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "sanic_detallesinrespuesta": {
+          "tipo": "System.String",
+          "valor": "ZZF-detalle"
+        },
+        "sanic_fechafinalizacion": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:52.0000000Z",
+          "kind": "Utc"
+        },
+        "sanic_fechaprimercorreo": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:51.0000000Z",
+          "kind": "Utc"
+        },
+        "sanic_finalizadoporid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "sanic_huellamessageid": {
+          "tipo": "System.String",
+          "valor": "ZZF-h-finalizada"
+        },
+        "sanic_motivosinrespuesta": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 159460004
+        },
+        "sanic_nombre": {
+          "tipo": "System.String",
+          "valor": "CONV-001012"
+        },
+        "sanic_remitente": {
+          "tipo": "System.String",
+          "valor": "zzf-remitente@example.com"
+        },
+        "sanic_resultado": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 159460003
+        },
+        "statecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "statuscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 2
+        },
+        "timezoneruleversionnumber": {
+          "tipo": "System.Int32",
+          "valor": 4
+        }
+      },
+      "FormattedValues": {
+        "createdby": "ZZF Usuario 2",
+        "createdon": "10/14/2026 3:06 PM",
+        "modifiedby": "ZZF Usuario 2",
+        "modifiedon": "10/14/2026 3:06 PM",
+        "ownerid": "ZZF Team 1",
+        "owningbusinessunit": "ZZF BU 2",
+        "sanic_cantidadrespuestas": "0",
+        "sanic_clienteid": "ZZF-cli-1",
+        "sanic_correonuevoenfinalizada": "No",
+        "sanic_fechafinalizacion": "10/14/2026 3:06 PM",
+        "sanic_fechaprimercorreo": "10/14/2026 3:06 PM",
+        "sanic_finalizadoporid": "ZZF Usuario 2",
+        "sanic_motivosinrespuesta": "Otro",
+        "sanic_resultado": "Sin respuesta",
+        "statecode": "Inactive",
+        "statuscode": "Finalizada",
+        "timezoneruleversionnumber": "4"
+      }
+    },
+    "unida": {
+      "tipo": "Microsoft.Xrm.Sdk.Entity",
+      "LogicalName": "sanic_carp_tbl_conversacion",
+      "Id": "0fff0009-0000-4000-8000-00000000001c",
+      "RowVersion": "13059460",
+      "KeyAttributes": {},
+      "EntityState": null,
+      "atributos": {
+        "createdby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "createdon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:52.0000000Z",
+          "kind": "Utc"
+        },
+        "modifiedby": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "systemuser",
+            "id": "0fff0001-0000-4000-8000-000000000008",
+            "name": "ZZF Usuario 2"
+          }
+        },
+        "modifiedon": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:52.0000000Z",
+          "kind": "Utc"
+        },
+        "ownerid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "team",
+            "id": "0fff0002-0000-4000-8000-000000000018",
+            "name": "ZZF Team 1"
+          }
+        },
+        "owningbusinessunit": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "businessunit",
+            "id": "0fff0003-0000-4000-8000-000000000019",
+            "name": "ZZF BU 2"
+          }
+        },
+        "owningteam": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "team",
+            "id": "0fff0002-0000-4000-8000-000000000018",
+            "name": null
+          }
+        },
+        "sanic_asunto": {
+          "tipo": "System.String",
+          "valor": "ZZF-asunto unida"
+        },
+        "sanic_cantidadrespuestas": {
+          "tipo": "System.Int32",
+          "valor": 0
+        },
+        "sanic_carp_tbl_conversacionid": {
+          "tipo": "System.Guid",
+          "valor": "0fff0009-0000-4000-8000-00000000001c"
+        },
+        "sanic_clienteid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "sanic_carp_tbl_cliente",
+            "id": "0fff0009-0000-4000-8000-00000000001a",
+            "name": "ZZF-cli-1"
+          }
+        },
+        "sanic_correonuevoenfinalizada": {
+          "tipo": "System.Boolean",
+          "valor": false
+        },
+        "sanic_fechafinalizacion": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:52.0000000Z",
+          "kind": "Utc"
+        },
+        "sanic_fechaprimercorreo": {
+          "tipo": "System.DateTime",
+          "valor": "2026-10-14T15:06:52.0000000Z",
+          "kind": "Utc"
+        },
+        "sanic_huellamessageid": {
+          "tipo": "System.String",
+          "valor": "ZZF-h-unida"
+        },
+        "sanic_nombre": {
+          "tipo": "System.String",
+          "valor": "CONV-001013"
+        },
+        "sanic_remitente": {
+          "tipo": "System.String",
+          "valor": "zzf-remitente@example.com"
+        },
+        "sanic_unidaaid": {
+          "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+          "valor": {
+            "logicalName": "sanic_carp_tbl_conversacion",
+            "id": "0fff0009-0000-4000-8000-000000000016",
+            "name": "CONV-001011"
+          }
+        },
+        "statecode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 1
+        },
+        "statuscode": {
+          "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+          "valor": 159460001
+        },
+        "timezoneruleversionnumber": {
+          "tipo": "System.Int32",
+          "valor": 4
+        }
+      },
+      "FormattedValues": {
+        "createdby": "ZZF Usuario 2",
+        "createdon": "10/14/2026 3:06 PM",
+        "modifiedby": "ZZF Usuario 2",
+        "modifiedon": "10/14/2026 3:06 PM",
+        "ownerid": "ZZF Team 1",
+        "owningbusinessunit": "ZZF BU 2",
+        "sanic_cantidadrespuestas": "0",
+        "sanic_clienteid": "ZZF-cli-1",
+        "sanic_correonuevoenfinalizada": "No",
+        "sanic_fechafinalizacion": "10/14/2026 3:06 PM",
+        "sanic_fechaprimercorreo": "10/14/2026 3:06 PM",
+        "sanic_unidaaid": "CONV-001011",
+        "statecode": "Inactive",
+        "statuscode": "Unida",
+        "timezoneruleversionnumber": "4"
+      }
+    }
+  }
+}

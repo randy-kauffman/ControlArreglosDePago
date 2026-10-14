@@ -1,0 +1,104 @@
+{
+ "filas_registradas": 10,
+ "filas_que_no_existen_(404)": 10,
+ "filas_que_AUN_existen": [],
+ "relectura_por_guid": [
+  {
+   "clave": "cliente",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "8cb43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "version",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "8db43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-abierta",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "8fb43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-finalizada",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "91b43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-unida",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "94b43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-k01",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "97b43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arreglo-borrador",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "99b43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arreglo-vigente",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "9bb43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "ev-definicion",
+   "tabla": "environmentvariabledefinition",
+   "guid": "9eb43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "ev-valor",
+   "tabla": "environmentvariablevalue",
+   "guid": "a1b43415-e0c7-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  }
+ ],
+ "residuales_ZZF_por_tabla": {},
+ "filas_en_tablas_del_proyecto_ahora": {
+  "conversacion": 0,
+  "arreglo": 0,
+  "cliente": 0,
+  "versionplantilla": 0,
+  "cuota": 0,
+  "generacionformato": 0,
+  "mapeocelda": 0
+ },
+ "filas_en_tablas_del_proyecto_antes": {
+  "conversacion": 0,
+  "arreglo": 0,
+  "cliente": 0,
+  "versionplantilla": 0,
+  "cuota": 0,
+  "generacionformato": 0,
+  "mapeocelda": 0
+ },
+ "solucion_componentes_antes": 26,
+ "solucion_componentes_ahora": 26,
+ "solucion_componentes_nuevos": [],
+ "solucion_componentes_que_faltan": [],
+ "emails_total_antes": 560,
+ "emails_total_ahora": 560,
+ "environmentvariabledefinitions_sanic_zzf": 0,
+ "limpieza_verificada_OK": true
+}
