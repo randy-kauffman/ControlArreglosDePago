@@ -71,21 +71,24 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.FormatoUnitarias
 
         // Con MemberData y no InlineData: el compilador guarda los argumentos de un atributo en UTF-8 y un sustituto suelto se
         // convertiría en U+FFFD (válido en XML), con lo que la prueba pasaría a probar otra cosa.
-        public static TheoryData<string> ParesRodeadosDeSustitutosSueltos()
+        // El primer parámetro, "caso", solo da un nombre y un ID propios a cada fila: xUnit calcula el ID de un caso con los argumentos
+        // serializados en UTF-8, y "\uD83D\uD83D\uDE00" y "\uDE00\uD83D\uDE00" quedan los dos como "U+FFFD + 😀", así que sin él
+        // el segundo caso se omitía en silencio ("Skipping test case with duplicate ID").
+        public static TheoryData<string, string> ParesRodeadosDeSustitutosSueltos()
         {
-            return new TheoryData<string>
+            return new TheoryData<string, string>
             {
-                "\uD83D\uD83D\uDE00",           // el primer alto queda suelto
-                "\uDE00\uD83D\uDE00",           // un bajo suelto antes del par
-                "\uD83D\uDE00\uDE00",           // un bajo de más después del par
-                "\uD83D\uD83D",                  // dos altos: ninguno tiene su bajo
-                "ab\uD83D\uD83Dcd",              // dos altos seguidos en el medio
+                { "primer alto suelto", "\uD83D\uD83D\uDE00" },          // el primer alto queda suelto
+                { "bajo suelto antes del par", "\uDE00\uD83D\uDE00" },    // un bajo suelto antes del par
+                { "bajo de más después del par", "\uD83D\uDE00\uDE00" },  // un bajo de más después del par
+                { "dos altos sin bajo", "\uD83D\uD83D" },                  // dos altos: ninguno tiene su bajo
+                { "dos altos en el medio", "ab\uD83D\uD83Dcd" },           // dos altos seguidos en el medio
             };
         }
 
         [Theory]
         [MemberData(nameof(ParesRodeadosDeSustitutosSueltos))]
-        public void Generar_ParBienFormadoRodeadoDeSustitutosSueltos_EsDatosInvalidos(string texto)
+        public void Generar_ParBienFormadoRodeadoDeSustitutosSueltos_EsDatosInvalidos(string caso, string texto)
         {
             var ex = Record.Exception(() => Generar(Plantillas.V07, Plantillas.Datos(6, v => v["tipo"] = texto)));
 

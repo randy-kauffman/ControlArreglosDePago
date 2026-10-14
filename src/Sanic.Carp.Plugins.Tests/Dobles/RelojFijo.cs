@@ -13,16 +13,28 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         public static readonly DateTime InstanteInicial = new DateTime(2026, 10, 14, 15, 0, 0, DateTimeKind.Utc);
 
         /// <summary>Con <see cref="InstanteInicial"/>.</summary>
-        public RelojFijo() { throw new NotImplementedException(); }
+        public RelojFijo() : this(InstanteInicial) { }
 
-        public RelojFijo(DateTime ahoraUtc) { throw new NotImplementedException(); }
+        private DateTime _ahoraUtc;
 
-        public DateTime AhoraUtc { get { throw new NotImplementedException(); } }
+        public RelojFijo(DateTime ahoraUtc)
+        {
+            Establecer(ahoraUtc);
+        }
+
+        public DateTime AhoraUtc { get { return _ahoraUtc; } }
 
         /// <summary>Cambia el instante (mismo requisito de <c>Kind</c>).</summary>
-        public void Establecer(DateTime ahoraUtc) { throw new NotImplementedException(); }
+        public void Establecer(DateTime ahoraUtc)
+        {
+            if (ahoraUtc.Kind != DateTimeKind.Utc) throw new ArgumentException("El instante debe tener Kind=Utc (IReloj.AhoraUtc es UTC por contrato).", nameof(ahoraUtc));
+            _ahoraUtc = ahoraUtc;
+        }
 
         /// <summary>Mueve el instante hacia adelante (o atrás con un valor negativo). El resultado sigue siendo Utc.</summary>
-        public void Avanzar(TimeSpan duracion) { throw new NotImplementedException(); }
+        public void Avanzar(TimeSpan duracion)
+        {
+            _ahoraUtc = DateTime.SpecifyKind(_ahoraUtc + duracion, DateTimeKind.Utc);
+        }
     }
 }

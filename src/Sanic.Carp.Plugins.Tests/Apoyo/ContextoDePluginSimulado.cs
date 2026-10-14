@@ -17,7 +17,24 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
     /// </summary>
     internal sealed class ContextoDePluginSimulado : IPluginExecutionContext
     {
-        public ContextoDePluginSimulado() { throw new NotImplementedException(); }
+        public ContextoDePluginSimulado()
+        {
+            Depth = 1;
+            Mode = 0;
+            Stage = 20;
+            MessageName = "Update";
+            PrimaryEntityName = string.Empty;
+            SecondaryEntityName = string.Empty;
+            OrganizationName = string.Empty;
+            OperationCreatedOn = new DateTime(2026, 10, 14, 15, 0, 0, DateTimeKind.Utc);
+            CorrelationId = Guid.NewGuid();
+            OperationId = Guid.NewGuid();
+            InputParameters = new ParameterCollection();
+            OutputParameters = new ParameterCollection();
+            SharedVariables = new ParameterCollection();
+            PreEntityImages = new EntityImageCollection();
+            PostEntityImages = new EntityImageCollection();
+        }
 
         public Guid BusinessUnitId { get; set; }
         public Guid CorrelationId { get; set; }

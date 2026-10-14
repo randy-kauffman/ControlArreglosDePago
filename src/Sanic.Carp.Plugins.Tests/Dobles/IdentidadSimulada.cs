@@ -11,21 +11,32 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     internal sealed class IdentidadSimulada : IIdentidadDeEjecucion
     {
         /// <summary>Una persona (no sistema, no jefatura) con ese actor.</summary>
-        public IdentidadSimulada(Guid actorId, bool esSistema = false, bool esJefatura = false) { throw new NotImplementedException(); }
+        private int _consultasDeJefatura;
 
-        public Guid ActorId { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
+        public IdentidadSimulada(Guid actorId, bool esSistema = false, bool esJefatura = false)
+        {
+            ActorId = actorId;
+            EsSistema = esSistema;
+            Jefatura = esJefatura;
+        }
 
-        public bool EsSistema { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
+        public Guid ActorId { get; set; }
+
+        public bool EsSistema { get; set; }
 
         /// <summary>Siempre igual a <see cref="EsSistema"/> (0.3).</summary>
-        public bool EsEscrituraDelSistema { get { throw new NotImplementedException(); } }
+        public bool EsEscrituraDelSistema { get { return EsSistema; } }
 
         /// <summary>Lo que responde <see cref="EsJefatura"/>.</summary>
-        public bool Jefatura { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
+        public bool Jefatura { get; set; }
 
         /// <summary>Cuántas veces se llamó a <see cref="EsJefatura"/> ("una sola consulta de jefatura", "camino barato: 0 consultas").</summary>
-        public int ConsultasDeJefatura { get { throw new NotImplementedException(); } }
+        public int ConsultasDeJefatura { get { return _consultasDeJefatura; } }
 
-        public bool EsJefatura() { throw new NotImplementedException(); }
+        public bool EsJefatura()
+        {
+            _consultasDeJefatura++;
+            return Jefatura;
+        }
     }
 }

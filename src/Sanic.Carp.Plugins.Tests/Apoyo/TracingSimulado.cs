@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.Xrm.Sdk;
 
 namespace Sanic.Carp.Plugins.Tests.Apoyo
@@ -14,11 +15,19 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
     /// </summary>
     internal sealed class TracingSimulado : ITracingService
     {
-        public TracingSimulado() { throw new NotImplementedException(); }
+        private readonly List<string> _lineas = new List<string>();
+
+        public TracingSimulado() { }
 
         /// <summary>Las líneas ya formateadas, en orden.</summary>
-        public IReadOnlyList<string> Lineas { get { throw new NotImplementedException(); } }
+        public IReadOnlyList<string> Lineas { get { return _lineas; } }
 
-        public void Trace(string format, params object[] args) { throw new NotImplementedException(); }
+        public void Trace(string format, params object[] args)
+        {
+            // Siempre se interpreta como formato compuesto, también sin argumentos (4.3 punto 7): el ITracingService real lo hace.
+            // Se formatea antes de guardar para que una línea inválida no deje rastro.
+            var linea = format == null ? string.Empty : string.Format(CultureInfo.InvariantCulture, format, args ?? new object[0]);
+            _lineas.Add(linea);
+        }
     }
 }

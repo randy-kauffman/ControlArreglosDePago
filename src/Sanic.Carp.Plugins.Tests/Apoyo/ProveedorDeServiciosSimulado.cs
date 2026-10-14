@@ -12,15 +12,28 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
     /// </summary>
     internal sealed class ProveedorDeServiciosSimulado : IServiceProvider
     {
-        public ProveedorDeServiciosSimulado(ContextoDePluginSimulado contexto, FabricaDeServiciosSimulada fabrica) { throw new NotImplementedException(); }
+        public ProveedorDeServiciosSimulado(ContextoDePluginSimulado contexto, FabricaDeServiciosSimulada fabrica)
+        {
+            if (contexto == null) throw new ArgumentNullException(nameof(contexto));
+            if (fabrica == null) throw new ArgumentNullException(nameof(fabrica));
+            Contexto = contexto;
+            Fabrica = fabrica;
+        }
 
-        public ContextoDePluginSimulado Contexto { get { throw new NotImplementedException(); } }
+        public ContextoDePluginSimulado Contexto { get; }
 
-        public FabricaDeServiciosSimulada Fabrica { get { throw new NotImplementedException(); } }
+        public FabricaDeServiciosSimulada Fabrica { get; }
 
         /// <summary>El tracing (el mismo de <see cref="FabricaDeServiciosSimulada.Tracing"/>).</summary>
-        public TracingSimulado Tracing { get { throw new NotImplementedException(); } }
+        public TracingSimulado Tracing { get { return Fabrica.Tracing; } }
 
-        public object GetService(Type serviceType) { throw new NotImplementedException(); }
+        public object GetService(Type serviceType)
+        {
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+            if (serviceType == typeof(IPluginExecutionContext) || serviceType == typeof(IExecutionContext)) return Contexto;
+            if (serviceType == typeof(IOrganizationServiceFactory)) return Fabrica;
+            if (serviceType == typeof(ITracingService)) return Tracing;
+            return null;
+        }
     }
 }
