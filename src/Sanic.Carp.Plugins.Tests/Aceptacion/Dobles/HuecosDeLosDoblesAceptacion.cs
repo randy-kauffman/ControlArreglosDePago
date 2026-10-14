@@ -168,13 +168,16 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         public void PA_HDD_10_OrdenarPorUnaColumnaOcultaNoRevelaSuValorReal()
         {
             var almacen = new OrganizationServiceEnMemoria();
-            almacen.Sembrar(Zzf(Fila1, "zzf_cedula", "B"), Zzf(Fila2, "zzf_cedula", "A"));
+            // Orquestador, 2026-10-14 (vuelta 2): la columna oculta vale nula también para ordenar, así que para Usuario1 las dos filas
+            // empatan y salen en orden adversario (inverso al de entrada, 4.5 "Paginación"). Se siembran con el valor real ascendente
+            // en el orden de entrada, para que el orden adversario sea el CONTRARIO al que revelaría el valor real.
+            almacen.Sembrar(Zzf(Fila1, "zzf_cedula", "A"), Zzf(Fila2, "zzf_cedula", "B"));
             almacen.OcultarColumna(TablaZzf, "zzf_cedula", ApoyoDeDobles.Usuario1);
             var consulta = new QueryExpression(TablaZzf) { ColumnSet = new ColumnSet() };
             consulta.AddOrder("zzf_cedula", OrderType.Ascending);
 
-            Assert.Equal(new[] { Fila1, Fila2 }, almacen.ComoUsuario(ApoyoDeDobles.Usuario1).RetrieveMultiple(consulta).Entities.Select(e => e.Id).ToArray());
-            Assert.Equal(new[] { Fila2, Fila1 }, almacen.RetrieveMultiple(consulta).Entities.Select(e => e.Id).ToArray());
+            Assert.Equal(new[] { Fila2, Fila1 }, almacen.ComoUsuario(ApoyoDeDobles.Usuario1).RetrieveMultiple(consulta).Entities.Select(e => e.Id).ToArray());
+            Assert.Equal(new[] { Fila1, Fila2 }, almacen.RetrieveMultiple(consulta).Entities.Select(e => e.Id).ToArray());
         }
 
         // H11: las filas negadas no cuentan para TopCount, ni para el total, ni para MoreRecords (la plataforma filtra antes de paginar).
