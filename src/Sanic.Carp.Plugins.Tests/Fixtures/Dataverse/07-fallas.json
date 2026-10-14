@@ -1,0 +1,577 @@
+{
+  "cabecera": {
+    "fixture": "07-fallas",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "generado_utc": "2026-10-14",
+    "filas": "SINTETICAS ZZF-",
+    "advertencia": "Dentro de un plugin (sandbox) la deserializacion puede diferir, sobre todo DateTime.Kind. No se capturo desde un plugin.",
+    "notas": [
+      "Se registra lo que llega tal cual: la cadena completa de excepciones (tipo de cada una, en orden) y, si hay un FaultException<OrganizationServiceFault>, su Detail.",
+      "ServiceClient puede envolver la falla en otra excepcion; no se 'arregla'."
+    ]
+  },
+  "contenido": {
+    "k01_violacion_de_clave_alterna": {
+      "descripcion": "Create de una conversacion con sanic_huellamessageid igual a la de otra ya existente (clave alterna K-01).",
+      "resultado": "falla",
+      "falla": {
+        "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+        "cadena_de_tipos": [
+          "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+        ],
+        "cadena": [
+          {
+            "orden": 0,
+            "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+            "mensaje": "Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try again.",
+            "HResult": -2146233088,
+            "propiedades_propias": {
+              "Action": null,
+              "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+              "Reason": "(System.ServiceModel.FaultReason) Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try again."
+            }
+          }
+        ],
+        "el_exterior_es_FaultException_OrganizationServiceFault": true,
+        "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+        "fault": {
+          "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+          "ErrorCode_decimal": -2147088238,
+          "ErrorCode_hex": "0x80060892",
+          "Message": "Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try again.",
+          "ErrorDetails": {
+            "0": {
+              "tipo_del_valor": "System.String",
+              "valor": "KEY - CARP - Conversacion - Huella del Message-ID"
+            },
+            "1": {
+              "tipo_del_valor": "System.String",
+              "valor": "Huella del Message-ID"
+            },
+            "ApiActivityIdKey": {
+              "tipo_del_valor": "System.Guid",
+              "valor": "0fff0009-0000-4000-8000-00000000003e"
+            },
+            "ApiDepthKey": {
+              "tipo_del_valor": "System.Int32",
+              "valor": "1"
+            },
+            "ApiExceptionCategory": {
+              "tipo_del_valor": "System.String",
+              "valor": "ClientError"
+            },
+            "ApiExceptionHttpStatusCode": {
+              "tipo_del_valor": "System.Int32",
+              "valor": "412"
+            },
+            "ApiExceptionMessageName": {
+              "tipo_del_valor": "System.String",
+              "valor": "DuplicateRecordEntityKey"
+            },
+            "ApiExceptionOwnerKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+            },
+            "ApiExceptionSourceKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+            },
+            "ApiOriginalExceptionKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "Microsoft.Crm.CrmException: Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try again. ---> Microsoft.Crm.CrmException: Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try again.\r\n   at Microsoft.Crm.Platform.Server.DataEngine.EntityCrudManager.ThrowDuplicateRecordException(IBusinessEntity entity, ExecutionContext context, SqlException e)\r\n   at Microsoft.Crm.Platform.Server.DataEngine.EntityCrudManager.Create(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoCreateEntity(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoCreate(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+            },
+            "ApiPluginSolutionNameKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "System"
+            },
+            "ApiSourceActivityKey": {
+              "tipo_del_valor": "System.String",
+              "valor": ""
+            },
+            "ApiStepKey": {
+              "tipo_del_valor": "System.Guid",
+              "valor": "0fff0009-0000-4000-8000-00000000003f"
+            },
+            "ApiStepSolutionNameKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "System"
+            },
+            "DuplicateAttributes": {
+              "tipo_del_valor": "System.String",
+              "valor": "<DuplicateAttributes><sanic_huellamessageid>ZZF-h-duplicada</sanic_huellamessageid></DuplicateAttributes>"
+            },
+            "DuplicateEntity": {
+              "tipo_del_valor": "System.String",
+              "valor": "<?xml version=\"1.0\" encoding=\"utf-16\"?><Entity xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://schemas.microsoft.com/xrm/2011/Contracts\"><Attributes xmlns:d2p1=\"http://schemas.datacontract.org/2004/07/System.Collections.Generic\"><KeyValuePairOfstringanyType><d2p1:key>sanic_cantidadrespuestas</d2p1:key><d2p1:value xmlns:d4p1=\"http://www.w3.org/2001/XMLSchema\" i:type=\"d4p1:int\">0</d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>owningbusinessunit</d2p1:key><d2p1:value i:type=\"EntityReference\"><Id>0fff0003-0000-4000-8000-000000000019</Id><KeyAttributes xmlns:d5p1=\"http://schemas.microsoft.com/xrm/7.1/Contracts\" /><LogicalName>businessunit</LogicalName><Name i:nil=\"true\" /><RowVersion i:nil=\"true\" /></d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>sanic_huellamessageid</d2p1:key><d2p1:value xmlns:d4p1=\"http://www.w3.org/2001/XMLSchema\" i:type=\"d4p1:string\">ZZF-h-duplicada</d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>modifiedonbehalfby</d2p1:key><d2p1:value i:nil=\"true\" /></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>sanic_fechaprimercorreo</d2p1:key><d2p1:value xmlns:d4p1=\"http://www.w3.org/2001/XMLSchema\" i:type=\"d4p1:dateTime\">2026-10-14T15:07:35Z</d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>statuscode</d2p1:key><d2p1:value i:type=\"OptionSetValue\"><Value>1</Value></d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>createdby</d2p1:key><d2p1:value i:type=\"EntityReference\"><Id>0fff0001-0000-4000-8000-000000000008</Id><KeyAttributes xmlns:d5p1=\"http://schemas.microsoft.com/xrm/7.1/Contracts\" /><LogicalName>systemuser</LogicalName><Name i:nil=\"true\" /><RowVersion i:nil=\"true\" /></d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>createdon</d2p1:key><d2p1:value xmlns:d4p1=\"http://www.w3.org/2001/XMLSchema\" i:type=\"d4p1:dateTime\">2026-10-14T15:07:35Z</d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>timezoneruleversionnumber</d2p1:key><d2p1:value xmlns:d4p1=\"http://www.w3.org/2001/XMLSchema\" i:type=\"d4p1:int\">4</d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>ownerid</d2p1:key><d2p1:value i:type=\"EntityReference\"><Id>0fff0002-0000-4000-8000-000000000018</Id><KeyAttributes xmlns:d5p1=\"http://schemas.microsoft.com/xrm/7.1/Contracts\" /><LogicalName>team</LogicalName><Name i:nil=\"true\" /><RowVersion i:nil=\"true\" /></d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>modifiedon</d2p1:key><d2p1:value xmlns:d4p1=\"http://www.w3.org/2001/XMLSchema\" i:type=\"d4p1:dateTime\">2026-10-14T15:07:35Z</d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>sanic_correonuevoenfinalizada</d2p1:key><d2p1:value xmlns:d4p1=\"http://www.w3.org/2001/XMLSchema\" i:type=\"d4p1:boolean\">false</d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>modifiedby</d2p1:key><d2p1:value i:type=\"EntityReference\"><Id>0fff0001-0000-4000-8000-000000000008</Id><KeyAttributes xmlns:d5p1=\"http://schemas.microsoft.com/xrm/7.1/Contracts\" /><LogicalName>systemuser</LogicalName><Name i:nil=\"true\" /><RowVersion i:nil=\"true\" /></d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>sanic_nombre</d2p1:key><d2p1:value xmlns:d4p1=\"http://www.w3.org/2001/XMLSchema\" i:type=\"d4p1:string\">CONV-001015</d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>sanic_carp_tbl_conversacionid</d2p1:key><d2p1:value xmlns:d4p1=\"http://schemas.microsoft.com/2003/10/Serialization/\" i:type=\"d4p1:guid\">0fff0009-0000-4000-8000-000000000040</d2p1:value></KeyValuePairOfstringanyType><KeyValuePairOfstringanyType><d2p1:key>statecode</d2p1:key><d2p1:value i:type=\"OptionSetValue\"><Value>0</Value></d2p1:value></KeyValuePairOfstringanyType></Attributes><EntityState i:nil=\"true\" /><FormattedValues xmlns:d2p1=\"http://schemas.datacontract.org/2004/07/System.Collections.Generic\"><KeyValuePairOfstringstring><d2p1:key>sanic_cantidadrespuestas</d2p1:key><d2p1:value>0</d2p1:value></KeyValuePairOfstringstring><KeyValuePairOfstringstring><d2p1:key>sanic_fechaprimercorreo</d2p1:key><d2p1:value>2026-10-14T15:07:35+00:00</d2p1:value></KeyValuePairOfstringstring><KeyValuePairOfstringstring><d2p1:key>statuscode</d2p1:key><d2p1:value>Abierta</d2p1:value></KeyValuePairOfstringstring><KeyValuePairOfstringstring><d2p1:key>createdon</d2p1:key><d2p1:value>2026-10-14T15:07:35+00:00</d2p1:value></KeyValuePairOfstringstring><KeyValuePairOfstringstring><d2p1:key>timezoneruleversionnumber</d2p1:key><d2p1:value>4</d2p1:value></KeyValuePairOfstringstring><KeyValuePairOfstringstring><d2p1:key>modifiedon</d2p1:key><d2p1:value>2026-10-14T15:07:35+00:00</d2p1:value></KeyValuePairOfstringstring><KeyValuePairOfstringstring><d2p1:key>sanic_correonuevoenfinalizada</d2p1:key><d2p1:value>No</d2p1:value></KeyValuePairOfstringstring><KeyValuePairOfstringstring><d2p1:key>statecode</d2p1:key><d2p1:value>Active</d2p1:value></KeyValuePairOfstringstring></FormattedValues><Id>0fff0009-0000-4000-8000-000000000040</Id><KeyAttributes xmlns:d2p1=\"http://schemas.microsoft.com/xrm/7.1/Contracts\" xmlns:d2p2=\"http://schemas.datacontract.org/2004/07/System.Collections.Generic\" /><LogicalName>sanic_carp_tbl_conversacion</LogicalName><RelatedEntities xmlns:d2p1=\"http://schemas.datacontract.org/2004/07/System.Collections.Generic\" /><RowVersion i:nil=\"true\" /></Entity>"
+            }
+          },
+          "Timestamp": {
+            "iso": "2026-10-14T15:07:35.3362712Z",
+            "kind": "Utc"
+          },
+          "TraceText_longitud": null,
+          "InnerFault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147088238,
+            "ErrorCode_hex": "0x80060892",
+            "Message": "Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try again.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000003e"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "412"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "DuplicateRecordEntityKey"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try again. ---> Microsoft.Crm.CrmException: Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try again.\r\n   at Microsoft.Crm.Platform.Server.DataEngine.EntityCrudManager.ThrowDuplicateRecordException(IBusinessEntity entity, ExecutionContext context, SqlException e)\r\n   at Microsoft.Crm.Platform.Server.DataEngine.EntityCrudManager.Create(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoCreateEntity(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoCreate(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000003f"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-14T15:07:35.3362712Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147088238,
+              "ErrorCode_hex": "0x80060892",
+              "Message": "Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try again.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-14T15:07:35.3362712Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        }
+      }
+    },
+    "version_de_fila_no_coincide": {
+      "descripcion": "UpdateRequest con ConcurrencyBehavior.IfRowVersionMatches y un RowVersion viejo sobre una conversacion (concurrencia optimista activa).",
+      "rowversion_leida_antes_formato": "99999999",
+      "rowversion_cambia_tras_update": true,
+      "resultado": "falla",
+      "falla": {
+        "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+        "cadena_de_tipos": [
+          "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+        ],
+        "cadena": [
+          {
+            "orden": 0,
+            "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+            "mensaje": "The version of the existing record doesn't match the RowVersion property provided.",
+            "HResult": -2146233088,
+            "propiedades_propias": {
+              "Action": null,
+              "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+              "Reason": "(System.ServiceModel.FaultReason) The version of the existing record doesn't match the RowVersion property provided."
+            }
+          }
+        ],
+        "el_exterior_es_FaultException_OrganizationServiceFault": true,
+        "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+        "fault": {
+          "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+          "ErrorCode_decimal": -2147088254,
+          "ErrorCode_hex": "0x80060882",
+          "Message": "The version of the existing record doesn't match the RowVersion property provided.",
+          "ErrorDetails": {
+            "ApiActivityIdKey": {
+              "tipo_del_valor": "System.Guid",
+              "valor": "0fff0009-0000-4000-8000-000000000041"
+            },
+            "ApiDepthKey": {
+              "tipo_del_valor": "System.Int32",
+              "valor": "1"
+            },
+            "ApiExceptionCategory": {
+              "tipo_del_valor": "System.String",
+              "valor": "ClientError"
+            },
+            "ApiExceptionHttpStatusCode": {
+              "tipo_del_valor": "System.Int32",
+              "valor": "412"
+            },
+            "ApiExceptionMessageName": {
+              "tipo_del_valor": "System.String",
+              "valor": "ConcurrencyVersionMismatch"
+            },
+            "ApiExceptionOwnerKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+            },
+            "ApiExceptionSourceKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+            },
+            "ApiOriginalExceptionKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "Microsoft.Crm.CrmException: The version of the existing record doesn't match the RowVersion property provided. ---> Microsoft.Crm.CrmException: The version of the existing record doesn't match the RowVersion property provided.\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.CheckIfRowVersionMatchesConcurrencyBehavior(ExecutionContext context, BusinessEntityMoniker[] monikerCollection, IList`1 ifMatchEtags)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.CheckForOptimisticConcurrencyForUpdate(IBusinessEntityCollection entityCollection, ExecutionContext context, IList`1 ifMatchEtags)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+            },
+            "ApiPluginSolutionNameKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "System"
+            },
+            "ApiSourceActivityKey": {
+              "tipo_del_valor": "System.String",
+              "valor": ""
+            },
+            "ApiStepKey": {
+              "tipo_del_valor": "System.Guid",
+              "valor": "0fff0009-0000-4000-8000-000000000042"
+            },
+            "ApiStepSolutionNameKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "System"
+            }
+          },
+          "Timestamp": {
+            "iso": "2026-10-14T15:07:35.7889584Z",
+            "kind": "Utc"
+          },
+          "TraceText_longitud": null,
+          "InnerFault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147088254,
+            "ErrorCode_hex": "0x80060882",
+            "Message": "The version of the existing record doesn't match the RowVersion property provided.",
+            "ErrorDetails": {},
+            "Timestamp": {
+              "iso": "2026-10-14T15:07:35.7889584Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        }
+      },
+      "control_con_version_vigente": {
+        "resultado": "ok",
+        "respuesta": {
+          "tipo": "Microsoft.Xrm.Sdk.Messages.UpdateResponse",
+          "ResponseName": "Update",
+          "Results": {}
+        }
+      }
+    },
+    "retrieve_de_fila_inexistente": {
+      "descripcion": "Retrieve de un id que no existe (lo usa la verificacion de limpieza).",
+      "resultado": "falla",
+      "falla": {
+        "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+        "cadena_de_tipos": [
+          "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+        ],
+        "cadena": [
+          {
+            "orden": 0,
+            "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+            "mensaje": "Entity 'sanic_carp_tbl_conversacion' With Id = 0fff0009-0000-4000-8000-000000000043 Does Not Exist",
+            "HResult": -2146233088,
+            "propiedades_propias": {
+              "Action": null,
+              "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+              "Reason": "(System.ServiceModel.FaultReason) Entity 'sanic_carp_tbl_conversacion' With Id = 0fff0009-0000-4000-8000-000000000043 Does Not Exist"
+            }
+          }
+        ],
+        "el_exterior_es_FaultException_OrganizationServiceFault": true,
+        "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+        "fault": {
+          "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+          "ErrorCode_decimal": -2147220969,
+          "ErrorCode_hex": "0x80040217",
+          "Message": "Entity 'sanic_carp_tbl_conversacion' With Id = 0fff0009-0000-4000-8000-000000000043 Does Not Exist",
+          "ErrorDetails": {
+            "ApiActivityIdKey": {
+              "tipo_del_valor": "System.Guid",
+              "valor": "0fff0009-0000-4000-8000-000000000044"
+            },
+            "ApiDepthKey": {
+              "tipo_del_valor": "System.Int32",
+              "valor": "1"
+            },
+            "ApiExceptionCategory": {
+              "tipo_del_valor": "System.String",
+              "valor": "ClientError"
+            },
+            "ApiExceptionHttpStatusCode": {
+              "tipo_del_valor": "System.Int32",
+              "valor": "404"
+            },
+            "ApiExceptionMessageName": {
+              "tipo_del_valor": "System.String",
+              "valor": "ObjectDoesNotExist"
+            },
+            "ApiExceptionOwnerKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+            },
+            "ApiExceptionSourceKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+            },
+            "ApiOriginalExceptionKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "Microsoft.Crm.BusinessEntities.CrmObjectNotFoundException: Entity 'sanic_carp_tbl_conversacion' With Id = 0fff0009-0000-4000-8000-000000000043 Does Not Exist ---> Microsoft.Crm.BusinessEntities.CrmObjectNotFoundException: Entity 'sanic_carp_tbl_conversacion' With Id = 0fff0009-0000-4000-8000-000000000043 Does Not Exist\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.Retrieve(IBusinessEntityMoniker moniker, IEntityExpression entityExpression, ExecutionContext context, LocalizedEnumLabelCache localizedEnumLabelCache, DatabaseQueryTarget queryTarget)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.Retrieve(IBusinessEntityMoniker moniker, IEntityExpression entityExpression, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.Retrieve(BusinessEntityMoniker moniker, EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+            },
+            "ApiPluginSolutionNameKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "System"
+            },
+            "ApiSourceActivityKey": {
+              "tipo_del_valor": "System.String",
+              "valor": ""
+            },
+            "ApiStepKey": {
+              "tipo_del_valor": "System.Guid",
+              "valor": "0fff0009-0000-4000-8000-000000000045"
+            },
+            "ApiStepSolutionNameKey": {
+              "tipo_del_valor": "System.String",
+              "valor": "System"
+            }
+          },
+          "Timestamp": {
+            "iso": "2026-10-14T15:07:36.0545835Z",
+            "kind": "Utc"
+          },
+          "TraceText_longitud": null,
+          "InnerFault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220969,
+            "ErrorCode_hex": "0x80040217",
+            "Message": "Entity 'sanic_carp_tbl_conversacion' With Id = 0fff0009-0000-4000-8000-000000000043 Does Not Exist",
+            "ErrorDetails": {},
+            "Timestamp": {
+              "iso": "2026-10-14T15:07:36.0545835Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        }
+      }
+    },
+    "paginacion": {
+      "descripcion": "RetrieveMultiple con PageInfo.Count = 2 sobre conversaciones ZZF-; la pagina 2 usa el PagingCookie de la 1.",
+      "pagina_1": {
+        "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+        "EntityName": "sanic_carp_tbl_conversacion",
+        "MoreRecords": true,
+        "PagingCookie": "<cookie page=\"1\"><createdon last=\"2026-10-14T15:06:51+00:00\" first=\"2026-10-14T15:06:51+00:00\" /><sanic_carp_tbl_conversacionid last=\"{0fff0009-0000-4000-8000-00000000001b}\" first=\"{0fff0009-0000-4000-8000-000000000016}\" /></cookie>",
+        "TotalRecordCount": 4,
+        "TotalRecordCountLimitExceeded": false,
+        "MinActiveRowVersion": "-1",
+        "cantidad": 2,
+        "Entities": [
+          {
+            "tipo": "Microsoft.Xrm.Sdk.Entity",
+            "LogicalName": "sanic_carp_tbl_conversacion",
+            "Id": "0fff0009-0000-4000-8000-000000000016",
+            "RowVersion": "13059617",
+            "KeyAttributes": {},
+            "EntityState": null,
+            "atributos": {
+              "createdon": {
+                "tipo": "System.DateTime",
+                "valor": "2026-10-14T15:06:51.0000000Z",
+                "kind": "Utc"
+              },
+              "sanic_carp_tbl_conversacionid": {
+                "tipo": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000016"
+              },
+              "sanic_nombre": {
+                "tipo": "System.String",
+                "valor": "CONV-001011"
+              },
+              "statecode": {
+                "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                "valor": 0
+              },
+              "statuscode": {
+                "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                "valor": 1
+              }
+            },
+            "FormattedValues": {
+              "createdon": "10/14/2026 3:06 PM",
+              "statecode": "Active",
+              "statuscode": "Abierta"
+            }
+          },
+          {
+            "tipo": "Microsoft.Xrm.Sdk.Entity",
+            "LogicalName": "sanic_carp_tbl_conversacion",
+            "Id": "0fff0009-0000-4000-8000-00000000001b",
+            "RowVersion": "13059444",
+            "KeyAttributes": {},
+            "EntityState": null,
+            "atributos": {
+              "createdon": {
+                "tipo": "System.DateTime",
+                "valor": "2026-10-14T15:06:51.0000000Z",
+                "kind": "Utc"
+              },
+              "sanic_carp_tbl_conversacionid": {
+                "tipo": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000001b"
+              },
+              "sanic_nombre": {
+                "tipo": "System.String",
+                "valor": "CONV-001012"
+              },
+              "statecode": {
+                "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                "valor": 1
+              },
+              "statuscode": {
+                "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                "valor": 2
+              }
+            },
+            "FormattedValues": {
+              "createdon": "10/14/2026 3:06 PM",
+              "statecode": "Inactive",
+              "statuscode": "Finalizada"
+            }
+          }
+        ]
+      },
+      "pagina_2": {
+        "tipo": "Microsoft.Xrm.Sdk.EntityCollection",
+        "EntityName": "sanic_carp_tbl_conversacion",
+        "MoreRecords": false,
+        "PagingCookie": "<cookie page=\"2\"><createdon last=\"2026-10-14T15:06:52+00:00\" first=\"2026-10-14T15:06:52+00:00\" /><sanic_carp_tbl_conversacionid last=\"{0fff0009-0000-4000-8000-000000000046}\" first=\"{0fff0009-0000-4000-8000-00000000001c}\" /></cookie>",
+        "TotalRecordCount": 4,
+        "TotalRecordCountLimitExceeded": false,
+        "MinActiveRowVersion": "-1",
+        "cantidad": 2,
+        "Entities": [
+          {
+            "tipo": "Microsoft.Xrm.Sdk.Entity",
+            "LogicalName": "sanic_carp_tbl_conversacion",
+            "Id": "0fff0009-0000-4000-8000-00000000001c",
+            "RowVersion": "13059460",
+            "KeyAttributes": {},
+            "EntityState": null,
+            "atributos": {
+              "createdon": {
+                "tipo": "System.DateTime",
+                "valor": "2026-10-14T15:06:52.0000000Z",
+                "kind": "Utc"
+              },
+              "sanic_carp_tbl_conversacionid": {
+                "tipo": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000001c"
+              },
+              "sanic_nombre": {
+                "tipo": "System.String",
+                "valor": "CONV-001013"
+              },
+              "statecode": {
+                "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                "valor": 1
+              },
+              "statuscode": {
+                "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                "valor": 159460001
+              }
+            },
+            "FormattedValues": {
+              "createdon": "10/14/2026 3:06 PM",
+              "statecode": "Inactive",
+              "statuscode": "Unida"
+            }
+          },
+          {
+            "tipo": "Microsoft.Xrm.Sdk.Entity",
+            "LogicalName": "sanic_carp_tbl_conversacion",
+            "Id": "0fff0009-0000-4000-8000-000000000046",
+            "RowVersion": "13059462",
+            "KeyAttributes": {},
+            "EntityState": null,
+            "atributos": {
+              "createdon": {
+                "tipo": "System.DateTime",
+                "valor": "2026-10-14T15:06:52.0000000Z",
+                "kind": "Utc"
+              },
+              "sanic_carp_tbl_conversacionid": {
+                "tipo": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000046"
+              },
+              "sanic_nombre": {
+                "tipo": "System.String",
+                "valor": "CONV-001014"
+              },
+              "statecode": {
+                "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                "valor": 0
+              },
+              "statuscode": {
+                "tipo": "Microsoft.Xrm.Sdk.OptionSetValue",
+                "valor": 1
+              }
+            },
+            "FormattedValues": {
+              "createdon": "10/14/2026 3:06 PM",
+              "statecode": "Active",
+              "statuscode": "Abierta"
+            }
+          }
+        ]
+      },
+      "pagina_1_sin_ReturnTotalRecordCount": {
+        "MoreRecords": true,
+        "TotalRecordCount": -1,
+        "tiene_PagingCookie": true
+      }
+    }
+  }
+}

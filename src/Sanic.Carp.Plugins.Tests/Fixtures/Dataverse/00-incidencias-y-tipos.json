@@ -1,0 +1,17 @@
+{
+  "incidencias": [],
+  "tipos_vistos": [
+    "Microsoft.Xrm.Sdk.AliasedValue",
+    "Microsoft.Xrm.Sdk.BooleanManagedProperty",
+    "Microsoft.Xrm.Sdk.EntityCollection",
+    "Microsoft.Xrm.Sdk.EntityReference",
+    "Microsoft.Xrm.Sdk.OptionSetValue",
+    "System.Boolean",
+    "System.DateTime",
+    "System.Decimal",
+    "System.Guid",
+    "System.Int32",
+    "System.String"
+  ],
+  "tipos_no_modelados": []
+}
