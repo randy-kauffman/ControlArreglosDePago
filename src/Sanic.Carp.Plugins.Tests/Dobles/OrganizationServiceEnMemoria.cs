@@ -37,7 +37,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     /// CONSERVA un <c>""</c> tal cual: la plataforma devuelve <c>""</c> en filas que no pasaron por la API (<c>domainname</c> y
     /// <c>firstname</c> del SYSTEM real, fixture 06).</item>
     /// <item><b>Fecha y hora (UL): <c>Kind=Utc</c>; solo fecha (<see cref="ColumnasDeFecha"/>): <c>Kind=Unspecified</c> a las 00:00.</b>
-    /// <b>VUELTA 2 (hallazgo 5):</b> ~~al escribir, una UL <c>Local</c> se pasa a UTC y una <c>Unspecified</c> se toma como UTC~~ <c>Create</c>, <c>Update</c> y
+    /// Al escribir, <c>Create</c>, <c>Update</c> y
     /// <c>UpdateRequest</c> RECHAZAN (<see cref="ArgumentException"/> con la columna y el <c>Kind</c>) una fecha y hora que no sea de solo fecha con <c>Kind</c> <c>Local</c> o
     /// <c>Unspecified</c> (el reloj del proyecto es UTC); <see cref="Sembrar"/> sigue normalizando. Una de solo fecha acepta cualquier <c>Kind</c> y queda como su
     /// <c>Date</c> (sin conversión de zona, 0.6) con <c>Unspecified</c>.</item>
@@ -55,21 +55,24 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     /// y <c>EntityState</c> y <c>KeyAttributes</c> salen vacíos.</item>
     /// <item><b>No inventa columnas de plataforma</b> (<c>createdon</c>, <c>createdby</c>, <c>ownerid</c>, …): las que una prueba
     /// necesite las siembra ella. Tampoco rellena <c>Name</c> de los <c>EntityReference</c> (en la plataforma puede ser nulo).</item>
-    /// <item><b>Esquema (VUELTA 2, hallazgo 3).</b> ~~No valida nombres de columna~~ <c>Create</c>/<c>Update</c> validan tabla, columna, tipo, destino del lookup, largo del texto y
+    /// <item><b>Esquema.</b> <c>Create</c>/<c>Update</c> validan tabla, columna, tipo, destino del lookup, largo del texto y
     /// valor del choice contra el diccionario (tablas propias), los fixtures y la sección 5 del diccionario (nativas con muestra): <see cref="ArgumentException"/> con tabla y
-    /// columna. <c>Retrieve</c>/<c>RetrieveMultiple</c> con tabla o columna inexistente (<c>ColumnSet</c>, condiciones, órdenes): <see cref="InvalidOperationException"/>.
+    /// columna. Rechazan además un <c>null</c> en <c>statecode</c>, <c>statuscode</c>, <c>ownerid</c> o el id primario, y toda escritura en una columna de solo lectura (fórmula, archivo, y las de plataforma <c>createdon</c>, <c>createdby</c>, <c>modifiedon</c>, <c>modifiedby</c>,
+    /// <c>owningbusinessunit</c>, <c>owninguser</c>, <c>owningteam</c> y <c>versionnumber</c>; se siembran con <see cref="Sembrar"/>).
+    /// <c>AssignRequest</c> valida el <c>ownerid</c> igual que <c>Create</c>/<c>Update</c>. <c>Retrieve</c>/<c>RetrieveMultiple</c> con tabla o columna inexistente (<c>ColumnSet</c>, condiciones, órdenes): <see cref="InvalidOperationException"/>.
     /// Tablas <c>zzf_</c> libres; nativas sin muestra aceptadas sin validar columnas; <see cref="Sembrar"/> no valida. Criterio completo y límites en 4.5.</item>
-    /// <item><b>Autonumérico y estado (VUELTA 2, hallazgos 1 y 2).</b> <c>Create</c> completa la primaria autonumérica ANTES de PreValidation (V-8) y el estado inicial (0, 1) de las
-    /// tablas propias; un <c>Update</c> con solo <c>statecode</c> deja el motivo por defecto (V-5); un par de estado inválido se rechaza. Un <c>Create</c> de correo descarta
+    /// <item><b>Autonumérico y estado.</b> <c>Create</c> completa la primaria autonumérica ANTES de PreValidation (V-8) y el estado inicial (0, 1) de las
+    /// tablas propias; un <c>Update</c> con solo <c>statecode</c> deja el motivo por defecto (V-5), salvo que la fila ya esté en ese estado: eso lanza <see cref="NotSupportedException"/> (no medido en Dev, pendiente 6);
+    /// un par de estado inválido se rechaza. Un <c>Create</c> de correo descarta
     /// <c>inreplyto</c>; un <c>Update</c> de correo a Sent pone <c>senton</c>; el <c>schemaname</c> de un valor de variable de entorno se fuerza al de su definición. Ver 4.5.</item>
     /// <item><b>La falla tiene la forma de la real</b> (fixture 07): <c>FaultException&lt;OrganizationServiceFault&gt;</c> directa, sin <c>InnerException</c>,
     /// <c>Message</c> igual a <c>Detail.Message</c>, <c>Detail.Timestamp</c> Utc y <c>Detail.InnerFault</c> encadenado con el mismo código: <b>3 niveles para
     /// <see cref="CodigosDeFalla.ClaveDuplicada"/> y 2 para cualquier otro código</b> (es lo que midió Dev); <c>ErrorDetails</c> puede ir vacío.</item>
     /// <item><b>Cookie de paginación</b>: XML <c>&lt;cookie page="n"&gt;</c> con un hijo por columna del <c>OrderExpression</c> (en su orden) y al final uno por el
     /// id primario, cada uno con atributos <c>first</c> y <c>last</c> (el id con llaves y en minúscula; las fechas <c>yyyy-MM-ddTHH:mm:ss+00:00</c>); cadena
-    /// vacía, no nula, con <c>TopCount</c>, sin filas o sin resultados. ~~El orden de las filas empatadas (o sin <c>OrderExpression</c>) es el de entrada y es ESTABLE.~~
-    /// <b>VUELTA 2 (hallazgo 4 y decisión del orquestador):</b> sin <c>OrderExpression</c> el orden es el INVERSO al de entrada, y con <c>OrderExpression</c> los EMPATES van en el inverso al de entrada dentro de cada
+    /// vacía, no nula, con <c>TopCount</c>, sin filas o sin resultados. Sin <c>OrderExpression</c> el orden es el INVERSO al de entrada, y con <c>OrderExpression</c> los EMPATES van en el inverso al de entrada dentro de cada
     /// grupo empatado (se parte del inverso y se ordena de forma estable); adversario y determinista, también con <c>TopCount</c> y <c>PageInfo</c>. La cookie entrante no se exige (Learn: simple paging). Lanzan <see cref="InvalidOperationException"/>: <c>PageInfo.Count</c> mayor que 5000,
+    /// <c>PageInfo</c> con <c>PageNumber</c> mayor que 1 y <c>Count</c> en 0 (una consulta paginada es la que trae <c>Count</c> o <c>PageNumber</c>: <c>EvaluadorDeConsultas.EsPaginada</c>),
     /// <c>TopCount</c> con <c>PageInfo</c>, un operador de un solo valor con varios, un subfiltro vacío y <c>NotEqual</c> sin compañía sobre una columna no garantizada llena (por la forma, no por los datos).</item>
     /// <item><b>Momento de las fallas del almacén</b>: <see cref="FallarEn"/>, K-01 y la versión de fila ocurren al APLICAR la escritura, es decir después de los
     /// steps de PreValidation y PreOperation (si hay pipeline) y antes de los de PostOperation. <see cref="Sembrar"/> no aplica claves alternas (pero lo sembrado cuenta
@@ -420,7 +423,10 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             ActualizarEntidad(entity, ConcurrencyBehavior.Default);
         }
 
-        /// <summary>Borra la fila; inexistente ⇒ <see cref="CodigosDeFalla.FilaInexistente"/>.</summary>
+        /// <summary>
+        /// Borra la fila; inexistente ⇒ <see cref="CodigosDeFalla.FilaInexistente"/>. Si la fila tiene hijas existentes en alguna relación REL del diccionario (sección 6.2) lanza
+        /// <see cref="NotSupportedException"/> nombrando la relación: el doble no emula Restrict, Cascade ni RemoveLink (pendiente de muestra, 4.5 punto 15) y no adivina cuál aplicaría.
+        /// </summary>
         public void Delete(string entityName, Guid id)
         {
             if (string.IsNullOrEmpty(entityName)) throw new ArgumentException("Falta el nombre de la tabla.", nameof(entityName));
@@ -633,6 +639,13 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         /// </summary>
         private void ValidarEscritura(Entity entidad)
         {
+            var columnaDeId = FormaDeLaPlataforma.ColumnaDeId(entidad.LogicalName);
+            foreach (var par in entidad.Attributes)
+            {
+                // Un null borra una columna cualquiera (regla 1), pero estas cuatro no pueden quedar vacías: la plataforma las rechaza y el doble no adivina qué hacer con la fila.
+                if (par.Value == null && (par.Key == "statecode" || par.Key == "statuscode" || par.Key == "ownerid" || par.Key == columnaDeId))
+                    throw new ArgumentException("La columna '" + par.Key + "' de la tabla '" + entidad.LogicalName + "' no admite null: es el estado, el propietario o el id primario de la fila (diseno/03 4.5, cierre del lote 3).");
+            }
             _estado.Esquema.ValidarEscritura(entidad.LogicalName, entidad.Attributes);
             foreach (var par in entidad.Attributes) FormaDeLaPlataforma.Guardar(entidad.LogicalName, par.Key, par.Value, false);
         }
@@ -701,7 +714,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             if (_estado.RechazarEscriturasEnInactivas && !destino.Attributes.ContainsKey("statecode"))
             {
                 object estado;
-                var activa = !actual.Attributes.TryGetValue("statecode", out estado) || ((estado as OptionSetValue) ?? new OptionSetValue(0)).Value == 0;
+                var activa = !actual.Attributes.TryGetValue("statecode", out estado) || ((estado as OptionSetValue) ?? new OptionSetValue(Estados.Activo)).Value == Estados.Activo;
                 if (!activa)
                     throw FabricaDeFallas.Crear(CodigosDeFalla.FilaInactiva, "Marcador del doble: RechazarEscriturasEnInactivas es verdadero y la fila está inactiva (la plataforma NO lo hace, V-2).",
                         _estado.Reloj.AhoraUtc, "InactiveRecord", 400);
@@ -784,6 +797,10 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             }
             if (state.HasValue && !status.HasValue)
             {
+                // Un statecode igual al de la fila: la plataforma puede resetear el motivo al de por defecto o dejarlo; no está medido y el doble no adivina (4.5, pendiente 6).
+                if (actual != null && OpcionDe(actual, "statecode") == state)
+                    throw new NotSupportedException("Update con solo statecode " + state.Value.ToString(CultureInfo.InvariantCulture) + " sobre una fila de '" + tabla + "' que ya está en ese estado: "
+                        + "no medido en Dev, pendiente (6). ¿La plataforma resetea el motivo al de por defecto o lo deja? El doble no adivina; envíe el statuscode que quiere.");
                 fila.Attributes["statuscode"] = new OptionSetValue(EstadoDeLasTablas.StatusPorDefecto(tabla, state.Value));
                 return;
             }
@@ -796,10 +813,32 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         {
             if (codigoDeFalla.HasValue) throw FallaPedida(codigoDeFalla.Value, OperacionDeDatos.Delete, tabla);
             if (Buscar(tabla, id) == null) throw FabricaDeFallas.FilaInexistente(tabla, id, _estado.Reloj.AhoraUtc);
+            ComprobarQueNoTieneHijas(tabla, id);
             _estado.TablaDe(tabla, true).Quitar(id);
             // Borrar una fila borra sus archivos (diseno/03 4.5, reglas de la clase).
             foreach (var clave in _estado.Archivos.Keys.Where(k => k.Id == id && string.Equals(k.Tabla, tabla, StringComparison.Ordinal)).ToList()) _estado.Archivos.Remove(clave);
             RegistrarEscritura(OperacionDeDatos.Delete, tabla, id, new KeyValuePair<string, object>[0]);
+        }
+
+        /// <summary>
+        /// Principio "lanza antes que adivinar": la plataforma aplica a las hijas de la fila el comportamiento de cada relación al borrar (Restrict, Cascade o RemoveLink, diccionario 6.1) y el doble no tiene
+        /// ninguno medido. Una fila con hijas existentes en alguna relación REL (sección 6.2) no se borra: lanza <see cref="NotSupportedException"/> nombrando la relación. Una fila sin hijas se borra.
+        /// </summary>
+        private void ComprobarQueNoTieneHijas(string tabla, Guid id)
+        {
+            foreach (var relacion in _estado.Esquema.RelacionesDelPadre(tabla))
+            {
+                var hijas = _estado.TablaDe(relacion.Hija, false);
+                if (hijas == null) continue;
+                foreach (var hija in hijas.Orden)
+                {
+                    object valor;
+                    var referencia = hija.Attributes.TryGetValue(relacion.Lookup, out valor) ? valor as EntityReference : null;
+                    if (referencia == null || referencia.Id != id || hija.Id == id || !string.Equals(referencia.LogicalName, tabla, StringComparison.Ordinal)) continue;
+                    throw new NotSupportedException("Delete de la fila " + id + " de '" + tabla + "': tiene hijas en la relación " + relacion.Id + " (" + relacion.Nombre + ": '" + relacion.Hija + "'." + relacion.Lookup
+                        + ", fila " + hija.Id + "): el doble no emula Restrict/Cascade; pendiente de muestra (diseno/03 4.5, pendiente 15). Borre primero las hijas.");
+                }
+            }
         }
 
         private OrganizationResponse Asignar(AssignRequest pedido)
@@ -807,6 +846,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             var objetivo = pedido.Target;
             var asignado = pedido.Assignee;
             if (objetivo == null || asignado == null) throw new ArgumentException("AssignRequest necesita Target y Assignee.", nameof(pedido));
+            ValidarPropietario(objetivo.LogicalName, asignado);
             var codigoDeFalla = ContarLlamada(OperacionDeDatos.Assign, objetivo.LogicalName);
             var entradas = new ParameterCollection { { "Target", Copias.Referencia(objetivo) }, { "Assignee", Copias.Referencia(asignado) } };
             Escribir("Assign", objetivo.LogicalName, entradas, () =>
@@ -818,8 +858,15 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             return new AssignResponse { ResponseName = "Assign", Results = new ParameterCollection() };
         }
 
+        /// <summary>El propietario que <c>AssignRequest</c> escribe pasa por la MISMA validación de <c>ownerid</c> que <c>Create</c> y <c>Update</c> (solo <c>team</c> o <c>systemuser</c>; que exista no se valida, 4.5 punto 14).</summary>
+        private void ValidarPropietario(string tabla, EntityReference asignado)
+        {
+            _estado.Esquema.ValidarEscritura(tabla, new[] { new KeyValuePair<string, object>("ownerid", asignado) });
+        }
+
         private void AplicarAsignacion(EntityReference objetivo, EntityReference asignado, int? codigoDeFalla)
         {
+            ValidarPropietario(objetivo.LogicalName, asignado);      // los steps pueden haber cambiado el Assignee
             if (codigoDeFalla.HasValue) throw FallaPedida(codigoDeFalla.Value, OperacionDeDatos.Assign, objetivo.LogicalName);
             var actual = Buscar(objetivo.LogicalName, objetivo.Id);
             if (actual == null) throw FabricaDeFallas.FilaInexistente(objetivo.LogicalName, objetivo.Id, _estado.Reloj.AhoraUtc);
@@ -949,8 +996,8 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             }
             else
             {
-                var paginada = consulta.PageInfo != null && consulta.PageInfo.Count > 0;
-                var tamano = paginada ? consulta.PageInfo.Count : FilasPorPaginaPorDefecto;
+                var paginada = EvaluadorDeConsultas.EsPaginada(consulta);
+                var tamano = EvaluadorDeConsultas.TamanoDePagina(consulta);
                 var numero = paginada ? Math.Max(1, consulta.PageInfo.PageNumber) : 1;
                 var saltar = (long)(numero - 1) * tamano;
                 pagina = ordenadas.Skip((int)Math.Min(saltar, int.MaxValue)).Take(tamano).ToList();

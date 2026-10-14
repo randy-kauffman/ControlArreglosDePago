@@ -217,9 +217,12 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             var conMuestra = AlmacenCon(Documento, muestraConPlataforma);
             var sinMuestra = AlmacenCon(Documento);
 
-            conMuestra.Create(new Entity("sanic_carp_tbl_cliente") { ["createdon"] = new DateTime(2026, 10, 14, 15, 0, 0, DateTimeKind.Utc), ["statecode"] = new OptionSetValue(0) });
+            // La columna de plataforma es CONOCIDA si se puede leer (no se escribe: createdon es de solo lectura para Create y Update, cierre del lote 3, H8). Se siembra la fila y se la pide en el ColumnSet.
+            var id = Guid.NewGuid();
+            conMuestra.Sembrar(new Entity("sanic_carp_tbl_cliente", id) { ["createdon"] = new DateTime(2026, 10, 14, 15, 0, 0, DateTimeKind.Utc), ["statecode"] = new OptionSetValue(0) });
+            Assert.True(conMuestra.Retrieve("sanic_carp_tbl_cliente", id, new ColumnSet("createdon", "statecode")).Contains("createdon"));
             var deTipo = Assert.Throws<ArgumentException>(() => conMuestra.Create(new Entity("sanic_carp_tbl_cliente") { ["statecode"] = 0 }));
-            var deColumna = Assert.Throws<ArgumentException>(() => sinMuestra.Create(new Entity("sanic_carp_tbl_cliente") { ["createdon"] = new DateTime(2026, 10, 14, 15, 0, 0, DateTimeKind.Utc) }));
+            var deColumna = Assert.Throws<InvalidOperationException>(() => sinMuestra.Retrieve("sanic_carp_tbl_cliente", id, new ColumnSet("createdon")));
             var deProyecto = Assert.Throws<ArgumentException>(() => conMuestra.Create(new Entity("sanic_carp_tbl_cliente") { ["sanic_cedula"] = "x" }));
 
             Assert.Contains("statecode", deTipo.Message, StringComparison.Ordinal);

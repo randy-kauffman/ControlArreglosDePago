@@ -78,7 +78,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
                 {
                     var celdas = linea.Split('|').Select(c => c.Trim()).ToArray();
                     string hija, padre;
-                    if (!TablasPorNombreVisible.TryGetValue(celdas[4], out hija)) continue;     // "Email (estándar)": no es una de las seis
+                    if (!TablasPorNombreVisible.TryGetValue(celdas[4], out hija)) continue;     // "Email (estándar)": no es una de las siete
                     if (!TablasPorNombreVisible.TryGetValue(celdas[3], out padre)) throw new InvalidOperationException("Padre desconocido en " + celdas[1] + ": " + celdas[3]);
                     if (!porTabla.ContainsKey(hija)) porTabla[hija] = new List<ColumnaDelDiccionario>();
                     porTabla[hija].Add(new ColumnaDelDiccionario
@@ -197,7 +197,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         // ---- Contra el diccionario ----
 
         [Fact]
-        public void PA_CDD_00_ElDiccionarioSeLeeConLasSeisTablasYSusLookups_VERDE_A_PROPOSITO()
+        public void PA_CDD_00_ElDiccionarioSeLeeConLasSieteTablasYSusLookups_VERDE_A_PROPOSITO()
         {
             var diccionario = Diccionario.Value;
 

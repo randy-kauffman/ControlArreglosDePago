@@ -30,7 +30,8 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     /// de las filas reales de Dev (<see cref="MuestrasDeFixtures"/>); lo único escrito acá es el CRITERIO de la fila de 4.5: qué clase de tabla es cada una y cómo se valida.
     /// <para>
     /// Una escritura mal formada (<c>Create</c>, <c>Update</c>) lanza <see cref="ArgumentException"/> con la tabla y la columna; una consulta mal formada, <see cref="InvalidOperationException"/>.
-    /// No se validan, y es límite conocido: rangos numéricos, columnas requeridas, que el destino de un lookup exista, columnas de solo lectura, tipos de las nativas.
+    /// Se rechaza escribir en las columnas de solo lectura: fórmula, archivo y las de plataforma observadas (<c>createdon</c>, <c>createdby</c>, <c>modifiedon</c>, <c>modifiedby</c>, <c>owningbusinessunit</c>,
+    /// <c>owninguser</c>, <c>owningteam</c>, <c>versionnumber</c>); se leen y se siembran. No se validan, y es límite conocido: rangos numéricos, columnas requeridas, que el destino de un lookup exista y los tipos de las nativas.
     /// </para>
     /// </summary>
     internal sealed class EsquemaDelAlmacen
@@ -50,7 +51,16 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         private static readonly Lazy<EsquemaDelAlmacen> Compartido = new Lazy<EsquemaDelAlmacen>(
             () => new EsquemaDelAlmacen(LectorDelDiccionario.LeerDelRepositorio(), MuestrasDeFixtures.DeLaCarpeta()));
 
-        private enum Valor { Texto, Entero, Decimal, Choice, OpcionLibre, SiNo, Fecha, Lookup, Identificador, SinValidar }
+        /// <summary>
+        /// Columnas de plataforma que la plataforma escribe y el código no (auditoría, propiedad derivada y versión): una escritura en ellas se rechaza en toda tabla cuyas columnas se validan.
+        /// Son las observadas en los fixtures; <c>Sembrar</c> no pasa por esta validación (declara datos que la plataforma ya devolvió).
+        /// </summary>
+        private static readonly HashSet<string> PlataformaDeSoloLectura = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "createdon", "createdby", "modifiedon", "modifiedby", "owningbusinessunit", "owninguser", "owningteam", "versionnumber"
+        };
+
+        private enum Valor { Texto, Entero, Decimal, Choice, OpcionLibre, SiNo, Fecha, Lookup, Identificador, SinValidar, SoloLecturaFormula, SoloLecturaArchivo }
 
         private sealed class Columna
         {
@@ -70,6 +80,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
         private readonly Dictionary<string, Tabla> _tablas = new Dictionary<string, Tabla>(StringComparer.Ordinal);
         private readonly Dictionary<string, HashSet<int>> _choices = new Dictionary<string, HashSet<int>>(StringComparer.Ordinal);
+        private readonly List<RelacionLeida> _relaciones = new List<RelacionLeida>();
 
         /// <summary>El esquema del repositorio: el diccionario y las filas reales de <c>Fixtures/Dataverse</c>. Se lee una vez por proceso y no se modifica.</summary>
         public static EsquemaDelAlmacen Predeterminado
@@ -82,6 +93,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             if (diccionario == null) throw new ArgumentNullException(nameof(diccionario));
             if (muestras == null) throw new ArgumentNullException(nameof(muestras));
             foreach (var par in diccionario.Choices) _choices[par.Key] = new HashSet<int>(par.Value);
+            if (diccionario.Relaciones != null) _relaciones.AddRange(diccionario.Relaciones);
 
             var deLasPropias = PlataformaDeLasPropias(diccionario, muestras);
             foreach (var par in diccionario.Tablas)
@@ -171,7 +183,9 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                     resultado.Valor = Valor.Lookup;
                     resultado.Destinos = new HashSet<string>(new[] { columna.Destino }, StringComparer.Ordinal);
                     break;
-                default: resultado.Valor = Valor.SinValidar; break;     // fórmula y archivo: solo lectura, no se validan
+                case TipoDeColumna.Formula: resultado.Valor = Valor.SoloLecturaFormula; break;
+                case TipoDeColumna.Archivo: resultado.Valor = Valor.SoloLecturaArchivo; break;
+                default: resultado.Valor = Valor.SinValidar; break;
             }
             return resultado;
         }
@@ -191,6 +205,12 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         {
             Tabla conocida;
             return tabla != null && _tablas.TryGetValue(tabla, out conocida) ? conocida.Autonumerico : null;
+        }
+
+        /// <summary>Las relaciones REL del diccionario cuyo padre es <paramref name="tabla"/>: por cada una, la hija y su lookup.</summary>
+        public IEnumerable<RelacionLeida> RelacionesDelPadre(string tabla)
+        {
+            return _relaciones.Where(r => string.Equals(r.Padre, tabla, StringComparison.Ordinal));
         }
 
         /// <summary>La tabla es una de las del diccionario.</summary>
@@ -214,9 +234,17 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             var conocida = _tablas[tabla];
             foreach (var par in atributos)
             {
+                if (PlataformaDeSoloLectura.Contains(par.Key))
+                    throw new ArgumentException("La columna '" + par.Key + "' de la tabla '" + tabla + "' es de solo lectura: la escribe la plataforma (auditoría, propiedad derivada o versión de fila) y el código no puede "
+                        + "escribirla (diseno/03 4.5, cierre del lote 3). Una prueba que la necesite la siembra.");
                 Columna columna;
                 if (!conocida.Columnas.TryGetValue(par.Key, out columna))
                     throw new ArgumentException("La tabla '" + tabla + "' no tiene la columna '" + par.Key + "'. Un nombre mal escrito pasa en el puesto y falla en Dev (diseno/03 4.5, fila Esquema).");
+                if (columna.Valor == Valor.SoloLecturaFormula)
+                    throw new ArgumentException("La columna '" + par.Key + "' de la tabla '" + tabla + "' es de solo lectura: es una fórmula y la calcula la plataforma (diseno/02, tipo fórmula).");
+                if (columna.Valor == Valor.SoloLecturaArchivo)
+                    throw new ArgumentException("La columna '" + par.Key + "' de la tabla '" + tabla + "' es de solo lectura para Create y Update: una columna de archivo solo se escribe por bloques "
+                        + "(InitializeFileBlocksUpload y UploadBlock), que el doble no simula; se siembra con SembrarArchivo.");
                 if (par.Value == null) continue;
                 ValidarValor(tabla, columna, par.Value);
             }

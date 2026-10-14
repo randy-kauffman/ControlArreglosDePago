@@ -164,7 +164,17 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         public void PA_ESQ_00_ElDiccionarioTraeLasSieteTablasPropias_VERDE_A_PROPOSITO()
         {
             Assert.Equal(7, Diccionario.Value.Count);
-            Assert.True(Escribibles().Count() >= 80, "el diccionario tiene 89 columnas escribibles al 2026-10-14; si baja de 80 la lectura del diccionario se rompió");
+            // Cierre del lote 3 (guarda): el conteo es EXACTO y por tabla. Salió de contar a mano las filas de cada tabla de la sección 4 del documento (sin las de fórmula ni archivo) más
+            // los lookups de la sección 6.2 de cada hija, sin pasar por el doble ni por este lector; 89 en total al 2026-10-14. Si el diccionario cambia, esta lista cambia con él, a propósito.
+            var esperadas = new Dictionary<string, int>(StringComparer.Ordinal)
+            {
+                { "sanic_carp_tbl_cliente", 5 }, { "sanic_carp_tbl_conversacion", 18 }, { "sanic_carp_tbl_arreglo", 41 }, { "sanic_carp_tbl_cuota", 7 },
+                { "sanic_carp_tbl_versionplantilla", 6 }, { "sanic_carp_tbl_mapeocelda", 7 }, { "sanic_carp_tbl_generacionformato", 5 }
+            };
+            var reales = Escribibles().GroupBy(c => c.Tabla).ToDictionary(g => g.Key, g => g.Count(), StringComparer.Ordinal);
+
+            Assert.Equal(esperadas.OrderBy(p => p.Key, StringComparer.Ordinal), reales.OrderBy(p => p.Key, StringComparer.Ordinal));
+            Assert.Equal(89, Escribibles().Count());
         }
 
         [Theory]

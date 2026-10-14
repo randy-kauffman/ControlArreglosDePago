@@ -63,13 +63,31 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 throw new NotSupportedException("El doble no simula LinkEntities (joins): una consulta con join pasa en el puesto y falla en el entorno (diseno/03 4.1, \"Regla de datos\"). Se hacen dos consultas.");
             if (consulta.Criteria != null) ValidarFiltro(consulta.Criteria);
 
-            var paginada = consulta.PageInfo != null && (consulta.PageInfo.Count > 0 || consulta.PageInfo.PageNumber > 0);
+            var paginada = EsPaginada(consulta);
             if (consulta.PageInfo != null && consulta.PageInfo.Count > MaximoPorPagina)
                 throw new InvalidOperationException("PageInfo.Count " + consulta.PageInfo.Count.ToString(CultureInfo.InvariantCulture) + " supera el máximo de " + MaximoPorPagina.ToString(CultureInfo.InvariantCulture)
                     + " filas por página (Learn: \"The default and maximum page size is 5,000 rows for standard tables\").");
             if (consulta.TopCount.HasValue && paginada)
                 throw new InvalidOperationException("TopCount no se usa junto con PageInfo: son dos formas de limitar el resultado y no son compatibles (Learn: \"Don't use the QueryExpression.TopCount property with paging\").");
+            if (paginada && consulta.PageInfo.Count <= 0 && consulta.PageInfo.PageNumber > 1)
+                throw new InvalidOperationException("PageInfo trae PageNumber " + consulta.PageInfo.PageNumber.ToString(CultureInfo.InvariantCulture) + " con Count en 0: el tamaño de la página no está definido y la plataforma no tiene "
+                    + "verificado cuál usaría (¿el de 5000 por defecto?). El doble no adivina: indique PageInfo.Count.");
             if (consulta.Criteria != null) ValidarForma(consulta.Criteria, true, consulta.EntityName);
+        }
+
+        /// <summary>
+        /// LA definición de "consulta paginada" (la usan <see cref="Validar"/> y <c>Consultar</c>): trae un <c>PageInfo</c> con <c>Count</c> o con <c>PageNumber</c>. Un <c>PageInfo</c> vacío (por ejemplo
+        /// solo para pedir el total) no pagina.
+        /// </summary>
+        public static bool EsPaginada(QueryExpression consulta)
+        {
+            return consulta.PageInfo != null && (consulta.PageInfo.Count > 0 || consulta.PageInfo.PageNumber > 0);
+        }
+
+        /// <summary>Filas por página de una consulta paginada: el <c>Count</c> pedido o, sin él, el de la plataforma (5000).</summary>
+        public static int TamanoDePagina(QueryExpression consulta)
+        {
+            return consulta.PageInfo == null || consulta.PageInfo.Count <= 0 ? MaximoPorPagina : consulta.PageInfo.Count;
         }
 
         private static void ValidarFiltro(FilterExpression filtro)

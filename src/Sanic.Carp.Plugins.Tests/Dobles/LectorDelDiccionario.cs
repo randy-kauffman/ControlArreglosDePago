@@ -22,6 +22,16 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         public string Destino { get; set; }
     }
 
+    /// <summary>Una relación 1:N de la sección 6.2: su id (<c>REL-01</c>), su nombre, la tabla padre, la tabla hija y el lookup que la hija lleva hacia el padre.</summary>
+    internal sealed class RelacionLeida
+    {
+        public string Id { get; set; }
+        public string Nombre { get; set; }
+        public string Padre { get; set; }
+        public string Hija { get; set; }
+        public string Lookup { get; set; }
+    }
+
     /// <summary>El formato de una primaria autonumérica (<c>CONV-{SEQNUM:6}</c>): prefijo y cantidad mínima de dígitos.</summary>
     internal sealed class FormatoAutonumerico
     {
@@ -49,6 +59,9 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
         /// <summary>El formato de la primaria autonumérica de cada tabla que la tiene.</summary>
         public IReadOnlyDictionary<string, FormatoAutonumerico> Autonumericos { get; set; }
+
+        /// <summary>Las relaciones de la sección 6.2 (REL-01 a REL-19), en el orden del documento. Con ellas el doble sabe qué filas tienen hijas al borrarse (<c>Delete</c>).</summary>
+        public IReadOnlyList<RelacionLeida> Relaciones { get; set; }
     }
 
     /// <summary>
@@ -155,10 +168,12 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 }
             }
 
-            foreach (var celdas in relaciones) AgregarLookup(tablas, celdas);
+            var relacionesLeidas = new List<RelacionLeida>();
+            foreach (var celdas in relaciones) relacionesLeidas.Add(AgregarLookup(tablas, celdas));
 
             return new DiccionarioLeido
             {
+                Relaciones = relacionesLeidas,
                 Tablas = tablas.ToDictionary(p => p.Key, p => (IReadOnlyList<ColumnaLeida>)p.Value, StringComparer.Ordinal),
                 ColumnasSobreEstandar = sobreEstandar.ToDictionary(p => p.Key, p => (IReadOnlyList<ColumnaLeida>)p.Value, StringComparer.Ordinal),
                 Choices = choices,
@@ -170,14 +185,17 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         /// Una relación (sección 6.2) agrega el lookup a su tabla hija. Padre e hija salen del NOMBRE de la relación (<c>sanic_carp_&lt;padre&gt;_&lt;hija&gt;[_sufijo]</c>, BP-PP-188), que es
         /// el nombre lógico y no el nombre para mostrar: un nombre corto con una tabla propia <c>sanic_carp_tbl_&lt;nombre&gt;</c> es esa tabla; <c>systemuser</c> y <c>email</c> son tablas estándar.
         /// </summary>
-        private static void AgregarLookup(Dictionary<string, List<ColumnaLeida>> tablas, string[] celdas)
+        private static RelacionLeida AgregarLookup(Dictionary<string, List<ColumnaLeida>> tablas, string[] celdas)
         {
             var nombre = NombreDeRelacion.Match(celdas[2]);
             if (!nombre.Success) throw new InvalidOperationException("El diccionario trae una relación con un nombre que el doble no entiende: " + celdas[1] + " " + celdas[2]);
             var padre = NombreDeTabla(tablas, nombre.Groups[1].Value);
             var hija = NombreDeTabla(tablas, nombre.Groups[2].Value);
-            if (!tablas.ContainsKey(hija)) return;      // la hija es una tabla estándar (REL-19: email): su lookup está en la sección 5
-            tablas[hija].Add(new ColumnaLeida { Tabla = hija, Nombre = celdas[5].Trim('`'), Tipo = TipoDeColumna.Lookup, Destino = padre });
+            var lookup = celdas[5].Trim('`');
+            var relacion = new RelacionLeida { Id = celdas[1], Nombre = celdas[2].Trim('`'), Padre = padre, Hija = hija, Lookup = lookup };
+            if (!tablas.ContainsKey(hija)) return relacion;      // la hija es una tabla estándar (REL-19: email): su lookup está en la sección 5
+            tablas[hija].Add(new ColumnaLeida { Tabla = hija, Nombre = lookup, Tipo = TipoDeColumna.Lookup, Destino = padre });
+            return relacion;
         }
 
         private static string NombreDeTabla(Dictionary<string, List<ColumnaLeida>> tablas, string corto)

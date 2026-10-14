@@ -101,9 +101,10 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
         private const int ModoDeAccesoNormal = 0;
 
         /// <summary>
-        /// <c>environmentvariabledefinition.type</c> de tipo texto (fixture 05). Con separador de dígitos para que el nombre y el número queden juntos y claros.
+        /// <c>environmentvariabledefinition.type</c> de tipo Texto: <c>OptionSetValue(100000000)</c>, medido en <c>Fixtures/Dataverse/05-environmentvariable.json</c> (nota "type = OptionSetValue(100000000) = Texto.").
+        /// Es el único lugar donde aparece el número (conv. §6: una constante con nombre, nunca el literal suelto).
         /// </summary>
-        private const int TipoDeVariableTexto = 100_000_000;
+        private const int TipoDeVariableTexto = 100000000;
 
         /// <summary>
         /// Un número que distingue a la fila que se construye de cualquier otra (las claves de negocio: cédula, número de producto, huella, <c>messageid</c>, nombre de cuota). Sale de un <see cref="Guid"/> nuevo

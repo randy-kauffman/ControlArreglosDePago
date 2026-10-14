@@ -15,6 +15,60 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
     /// solo el almacén los subía a 10). <c>Con(...)</c> sigue pasando el valor TAL CUAL (PA_CDD_15). Las otras dos decisiones del hallazgo NO llevan prueba de constructor: las <c>EntityCollection</c> de
     /// <c>activityparty</c> se TACHAN de 4.5 (PA_AJU_06) y <c>EntityReference.Name</c> se deja como llega (4.5, límite (j)).
     /// </summary>
+    /// <summary>
+    /// El escáner de literales de choice y de estado (conv. §6: "nunca el literal numérico"; diseno/03 4.5, cierre del lote 3, H3). Mira <c>new OptionSetValue(n)</c>, un <c>statuscode</c> literal en
+    /// <c>UnCorreo(…, n)</c>, un <c>15946000x</c>, el número del tipo de variable de entorno suelto y las comparaciones de un <c>.Value</c>, <c>StateCode</c> o <c>StatusCode</c> contra un número.
+    /// Lo que 4.5 permite son las DECLARACIONES de constantes con nombre (<c>const int Nombre = n;</c>): ahí el número vive una sola vez, con su nombre y su cita.
+    /// </summary>
+    internal static class EscanerDeLiterales
+    {
+        private const string CarpetaDeLaPrueba = "src/Sanic.Carp.Plugins.Tests";
+
+        private static readonly Regex DeclaracionDeConstante = new Regex(
+            @"^\s*(?:(?:public|private|internal|protected)\s+)?(?:static\s+)?const\s+(?:int|long)\s+[A-Za-z_]\w*\s*=\s*-?[0-9_]+\s*;\s*$", RegexOptions.CultureInvariant);
+
+        private static readonly Regex[] Patrones =
+        {
+            new Regex(@"new\s+OptionSetValue\(\s*-?[0-9]", RegexOptions.CultureInvariant),
+            new Regex(@"UnCorreo\(\s*(true|false)\s*,\s*[0-9]", RegexOptions.CultureInvariant),
+            new Regex(@"\b1594600[0-9]{2}\b", RegexOptions.CultureInvariant),
+            new Regex(@"\b100_?000_?000\b", RegexOptions.CultureInvariant),
+            new Regex(@"\b(?:Value|StateCode|StatusCode|statecode|statuscode)\s*(?:==|!=)\s*-?[0-9]", RegexOptions.CultureInvariant),
+            new Regex(@"-?[0-9]+\s*(?:==|!=)\s*[\w.()]*\b(?:Value|StateCode|StatusCode)\b", RegexOptions.CultureInvariant)
+        };
+
+        /// <summary>Las líneas con un literal suelto (sin las de comentario ni las declaraciones de constantes con nombre), cada una con su número de línea.</summary>
+        public static IReadOnlyList<string> Hallazgos(IReadOnlyList<string> lineas)
+        {
+            var halladas = new List<string>();
+            for (int i = 0; i < lineas.Count; i++)
+            {
+                var texto = lineas[i];
+                if (texto.TrimStart().StartsWith("//", StringComparison.Ordinal)) continue;
+                var comentario = texto.IndexOf(" //", StringComparison.Ordinal);
+                var codigo = comentario >= 0 ? texto.Substring(0, comentario) : texto;
+                if (DeclaracionDeConstante.IsMatch(codigo)) continue;
+                if (Patrones.Any(p => p.IsMatch(codigo))) halladas.Add("línea " + (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture) + ": " + texto.Trim());
+            }
+            return halladas;
+        }
+
+        /// <summary>Todos los <c>.cs</c> de <c>Dobles/</c> y <c>Apoyo/</c>, como rutas relativas a la raíz del repositorio (con <c>/</c>), en orden.</summary>
+        public static IReadOnlyList<string> RutasDeLosFuentes()
+        {
+            var directorio = new System.IO.DirectoryInfo(AppContext.BaseDirectory);
+            while (directorio != null && !System.IO.Directory.Exists(System.IO.Path.Combine(directorio.FullName, CarpetaDeLaPrueba, "Dobles"))) directorio = directorio.Parent;
+            if (directorio == null) throw new System.IO.DirectoryNotFoundException("No se encontró '" + CarpetaDeLaPrueba + "/Dobles' subiendo desde '" + AppContext.BaseDirectory + "'.");
+
+            var rutas = new List<string>();
+            foreach (var carpeta in new[] { "Dobles", "Apoyo" })
+                foreach (var archivo in System.IO.Directory.EnumerateFiles(System.IO.Path.Combine(directorio.FullName, CarpetaDeLaPrueba, carpeta), "*.cs", System.IO.SearchOption.AllDirectories))
+                    rutas.Add(System.IO.Path.GetRelativePath(directorio.FullName, archivo).Replace(System.IO.Path.DirectorySeparatorChar, '/'));
+            rutas.Sort(StringComparer.Ordinal);
+            return rutas;
+        }
+    }
+
     public class ConstructorDeDatosVuelta2Aceptacion
     {
         private static readonly string[] Claves =
@@ -83,25 +137,14 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         [Fact]
         public void PA_CD2_02_ElFuenteDelConstructorNoUsaLiteralesNumericosDeChoiceNiDeEstado_LECTURA_DEL_FUENTE()
         {
-            // Mutación que mata: volver a escribir new OptionSetValue(1), new OptionSetValue(0), un statuscode literal en UnCorreo(…, 4) o un 15946000x suelto.
-            var lineas = ApoyoDeAceptacion.LineasDelDocumento("src/Sanic.Carp.Plugins.Tests/Apoyo/ConstructorDeDatos.cs");
-            var patrones = new[]
-            {
-                new Regex(@"new\s+OptionSetValue\(\s*-?[0-9]"),
-                new Regex(@"UnCorreo\(\s*(true|false)\s*,\s*[0-9]"),
-                new Regex(@"\b1594600[0-9]{2}\b"),
-                new Regex(@"\b100000000\b")
-            };
-
+            // Mutación que mata: volver a escribir new OptionSetValue(1), new OptionSetValue(0), un statuscode literal en UnCorreo(…, 4), un 15946000x suelto o un .Value == 0.
+            // Cierre del lote 3 (H3): se escanean TODOS los fuentes de Dobles/ y Apoyo/, y las DECLARACIONES de constantes con nombre (const int Nombre = n;) se permiten (4.5).
             var halladas = new List<string>();
-            for (int i = 0; i < lineas.Length; i++)
-            {
-                var texto = lineas[i].TrimStart();
-                if (texto.StartsWith("//", StringComparison.Ordinal)) continue;
-                if (patrones.Any(p => p.IsMatch(lineas[i]))) halladas.Add("línea " + (i + 1).ToString(System.Globalization.CultureInfo.InvariantCulture) + ": " + texto);
-            }
+            foreach (var ruta in EscanerDeLiterales.RutasDeLosFuentes())
+                foreach (var hallazgo in EscanerDeLiterales.Hallazgos(ApoyoDeAceptacion.LineasDelDocumento(ruta)))
+                    halladas.Add(ruta.Substring(ruta.LastIndexOf('/') + 1) + ": " + hallazgo);
 
-            Assert.True(halladas.Count == 0, "literales numéricos de choice o de estado en ConstructorDeDatos (usar Estados, Choices.g.cs o una constante con nombre): " + string.Join(" | ", halladas));
+            Assert.True(halladas.Count == 0, "literales numéricos de choice o de estado en Dobles/ o Apoyo/ (usar Estados, Choices.g.cs o una constante con nombre): " + string.Join(" | ", halladas));
         }
 
         [Fact]

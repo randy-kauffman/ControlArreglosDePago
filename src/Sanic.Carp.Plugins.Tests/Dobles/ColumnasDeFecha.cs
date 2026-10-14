@@ -13,14 +13,14 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     internal static class ColumnasDeFecha
     {
         /// <summary>Pares (tabla, columna) de solo fecha, tal como están en el diccionario de datos (2026-10-14).</summary>
-        public static readonly IReadOnlyList<KeyValuePair<string, string>> SoloFecha = new[]
+        public static readonly IReadOnlyList<KeyValuePair<string, string>> SoloFecha = Array.AsReadOnly(new[]
         {
             new KeyValuePair<string, string>("sanic_carp_tbl_arreglo", "sanic_fechainicio"),
             new KeyValuePair<string, string>("sanic_carp_tbl_arreglo", "sanic_fechafin"),
             new KeyValuePair<string, string>("sanic_carp_tbl_arreglo", "sanic_fechaformalizacion"),
             new KeyValuePair<string, string>("sanic_carp_tbl_cuota", "sanic_fechavencimiento"),
             new KeyValuePair<string, string>("sanic_carp_tbl_cuota", "sanic_fechapago")
-        };
+        });
 
         /// <summary><c>true</c> si <paramref name="columna"/> de <paramref name="tabla"/> es de solo fecha (comparación ordinal).</summary>
         public static bool EsSoloFecha(string tabla, string columna)
