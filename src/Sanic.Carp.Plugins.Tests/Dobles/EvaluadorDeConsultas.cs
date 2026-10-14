@@ -19,6 +19,12 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     /// desconocida, la consulta lanza <see cref="InvalidOperationException"/> en vez de adivinar (D-59); si otra condición ya la descarta
     /// (<c>And</c> con un "no cumple"), la fila no importa y no se lanza nada.
     /// </para>
+    /// <para>
+    /// <b>VUELTA 2 (hallazgo 6): ~~lo anterior depende de los datos~~ <c>NotEqual</c> lanza por la FORMA de la consulta</b>, con la tabla vacía o con todas las filas llenas, salvo que el mismo <c>And</c> tenga
+    /// una condición sobre la misma columna que excluya los ausentes (<c>NotNull</c>, <c>Equal</c>, <c>In</c>, <c>Greater*</c>, <c>Less*</c>) o que la columna sea <c>statecode</c>, <c>statuscode</c> o el id primario.
+    /// También lanzan por la forma: un operador de un solo valor con varios, un subfiltro vacío, <c>PageInfo.Count</c> mayor que 5000, <c>TopCount</c> con <c>PageInfo</c> y una tabla o columna
+    /// que no existe en el esquema. Ver 4.5 y <c>OrdenYConsultasInvalidasAceptacion</c>.
+    /// </para>
     /// </summary>
     internal static class EvaluadorDeConsultas
     {

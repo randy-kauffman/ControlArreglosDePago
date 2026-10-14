@@ -14,7 +14,12 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     /// </summary>
     internal sealed class GeneradorFalso : IGeneradorDeFormato
     {
-        /// <summary>Bytes por defecto del archivo: <c>{ 0x50, 0x4B, 0x03, 0x04, 0x46, 0x41, 0x4C, 0x53, 0x4F }</c> ("PK\3\4FALSO").</summary>
+        /// <summary>
+        /// Bytes por defecto del archivo: <c>{ 0x50, 0x4B, 0x03, 0x04, 0x46, 0x41, 0x4C, 0x53, 0x4F }</c> ("PK\3\4FALSO").
+        /// <b>VUELTA 2 (hallazgo 8):</b> hoy es un <c>byte[]</c> estático que se devuelve por referencia a todas las instancias (mutar el resultado contamina a las demás). Debe pasar a
+        /// una PROPIEDAD estática que devuelva una copia nueva en cada lectura (el código que la lee sigue compilando) y cada instancia y cada resultado de <c>Generar</c> debe llevar
+        /// su propia copia: <c>PA_STA_03</c> y <c>PA_STA_04</c> (<c>EstadoEstaticoCompartidoAceptacion</c>).
+        /// </summary>
         public static readonly byte[] ArchivoPorDefecto = { 0x50, 0x4B, 0x03, 0x04, 0x46, 0x41, 0x4C, 0x53, 0x4F };
 
         /// <summary>Devuelve <see cref="ArchivoPorDefecto"/>, sin advertencias, sin recálculo y sin excepción.</summary>

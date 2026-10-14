@@ -55,9 +55,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var paraUsuario2 = almacen.ComoUsuario(ApoyoDeDobles.Usuario2).RetrieveMultiple(consulta);
             var paraSystem = almacen.RetrieveMultiple(consulta);
 
-            Assert.Equal(new[] { Cliente2 }, paraUsuario1.Entities.Select(e => e.Id).ToArray());
-            Assert.Equal(new[] { Fila1, Cliente2 }, paraUsuario2.Entities.Select(e => e.Id).ToArray());
-            Assert.Equal(new[] { Fila1, Cliente2 }, paraSystem.Entities.Select(e => e.Id).ToArray());
+            // Vuelta 2 (hallazgo 4): sin OrderExpression el orden del doble es adversario; se mide QUÉ filas salen (ids ordenados), no su orden.
+            Assert.Equal(new[] { Cliente2 }, paraUsuario1.Entities.Select(e => e.Id).OrderBy(i => i).ToArray());
+            Assert.Equal(new[] { Fila1, Cliente2 }, paraUsuario2.Entities.Select(e => e.Id).OrderBy(i => i).ToArray());
+            Assert.Equal(new[] { Fila1, Cliente2 }, paraSystem.Entities.Select(e => e.Id).OrderBy(i => i).ToArray());
         }
 
         [Fact]
@@ -98,7 +99,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
             Assert.Equal("ZZF-000-1", almacen.Retrieve(Clientes, Fila1, new ColumnSet("sanic_cedula"))["sanic_cedula"]);
             Assert.Equal("ZZF-000-1", almacen.ComoUsuario(ApoyoDeDobles.Usuario2).Retrieve(Clientes, Fila1, new ColumnSet("sanic_cedula"))["sanic_cedula"]);
-            Assert.Equal("ZZF-000-2", almacen.ComoUsuario(null).RetrieveMultiple(new QueryExpression(Clientes) { ColumnSet = new ColumnSet("sanic_cedula") }).Entities[1]["sanic_cedula"]);
+            // Vuelta 2 (hallazgo 4): se busca la fila por su id; el índice dependía del orden de inserción.
+            Assert.Equal("ZZF-000-2", almacen.ComoUsuario(null).RetrieveMultiple(new QueryExpression(Clientes) { ColumnSet = new ColumnSet("sanic_cedula") }).Entities.Single(e => e.Id == Cliente2)["sanic_cedula"]);
         }
 
         [Fact]

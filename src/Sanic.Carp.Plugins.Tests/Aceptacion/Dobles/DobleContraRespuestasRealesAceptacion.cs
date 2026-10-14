@@ -177,6 +177,20 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var esperado = kindDeEntrada == DateTimeKind.Local ? entrada.ToUniversalTime() : DateTime.SpecifyKind(entrada, DateTimeKind.Utc);
             var almacen = new OrganizationServiceEnMemoria();
 
+            if (kindDeEntrada != DateTimeKind.Utc)
+            {
+                // AJUSTADA en la vuelta 2 (hallazgo 5, 2026-10-14): ANTES una UL con Kind Local o Unspecified se aceptaba "como UTC" al escribir. El reloj del proyecto es UTC
+                // (diseno/03 0.6) y un código que escribe una hora sin Kind está confundiendo zonas: Create y Update la RECHAZAN con ArgumentException (detalle en
+                // FechasDeEscrituraAceptacion). Sembrar sigue normalizando (declara datos ya conocidos, que la plataforma devuelve siempre en Utc).
+                Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(Conversacion) { ["sanic_fechaprimercorreo"] = entrada }));
+                Assert.Empty(almacen.Todas(Conversacion));
+                var sembradaAparte = Almacen(new Entity(Conversacion, Guid.NewGuid()) { ["sanic_fechaprimercorreo"] = entrada });
+                var normalizada = sembradaAparte.Todas(Conversacion).Single()["sanic_fechaprimercorreo"];
+                ComparadorDeFormas.AssertValor("sembrar.sanic_fechaprimercorreo", real, normalizada, estricto: false);
+                Assert.Equal(esperado.Ticks, ((DateTime)normalizada).Ticks);
+                return;
+            }
+
             var id = almacen.Create(new Entity(Conversacion) { ["sanic_fechaprimercorreo"] = entrada });
             var devuelta = almacen.Retrieve(Conversacion, id, new ColumnSet("sanic_fechaprimercorreo"))["sanic_fechaprimercorreo"];
 
@@ -719,7 +733,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var fixture = LectorDeFixtures.Abrir("07-fallas.json");
             var pagina1 = fixture.Coleccion("paginacion", "pagina_1");
             var pagina2 = fixture.Coleccion("paginacion", "pagina_2");
-            var almacen = Almacen(pagina1.Entities.Concat(pagina2.Entities).ToArray());
+            // AJUSTADA en la vuelta 2 (empates adversarios): dos pares de filas empatan en createdon (15:06:51 y 15:06:52) y Dev las devolvió en el orden de su clave primaria. El doble ordena
+            // los empates al INVERSO del orden de entrada, así que las filas se siembran en orden inverso al real para que, tras el empate adversario, salgan en el orden de Dev.
+            var almacen = Almacen(pagina1.Entities.Concat(pagina2.Entities).Reverse().ToArray());
             Assert.True(pagina1.MoreRecords);
             Assert.False(pagina2.MoreRecords);
             Assert.All(pagina1.Entities.Concat(pagina2.Entities), e => Assert.True(e.Contains("createdon"), "la plataforma agrega la columna del OrderExpression aunque no se pida"));

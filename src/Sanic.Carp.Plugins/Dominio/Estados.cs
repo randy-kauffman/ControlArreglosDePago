@@ -67,6 +67,18 @@ namespace Sanic.Carp.Plugins.Dominio
         /// <summary><c>statecode</c> Inactivo.</summary>
         public const int Inactivo = 1;
 
+        // Email (tabla estándar, V-3 y fixtures de Dev, vuelta 2 del lote 3): un correo entrante y uno enviado llegan ambos en statecode 1
+        // (Completed). Existen para que los dobles y sus constructores no repitan el literal (diseno/03 0.7, conv. §6).
+
+        /// <summary><c>email.statecode</c> Completed (V-3).</summary>
+        public const int StateCorreoCompletado = 1;
+
+        /// <summary><c>email.statuscode</c> Sent (V-3).</summary>
+        public const int StatusCorreoEnviado = 3;
+
+        /// <summary><c>email.statuscode</c> Received (V-3).</summary>
+        public const int StatusCorreoRecibido = 4;
+
         // Tabla de diseno/03 0.7. Son los únicos lugares donde aparecen estos números (conv. §6: nunca el literal suelto en otro código).
         private static readonly EstadoEfectivo Abierta = new EstadoEfectivo(0, 1);
         private static readonly EstadoEfectivo Finalizada = new EstadoEfectivo(1, 2);

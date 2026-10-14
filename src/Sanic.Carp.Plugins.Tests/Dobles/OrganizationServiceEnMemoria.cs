@@ -36,7 +36,9 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     /// CONSERVA un <c>""</c> tal cual: la plataforma devuelve <c>""</c> en filas que no pasaron por la API (<c>domainname</c> y
     /// <c>firstname</c> del SYSTEM real, fixture 06).</item>
     /// <item><b>Fecha y hora (UL): <c>Kind=Utc</c>; solo fecha (<see cref="ColumnasDeFecha"/>): <c>Kind=Unspecified</c> a las 00:00.</b>
-    /// Al escribir, una UL <c>Local</c> se pasa a UTC y una <c>Unspecified</c> se toma como UTC; una de solo fecha queda como su
+    /// <b>VUELTA 2 (hallazgo 5):</b> ~~al escribir, una UL <c>Local</c> se pasa a UTC y una <c>Unspecified</c> se toma como UTC~~ <c>Create</c>, <c>Update</c> y
+    /// <c>UpdateRequest</c> RECHAZAN (<see cref="ArgumentException"/> con la columna y el <c>Kind</c>) una fecha y hora que no sea de solo fecha con <c>Kind</c> <c>Local</c> o
+    /// <c>Unspecified</c> (el reloj del proyecto es UTC); <see cref="Sembrar"/> sigue normalizando. Una de solo fecha acepta cualquier <c>Kind</c> y queda como su
     /// <c>Date</c> (sin conversión de zona, 0.6) con <c>Unspecified</c>.</item>
     /// <item><b>Decimal con escala 10.</b> Todo <c>decimal</c> guardado vuelve con escala 10 (<c>1000.50m</c> vuelve
     /// <c>1000.5000000000m</c>): igual en valor, distinto en <c>ToString()</c>. Así una prueba que formatea un decimal sin formato
@@ -52,13 +54,22 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     /// y <c>EntityState</c> y <c>KeyAttributes</c> salen vacíos.</item>
     /// <item><b>No inventa columnas de plataforma</b> (<c>createdon</c>, <c>createdby</c>, <c>ownerid</c>, …): las que una prueba
     /// necesite las siembra ella. Tampoco rellena <c>Name</c> de los <c>EntityReference</c> (en la plataforma puede ser nulo).</item>
-    /// <item><b>No valida nombres de columna</b> (la plataforma sí): limitación conocida, ver 4.5.</item>
+    /// <item><b>Esquema (VUELTA 2, hallazgo 3).</b> ~~No valida nombres de columna~~ <c>Create</c>/<c>Update</c> validan tabla, columna, tipo, destino del lookup, largo del texto y
+    /// valor del choice contra el diccionario (tablas propias), los fixtures y la sección 5 del diccionario (nativas con muestra): <see cref="ArgumentException"/> con tabla y
+    /// columna. <c>Retrieve</c>/<c>RetrieveMultiple</c> con tabla o columna inexistente (<c>ColumnSet</c>, condiciones, órdenes): <see cref="InvalidOperationException"/>.
+    /// Tablas <c>zzf_</c> libres; nativas sin muestra aceptadas sin validar columnas; <see cref="Sembrar"/> no valida. Criterio completo y límites en 4.5.</item>
+    /// <item><b>Autonumérico y estado (VUELTA 2, hallazgos 1 y 2).</b> <c>Create</c> completa la primaria autonumérica ANTES de PreValidation (V-8) y el estado inicial (0, 1) de las
+    /// tablas propias; un <c>Update</c> con solo <c>statecode</c> deja el motivo por defecto (V-5); un par de estado inválido se rechaza. Un <c>Create</c> de correo descarta
+    /// <c>inreplyto</c>; un <c>Update</c> de correo a Sent pone <c>senton</c>; el <c>schemaname</c> de un valor de variable de entorno se fuerza al de su definición. Ver 4.5.</item>
     /// <item><b>La falla tiene la forma de la real</b> (fixture 07): <c>FaultException&lt;OrganizationServiceFault&gt;</c> directa, sin <c>InnerException</c>,
     /// <c>Message</c> igual a <c>Detail.Message</c>, <c>Detail.Timestamp</c> Utc y <c>Detail.InnerFault</c> encadenado con el mismo código: <b>3 niveles para
     /// <see cref="CodigosDeFalla.ClaveDuplicada"/> y 2 para cualquier otro código</b> (es lo que midió Dev); <c>ErrorDetails</c> puede ir vacío.</item>
     /// <item><b>Cookie de paginación</b>: XML <c>&lt;cookie page="n"&gt;</c> con un hijo por columna del <c>OrderExpression</c> (en su orden) y al final uno por el
     /// id primario, cada uno con atributos <c>first</c> y <c>last</c> (el id con llaves y en minúscula; las fechas <c>yyyy-MM-ddTHH:mm:ss+00:00</c>); cadena
-    /// vacía, no nula, con <c>TopCount</c>, sin filas o sin resultados. El orden de las filas empatadas (o sin <c>OrderExpression</c>) es el de entrada y es ESTABLE.</item>
+    /// vacía, no nula, con <c>TopCount</c>, sin filas o sin resultados. ~~El orden de las filas empatadas (o sin <c>OrderExpression</c>) es el de entrada y es ESTABLE.~~
+    /// <b>VUELTA 2 (hallazgo 4 y decisión del orquestador):</b> sin <c>OrderExpression</c> el orden es el INVERSO al de entrada, y con <c>OrderExpression</c> los EMPATES van en el inverso al de entrada dentro de cada
+    /// grupo empatado (se parte del inverso y se ordena de forma estable); adversario y determinista, también con <c>TopCount</c> y <c>PageInfo</c>. La cookie entrante no se exige (Learn: simple paging). Lanzan <see cref="InvalidOperationException"/>: <c>PageInfo.Count</c> mayor que 5000,
+    /// <c>TopCount</c> con <c>PageInfo</c>, un operador de un solo valor con varios, un subfiltro vacío y <c>NotEqual</c> sin compañía sobre una columna no garantizada llena (por la forma, no por los datos).</item>
     /// <item><b>Momento de las fallas del almacén</b>: <see cref="FallarEn"/>, K-01 y la versión de fila ocurren al APLICAR la escritura, es decir después de los
     /// steps de PreValidation y PreOperation (si hay pipeline) y antes de los de PostOperation. <see cref="Sembrar"/> no aplica claves alternas (pero lo sembrado cuenta
     /// para ellas). Las filas que <see cref="NegarLectura"/> oculta no cuentan para <c>TopCount</c>, el total ni <c>MoreRecords</c>; una columna oculta vale como nula

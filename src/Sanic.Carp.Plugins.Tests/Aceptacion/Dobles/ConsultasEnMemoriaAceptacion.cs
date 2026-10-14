@@ -70,9 +70,27 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             return consulta;
         }
 
+        /// <summary>
+        /// Los ids del resultado. <b>Vuelta 2 (hallazgo 4):</b> sin <c>OrderExpression</c> el orden del doble es adversario (inverso al de entrada, ver
+        /// <c>OrdenYConsultasInvalidasAceptacion</c>) y el código no puede depender de él; por eso, cuando la consulta no ordena, esta ayuda devuelve los ids
+        /// ORDENADOS (las pruebas de esta clase miden QUÉ filas salen, no en qué orden). Con <c>OrderExpression</c> devuelve el orden del doble tal cual.
+        /// </summary>
         private static Guid[] Ids(OrganizationServiceEnMemoria almacen, QueryExpression consulta)
         {
-            return almacen.RetrieveMultiple(consulta).Entities.Select(e => e.Id).ToArray();
+            var ids = almacen.RetrieveMultiple(consulta).Entities.Select(e => e.Id);
+            return consulta.Orders.Count == 0 ? ids.OrderBy(i => i).ToArray() : ids.ToArray();
+        }
+
+        /// <summary>
+        /// <c>NotEqual</c> escrito de modo que NO dependa de los datos (vuelta 2, hallazgo 6): el mismo And lleva <c>NotNull</c> sobre la misma columna, que excluye las filas
+        /// donde está ausente. Sin esa condición el doble lanza por la FORMA de la consulta, haya o no filas con la columna ausente.
+        /// </summary>
+        private static QueryExpression NoIgualYPresente(string columna, object valor)
+        {
+            var consulta = new QueryExpression(TablaZzf) { ColumnSet = new ColumnSet() };
+            consulta.Criteria.AddCondition(columna, ConditionOperator.NotNull);
+            consulta.Criteria.AddCondition(columna, ConditionOperator.NotEqual, valor);
+            return consulta;
         }
 
         // ---- Equal ----
@@ -124,8 +142,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         {
             var almacen = Sembrado();
 
-            Assert.Equal(new[] { Fila3, F5, F6 }, Ids(almacen, Donde("zzf_estado", ConditionOperator.NotEqual, 1)));
-            Assert.Equal(new[] { Fila1, Fila2, F4 }, Ids(almacen, Donde("zzf_estado", ConditionOperator.NotEqual, 2)));
+            // Vuelta 2: NotEqual lleva NotNull sobre la misma columna (si no, lanza por la forma de la consulta: PA_CIN_01).
+            Assert.Equal(new[] { Fila3, F5, F6 }, Ids(almacen, NoIgualYPresente("zzf_estado", 1)));
+            Assert.Equal(new[] { Fila1, Fila2, F4 }, Ids(almacen, NoIgualYPresente("zzf_estado", 2)));
         }
 
         [Theory]
@@ -147,7 +166,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var almacen = new OrganizationServiceEnMemoria();
             almacen.Sembrar(Zzf(Fila1, "zzf_texto", "Alfa"), Zzf(Fila2, "zzf_texto", "beta"));
 
-            Assert.Equal(new[] { Fila2 }, Ids(almacen, Donde("zzf_texto", ConditionOperator.NotEqual, "ALFA")));
+            Assert.Equal(new[] { Fila2 }, Ids(almacen, NoIgualYPresente("zzf_texto", "ALFA")));
         }
 
         // ---- Comparaciones ----
@@ -231,8 +250,14 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
         // ---- Filtros ----
 
+        /// <summary>
+        /// REEMPLAZA a <c>PA_QRY_06_SinCriterioDevuelveTodasLasFilasEnOrdenDeEntrada</c> (vuelta 2, hallazgo 4, 2026-10-14): esa prueba exigía el orden de entrada y
+        /// un doble que devuelve siempre el orden de inserción deja pasar un <c>.First()</c> sin orden que en Dev falla (QueryExpression no agrega un orden por
+        /// la clave primaria, a diferencia de FetchXML: Learn, "Page results using QueryExpression", sección "Ordering and paging"). El orden con
+        /// <c>OrderExpression</c> ordena por sus columnas y los EMPATES van en orden inverso al de entrada (PA_QRY_07*, reescritas); el del doble sin orden es el INVERSO al de entrada: <c>OrdenYConsultasInvalidasAceptacion</c>.
+        /// </summary>
         [Fact]
-        public void PA_QRY_06_SinCriterioDevuelveTodasLasFilasEnOrdenDeEntrada()
+        public void PA_QRY_06_SinCriterioDevuelveTodasLasFilasSinPerderNingunaYSinDependerDelOrden()
         {
             Assert.Equal(new[] { Fila1, Fila2, Fila3, F4, F5, F6 }, Ids(Sembrado(), new QueryExpression(TablaZzf) { ColumnSet = new ColumnSet() }));
         }
@@ -295,12 +320,15 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         }
 
         [Fact]
-        public void PA_QRY_07_OrdenAscendenteDejaLasAusentesPrimeroYDescendenteLasDejaUltimas_ConEmpatesEnOrdenDeEntrada()
+        public void PA_QRY_07_OrdenAscendenteDejaLasAusentesPrimeroYDescendenteLasDejaUltimas_ConEmpatesEnOrdenInversoAlDeEntrada()
         {
             var almacen = Sembrado();
 
-            Assert.Equal(new[] { F6, Fila1, Fila2, Fila3, F4, F5 }, Ids(almacen, Ordenada(("zzf_numero", OrderType.Ascending))));
-            Assert.Equal(new[] { F5, Fila3, F4, Fila2, Fila1, F6 }, Ids(almacen, Ordenada(("zzf_numero", OrderType.Descending))));
+            // REESCRITA en la vuelta 2 (decisión del orquestador sobre la tensión 1): los empates (Fila3 y F4 tienen numero 3) van en orden INVERSO al de entrada, como sin orden:
+            // la plataforma no garantiza el orden de los empates (Learn, "Page results using QueryExpression": "Orders that don't include unique identifiers" es un anti-patrón y sin un
+            // identificador único "there's no guarantee that the other two records on the first page aren't included in the second page"). Antes: { F6, Fila1, Fila2, Fila3, F4, F5 } y { F5, Fila3, F4, ... }.
+            Assert.Equal(new[] { F6, Fila1, Fila2, F4, Fila3, F5 }, Ids(almacen, Ordenada(("zzf_numero", OrderType.Ascending))));
+            Assert.Equal(new[] { F5, F4, Fila3, Fila2, Fila1, F6 }, Ids(almacen, Ordenada(("zzf_numero", OrderType.Descending))));
         }
 
         [Fact]
@@ -308,7 +336,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         {
             var almacen = Sembrado();
 
-            Assert.Equal(new[] { F4, Fila1, F5, Fila2, F6, Fila3 }, Ids(almacen, Ordenada(("zzf_texto", OrderType.Ascending))));
+            // REESCRITA en la vuelta 2: "Alfa" (Fila1) y "alfa" (F5) empatan sin distinguir mayúsculas y el empate va en orden inverso al de entrada (antes: F4, Fila1, F5, ...).
+            Assert.Equal(new[] { F4, F5, Fila1, Fila2, F6, Fila3 }, Ids(almacen, Ordenada(("zzf_texto", OrderType.Ascending))));
         }
 
         [Fact]
@@ -324,7 +353,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         {
             var almacen = Sembrado();
 
-            Assert.Equal(new[] { F4, F6, Fila1, Fila2, F5, Fila3 }, Ids(almacen, Ordenada(("zzf_monto", OrderType.Ascending))));
+            // REESCRITA en la vuelta 2: empatan las ausentes (F4, F6) y 20,5 (Fila2, F5); cada empate va en orden inverso al de entrada (antes: F4, F6, Fila1, Fila2, F5, Fila3).
+            Assert.Equal(new[] { F6, F4, Fila1, F5, Fila2, Fila3 }, Ids(almacen, Ordenada(("zzf_monto", OrderType.Ascending))));
             Assert.Equal(new[] { F5, Fila2, Fila3, Fila1, F4, F6 }, Ids(almacen, Ordenada(("zzf_opcion", OrderType.Descending), ("zzf_numero", OrderType.Descending))));
         }
 
@@ -337,7 +367,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
             var mayores = Ordenada(("zzf_numero", OrderType.Descending));
             mayores.TopCount = 2;
-            Assert.Equal(new[] { F5, Fila3 }, Ids(almacen, mayores));
+            // REESCRITA en la vuelta 2: tras F5 (5) empatan Fila3 y F4 (3) y el empate va en orden inverso al de entrada (antes: F5, Fila3).
+            Assert.Equal(new[] { F5, F4 }, Ids(almacen, mayores));
 
             var conCriterio = Ordenada(("zzf_numero", OrderType.Ascending));
             conCriterio.Criteria.AddCondition("zzf_estado", ConditionOperator.Equal, 2);
@@ -390,8 +421,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             Assert.All(soloId, f => Assert.Equal(new[] { "zzf_filaid" }, f.Attributes.Keys.ToArray()));
 
             var todas = almacen.RetrieveMultiple(new QueryExpression(TablaZzf) { ColumnSet = new ColumnSet(true) }).Entities;
-            Assert.Equal(9, todas[0].Attributes.Count);
-            Assert.Equal(3, todas[3].Attributes.Count);
+            // Vuelta 2: sin OrderExpression el orden es adversario; se busca cada fila por su id.
+            Assert.Equal(9, todas.Single(e => e.Id == Fila1).Attributes.Count);
+            Assert.Equal(3, todas.Single(e => e.Id == F4).Attributes.Count);
             Assert.All(todas, f => Assert.DoesNotContain(f.Attributes, par => par.Value == null));
         }
 
@@ -421,7 +453,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
                 cookie = resultado.PagingCookie;
             }
 
-            Assert.Equal(new[] { F6, Fila1, Fila2, Fila3, F4, F5 }, vistas.ToArray());
+            // REESCRITA en la vuelta 2: el empate Fila3/F4 (numero 3) va en orden inverso al de entrada, también al repartirse entre páginas (antes: ..., Fila3, F4, F5).
+            Assert.Equal(new[] { F6, Fila1, Fila2, F4, Fila3, F5 }, vistas.ToArray());
             Assert.Equal(new[] { true, true, false }, banderas.ToArray());
         }
 

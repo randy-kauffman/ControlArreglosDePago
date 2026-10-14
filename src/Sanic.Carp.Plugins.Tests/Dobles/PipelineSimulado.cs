@@ -114,7 +114,9 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     /// <para>
     /// <b>Asíncronos.</b> Un step <see cref="ModoDeStep.Asincrono"/> (solo PostOperation) no corre dentro de la operación: queda en cola
     /// y corre en <see cref="EjecutarAsincronos"/>, con su propio contexto (<c>Mode</c> 1), y una excepción suya NO revierte nada: queda en
-    /// <see cref="Ejecuciones"/>. Lo que escriba un asíncrono dispara sus steps (a profundidad 1, sin padre).
+    /// <see cref="Ejecuciones"/>. <b>VUELTA 2 (hallazgo 7):</b> ~~lo que escriba un asíncrono dispara sus steps a profundidad 1, sin padre~~ un asíncrono corre con la <c>Depth</c> de la operación
+    /// que lo encoló y lo que escribe dispara sus steps a esa profundidad + 1, con <c>ParentContext</c> nulo; pasar de 8 lanza <see cref="InvalidOperationException"/> (queda en
+    /// <see cref="Ejecuciones"/>), así que una cadena de asíncronos se corta en el octavo y <see cref="EjecutarAsincronos"/> termina.
     /// </para>
     /// </summary>
     internal sealed class PipelineSimulado : IPipelineDeEscrituras

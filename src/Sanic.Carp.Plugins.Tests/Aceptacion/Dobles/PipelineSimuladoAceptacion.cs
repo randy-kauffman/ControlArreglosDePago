@@ -579,8 +579,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         }
 
         [Fact]
-        public void PA_PIP_28_LoQueEscribeUnAsincronoDisparaSusStepsAProfundidadUnoYSinPadre()
+        public void PA_PIP_28_LoQueEscribeUnAsincronoDisparaSusStepsAProfundidadDosYSinPadre()
         {
+            // AJUSTADA en la vuelta 2 (hallazgo 7, 2026-10-14): ANTES decía "profundidad uno". La profundidad se cuenta ENTRE saltos: el asíncrono nace de una operación de
+            // profundidad 1 y lo que él escribe es profundidad 2; si no, un asíncrono que dispara otro asíncrono nunca llega al corte de 8 (AsincronosEncadenadosAceptacion).
+            // El padre sigue siendo nulo: el trabajo asíncrono no es una llamada anidada de un contexto vivo.
             var fabrica = NuevaFabrica(out var pipeline);
             fabrica.Almacen.Sembrar(Zzf(Fila2, "zzf_a", 0));
             pipeline.Registrar(new PluginEspia("asincrono", accion: l => Elevado(l).Update(Zzf(Fila2, "zzf_a", 1))), "Create", TablaZzf, EtapaDeStep.PostOperation, modo: ModoDeStep.Asincrono);
@@ -591,7 +594,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             pipeline.EjecutarAsincronos();
 
             var contexto = deUpdate.Llamadas.Single().Contexto;
-            Assert.Equal(1, contexto.Depth);
+            Assert.Equal(2, contexto.Depth);
             Assert.Null(contexto.ParentContext);
             Assert.Equal(fabrica.IdDeSystem, contexto.InitiatingUserId);
         }
