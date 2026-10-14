@@ -33,20 +33,26 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
 
         // ---- Condiciones de tres valores ----
 
+        // REEMPLAZA a NotEqualSobreAusente_JuntoAUnaCondicionQueYaDescartaLaFila_NoLanza (vuelta 2, hallazgo 6: NotEqual lanza por la FORMA de la consulta, no por los datos).
         [Fact]
-        public void NotEqualSobreAusente_JuntoAUnaCondicionQueYaDescartaLaFila_NoLanza()
+        public void NotEqualSobreAusente_AunConUnaCondicionDeOtraColumnaQueDescartaLaFila_LanzaPorLaForma()
         {
-            // Si otra condición de un And ya descarta la fila, la respuesta de la plataforma sobre el NotEqual no cambia nada: no hay nada que adivinar.
+            // Antes no lanzaba porque otra condición del And descartaba la fila. Ahora una condición de OTRA columna no cuenta (diseno/03 4.5, "Paginación", punto e): lanza igual.
             var almacen = ConFilasSinNumero();
             var consulta = new QueryExpression(TablaZzf) { ColumnSet = new ColumnSet() };
             consulta.Criteria.AddCondition("zzf_estado", ConditionOperator.Equal, 2);
             consulta.Criteria.AddCondition("zzf_numero", ConditionOperator.NotEqual, 3);
 
-            Assert.Empty(almacen.RetrieveMultiple(consulta).Entities);
+            var conFilas = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(consulta));
+            var conLaTablaVacia = Assert.Throws<InvalidOperationException>(() => new OrganizationServiceEnMemoria().RetrieveMultiple(consulta));
+
+            Assert.Contains("zzf_numero", conFilas.Message, StringComparison.Ordinal);
+            Assert.Contains("zzf_numero", conLaTablaVacia.Message, StringComparison.Ordinal);
         }
 
+        // REEMPLAZA a NotEqualSobreAusente_EnUnOrConOtraCondicionVerdadera_NoLanza_PeroSinNingunaVerdaderaSi: la primera mitad (el Or con una condición verdadera) ya no pasa.
         [Fact]
-        public void NotEqualSobreAusente_EnUnOrConOtraCondicionVerdadera_NoLanza_PeroSinNingunaVerdaderaSi()
+        public void NotEqualSobreAusente_EnUnOr_LanzaConOSinOtraCondicionVerdadera()
         {
             var almacen = ConFilasSinNumero();
             var verdadera = new QueryExpression(TablaZzf) { ColumnSet = new ColumnSet() };
@@ -58,8 +64,10 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             sinVerdadera.Criteria.AddCondition("zzf_estado", ConditionOperator.Equal, 2);
             sinVerdadera.Criteria.AddCondition("zzf_numero", ConditionOperator.NotEqual, 3);
 
-            Assert.Equal(2, almacen.RetrieveMultiple(verdadera).Entities.Count);
+            var conVerdadera = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(verdadera));
             var error = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(sinVerdadera));
+
+            Assert.Contains("zzf_numero", conVerdadera.Message, StringComparison.Ordinal);
             Assert.Contains("zzf_numero", error.Message, StringComparison.Ordinal);
         }
 
@@ -221,15 +229,18 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             Assert.Equal(guardado, Inv((decimal)almacen.Leer(TablaZzf, Fila1)["zzf_monto"]));
         }
 
+        // REEMPLAZA a UnMoneyEscritoSeGuardaComoMoney_ElDobleNoAdivinaLaColumna (vuelta 2, hallazgo 3): fijaba que un Money se guardaba en una columna de una tabla zzf_; las
+        // columnas del proyecto son decimal (fixture 03) y una tabla propia valida el tipo. Una zzf_ sigue libre (PA_ESQ_08), así que el caso se mide sobre una columna real del diccionario.
         [Fact]
-        public void UnMoneyEscritoSeGuardaComoMoney_ElDobleNoAdivinaLaColumna()
+        public void UnMoneyEnUnaColumnaDecimalDelDiccionarioSeRechaza_NoSeGuardaNiSeConvierteEnSilencio()
         {
-            // Las columnas del proyecto son decimal; si el código escribe Money, el doble no lo convierte en silencio: la prueba lo ve.
             var almacen = new OrganizationServiceEnMemoria();
 
-            almacen.Create(Zzf(Fila1, "zzf_monto", new Money(5m)));
+            var error = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity("sanic_carp_tbl_arreglo") { ["sanic_saldoinicial"] = new Money(5m) }));
 
-            Assert.IsType<Money>(almacen.Leer(TablaZzf, Fila1)["zzf_monto"]);
+            Assert.Contains("sanic_carp_tbl_arreglo", error.Message, StringComparison.Ordinal);
+            Assert.Contains("sanic_saldoinicial", error.Message, StringComparison.Ordinal);
+            Assert.Empty(almacen.Todas("sanic_carp_tbl_arreglo"));
         }
     }
 }

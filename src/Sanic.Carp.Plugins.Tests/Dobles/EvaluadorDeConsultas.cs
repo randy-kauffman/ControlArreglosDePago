@@ -38,12 +38,38 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
         // ---- Validación y registro ----
 
-        /// <summary>Lanza <see cref="NotSupportedException"/> si la consulta usa algo que el doble no simula.</summary>
+        /// <summary>Máximo de filas por página de una tabla estándar (Learn, "Page results using QueryExpression").</summary>
+        private const int MaximoPorPagina = 5000;
+
+        /// <summary>Los operadores que comparan contra UN valor (<c>In</c> es el que admite varios).</summary>
+        private static readonly HashSet<ConditionOperator> DeUnSoloValor = new HashSet<ConditionOperator>
+        {
+            ConditionOperator.Equal, ConditionOperator.NotEqual, ConditionOperator.GreaterThan, ConditionOperator.GreaterEqual, ConditionOperator.LessThan, ConditionOperator.LessEqual
+        };
+
+        /// <summary>Los operadores que, sobre la misma columna y en el mismo <c>And</c>, dejan afuera a las filas donde la columna está ausente.</summary>
+        private static readonly HashSet<ConditionOperator> ExcluyenAusentes = new HashSet<ConditionOperator>
+        {
+            ConditionOperator.NotNull, ConditionOperator.Equal, ConditionOperator.In, ConditionOperator.GreaterThan, ConditionOperator.GreaterEqual, ConditionOperator.LessThan, ConditionOperator.LessEqual
+        };
+
+        /// <summary>
+        /// Lanza <see cref="NotSupportedException"/> si la consulta usa algo que el doble no simula y <see cref="InvalidOperationException"/> si su FORMA es inválida o no tiene respuesta
+        /// verificada (diseno/03 4.5, "Paginación", vuelta 2, hallazgo 6): nunca según los datos, así que una tabla vacía lanza igual.
+        /// </summary>
         public static void Validar(QueryExpression consulta)
         {
             if (consulta.LinkEntities != null && consulta.LinkEntities.Count > 0)
                 throw new NotSupportedException("El doble no simula LinkEntities (joins): una consulta con join pasa en el puesto y falla en el entorno (diseno/03 4.1, \"Regla de datos\"). Se hacen dos consultas.");
             if (consulta.Criteria != null) ValidarFiltro(consulta.Criteria);
+
+            var paginada = consulta.PageInfo != null && (consulta.PageInfo.Count > 0 || consulta.PageInfo.PageNumber > 0);
+            if (consulta.PageInfo != null && consulta.PageInfo.Count > MaximoPorPagina)
+                throw new InvalidOperationException("PageInfo.Count " + consulta.PageInfo.Count.ToString(CultureInfo.InvariantCulture) + " supera el máximo de " + MaximoPorPagina.ToString(CultureInfo.InvariantCulture)
+                    + " filas por página (Learn: \"The default and maximum page size is 5,000 rows for standard tables\").");
+            if (consulta.TopCount.HasValue && paginada)
+                throw new InvalidOperationException("TopCount no se usa junto con PageInfo: son dos formas de limitar el resultado y no son compatibles (Learn: \"Don't use the QueryExpression.TopCount property with paging\").");
+            if (consulta.Criteria != null) ValidarForma(consulta.Criteria, true, consulta.EntityName);
         }
 
         private static void ValidarFiltro(FilterExpression filtro)
@@ -56,6 +82,54 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                     throw new NotSupportedException("El doble no simula condiciones sobre una entidad enlazada (LinkEntities).");
             }
             foreach (var hijo in filtro.Filters) ValidarFiltro(hijo);
+        }
+
+        /// <summary>Las reglas que dependen de la forma del filtro: subfiltro vacío, varios valores en un operador de uno solo y <c>NotEqual</c> sobre una columna que puede estar ausente.</summary>
+        private static void ValidarForma(FilterExpression filtro, bool esRaiz, string tabla)
+        {
+            if (!esRaiz && filtro.Conditions.Count == 0 && filtro.Filters.Count == 0)
+                throw new InvalidOperationException("La consulta trae un subfiltro vacío dentro de otro filtro: no tiene respuesta verificada (¿se ignora, es verdadero, falla?) y el doble no adivina. Quite el subfiltro.");
+
+            foreach (var condicion in filtro.Conditions)
+            {
+                if (DeUnSoloValor.Contains(condicion.Operator) && ValoresDe(condicion).Count > 1)
+                    throw new InvalidOperationException("La condición " + condicion.Operator + " sobre '" + condicion.AttributeName + "' trae " + ValoresDe(condicion).Count.ToString(CultureInfo.InvariantCulture)
+                        + " valores y compara contra uno solo: la plataforma no lo tiene verificado (¿lo trata como In?, ¿falla?) y el doble no ignora los demás. Use In.");
+                if (condicion.Operator == ConditionOperator.NotEqual && !NotEqualEsSeguro(filtro, condicion, tabla))
+                    throw new InvalidOperationException("La consulta usa NotEqual sobre '" + condicion.AttributeName + "' sin una condición NotNull, Equal, In, GreaterThan, GreaterEqual, LessThan o LessEqual sobre la misma "
+                        + "columna en el mismo And: la plataforma no tiene verificado si NotEqual incluye las filas donde la columna está vacía (SQL las excluye, Dataverse puede incluirlas) y el doble no adivina. "
+                        + "Escriba la consulta de modo que no dependa de eso (por ejemplo, agregue NotNull sobre la columna).");
+            }
+            foreach (var hijo in filtro.Filters) ValidarForma(hijo, false, tabla);
+        }
+
+        /// <summary>
+        /// <c>NotEqual</c> no depende de cómo trate la plataforma a los vacíos si la columna siempre está llena (<c>statecode</c>, <c>statuscode</c> y el id primario) o si el mismo <c>And</c> lleva otra condición
+        /// sobre esa columna que ya excluye los ausentes. Una condición de otra columna, o de un <c>Or</c>, no cuenta.
+        /// </summary>
+        private static bool NotEqualEsSeguro(FilterExpression filtro, ConditionExpression condicion, string tabla)
+        {
+            var columna = condicion.AttributeName;
+            if (string.Equals(columna, "statecode", StringComparison.Ordinal) || string.Equals(columna, "statuscode", StringComparison.Ordinal)
+                || string.Equals(columna, FormaDeLaPlataforma.ColumnaDeId(tabla), StringComparison.Ordinal)) return true;
+            if (filtro.FilterOperator != LogicalOperator.And) return false;
+            return filtro.Conditions.Any(otra => !ReferenceEquals(otra, condicion) && string.Equals(otra.AttributeName, columna, StringComparison.Ordinal) && ExcluyenAusentes.Contains(otra.Operator));
+        }
+
+        /// <summary>Todas las columnas que la consulta nombra: las del <c>ColumnSet</c> (si no es <c>AllColumns</c>), las de las condiciones —también anidadas— y las de los órdenes.</summary>
+        public static List<string> ColumnasQueNombra(QueryExpression consulta)
+        {
+            var nombres = new List<string>();
+            if (consulta.ColumnSet != null && !consulta.ColumnSet.AllColumns) nombres.AddRange(consulta.ColumnSet.Columns);
+            if (consulta.Criteria != null) ColumnasDelFiltro(consulta.Criteria, nombres);
+            if (consulta.Orders != null) nombres.AddRange(consulta.Orders.Select(o => o.AttributeName));
+            return nombres;
+        }
+
+        private static void ColumnasDelFiltro(FilterExpression filtro, List<string> nombres)
+        {
+            nombres.AddRange(filtro.Conditions.Select(c => c.AttributeName));
+            foreach (var hijo in filtro.Filters) ColumnasDelFiltro(hijo, nombres);
         }
 
         /// <summary>Las condiciones aplanadas en orden (las del filtro y luego las de cada subfiltro), con los valores aplanados.</summary>
@@ -283,20 +357,27 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
         // ---- Orden, ventana y cookie ----
 
-        /// <summary>Ordena de forma estable: los empates conservan el orden de entrada; ascendente deja las ausentes primero y descendente, últimas.</summary>
+        /// <summary>
+        /// Orden ADVERSARIO y determinista (diseno/03 4.5, "Paginación", vuelta 2, hallazgo 4 y decisión del orquestador): se parte del INVERSO del orden de entrada y se ordena de forma ESTABLE por las
+        /// columnas pedidas, así que sin <c>OrderExpression</c> el resultado es el inverso de la entrada y los empates de un orden también van al inverso dentro de cada grupo. QueryExpression no agrega
+        /// un orden por la clave primaria (Learn, "Page results using QueryExpression"), así que un <c>.First()</c> que acierta por el orden de inserción falla en Dev: acá falla también. Ascendente deja las
+        /// ausentes primero y descendente, últimas.
+        /// </summary>
         public static List<Entity> Ordenar(List<Entity> filas, IEnumerable<OrderExpression> ordenes, Func<string, bool> oculta)
         {
+            var inversa = new List<Entity>(filas);
+            inversa.Reverse();
             IOrderedEnumerable<Entity> ordenado = null;
             foreach (var orden in ordenes)
             {
                 var columna = orden.AttributeName;
                 var comparador = new ComparadorDeOrden(columna, oculta);
                 if (ordenado == null)
-                    ordenado = orden.OrderType == OrderType.Descending ? filas.OrderByDescending(f => f, comparador) : filas.OrderBy(f => f, comparador);
+                    ordenado = orden.OrderType == OrderType.Descending ? inversa.OrderByDescending(f => f, comparador) : inversa.OrderBy(f => f, comparador);
                 else
                     ordenado = orden.OrderType == OrderType.Descending ? ordenado.ThenByDescending(f => f, comparador) : ordenado.ThenBy(f => f, comparador);
             }
-            return ordenado == null ? filas : ordenado.ToList();
+            return ordenado == null ? inversa : ordenado.ToList();
         }
 
         private sealed class ComparadorDeOrden : IComparer<Entity>

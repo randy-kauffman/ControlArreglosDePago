@@ -16,13 +16,15 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     {
         /// <summary>
         /// Bytes por defecto del archivo: <c>{ 0x50, 0x4B, 0x03, 0x04, 0x46, 0x41, 0x4C, 0x53, 0x4F }</c> ("PK\3\4FALSO").
-        /// <b>VUELTA 2 (hallazgo 8):</b> hoy es un <c>byte[]</c> estático que se devuelve por referencia a todas las instancias (mutar el resultado contamina a las demás). Debe pasar a
-        /// una PROPIEDAD estática que devuelva una copia nueva en cada lectura (el código que la lee sigue compilando) y cada instancia y cada resultado de <c>Generar</c> debe llevar
-        /// su propia copia: <c>PA_STA_03</c> y <c>PA_STA_04</c> (<c>EstadoEstaticoCompartidoAceptacion</c>).
+        /// <b>VUELTA 2 (hallazgo 8):</b> una PROPIEDAD estática que devuelve una copia nueva en cada lectura (era un <c>byte[]</c> estático entregado por referencia a todas las instancias: mutar el resultado
+        /// contaminaba a las demás); cada instancia y cada resultado de <c>Generar</c> llevan su propia copia: <c>PA_STA_03</c> y <c>PA_STA_04</c> (<c>EstadoEstaticoCompartidoAceptacion</c>).
         /// </summary>
-        public static readonly byte[] ArchivoPorDefecto = { 0x50, 0x4B, 0x03, 0x04, 0x46, 0x41, 0x4C, 0x53, 0x4F };
+        public static byte[] ArchivoPorDefecto
+        {
+            get { return new byte[] { 0x50, 0x4B, 0x03, 0x04, 0x46, 0x41, 0x4C, 0x53, 0x4F }; }
+        }
 
-        /// <summary>Devuelve <see cref="ArchivoPorDefecto"/>, sin advertencias, sin recálculo y sin excepción.</summary>
+        /// <summary>Devuelve una copia de <see cref="ArchivoPorDefecto"/>, sin advertencias, sin recálculo y sin excepción.</summary>
         private byte[] _archivo = ArchivoPorDefecto;
         private IReadOnlyList<string> _advertencias = new string[0];
 
@@ -59,7 +61,8 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             UltimoMapeo = mapeo;
             UltimosDatos = datos;
             if (Excepcion != null) throw Excepcion;
-            return new ResultadoGeneracion(Archivo, Advertencias, MarcadoRecalculoAlAbrir);
+            // Una copia en cada generación: quien recibe el archivo y lo muta (por ejemplo, para corromperlo) no altera los bytes configurados ni la siguiente generación.
+            return new ResultadoGeneracion(Archivo == null ? null : (byte[])Archivo.Clone(), Advertencias, MarcadoRecalculoAlAbrir);
         }
 
         public string CalcularHuella(byte[] contenido)

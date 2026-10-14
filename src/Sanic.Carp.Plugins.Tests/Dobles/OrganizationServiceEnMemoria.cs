@@ -7,6 +7,7 @@ using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
+using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Puertos;
 using Sanic.Carp.Plugins.Tests.Apoyo;
 
@@ -104,6 +105,13 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             if (idDeSystem == Guid.Empty) throw new ArgumentException("El id de SYSTEM no puede ser vacío.", nameof(idDeSystem));
             _estado = new EstadoDelAlmacen { Reloj = reloj, IdDeSystem = idDeSystem };
             _identidad = idDeSystem;
+        }
+
+        /// <summary>Almacén vacío con un esquema propio (el del diccionario y las muestras que se le den): lo usan las unitarias para medir que nada está escrito a medida.</summary>
+        internal OrganizationServiceEnMemoria(IReloj reloj, Guid idDeSystem, EsquemaDelAlmacen esquema) : this(reloj, idDeSystem)
+        {
+            if (esquema == null) throw new ArgumentNullException(nameof(esquema));
+            _estado.Esquema = esquema;
         }
 
         /// <summary>Otra vista del mismo almacén: comparte TODO el estado y solo cambia la identidad.</summary>
@@ -374,8 +382,12 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             if (string.IsNullOrEmpty(entity.LogicalName)) throw new ArgumentException("La entidad no trae el nombre lógico de su tabla.", nameof(entity));
+            // La plataforma valida la petición antes de los plugins: una escritura mal formada no cuenta como llamada ni corre ningún step.
+            ValidarEscritura(entity);
             var codigoDeFalla = ContarLlamada(OperacionDeDatos.Create, entity.LogicalName);
-            var entradas = new ParameterCollection { { "Target", Copias.Entidad(entity) } };
+            var objetivo = Copias.Entidad(entity);
+            CompletarAutonumerico(objetivo);
+            var entradas = new ParameterCollection { { "Target", objetivo } };
             var creada = Guid.Empty;
             Escribir("Create", entity.LogicalName, entradas, () => creada = AplicarCreate((Entity)entradas["Target"], codigoDeFalla));
             return creada;
@@ -394,6 +406,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 columnSet.AllColumns ? new string[0] : columnSet.Columns.ToArray(), columnSet.AllColumns, null, _identidad, _estado.Reloj.AhoraUtc));
             var codigoDeFalla = ContarLlamada(OperacionDeDatos.Retrieve, entityName);
             if (codigoDeFalla.HasValue) throw FallaPedida(codigoDeFalla.Value, OperacionDeDatos.Retrieve, entityName);
+            _estado.Esquema.ValidarLectura(entityName, columnSet.AllColumns ? new string[0] : columnSet.Columns.ToArray());
             var fila = Buscar(entityName, id);
             if (fila == null) throw FabricaDeFallas.FilaInexistente(entityName, id, _estado.Reloj.AhoraUtc);
             if (!EsSystem && _estado.LecturasNegadas.Contains((_identidad, entityName, id)))
@@ -614,14 +627,39 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             _estado.Escrituras.Add(new EscrituraRegistrada(operacion, tabla, id, copias, columnas, _identidad, _estado.Reloj.AhoraUtc));
         }
 
+        /// <summary>
+        /// Valida lo que el código escribe contra el esquema (diseno/03 4.5, fila "Esquema") y contra las reglas de forma (Kind de las fechas, tablas intersect): se llama al recibir la
+        /// escritura y otra vez al aplicarla, porque los steps pueden haberle sumado columnas al <c>Target</c>.
+        /// </summary>
+        private void ValidarEscritura(Entity entidad)
+        {
+            _estado.Esquema.ValidarEscritura(entidad.LogicalName, entidad.Attributes);
+            foreach (var par in entidad.Attributes) FormaDeLaPlataforma.Guardar(entidad.LogicalName, par.Key, par.Value, false);
+        }
+
+        /// <summary>
+        /// V-8: la plataforma completa la primaria autonumérica ANTES de PreValidation, y la vuelve a completar si un step de PreValidation la dejó sin valor. Ausente, <c>null</c> y <c>""</c> son lo mismo;
+        /// un valor enviado se conserva sin validar y no consume número. Lo llama <c>Create</c> y el pipeline después de PreValidation; nunca la escritura (en PreOperation ya no se completa, B2).
+        /// </summary>
+        internal void CompletarAutonumerico(Entity objetivo)
+        {
+            var formato = _estado.Esquema.AutonumericoDe(objetivo.LogicalName);
+            if (formato == null) return;
+            object actual;
+            var traeValor = objetivo.Attributes.TryGetValue("sanic_nombre", out actual) && !(actual == null || (actual is string && ((string)actual).Length == 0));
+            if (!traeValor) objetivo.Attributes["sanic_nombre"] = formato.Dar(_estado.SiguienteNumero(objetivo.LogicalName));
+        }
+
         private Guid AplicarCreate(Entity destino, int? codigoDeFalla)
         {
             var tabla = destino.LogicalName;
+            ValidarEscritura(destino);
             var id = destino.Id == Guid.Empty ? Guid.NewGuid() : destino.Id;
             var fila = Guardada(tabla, id, destino.Attributes, false, null);
             if (codigoDeFalla.HasValue) throw FallaPedida(codigoDeFalla.Value, OperacionDeDatos.Create, tabla);
             if (Buscar(tabla, id) != null)
                 throw FabricaDeFallas.SolicitudInvalida("Cannot insert duplicate key: ya existe la fila " + id + " en '" + tabla + "'. Código NO verificado contra la plataforma.", _estado.Reloj.AhoraUtc);
+            AjustarComoLaPlataforma(fila, null, destino);
             ComprobarClaves(fila, id, null);
             fila.RowVersion = _estado.SiguienteVersion();
             _estado.TablaDe(tabla, true).Agregar(fila);
@@ -636,6 +674,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             if (entity.Id == Guid.Empty) throw new ArgumentException("Un Update exige el Id de la fila.", nameof(entity));
             if (comportamiento == ConcurrencyBehavior.IfRowVersionMatches && string.IsNullOrEmpty(entity.RowVersion))
                 throw new InvalidOperationException("ConcurrencyBehavior.IfRowVersionMatches exige el RowVersion en el Target: sin él no hay con qué comparar (error de uso, no una falla de la plataforma).");
+            ValidarEscritura(entity);
             var codigoDeFalla = ContarLlamada(OperacionDeDatos.Update, entity.LogicalName);
             var entradas = new ParameterCollection { { "Target", Copias.Entidad(entity) } };
             var id = entity.Id;
@@ -649,6 +688,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         private void AplicarUpdate(Entity destino, ConcurrencyBehavior comportamiento, int? codigoDeFalla)
         {
             var tabla = destino.LogicalName;
+            ValidarEscritura(destino);
             var nuevos = new List<KeyValuePair<string, object>>();
             foreach (var par in destino.Attributes)
                 nuevos.Add(new KeyValuePair<string, object>(par.Key, FormaDeLaPlataforma.Guardar(tabla, par.Key, par.Value, false)));
@@ -675,10 +715,81 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 else fila.Attributes[par.Key] = par.Value;
             }
             fila.Attributes[FormaDeLaPlataforma.ColumnaDeId(tabla)] = destino.Id;
+            AjustarComoLaPlataforma(fila, actual, destino);
             ComprobarClaves(fila, destino.Id, destino.Attributes.Keys.ToList());
             fila.RowVersion = _estado.SiguienteVersion();
             _estado.TablaDe(tabla, true).Reemplazar(fila);
             RegistrarEscritura(OperacionDeDatos.Update, tabla, destino.Id, destino.Attributes);
+        }
+
+        private const string TablaCorreo = "email";
+        private const string TablaValorDeVariable = "environmentvariablevalue";
+        private const string TablaDefinicionDeVariable = "environmentvariabledefinition";
+
+        /// <summary>
+        /// Lo que la plataforma hace a la fila además de lo que el código escribió (diseno/03 4.5, filas "Autonumérico y estado inicial" y "Ajustes medidos de la plataforma"). <paramref name="actual"/>
+        /// es la fila antes del <c>Update</c> (<c>null</c> en un <c>Create</c>) y <paramref name="destino"/> lo que el código escribió (después de los steps).
+        /// </summary>
+        private void AjustarComoLaPlataforma(Entity fila, Entity actual, Entity destino)
+        {
+            var tabla = fila.LogicalName;
+            if (_estado.Esquema.EsPropia(tabla)) AplicarEstado(fila, actual, destino);
+
+            if (string.Equals(tabla, TablaCorreo, StringComparison.Ordinal))
+            {
+                // (a) inreplyto se pierde al CREAR (fixture 01); (b) pasar a Sent pone senton una sola vez, con el instante del reloj del almacén.
+                if (actual == null) fila.Attributes.Remove("inreplyto");
+                var estado = OpcionDe(destino, "statuscode");
+                if (actual != null && estado == Estados.StatusCorreoEnviado && !destino.Contains("senton") && !actual.Contains("senton"))
+                    fila.Attributes["senton"] = FormaDeLaPlataforma.AUtc(_estado.Reloj.AhoraUtc);
+            }
+            else if (string.Equals(tabla, TablaValorDeVariable, StringComparison.Ordinal))
+            {
+                // (d) el schemaname del valor es el de su definición, si la definición existe en el almacén.
+                object referencia;
+                if (fila.Attributes.TryGetValue("environmentvariabledefinitionid", out referencia))
+                {
+                    var definicion = Buscar(TablaDefinicionDeVariable, ((EntityReference)referencia).Id);
+                    object nombre;
+                    if (definicion != null && definicion.Attributes.TryGetValue("schemaname", out nombre)) fila.Attributes["schemaname"] = nombre;
+                }
+            }
+        }
+
+        /// <summary>El valor del choice de una columna del <c>Target</c>, o <c>null</c> si no la trae (o la trae nula).</summary>
+        private static int? OpcionDe(Entity entidad, string columna)
+        {
+            object valor;
+            var opcion = entidad.Attributes.TryGetValue(columna, out valor) ? valor as OptionSetValue : null;
+            return opcion == null ? (int?)null : opcion.Value;
+        }
+
+        /// <summary>
+        /// <c>statecode</c> y <c>statuscode</c> de una tabla PROPIA (V-5, P-13, diccionario 3.2): un alta sin estado nace en el inicial; un <c>statecode</c> solo deja el motivo por defecto de ese
+        /// estado (el <c>Target</c> que ven los steps llega sin <c>statuscode</c>: esto ocurre al guardar); un par que la tabla no admite se rechaza. Un <c>statuscode</c> solo se acepta si forma
+        /// un par válido con el <c>statecode</c> de la fila (pendiente de muestra, punto 6 de 4.5): el doble no adivina qué haría la plataforma con uno que no.
+        /// </summary>
+        private void AplicarEstado(Entity fila, Entity actual, Entity destino)
+        {
+            var tabla = fila.LogicalName;
+            var state = OpcionDe(destino, "statecode");
+            var status = OpcionDe(destino, "statuscode");
+            if (!state.HasValue && !status.HasValue)
+            {
+                if (actual != null) return;
+                var inicial = EstadoDeLasTablas.Inicial(tabla);
+                fila.Attributes["statecode"] = new OptionSetValue(inicial.StateCode);
+                fila.Attributes["statuscode"] = new OptionSetValue(inicial.StatusCode);
+                return;
+            }
+            if (state.HasValue && !status.HasValue)
+            {
+                fila.Attributes["statuscode"] = new OptionSetValue(EstadoDeLasTablas.StatusPorDefecto(tabla, state.Value));
+                return;
+            }
+            var vigente = state ?? OpcionDe(fila, "statecode") ?? Estados.Activo;
+            if (!EstadoDeLasTablas.Admite(tabla, vigente, status.Value)) throw EstadoDeLasTablas.ParInvalido(tabla, vigente, status.Value);
+            if (actual == null && !state.HasValue) fila.Attributes["statecode"] = new OptionSetValue(vigente);
         }
 
         private void AplicarDelete(string tabla, Guid id, int? codigoDeFalla)
@@ -811,6 +922,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             var codigoDeFalla = ContarLlamada(OperacionDeDatos.RetrieveMultiple, tabla);
             if (codigoDeFalla.HasValue) throw FallaPedida(codigoDeFalla.Value, OperacionDeDatos.RetrieveMultiple, tabla);
             EvaluadorDeConsultas.Validar(consulta);
+            _estado.Esquema.ValidarLectura(tabla, EvaluadorDeConsultas.ColumnasQueNombra(consulta));
 
             var oculta = OcultasPara(tabla);
             var guardada = _estado.TablaDe(tabla, false);

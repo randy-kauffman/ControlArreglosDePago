@@ -47,18 +47,22 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             var texto = valor as string;
             if (texto != null) return texto.Length == 0 && !sembrando ? null : texto;
 
-            if (valor is DateTime) return Fecha(tabla, columna, (DateTime)valor);
+            if (valor is DateTime) return Fecha(tabla, columna, (DateTime)valor, sembrando);
             if (valor is decimal) return Escala10((decimal)valor);
             return Copias.Valor(valor);
         }
 
         /// <summary>
-        /// Una columna de solo fecha sale <c>Unspecified</c> a las 00:00, sin conversión de zona (0.6); una de fecha y hora de usuario local
-        /// sale <c>Utc</c>: la <c>Local</c> se pasa a UTC y la <c>Unspecified</c> se toma como UTC.
+        /// Una columna de solo fecha sale <c>Unspecified</c> a las 00:00, sin conversión de zona (0.6); una de fecha y hora de usuario local sale <c>Utc</c>.
+        /// <b>Vuelta 2, hallazgo 5:</b> al ESCRIBIR, una de fecha y hora con <c>Kind</c> <c>Local</c> o <c>Unspecified</c> se RECHAZA (el reloj del proyecto es UTC, 0.6: una hora sin zona es un desfase en espera);
+        /// al sembrar, la <c>Local</c> se pasa a UTC y la <c>Unspecified</c> se toma como UTC, porque la siembra declara datos que la plataforma ya devolvió en UTC.
         /// </summary>
-        private static DateTime Fecha(string tabla, string columna, DateTime valor)
+        private static DateTime Fecha(string tabla, string columna, DateTime valor, bool sembrando)
         {
             if (ColumnasDeFecha.EsSoloFecha(tabla, columna)) return new DateTime(valor.Date.Ticks, DateTimeKind.Unspecified);
+            if (!sembrando && valor.Kind != DateTimeKind.Utc)
+                throw new ArgumentException("La columna '" + columna + "' de la tabla '" + tabla + "' es una fecha y hora y se escribió con Kind " + valor.Kind
+                    + ": el reloj del proyecto es UTC (diseno/03 0.6) y una hora sin zona o en hora local es un desfase en espera. Escriba un DateTime con Kind Utc.");
             return AUtc(valor);
         }
 

@@ -134,6 +134,9 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
         private readonly List<StepEnCola> _cola = new List<StepEnCola>();
 
+        /// <summary>Profundidad de la operación que encoló el paso asíncrono que se está ejecutando (0 si no se está ejecutando ninguno).</summary>
+        private int _profundidadDelAsincrono;
+
         /// <summary>Los contextos que se están ejecutando (steps y plugins de Custom API): una escritura pedida mientras tanto es anidada.</summary>
         private readonly Stack<ContextoDePluginSimulado> _enEjecucion = new Stack<ContextoDePluginSimulado>();
 
@@ -200,15 +203,25 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             {
                 var pendiente = _cola[0];
                 _cola.RemoveAt(0);
-                // El asíncrono corre en su propia transacción y sin padre: lo que escriba es una operación de profundidad 1.
-                Ejecutar(pendiente.Step, pendiente.Contexto, false, true);
+                // El asíncrono corre en su propia transacción y sin padre vivo, pero la profundidad se cuenta ENTRE saltos (vuelta 2, hallazgo 7): lo que escriba es la de la
+                // operación que lo encoló más uno. Así una cadena de asíncronos se corta en el octavo salto y EjecutarAsincronos termina.
+                _profundidadDelAsincrono = pendiente.Contexto.Depth;
+                try
+                {
+                    Ejecutar(pendiente.Step, pendiente.Contexto, false, true);
+                }
+                finally
+                {
+                    _profundidadDelAsincrono = 0;
+                }
             }
         }
 
         void IPipelineDeEscrituras.Escribir(OrganizationServiceEnMemoria servicio, string mensaje, string tabla, ParameterCollection entradas, Func<Guid> aplicar)
         {
             var padre = _enEjecucion.Count > 0 ? _enEjecucion.Peek() : null;
-            var profundidad = padre == null ? 1 : padre.Depth + 1;
+            // Una escritura sin padre vivo es de profundidad 1, salvo la de un paso asíncrono: corre con la profundidad de la operación que lo encoló y lo que escribe es esa más uno.
+            var profundidad = padre == null ? _profundidadDelAsincrono + 1 : padre.Depth + 1;
             if (profundidad > ProfundidadMaxima)
                 throw new InvalidOperationException("Se superó la profundidad máxima de ejecución de la plataforma (" + ProfundidadMaxima + "): una cadena de steps que se disparan unos a otros.");
 
@@ -243,6 +256,8 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
             // PreValidation corre antes de que exista la transacción: lo que escriba y una excepción suya no se restauran.
             CorrerEtapa(operacion, EtapaDeStep.PreValidation);
+            // V-8, B1: si un step de PreValidation dejó la primaria autonumérica sin valor, la plataforma la vuelve a asignar antes de PreOperation (el número anterior se pierde).
+            if (mensaje == "Create" && entidad != null) servicio.CompletarAutonumerico(entidad);
 
             // La operación de más afuera abre la transacción; las anidadas comparten la suya.
             var instantanea = padre == null ? servicio.Instantanea() : null;

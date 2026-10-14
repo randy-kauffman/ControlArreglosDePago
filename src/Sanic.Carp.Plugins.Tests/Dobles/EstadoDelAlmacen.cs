@@ -126,6 +126,26 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         public bool RechazarEscriturasEnInactivas;
         public IPipelineDeEscrituras Pipeline;
 
+        private EsquemaDelAlmacen _esquema;
+
+        /// <summary>El esquema del almacén: el del repositorio salvo que una unitaria le dé otro. Se resuelve al primer uso, no al construir el almacén.</summary>
+        public EsquemaDelAlmacen Esquema
+        {
+            get { return _esquema ?? EsquemaDelAlmacen.Predeterminado; }
+            set { _esquema = value; }
+        }
+
+        /// <summary>Último número entregado por cada primaria autonumérica (V-8). Es del almacén: dos almacenes nuevos empiezan igual y no retrocede ni al restaurar una instantánea.</summary>
+        public readonly Dictionary<string, long> Secuencias = new Dictionary<string, long>(StringComparer.Ordinal);
+
+        public long SiguienteNumero(string tabla)
+        {
+            long ultimo;
+            Secuencias.TryGetValue(tabla, out ultimo);
+            Secuencias[tabla] = ++ultimo;
+            return ultimo;
+        }
+
         /// <summary>Cuántas veces se restauró una instantánea (lo usa el pipeline para descartar los asíncronos de una transacción revertida).</summary>
         public int Restauraciones;
 

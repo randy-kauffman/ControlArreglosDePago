@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using Microsoft.Xrm.Sdk;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Tests.Dobles;
@@ -96,12 +95,38 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
     /// </summary>
     internal static class ConstructorDeDatos
     {
-        /// <summary>Contador de proceso: los datos que son clave de negocio no se repiten entre filas construidas (y no dependen del reloj ni del azar).</summary>
-        private static int _secuencia = 1000;
+        /// <summary>
+        /// <c>systemuser.accessmode</c> 0 (Read-Write, fixture 06). Sin esta constante el número iría suelto en el código del constructor (conv. §6).
+        /// </summary>
+        private const int ModoDeAccesoNormal = 0;
 
-        private static int Siguiente()
+        /// <summary>
+        /// <c>environmentvariabledefinition.type</c> de tipo texto (fixture 05). Con separador de dígitos para que el nombre y el número queden juntos y claros.
+        /// </summary>
+        private const int TipoDeVariableTexto = 100_000_000;
+
+        /// <summary>
+        /// Un número que distingue a la fila que se construye de cualquier otra (las claves de negocio: cédula, número de producto, huella, <c>messageid</c>, nombre de cuota). Sale de un <see cref="Guid"/> nuevo
+        /// (48 bits al azar, 12 dígitos), no de un contador de proceso: ningún estado del constructor sobrevive a la fila, así que el valor de una clave no depende de cuántas filas construyó
+        /// otra prueba antes ni de cuántos hilos construyen a la vez (diseno/03 4.5, vuelta 2, hallazgo 8; <c>PA_STA_05</c>).
+        /// </summary>
+        private static long Siguiente()
         {
-            return Interlocked.Increment(ref _secuencia);
+            var bytes = Guid.NewGuid().ToByteArray();
+            var cuarentaYOchoBits = ((ulong)BitConverter.ToUInt32(bytes, 0) << 16) | BitConverter.ToUInt16(bytes, 4);
+            return (long)(cuarentaYOchoBits % 1000000000000UL);
+        }
+
+        /// <summary>Un decimal por defecto como lo devuelve la plataforma: escala 10 (<c>1000.50m</c> vuelve <c>1000.5000000000m</c>). <c>Con</c> pasa el valor tal cual (PA_CDD_15).</summary>
+        private static decimal Dec(decimal valor)
+        {
+            return FormaDeLaPlataforma.Escala10(valor);
+        }
+
+        /// <summary>El estado Activo con su motivo por defecto: el de las tablas estándar y el de un alta (P-13).</summary>
+        private static ConstructorDeFila ConEstadoActivo(ConstructorDeFila constructor)
+        {
+            return constructor.Con("statecode", new OptionSetValue(Estados.Activo)).Con("statuscode", new OptionSetValue(Estados.StatusPorDefecto(Estados.Activo)));
         }
 
         /// <summary>Instante fijo de los datos construidos: el del <c>RelojFijo</c>. Los constructores nunca leen el reloj del sistema.</summary>
@@ -179,12 +204,12 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
                 .Con("sanic_tipo", new OptionSetValue((int)TipoDeArreglo.Temporal))
                 .Con("sanic_moneda", new OptionSetValue((int)Moneda.Cordobas))
                 .Con("sanic_canalorigen", new OptionSetValue((int)CanalDeOrigen.Correo))
-                .Con("sanic_saldoinicial", 1000.50m)
-                .Con("sanic_montoabonado", 100.50m)
-                .Con("sanic_saldoremanente", 900.00m)
+                .Con("sanic_saldoinicial", Dec(1000.50m))
+                .Con("sanic_montoabonado", Dec(100.50m))
+                .Con("sanic_saldoremanente", Dec(900.00m))
                 .Con("sanic_plazo", 6)
-                .Con("sanic_cuotamensual", 150.00m)
-                .Con("sanic_totalpagar", 900.00m)
+                .Con("sanic_cuotamensual", Dec(150.00m))
+                .Con("sanic_totalpagar", Dec(900.00m))
                 .Con("sanic_fechainicio", SoloFecha(2026, 11, 1))
                 .Con("sanic_fechafin", SoloFecha(2027, 4, 1))
                 .Con("sanic_cuentadebitar", "ZZF-cta-" + texto)
@@ -217,20 +242,18 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
         public static ConstructorDeFila UnaCuota()
         {
             var n = Siguiente();
-            return ConPropietario(new ConstructorDeFila("sanic_carp_tbl_cuota"))
+            return ConEstadoActivo(ConPropietario(new ConstructorDeFila("sanic_carp_tbl_cuota"))
                 .Con("sanic_nombre", "ARR-" + n.ToString("D6", CultureInfo.InvariantCulture) + "-C01")
                 .Con("sanic_numero", 1)
                 .Con("sanic_fechavencimiento", SoloFecha(2026, 11, 1))
-                .Con("sanic_monto", 150.00m)
-                .Con("sanic_arregloid", Ref("sanic_carp_tbl_arreglo"))
-                .Con("statecode", new OptionSetValue(Estados.Activo))
-                .Con("statuscode", new OptionSetValue(1));
+                .Con("sanic_monto", Dec(150.00m))
+                .Con("sanic_arregloid", Ref("sanic_carp_tbl_arreglo")));
         }
 
-        /// <summary>Email entrante recibido: <c>directioncode</c> false, <c>statecode</c> 1 / <c>statuscode</c> 4, sin <c>senton</c> (fixture 01).</summary>
+        /// <summary>Email entrante recibido: <c>directioncode</c> false, Completed / Received (<see cref="Estados.StatusCorreoRecibido"/>), sin <c>senton</c> (fixture 01).</summary>
         public static ConstructorDeFila UnCorreoEntrante()
         {
-            return UnCorreo(false, 4);
+            return UnCorreo(false, Estados.StatusCorreoRecibido);
         }
 
         private static ConstructorDeFila UnCorreo(bool saliente, int statuscode)
@@ -240,7 +263,7 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
                 .Con("messageid", "<zzf-" + (saliente ? "saliente" : "entrante") + "-" + n.ToString(CultureInfo.InvariantCulture) + "@example.com>")
                 .Con("subject", "ZZF-PRUEBA asunto " + n.ToString(CultureInfo.InvariantCulture))
                 .Con("directioncode", saliente)
-                .Con("statecode", new OptionSetValue(1))
+                .Con("statecode", new OptionSetValue(Estados.StateCorreoCompletado))
                 .Con("statuscode", new OptionSetValue(statuscode))
                 .Con("actualend", Ahora.AddHours(-3))
                 .Con("createdon", Ahora.AddHours(-3))
@@ -251,21 +274,19 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
             return constructor;
         }
 
-        /// <summary>Email saliente enviado: <c>directioncode</c> true, <c>statecode</c> 1 / <c>statuscode</c> 3, con <c>senton</c> (fixture 01).</summary>
+        /// <summary>Email saliente enviado: <c>directioncode</c> true, Completed / Sent (<see cref="Estados.StatusCorreoEnviado"/>), con <c>senton</c> (fixture 01).</summary>
         public static ConstructorDeFila UnCorreoSaliente()
         {
-            return UnCorreo(true, 3);
+            return UnCorreo(true, Estados.StatusCorreoEnviado);
         }
 
         public static ConstructorDeFila UnaVersion(EstadoDeVersionDePlantilla estado = EstadoDeVersionDePlantilla.Borrador)
         {
             var n = Siguiente();
-            var constructor = ConPropietario(new ConstructorDeFila("sanic_carp_tbl_versionplantilla"))
+            var constructor = ConEstadoActivo(ConPropietario(new ConstructorDeFila("sanic_carp_tbl_versionplantilla"))
                 .Con("sanic_nombre", "v" + (10 + n % 990).ToString(CultureInfo.InvariantCulture))
                 .Con("sanic_capacidad", 60)
-                .Con("sanic_estado", new OptionSetValue((int)estado))
-                .Con("statecode", new OptionSetValue(Estados.Activo))
-                .Con("statuscode", new OptionSetValue(1));
+                .Con("sanic_estado", new OptionSetValue((int)estado)));
             if (estado != EstadoDeVersionDePlantilla.Borrador)
                 constructor.Con("sanic_fechaaprobacion", Ahora.AddDays(-5)).Con("sanic_aprobadoporid", Ref("systemuser"));
             return constructor;
@@ -275,15 +296,13 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
         {
             const string hoja = " FORMATO ARP ELECTRONICO";   // con el espacio inicial, como la plantilla real (spike 1)
             const string celda = "B7";
-            return ConPropietario(new ConstructorDeFila("sanic_carp_tbl_mapeocelda"))
+            return ConEstadoActivo(ConPropietario(new ConstructorDeFila("sanic_carp_tbl_mapeocelda"))
                 .Con("sanic_nombre", hoja + "!" + celda)
                 .Con("sanic_hoja", hoja)
                 .Con("sanic_celda", celda)
                 .Con("sanic_tipo", new OptionSetValue((int)TipoDeMapeo.ValorSimple))
                 .Con("sanic_campo", new OptionSetValue((int)CampoMapeable.FechaDeFormalizacion))
-                .Con("sanic_versionplantillaid", Ref("sanic_carp_tbl_versionplantilla"))
-                .Con("statecode", new OptionSetValue(Estados.Activo))
-                .Con("statuscode", new OptionSetValue(1));
+                .Con("sanic_versionplantillaid", Ref("sanic_carp_tbl_versionplantilla")));
         }
 
         // ---- Fuera de la lista de 4.5, pero necesarios para las tablas de los fixtures 4 a 6 (D-59 vive en teammembership) ----
@@ -292,12 +311,10 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
         {
             var n = Siguiente();
             var texto = n.ToString("D6", CultureInfo.InvariantCulture);
-            return ConPropietario(new ConstructorDeFila("sanic_carp_tbl_cliente"))
+            return ConEstadoActivo(ConPropietario(new ConstructorDeFila("sanic_carp_tbl_cliente"))
                 .Con("sanic_nombre", "ZZF cliente " + texto)
                 .Con("sanic_nombrecompleto", "ZZF cliente " + texto)
-                .Con("sanic_cedula", "ZZF-ced-" + texto)
-                .Con("statecode", new OptionSetValue(Estados.Activo))
-                .Con("statuscode", new OptionSetValue(1));
+                .Con("sanic_cedula", "ZZF-ced-" + texto));
         }
 
         /// <summary><c>teammembership</c>: exactamente <c>teammembershipid</c>, <c>systemuserid</c> y <c>teamid</c>, los tres <see cref="Guid"/> CRUDOS (fixture 04).</summary>
@@ -317,11 +334,9 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
 
         public static ConstructorDeFila UnaCola(string correo)
         {
-            return new ConstructorDeFila("queue")
+            return ConEstadoActivo(new ConstructorDeFila("queue")
                 .Con("name", "ZZF Cola " + Siguiente().ToString(CultureInfo.InvariantCulture))
-                .Con("emailaddress", correo)
-                .Con("statecode", new OptionSetValue(0))
-                .Con("statuscode", new OptionSetValue(1));
+                .Con("emailaddress", correo));
         }
 
         /// <summary>Una persona: <c>fullname</c>, <c>isdisabled</c> false, <c>accessmode</c> 0, <c>businessunitid</c> (fixture 06).</summary>
@@ -330,7 +345,7 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
             return new ConstructorDeFila("systemuser").ConId(id)
                 .Con("fullname", "ZZF Usuario " + Siguiente().ToString(CultureInfo.InvariantCulture))
                 .Con("isdisabled", false)
-                .Con("accessmode", new OptionSetValue(0))
+                .Con("accessmode", new OptionSetValue(ModoDeAccesoNormal))
                 .Con("businessunitid", new EntityReference("businessunit", ConfiguracionSimulada.IdDeBuPorDefecto));
         }
 
@@ -340,31 +355,27 @@ namespace Sanic.Carp.Plugins.Tests.Apoyo
             return new ConstructorDeFila("systemuser").ConId(id)
                 .Con("fullname", "SYSTEM")
                 .Con("isdisabled", true)
-                .Con("accessmode", new OptionSetValue(0))
+                .Con("accessmode", new OptionSetValue(ModoDeAccesoNormal))
                 .Con("businessunitid", new EntityReference("businessunit", ConfiguracionSimulada.IdDeBuPorDefecto));
         }
 
-        /// <summary><c>environmentvariabledefinition</c> de tipo texto (<c>type</c> 100000000) con su valor por defecto.</summary>
+        /// <summary><c>environmentvariabledefinition</c> de tipo texto (<see cref="TipoDeVariableTexto"/>) con su valor por defecto.</summary>
         public static ConstructorDeFila UnaDefinicionDeVariable(string nombreDeEsquema, string valorPorDefecto)
         {
-            return new ConstructorDeFila("environmentvariabledefinition")
+            return ConEstadoActivo(new ConstructorDeFila("environmentvariabledefinition")
                 .Con("schemaname", nombreDeEsquema)
                 .Con("displayname", "ZZF-" + nombreDeEsquema)
                 .Con("defaultvalue", valorPorDefecto)
-                .Con("type", new OptionSetValue(100000000))
-                .Con("statecode", new OptionSetValue(0))
-                .Con("statuscode", new OptionSetValue(1));
+                .Con("type", new OptionSetValue(TipoDeVariableTexto)));
         }
 
         /// <summary><c>environmentvariablevalue</c> de una definición; <c>environmentvariabledefinitionid</c> es <c>EntityReference</c>.</summary>
         public static ConstructorDeFila UnValorDeVariable(string nombreDeEsquema, Guid definicion, string valor)
         {
-            return new ConstructorDeFila("environmentvariablevalue")
+            return ConEstadoActivo(new ConstructorDeFila("environmentvariablevalue")
                 .Con("schemaname", nombreDeEsquema)
                 .Con("value", valor)
-                .Con("environmentvariabledefinitionid", new EntityReference("environmentvariabledefinition", definicion))
-                .Con("statecode", new OptionSetValue(0))
-                .Con("statuscode", new OptionSetValue(1));
+                .Con("environmentvariabledefinitionid", new EntityReference("environmentvariabledefinition", definicion)));
         }
     }
 }
