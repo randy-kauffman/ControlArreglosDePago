@@ -9,14 +9,14 @@ using Xunit;
 namespace Sanic.Carp.Plugins.Tests.Aceptacion.Formato
 {
     /// <summary>
-    /// PA-GEN-27 (real) (diseno/03 1.1, línea 327): "Plantilla v07 (fixture) con 60 cuotas y el mapeo del diccionario más la celda de moneda ⇒ se
-    /// genera con el generador real ⇒ salida idéntica byte a byte a la del spike 1b para 6, 30 y 60 cuotas".
+    /// PA-GEN-27 (real) (diseno/03 1.1, línea 327): salida idéntica a la del spike 1b para 6 y 60 cuotas, con los sellos de fecha y hora DOS de
+    /// <c>[Content_Types].xml</c> comparados en cero (texto corregido el 2026-10-14 por decisión del usuario; antes pedía 6, 30 y 60 cuotas).
     /// <para>
     /// <b>Lo que se puede medir hoy.</b> El spike dejó dos salidas, <c>spikes/plantilla/salida-ejemplo-6-cuotas.xlsx</c> y
     /// <c>salida-ejemplo-60-cuotas.xlsx</c> (las que escribe <c>tools/Medicion</c> con datos ficticios), copiadas a <c>Fixtures/Spike1b/</c>.
     /// Los datos y el mapeo de aquí son los de <c>tools/Medicion/Program.cs</c>, línea por línea; el esperado es el archivo del spike, que NO sale de este
     /// código. <b>NO existe una salida del spike para 30 cuotas</b>: el valor esperado no se inventa ni se calcula con el generador bajo prueba;
-    /// el caso de 30 cuotas queda sin escribir hasta que el usuario decida (informe del lote 3). Tampoco hay una salida del spike con la celda de
+    /// el caso de 30 cuotas no se escribe: el usuario aceptó el 2026-10-14 comparar solo 6 y 60 cuotas, y el texto de PA-GEN-27 se corrigió. Tampoco hay una salida del spike con la celda de
     /// <c>moneda</c> (la v07 no la imprime, OA-7): la clave libre <c>moneda</c> sin celda mapeada no cambia la salida, y eso lo fija
     /// <c>MonedaEnElGeneradorAceptacion</c>.
     /// </para>

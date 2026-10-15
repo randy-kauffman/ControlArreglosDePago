@@ -324,7 +324,7 @@ La tabla "opción ⇒ clave" vive en `Formato/ClavesDelGenerador`, y ahí tambi�
 | PA-GEN-24 | El generador devuelve dos advertencias | Se llama | `advertencias` las trae separadas por salto de línea |
 | PA-GEN-25 | Arreglo con cédula en el Cliente | Se llama | Ninguna línea de traza contiene la cédula, la cuenta ni el nombre |
 | PA-GEN-26 | Test de cobertura | — | `ClavesDelGenerador` tiene una clave para cada una de las 27 opciones de `CampoMapeable` y el generador real acepta `moneda` |
-| PA-GEN-27 (real) | Plantilla v07 (fixture) con 60 cuotas y el mapeo del diccionario más la celda de moneda | Se genera con el generador real | Salida idéntica byte a byte a la del spike 1b para 6, 30 y 60 cuotas (las 205 pruebas del spike se portan, 4.3) |
+| PA-GEN-27 (real) | Plantilla v07 (fixture) con el mapeo del diccionario y los datos de `tools/Medicion` del spike 1b, con 6 y con 60 cuotas | Se genera con el generador real | Salida idéntica a la del spike 1b (`salida-ejemplo-6-cuotas.xlsx` y `salida-ejemplo-60-cuotas.xlsx`): los 24 componentes del paquete iguales y el archivo entero igual salvo la fecha y hora DOS que el SDK estampa en `[Content_Types].xml`, que se comparan en cero. Decisión del usuario, 2026-10-14: el spike no dejó salida de 30 cuotas ni con celda de moneda, y no se fabrica un esperado con el generador bajo prueba; la clave `moneda` sin celda mapeada la fija PA-GEN-26 y su prueba de aceptación (las 205 pruebas del spike se portan, 4.3) |
 
 ### 1.2 `sanic_carp_capi_reconciliarcorreos` (inv. 8.3, 7.19)
 
