@@ -1,0 +1,620 @@
+{
+  "cabecera": {
+    "fixture": "20-borrado-por-relacion",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF-",
+    "notas": [
+      "Punto (15): REL-01..REL-09 y NAT-01. Cada caso: Delete del padre; si funciona, que filas siguen existiendo (true/false); si falla, la falla completa y que filas siguen existiendo.",
+      "Declarado Restrict: REL-01, REL-02, REL-03, REL-04, REL-07 (y REL-10..19, NO MEDIDAS). Declarado Cascade: REL-05, REL-06, REL-08. RemoveLink: REL-09. Regarding: NAT-01.",
+      "Cuando un padre tiene a la vez hijos de dos relaciones, el mensaje de la falla es lo que dice cual relacion lo detuvo; cada caso se armo para que solo haya un hijo de la relacion probada."
+    ]
+  },
+  "contenido": {
+    "casos": [
+      {
+        "caso": "REL-01 (restringido): borrar el Cliente cli-B que tiene la Conversacion conv-Nm1",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c5\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_conversacion (ObjectTypeCode: 11201) has Id: 0fff0009-0000-4000-8000-00000000006c and is collected by Relationship with name: sanic_carp_cliente_conversacion.\r\n",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c5\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_conversacion (ObjectTypeCode: 11201) has Id: 0fff0009-0000-4000-8000-00000000006c and is collected by Relationship with name: sanic_carp_cliente_conversacion.\r\n"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220953,
+            "ErrorCode_hex": "0x80040227",
+            "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c5\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_conversacion (ObjectTypeCode: 11201) has Id: 0fff0009-0000-4000-8000-00000000006c and is collected by Relationship with name: sanic_carp_cliente_conversacion.\r\n",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c5\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_conversacion (ObjectTypeCode: 11201) has Id: 0fff0009-0000-4000-8000-00000000006c and is collected by Relationship with name: sanic_carp_cliente_conversacion.\r\n"
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000c6"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "405"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "CannotDeleteDueToAssociation"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c5\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_conversacion (ObjectTypeCode: 11201) has Id: 0fff0009-0000-4000-8000-00000000006c and is collected by Relationship with name: sanic_carp_cliente_conversacion.\r\n ---> Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c5\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_conversacion (ObjectTypeCode: 11201) has Id: 0fff0009-0000-4000-8000-00000000006c and is collected by Relationship with name: sanic_carp_cliente_conversacion.\r\n\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CascadeCollectDeleteCheckRestrict(IDataReader reader, Int32 entityOtc, IEnumerable`1 entityIds, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_1.<CollectForCascadeWrapper>b__1(IDbCommand cmd)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass76_0.<Collect>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_0.<CollectForCascadeWrapper>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CollectForDelete(IEnumerable`1 entityIds, Int32 entityOtc, ExecutionContext context, Boolean evaluateAsyncMode)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass23_0.<CascadeDeleteDB>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass168_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass321_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000094"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:18.8214690Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220953,
+              "ErrorCode_hex": "0x80040227",
+              "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c5\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_conversacion (ObjectTypeCode: 11201) has Id: 0fff0009-0000-4000-8000-00000000006c and is collected by Relationship with name: sanic_carp_cliente_conversacion.\r\n",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:18.8214690Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040227",
+        "existen_despues": {
+          "cli-B": true,
+          "conv-Nm1": true
+        }
+      },
+      {
+        "caso": "REL-02 (restringido): borrar el Cliente rel-cliC que tiene el Arreglo rel-arrC",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_cliente_arreglo.\r\n",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_cliente_arreglo.\r\n"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220953,
+            "ErrorCode_hex": "0x80040227",
+            "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_cliente_arreglo.\r\n",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_cliente_arreglo.\r\n"
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000c9"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "405"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "CannotDeleteDueToAssociation"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_cliente_arreglo.\r\n ---> Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_cliente_arreglo.\r\n\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CascadeCollectDeleteCheckRestrict(IDataReader reader, Int32 entityOtc, IEnumerable`1 entityIds, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_1.<CollectForCascadeWrapper>b__1(IDbCommand cmd)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass76_0.<Collect>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_0.<CollectForCascadeWrapper>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CollectForDelete(IEnumerable`1 entityIds, Int32 entityOtc, ExecutionContext context, Boolean evaluateAsyncMode)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass23_0.<CascadeDeleteDB>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass168_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass321_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000094"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:19.4626268Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220953,
+              "ErrorCode_hex": "0x80040227",
+              "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000c7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_cliente_arreglo.\r\n",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:19.4626268Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040227",
+        "existen_despues": {
+          "rel-cliC": true,
+          "rel-arrC": true
+        }
+      },
+      {
+        "caso": "REL-03 (restringido): borrar la Conversacion rel-convX que es la conversacion de origen del Arreglo rel-arrC",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_conversacion (ObjectTypeCode: 11201)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000ca\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_conversacion_arreglo.\r\n",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_conversacion (ObjectTypeCode: 11201)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000ca\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_conversacion_arreglo.\r\n"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220953,
+            "ErrorCode_hex": "0x80040227",
+            "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_conversacion (ObjectTypeCode: 11201)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000ca\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_conversacion_arreglo.\r\n",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "Deleting records from sanic_carp_tbl_conversacion (ObjectTypeCode: 11201)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000ca\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_conversacion_arreglo.\r\n"
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000cb"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "405"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "CannotDeleteDueToAssociation"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_conversacion (ObjectTypeCode: 11201)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000ca\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_conversacion_arreglo.\r\n ---> Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_conversacion (ObjectTypeCode: 11201)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000ca\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_conversacion_arreglo.\r\n\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CascadeCollectDeleteCheckRestrict(IDataReader reader, Int32 entityOtc, IEnumerable`1 entityIds, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_1.<CollectForCascadeWrapper>b__1(IDbCommand cmd)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass76_0.<Collect>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_0.<CollectForCascadeWrapper>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CollectForDelete(IEnumerable`1 entityIds, Int32 entityOtc, ExecutionContext context, Boolean evaluateAsyncMode)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass23_0.<CascadeDeleteDB>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass168_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass321_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000cc"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:19.8683212Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220953,
+              "ErrorCode_hex": "0x80040227",
+              "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_conversacion (ObjectTypeCode: 11201)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000ca\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_conversacion_arreglo.\r\n",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:19.8683212Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040227",
+        "existen_despues": {
+          "rel-convX": true,
+          "rel-arrC": true
+        }
+      },
+      {
+        "caso": "REL-04 (restringido): borrar la Version ver-A que tienen los Arreglos",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-00000000000e\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cd and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000ce and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cf and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d0 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d1 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d2 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d3 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d4 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-000000000050 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\n",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-00000000000e\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cd and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000ce and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cf and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d0 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d1 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d2 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d3 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d4 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-000000000050 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\n"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220953,
+            "ErrorCode_hex": "0x80040227",
+            "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-00000000000e\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cd and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000ce and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cf and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d0 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d1 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d2 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d3 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d4 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-000000000050 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\n",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-00000000000e\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cd and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000ce and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cf and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d0 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d1 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d2 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d3 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d4 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-000000000050 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\n"
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000d5"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "405"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "CannotDeleteDueToAssociation"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-00000000000e\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cd and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000ce and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cf and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d0 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d1 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d2 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d3 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d4 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-000000000050 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\n ---> Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-00000000000e\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cd and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000ce and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cf and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d0 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d1 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d2 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d3 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d4 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-000000000050 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\n\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CascadeCollectDeleteCheckRestrict(IDataReader reader, Int32 entityOtc, IEnumerable`1 entityIds, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_1.<CollectForCascadeWrapper>b__1(IDbCommand cmd)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass76_0.<Collect>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_0.<CollectForCascadeWrapper>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CollectForDelete(IEnumerable`1 entityIds, Int32 entityOtc, ExecutionContext context, Boolean evaluateAsyncMode)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass23_0.<CascadeDeleteDB>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass168_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass321_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000d6"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:20.1964408Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220953,
+              "ErrorCode_hex": "0x80040227",
+              "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-00000000000e\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cd and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000ce and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000cf and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d0 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d1 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d2 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d3 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000c8 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-0000000000d4 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\nRestricting entity sanic_carp_tbl_arreglo (ObjectTypeCode: 11199) has Id: 0fff0009-0000-4000-8000-000000000050 and is collected by Relationship with name: sanic_carp_versionplantilla_arreglo.\r\n",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:20.1964408Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040227",
+        "existen_despues": {
+          "ver-A": true,
+          "rel-arrC": true
+        }
+      },
+      {
+        "caso": "REL-07 (restringido): borrar la Version ver-B que tiene las Generaciones gen-G1 y gen-G2 (y el Mapeo rel-mapeoM1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000d7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d8 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d9 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000da and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\n",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000d7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d8 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d9 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000da and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\n"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220953,
+            "ErrorCode_hex": "0x80040227",
+            "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000d7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d8 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d9 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000da and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\n",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000d7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d8 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d9 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000da and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\n"
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000db"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "405"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "CannotDeleteDueToAssociation"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000d7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d8 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d9 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000da and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\n ---> Microsoft.Crm.CrmException: The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000d7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d8 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d9 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000da and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\n\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CascadeCollectDeleteCheckRestrict(IDataReader reader, Int32 entityOtc, IEnumerable`1 entityIds, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_1.<CollectForCascadeWrapper>b__1(IDbCommand cmd)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass76_0.<Collect>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.<>c__DisplayClass68_0.<CollectForCascadeWrapper>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.CrmCascadeDBHandler.CollectForDelete(IEnumerable`1 entityIds, Int32 entityOtc, ExecutionContext context, Boolean evaluateAsyncMode)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass23_0.<CascadeDeleteDB>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.CascadeEngine.<>c__DisplayClass168_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass321_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000d6"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:20.7589440Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220953,
+              "ErrorCode_hex": "0x80040227",
+              "Message": "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r\nfor Id(s) : 0fff0009-0000-4000-8000-0000000000d7\r\nException : Cascade Delete failed due to cascade restrict relation. Details below : \r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d8 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000d9 and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\nRestricting entity sanic_carp_tbl_generacionformato (ObjectTypeCode: 11197) has Id: 0fff0009-0000-4000-8000-0000000000da and is collected by Relationship with name: sanic_carp_versionplantilla_generacionformato.\r\n",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:20.7589440Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040227",
+        "existen_despues": {
+          "ver-B": true,
+          "gen-G1": true,
+          "gen-G2": true,
+          "rel-mapeoM1": true
+        }
+      },
+      {
+        "caso": "REL-06 (parental, Cascade): borrar el Arreglo arr-A1 que tiene las Generaciones gen-G1 y gen-G2",
+        "resultado": "ok",
+        "valor": {
+          "existen_despues": {
+            "arr-A1": false,
+            "gen-G1": false,
+            "gen-G2": false
+          }
+        }
+      },
+      {
+        "caso": "REL-08 (parental, Cascade): borrar la Version ver-B que ya solo tiene el Mapeo rel-mapeoM1",
+        "resultado": "ok",
+        "valor": {
+          "existen_despues": {
+            "ver-B": false,
+            "rel-mapeoM1": false
+          }
+        }
+      },
+      {
+        "caso": "REL-05 (parental, Cascade): borrar el Arreglo arr-A2 que tiene la Cuota rel-cuotaQ2",
+        "resultado": "ok",
+        "valor": {
+          "existen_despues": {
+            "arr-A2": false,
+            "rel-cuotaQ2": false
+          }
+        }
+      },
+      {
+        "caso": "REL-09 (quitar_vinculo, RemoveLink): borrar la Conversacion rel-convY a la que apunta sanic_unidaaid de rel-convW",
+        "resultado": "ok",
+        "valor": {
+          "existen_despues": {
+            "rel-convY": false,
+            "rel-convW": true
+          },
+          "sanic_unidaaid_de_W_presente": false
+        }
+      },
+      {
+        "caso": "NAT-01 (Regarding nativa): borrar la Conversacion rel-convZ que tiene el Email sintetico rel-emailZ como Regarding",
+        "resultado": "ok",
+        "valor": {
+          "existen_despues": {
+            "rel-convZ": false,
+            "rel-emailZ": false
+          }
+        }
+      },
+      {
+        "caso": "REL-10 a REL-19 (padre systemuser, restringido)",
+        "resultado": "NO MEDIDO",
+        "motivo": "borrar un systemuser no se puede ejercitar con filas ZZF-: no se crean ni borran usuarios (REL-19 tiene como hija un email, pero el padre sigue siendo un usuario real)"
+      }
+    ]
+  }
+}

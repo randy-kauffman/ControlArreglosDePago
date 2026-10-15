@@ -1,0 +1,2020 @@
+{
+  "cabecera": {
+    "fixture": "12-operadores-y-filtros",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF- (Conversaciones Ca, Cb, Cc, Cd, Ce, Cf...)",
+    "notas": [
+      "Punto (3): operadores de un solo valor con varios valores. Punto (4): NotEqual sobre columnas nulas. Punto (5): subfiltro vacio dentro de otro (AND y OR).",
+      "Datos: sanic_asunto: Ca ausente, Cb 'ZZF-Alfa', Cc 'ZZF-Beta', Cd '' (enviado como cadena vacia), Ce 'ZZF-Gamma', Cf ausente. sanic_cantidadrespuestas: Ca 0, Cb 5, Cc 7, Cd 3, Ce 0, Cf 0. sanic_clienteid: solo Cc. sanic_resultado: solo Cb.",
+      "Las huellas son 'ZZF-d-<clave sin conv->'. Se informa el conjunto devuelto por clave del spike, no por GUID."
+    ]
+  },
+  "contenido": {
+    "punto_3_varios_valores": [
+      {
+        "caso": "control: huella In [Ca,Cb,Cc]",
+        "resultado": "ok",
+        "valor": {
+          "n": 3,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "control: huella In [Ca] (un solo valor)",
+        "resultado": "ok",
+        "valor": {
+          "n": 1,
+          "claves": [
+            "conv-Ca"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "Equal con 2 valores [Ca,Cb] sobre huella",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.Equal requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.Equal requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.Equal requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000027"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.Equal requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.Equal requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid ---> System.ArgumentException: The ConditonOperator.Equal requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.0450525Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.Equal requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.0450525Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.Equal requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.0450525Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "Equal con 3 valores [Ca,Cb,Cc] sobre huella",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.Equal requires 1 value/s, not 3. Parameter Name: sanic_huellamessageid",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.Equal requires 1 value/s, not 3. Parameter Name: sanic_huellamessageid"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.Equal requires 1 value/s, not 3. Parameter Name: sanic_huellamessageid",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000028"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.Equal requires 1 value/s, not 3. Parameter Name: sanic_huellamessageid ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.Equal requires 1 value/s, not 3. Parameter Name: sanic_huellamessageid ---> System.ArgumentException: The ConditonOperator.Equal requires 1 value/s, not 3. Parameter Name: sanic_huellamessageid\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.1388072Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.Equal requires 1 value/s, not 3. Parameter Name: sanic_huellamessageid",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.1388072Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.Equal requires 1 value/s, not 3. Parameter Name: sanic_huellamessageid",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.1388072Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "Equal con 0 valores",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000029"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid ---> System.ArgumentException: The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.2169320Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.2169320Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.2169320Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "In con 0 valores",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The value passed for ConditionOperator.In is empty. Attribute Name: sanic_huellamessageid, Attribute Id: 0fff0009-0000-4000-8000-00000000002a",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The value passed for ConditionOperator.In is empty. Attribute Name: sanic_huellamessageid, Attribute Id: 0fff0009-0000-4000-8000-00000000002a"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The value passed for ConditionOperator.In is empty. Attribute Name: sanic_huellamessageid, Attribute Id: 0fff0009-0000-4000-8000-00000000002a",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000002b"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The value passed for ConditionOperator.In is empty. Attribute Name: sanic_huellamessageid, Attribute Id: 0fff0009-0000-4000-8000-00000000002a ---> Microsoft.Crm.CrmArgumentException: The value passed for ConditionOperator.In is empty. Attribute Name: sanic_huellamessageid, Attribute Id: 0fff0009-0000-4000-8000-00000000002a ---> System.ArgumentException: The value passed for ConditionOperator.In is empty. Attribute Name: sanic_huellamessageid, Attribute Id: 0fff0009-0000-4000-8000-00000000002a\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.2950545Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The value passed for ConditionOperator.In is empty. Attribute Name: sanic_huellamessageid, Attribute Id: 0fff0009-0000-4000-8000-00000000002a",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.2950545Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The value passed for ConditionOperator.In is empty. Attribute Name: sanic_huellamessageid, Attribute Id: 0fff0009-0000-4000-8000-00000000002a",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.2950545Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "NotEqual con 2 valores [Ca,Cb] sobre huella",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.NotEqual requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.NotEqual requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.NotEqual requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000002c"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.NotEqual requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.NotEqual requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid ---> System.ArgumentException: The ConditonOperator.NotEqual requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.3731844Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.NotEqual requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.3731844Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.NotEqual requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.3731844Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "GreaterThan con 2 valores [4,6] sobre sanic_cantidadrespuestas (Ca=0 Cb=5 Cc=7 Cd=3)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.GreaterThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.GreaterThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.GreaterThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000002d"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.GreaterThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.GreaterThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas ---> System.ArgumentException: The ConditonOperator.GreaterThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.4513111Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.GreaterThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.4513111Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.GreaterThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.4513111Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "GreaterEqual con 2 valores [5,7]",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.GreaterEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.GreaterEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.GreaterEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000002e"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.GreaterEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.GreaterEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas ---> System.ArgumentException: The ConditonOperator.GreaterEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.5294274Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.GreaterEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.5294274Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.GreaterEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.5294274Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "LessThan con 2 valores [4,6]",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.LessThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.LessThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.LessThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000002f"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.LessThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.LessThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas ---> System.ArgumentException: The ConditonOperator.LessThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.6075575Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.LessThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.6075575Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.LessThan requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.6075575Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "LessEqual con 2 valores [3,5]",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.LessEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.LessEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.LessEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000030"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.LessEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.LessEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas ---> System.ArgumentException: The ConditonOperator.LessEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.6856814Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.LessEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.6856814Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.LessEqual requires 1 value/s, not 2. Parameter Name: sanic_cantidadrespuestas",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.6856814Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "control: GreaterThan 4 (un valor)",
+        "resultado": "ok",
+        "valor": {
+          "n": 2,
+          "claves": [
+            "conv-Cb",
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "Like con 2 valores ['%Ca','%Cb']",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.Like requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.Like requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.Like requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000031"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.Like requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.Like requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid ---> System.ArgumentException: The ConditonOperator.Like requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.8263040Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.Like requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.8263040Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.Like requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.8263040Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "control: Like un valor '%-Ca'",
+        "resultado": "ok",
+        "valor": {
+          "n": 1,
+          "claves": [
+            "conv-Ca"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "BeginsWith con 2 valores ['ZZF-d-Ca','ZZF-d-Cb']",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.BeginsWith requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.BeginsWith requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.BeginsWith requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000032"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.BeginsWith requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.BeginsWith requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid ---> System.ArgumentException: The ConditonOperator.BeginsWith requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:27.9987309Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.BeginsWith requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:27.9987309Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.BeginsWith requires 1 value/s, not 2. Parameter Name: sanic_huellamessageid",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:27.9987309Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "Null con un valor sobrante ('x') sobre sanic_asunto",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition operator 'Null' requires that no values are set. Values.Length: 1",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition operator 'Null' requires that no values are set. Values.Length: 1"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition operator 'Null' requires that no values are set. Values.Length: 1",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000033"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition operator 'Null' requires that no values are set. Values.Length: 1 ---> Microsoft.Crm.CrmArgumentException: Condition operator 'Null' requires that no values are set. Values.Length: 1 ---> System.ArgumentException: Condition operator 'Null' requires that no values are set. Values.Length: 1\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression.GetValueTargetType(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values)\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:28.0612494Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition operator 'Null' requires that no values are set. Values.Length: 1",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:28.0612494Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition operator 'Null' requires that no values are set. Values.Length: 1",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:28.0612494Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "NotNull con un valor sobrante ('x') sobre sanic_asunto",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition operator 'NotNull' requires that no values are set. Values.Length: 1",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition operator 'NotNull' requires that no values are set. Values.Length: 1"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition operator 'NotNull' requires that no values are set. Values.Length: 1",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000034"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition operator 'NotNull' requires that no values are set. Values.Length: 1 ---> Microsoft.Crm.CrmArgumentException: Condition operator 'NotNull' requires that no values are set. Values.Length: 1 ---> System.ArgumentException: Condition operator 'NotNull' requires that no values are set. Values.Length: 1\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression.GetValueTargetType(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values)\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:28.1550026Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition operator 'NotNull' requires that no values are set. Values.Length: 1",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:28.1550026Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition operator 'NotNull' requires that no values are set. Values.Length: 1",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:28.1550026Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "control: Null sobre sanic_asunto",
+        "resultado": "ok",
+        "valor": {
+          "n": 4,
+          "claves": [
+            "conv-Ca",
+            "conv-Cd",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "control: NotNull sobre sanic_asunto",
+        "resultado": "ok",
+        "valor": {
+          "n": 3,
+          "claves": [
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Ce"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "Equal sin valores via constructor sin value (ConditionExpression(attr, Equal))",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000035"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid ---> Microsoft.Crm.CrmArgumentException: The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid ---> System.ArgumentException: The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.SelectVisitor.ValidateValueCountInConditions(ConditionExpression condition, Int32 count)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(FilterExpression criteria)\r\n   at Microsoft.Crm.Query.SelectVisitor.Visit(EntityExpression entity)\r\n   at Microsoft.Crm.Query.SelectPlan.GetSQLStatement()\r\n   at Microsoft.Crm.Query.SelectPlan.<GetSql>b__4_0()\r\n   at Microsoft.Crm.Query.SelectPlan.GetSql()\r\n   at Microsoft.Crm.Query.QueryPlan.get_Command()\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoRetrieveMultiple(BusinessEntityCollection entities, EntityExpression entityExp, DatabaseQueryTarget queryTarget, PagingHelper pagingHelper, ExecutionContext context, Boolean needToSetRowVersion, Boolean isVersionNumberRequestedInRetrieve)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:28.5143782Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:28.5143782Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: The ConditonOperator.Equal requires 1 value/s, not 0. Parameter Name: sanic_huellamessageid",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:28.5143782Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      }
+    ],
+    "punto_4_notequal_sobre_nulos": [
+      {
+        "caso": "referencia: todas las filas del conjunto",
+        "resultado": "ok",
+        "valor": {
+          "n": 7,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "referencia: sanic_asunto Null",
+        "resultado": "ok",
+        "valor": {
+          "n": 4,
+          "claves": [
+            "conv-Ca",
+            "conv-Cd",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "NotEqual 'ZZF-Alfa' sobre sanic_asunto (texto)",
+        "resultado": "ok",
+        "valor": {
+          "n": 6,
+          "claves": [
+            "conv-Ca",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "NotIn ['ZZF-Alfa'] sobre sanic_asunto",
+        "resultado": "ok",
+        "valor": {
+          "n": 6,
+          "claves": [
+            "conv-Ca",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "NotEqual 'ZZF-Alfa' AND NotNull sobre sanic_asunto",
+        "resultado": "ok",
+        "valor": {
+          "n": 2,
+          "claves": [
+            "conv-Cc",
+            "conv-Ce"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "NotEqual 'ZZF-Alfa' OR Null sobre sanic_asunto",
+        "resultado": "ok",
+        "valor": {
+          "n": 6,
+          "claves": [
+            "conv-Ca",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "NotEqual Guid del cliente sobre sanic_clienteid (lookup nulo en 5 de 6 filas)",
+        "resultado": "ok",
+        "valor": {
+          "n": 6,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "NotEqual 159460002 sobre sanic_resultado (choice nulo salvo Cb)",
+        "resultado": "ok",
+        "valor": {
+          "n": 6,
+          "claves": [
+            "conv-Ca",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "NotEqual 5 sobre sanic_tiempototal (entero nulo en todas)",
+        "resultado": "ok",
+        "valor": {
+          "n": 7,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "NotEqual 5 sobre sanic_cantidadrespuestas (entero lleno)",
+        "resultado": "ok",
+        "valor": {
+          "n": 6,
+          "claves": [
+            "conv-Ca",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "NotEqual '' (cadena vacia) sobre sanic_asunto",
+        "resultado": "ok",
+        "valor": {
+          "n": 7,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "Equal '' (cadena vacia) sobre sanic_asunto",
+        "resultado": "ok",
+        "valor": {
+          "n": 0,
+          "claves": [],
+          "MoreRecords": false
+        }
+      }
+    ],
+    "punto_5_subfiltro_vacio": [
+      {
+        "caso": "referencia: el conjunto completo ZZF-d- (todas las conversaciones)",
+        "resultado": "ok",
+        "valor": {
+          "n": 7,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "referencia: solo la condicion In [Ca,Cb,Cc]",
+        "resultado": "ok",
+        "valor": {
+          "n": 3,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "AND { In[Ca,Cb,Cc], filtro AND vacio }",
+        "resultado": "ok",
+        "valor": {
+          "n": 3,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "AND { In[Ca,Cb,Cc], filtro OR vacio }",
+        "resultado": "ok",
+        "valor": {
+          "n": 3,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "OR { In[Ca,Cb,Cc], filtro AND vacio }",
+        "resultado": "ok",
+        "valor": {
+          "n": 3,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "OR { In[Ca,Cb,Cc], filtro OR vacio }",
+        "resultado": "ok",
+        "valor": {
+          "n": 3,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "OR { In[Ca,Cb,Cc], dos filtros vacios }",
+        "resultado": "ok",
+        "valor": {
+          "n": 3,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "solo { filtro AND vacio } (sin condicion)",
+        "resultado": "ok",
+        "valor": {
+          "n": 7,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "solo { filtro OR vacio } (sin condicion)",
+        "resultado": "ok",
+        "valor": {
+          "n": 7,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "criterio raiz vacio (sin condiciones ni filtros), sin restriccion de huella",
+        "resultado": "ok",
+        "valor": {
+          "n": 7,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "AND { In[Ca,Cb,Cc], filtro AND { filtro AND vacio } } (vacio anidado dos niveles)",
+        "resultado": "ok",
+        "valor": {
+          "n": 3,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "OR { In[Ca], filtro OR { Equal huella Cb, filtro vacio } }",
+        "resultado": "ok",
+        "valor": {
+          "n": 2,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb"
+          ],
+          "MoreRecords": false
+        }
+      }
+    ]
+  }
+}

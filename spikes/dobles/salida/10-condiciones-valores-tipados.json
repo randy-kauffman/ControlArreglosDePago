@@ -1,0 +1,1893 @@
+{
+  "cabecera": {
+    "fixture": "10-condiciones-valores-tipados",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF- (Conversacion y Arreglo)",
+    "notas": [
+      "Punto (1): OptionSetValue, EntityReference y Money como VALOR de una ConditionExpression. Cada caso: cuantas filas devolvio (n), cuales (por clave del spike) o la falla completa.",
+      "La tabla solo tiene filas ZZF-: cada consulta ademas se restringe a huella / numero de producto que empiezan con ZZF-d-."
+    ]
+  },
+  "contenido": {
+    "casos": [
+      {
+        "caso": "control: statuscode Equal int 1",
+        "resultado": "ok",
+        "valor": {
+          "n": 7,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "OptionSetValue: statuscode Equal OptionSetValue(1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.statuscode': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.statuscode': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.statuscode': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000017"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.statuscode': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.statuscode': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.statuscode': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:25.2325569Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.statuscode': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:25.2325569Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.statuscode': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:25.2325569Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "OptionSetValue: statecode Equal OptionSetValue(0)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.statecode': statecode values are expected to be passed as strings or int",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.statecode': statecode values are expected to be passed as strings or int"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.statecode': statecode values are expected to be passed as strings or int",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000019"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.statecode': statecode values are expected to be passed as strings or int ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.statecode': statecode values are expected to be passed as strings or int ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.statecode': statecode values are expected to be passed as strings or int\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.StateCodeConditionParser.DoParse(AttributeMetadata attribute, Type targetType, Object value, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:25.3106729Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.statecode': statecode values are expected to be passed as strings or int",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:25.3106729Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.statecode': statecode values are expected to be passed as strings or int",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:25.3106729Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "control: sanic_resultado Equal int 159460002",
+        "resultado": "ok",
+        "valor": {
+          "n": 1,
+          "claves": [
+            "conv-Cb"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "OptionSetValue: sanic_resultado Equal OptionSetValue(159460002)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000001a"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:25.4513020Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:25.4513020Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:25.4513020Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "OptionSetValue: sanic_resultado In [OptionSetValue, OptionSetValue]",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000012"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:25.5294286Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:25.5294286Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:25.5294286Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "OptionSetValue: sanic_resultado NotEqual OptionSetValue(159460002)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000001b"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:25.6075601Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:25.6075601Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:25.6075601Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "OptionSetValue: sanic_resultado GreaterThan OptionSetValue(159460001)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000001c"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:25.6856774Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:25.6856774Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:25.6856774Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "control: sanic_clienteid Equal Guid",
+        "resultado": "ok",
+        "valor": {
+          "n": 1,
+          "claves": [
+            "conv-Cc"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "EntityReference: sanic_clienteid Equal EntityReference",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000001d"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:25.8419310Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:25.8419310Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:25.8419310Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "EntityReference: sanic_clienteid In [EntityReference]",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000001e"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:25.9044261Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:25.9044261Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:25.9044261Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "EntityReference: sanic_clienteid NotEqual EntityReference",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000001f"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:25.9825529Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:25.9825529Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:25.9825529Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "EntityReference: sanic_clienteid Equal EntityReference a OTRA tabla (misma Guid)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000020"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:26.0606786Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:26.0606786Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_clienteid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:26.0606786Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "EntityReference: ownerid Equal EntityReference(team)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.ownerid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.ownerid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.ownerid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000021"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.ownerid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.ownerid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.ownerid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:26.1388046Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.ownerid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:26.1388046Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.ownerid': expected argument(s) of type 'System.Guid' but received 'Microsoft.Xrm.Sdk.EntityReference'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:26.1388046Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "control: ownerid Equal Guid del team",
+        "resultado": "ok",
+        "valor": {
+          "n": 7,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb",
+            "conv-Cc",
+            "conv-Cd",
+            "conv-Ce",
+            "conv-Cf",
+            "conv-valor-enviado"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "control: sanic_saldoinicial Equal decimal 1000.5",
+        "resultado": "ok",
+        "valor": {
+          "n": 4,
+          "claves": [
+            "arr-A1",
+            "arr-A2",
+            "arr-A3",
+            "arr-A4"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "Money: sanic_saldoinicial Equal Money(1000.5)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000022"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000023"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:26.4044288Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:26.4044288Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:26.4044288Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "Money: sanic_saldoinicial GreaterThan Money(1000)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000001a"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000023"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:26.5294272Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:26.5294272Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:26.5294272Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "Money: sanic_saldoinicial In [Money]",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000024"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000023"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:26.5919283Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:26.5919283Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_arreglo.sanic_saldoinicial': expected argument(s) of type 'System.Decimal' but received 'Microsoft.Xrm.Sdk.Money'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:26.5919283Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "tipo equivocado: sanic_cantidadrespuestas Equal string '5'",
+        "resultado": "ok",
+        "valor": {
+          "n": 1,
+          "claves": [
+            "conv-Cb"
+          ],
+          "MoreRecords": false
+        }
+      },
+      {
+        "caso": "tipo equivocado: sanic_cantidadrespuestas Equal Money(5)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.Money'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.Money'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.Money'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000025"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.Money'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.Money'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.Money'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:26.7481823Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.Money'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:26.7481823Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.Money'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:26.7481823Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "tipo equivocado: sanic_cantidadrespuestas Equal OptionSetValue(5)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000026"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> Microsoft.Crm.CrmArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'. ---> System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Query.ConditionExpression..ctor(AttributeMetadata attribute, ConditionOperator conditionOperator, Array values, Boolean isCustom, IUserAndOrganizationContext userAndOrganizationContext, IQueryExpressionMetadataCache cache)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(ConditionExpression condition)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(FilterExpression filter)\r\n   at Microsoft.Crm.Query.EntityExpression.FromSdkQueryVisitor.Visit(QueryExpression query)\r\n   at Microsoft.Crm.Query.EntityExpression.InitializeFromQuery(QueryBase query, IUserAndOrganizationContext userAndOrganizationContext)\r\n   at Microsoft.Crm.Query.EntityExpression.Converter.ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:26.8106805Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:26.8106805Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Condition for attribute 'sanic_carp_tbl_conversacion.sanic_cantidadrespuestas': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:26.8106805Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      }
+    ]
+  }
+}

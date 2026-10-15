@@ -1,0 +1,895 @@
+{
+  "cabecera": {
+    "fixture": "13b-estados-statuscode-1",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF- (Conversacion T1 y Arreglo T1)",
+    "notas": [
+      "Complemento del punto (6): en el email la plataforma acepto statuscode=1 con statecode Completado/Cancelado y lo reemplazo por el motivo por defecto del estado. Se mide si en Conversacion y Arreglo pasa lo mismo."
+    ]
+  },
+  "contenido": {
+    "conversacion": [
+      {
+        "caso": "T1 en 0/1: Update con statecode=1 + statuscode=1",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000002"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001. ---> Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001. ---> System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000003"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:12.5208926Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:12.5208926Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:29:12.5208926Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "T1 en 1/2: Update con statecode=1 + statuscode=1",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000004"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001. ---> Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001. ---> System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000003"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:12.7708887Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:12.7708887Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:29:12.7708887Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "T1 en 1/2: Update con statecode=0 + statuscode=1",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "despues": {
+            "statecode": 0,
+            "statuscode": 1
+          }
+        }
+      },
+      {
+        "caso": "T1 en 0/1: Update con statecode=1 + statuscode=159460001",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 1,
+            "statuscode": 159460001
+          },
+          "despues": {
+            "statecode": 1,
+            "statuscode": 159460001
+          }
+        }
+      },
+      {
+        "caso": "T1 en 1/159460001: Update con statecode=1 + statuscode=1",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000005"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001. ---> Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001. ---> System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000003"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:13.6151564Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:13.6151564Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:29:13.6151564Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "T1 en 1/2: Update con statecode=0 + statuscode=2 (par invalido, statuscode=2 no es el 1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "2 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 2 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "2 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000006"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 2 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001. ---> Microsoft.Crm.CrmArgumentException: 2 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001. ---> System.ArgumentException: 2 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000003"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:13.7714086Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "2 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:13.7714086Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 2 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id 0fff0009-0000-4000-8000-000000000001.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:29:13.7714086Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      }
+    ],
+    "arreglo": [
+      {
+        "caso": "T1 en 0/1: Update con statecode=1 + statuscode=1",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000008"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007. ---> Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007. ---> System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000009"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:14.1620481Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:14.1620481Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:29:14.1620481Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "T1 en 1/2: Update con statecode=0 + statuscode=1",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "despues": {
+            "statecode": 0,
+            "statuscode": 1
+          }
+        }
+      },
+      {
+        "caso": "T1 en 0/1: Update con statecode=0 + statuscode=159460001 (Vigente)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 0,
+            "statuscode": 159460001
+          },
+          "despues": {
+            "statecode": 0,
+            "statuscode": 159460001
+          }
+        }
+      },
+      {
+        "caso": "T1 en 0/159460001: Update con statecode=1 + statuscode=1",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000000a"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007. ---> Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007. ---> System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000009"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:14.8495504Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:14.8495504Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:29:14.8495504Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "T1 en 1/2: Update con statecode=1 + statuscode=159460002 (Anulado)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 159460001
+          },
+          "enviado": {
+            "statecode": 1,
+            "statuscode": 159460002
+          },
+          "despues": {
+            "statecode": 1,
+            "statuscode": 159460002
+          }
+        }
+      },
+      {
+        "caso": "T1 en 1/159460002: Update con statecode=1 + statuscode=1",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000000b"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007. ---> Microsoft.Crm.CrmArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007. ---> System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000009"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:15.2557857Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:15.2557857Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 1 is not a valid status code for state code sanic_carp_tbl_arregloState.Inactive on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000007.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:29:15.2557857Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      }
+    ]
+  }
+}

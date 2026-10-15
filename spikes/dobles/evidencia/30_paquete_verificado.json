@@ -1,0 +1,114 @@
+{
+ "fecha": "2026-10-14 19:21:21",
+ "paquete": {
+  "uniquename": "spk_SondaDobles",
+  "version_paquete": "1.0.0",
+  "modifiedon": "2026-10-15T01:21:13Z",
+  "sha256_igual_al_local": true,
+  "pertenece_a_alguna_solucion": true
+ },
+ "steps": [
+  {
+   "nombre": "STEP - SPK - Sonda - sanic_carp_tbl_cliente - Create - PreValidation",
+   "tabla": "sanic_carp_tbl_cliente",
+   "stage": 10,
+   "mode": 0,
+   "rank": 1,
+   "configuracion_coincide": true,
+   "coincide": true
+  },
+  {
+   "nombre": "STEP - SPK - Sonda - sanic_carp_tbl_cliente - Create - PreOperation",
+   "tabla": "sanic_carp_tbl_cliente",
+   "stage": 20,
+   "mode": 0,
+   "rank": 1,
+   "configuracion_coincide": true,
+   "coincide": true
+  },
+  {
+   "nombre": "STEP - SPK - Sonda - sanic_carp_tbl_cliente - Create - PostOperation",
+   "tabla": "sanic_carp_tbl_cliente",
+   "stage": 40,
+   "mode": 0,
+   "rank": 1,
+   "configuracion_coincide": true,
+   "coincide": true
+  },
+  {
+   "nombre": "STEP - SPK - Sonda - sanic_carp_tbl_conversacion - Create - PreValidation",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "stage": 10,
+   "mode": 0,
+   "rank": 1,
+   "configuracion_coincide": true,
+   "coincide": true
+  },
+  {
+   "nombre": "STEP - SPK - Sonda - sanic_carp_tbl_conversacion - Create - PreOperation",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "stage": 20,
+   "mode": 0,
+   "rank": 1,
+   "configuracion_coincide": true,
+   "coincide": true
+  },
+  {
+   "nombre": "STEP - SPK - Sonda - sanic_carp_tbl_conversacion - Create - PostOperation",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "stage": 40,
+   "mode": 0,
+   "rank": 1,
+   "configuracion_coincide": true,
+   "coincide": true
+  },
+  {
+   "nombre": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Create - PreOperation",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "stage": 20,
+   "mode": 0,
+   "rank": 1,
+   "configuracion_coincide": true,
+   "coincide": true
+  },
+  {
+   "nombre": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Create - PostOperation",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "stage": 40,
+   "mode": 0,
+   "rank": 1,
+   "configuracion_coincide": true,
+   "coincide": true
+  },
+  {
+   "nombre": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Update - PreOperation",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "stage": 20,
+   "mode": 0,
+   "rank": 1,
+   "configuracion_coincide": true,
+   "coincide": true
+  }
+ ],
+ "imagenes": [
+  {
+   "step": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Update - PreOperation",
+   "coincide": true
+  }
+ ],
+ "ensamblados": [
+  {
+   "name": "Spk.SondaDobles",
+   "version": "1.0.2.0",
+   "isolationmode": 2,
+   "sourcetype": 4,
+   "modifiedon": "2026-10-15T01:21:14Z"
+  }
+ ],
+ "tipos_registrados": [
+  "Spk.SondaDobles.SondaPlugin"
+ ],
+ "steps_que_faltan": 0,
+ "steps_que_sobran": 0,
+ "verificacion_OK": true
+}

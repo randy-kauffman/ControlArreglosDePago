@@ -1,0 +1,150 @@
+{
+ "fecha": "2026-10-14 18:52:09",
+ "organizationid": "88c7cdef-44ef-f011-aa23-6045bd003e24",
+ "plugintracelogsetting": 2,
+ "whoami": {
+  "UserId": "ffc778df-d287-f111-8075-70a8a5af5a32",
+  "BusinessUnitId": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+  "OrganizationId": "88c7cdef-44ef-f011-aa23-6045bd003e24"
+ },
+ "organizacion_igual_a_la_del_exportador": true,
+ "bu_id": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+ "team_def_id": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+ "solucion_proyecto_id": "ce4baec7-36c4-f111-a05a-7ced8d3c456b",
+ "solucion_proyecto_componentes": [
+  [
+   1,
+   "5ae78132-3fc4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   1,
+   "6023621c-3ac4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   1,
+   "60696d5d-4d78-4712-b4e0-6cbef3df4906"
+  ],
+  [
+   1,
+   "7d064901-3ac4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   1,
+   "81770123-38c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   1,
+   "95ae88b3-cc0c-45ac-a2db-655dceec238b"
+  ],
+  [
+   1,
+   "97d2b14d-38c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   1,
+   "b3347768-38c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   1,
+   "c094877c-38c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   2,
+   "350c7e31-3ac4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   2,
+   "91129943-90b8-4170-bf27-883f303280b7"
+  ],
+  [
+   9,
+   "0ea987ff-36c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   9,
+   "2d021b06-37c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   9,
+   "34021b06-37c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   9,
+   "38a987ff-36c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   9,
+   "3fa987ff-36c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   9,
+   "44940af8-36c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   9,
+   "4b940af8-36c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   9,
+   "52940af8-36c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   9,
+   "69a91df0-36c4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   10,
+   "3ebce2c9-4cc4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   20,
+   "a4ed3f99-4ec4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   20,
+   "ca75358f-4ec4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   20,
+   "eaba6888-4ec4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   20,
+   "feed3f99-4ec4-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   70,
+   "d06b299c-4bc4-f111-a05a-7ced8d3c456b"
+  ]
+ ],
+ "solucion_spk_existe": false,
+ "residuales_zzf": {},
+ "residuales_sonda": {},
+ "filas_tablas_proyecto": {
+  "conversacion": 0,
+  "arreglo": 0,
+  "cliente": 0,
+  "versionplantilla": 0,
+  "cuota": 0,
+  "generacionformato": 0,
+  "mapeocelda": 0
+ },
+ "steps_plataforma_ignorados": 268,
+ "steps_no_administrados_sobre_tablas": 0,
+ "pluginpackages_total": 8,
+ "pluginassemblies_total": 157,
+ "steps_no_administrados_total": 40585,
+ "customapis_total": 474,
+ "system_ids": [
+  "fc1957c4-d896-4ad5-b165-2814799fdd23"
+ ],
+ "usuario_no_admin_id": "32122bbd-56c3-f111-a05a-000d3a35abca",
+ "usuario_no_admin_isdisabled": true,
+ "usuario_no_admin_accessmode": 4,
+ "usuario_no_admin_roles_conteo": 0,
+ "emails_total": 560,
+ "ev_zzf": 0,
+ "teams_isdefault_en_bu": [
+  "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+ ]
+}

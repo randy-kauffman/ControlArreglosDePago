@@ -1,0 +1,898 @@
+{
+ "cabecera": {
+  "fuente": "salida/31-sonda-trazas.json y 32-ids-webapi.json (trazas de plugintracelogs)",
+  "nota": "booleanos y tipos .NET; ningun GUID de usuario ni texto de columnas"
+ },
+ "contenido": {
+  "f_ids": {
+   "ids": [
+    {
+     "paso": "ctx:Create.PreValidation.cliente",
+     "stage": "10",
+     "mode": "0",
+     "depth": "1",
+     "UserId_igual_a_InitiatingUserId": "True",
+     "UserId_es_el_usuario_del_spike": "True",
+     "UserId_es_SYSTEM": "False",
+     "InitiatingUserId_es_el_usuario_del_spike": "True",
+     "PrimaryEntityId_vacio": "False",
+     "Target_Id_vacio": "False",
+     "Target_Id_igual_a_PrimaryEntityId": "True",
+     "Target_tiene_atributo_id_primario": "False",
+     "OutputParameters_id": "ausente",
+     "ParentContext": "no",
+     "IsInTransaction": "False",
+     "IsolationMode": "2"
+    },
+    {
+     "paso": "ctx:Create.PreOperation.cliente",
+     "stage": "20",
+     "mode": "0",
+     "depth": "1",
+     "UserId_igual_a_InitiatingUserId": "True",
+     "UserId_es_el_usuario_del_spike": "True",
+     "UserId_es_SYSTEM": "False",
+     "InitiatingUserId_es_el_usuario_del_spike": "True",
+     "PrimaryEntityId_vacio": "False",
+     "Target_Id_vacio": "False",
+     "Target_Id_igual_a_PrimaryEntityId": "True",
+     "Target_tiene_atributo_id_primario": "True",
+     "OutputParameters_id": "ausente",
+     "ParentContext": "si:Create.sanic_carp_tbl_cliente.depth1",
+     "IsInTransaction": "True",
+     "IsolationMode": "2"
+    },
+    {
+     "paso": "ctx:Create.PostOperation.cliente",
+     "stage": "40",
+     "mode": "0",
+     "depth": "1",
+     "UserId_igual_a_InitiatingUserId": "True",
+     "UserId_es_el_usuario_del_spike": "True",
+     "UserId_es_SYSTEM": "False",
+     "InitiatingUserId_es_el_usuario_del_spike": "True",
+     "PrimaryEntityId_vacio": "False",
+     "Target_Id_vacio": "False",
+     "Target_Id_igual_a_PrimaryEntityId": "True",
+     "Target_tiene_atributo_id_primario": "True",
+     "OutputParameters_id": "presente_con_valor",
+     "ParentContext": "si:Create.sanic_carp_tbl_cliente.depth1",
+     "IsInTransaction": "True",
+     "IsolationMode": "2"
+    }
+   ],
+   "idsenv": [
+    {
+     "paso": "ctx:Create.PreValidation.cliente",
+     "stage": "10",
+     "mode": "0",
+     "depth": "1",
+     "UserId_igual_a_InitiatingUserId": "True",
+     "UserId_es_el_usuario_del_spike": "True",
+     "UserId_es_SYSTEM": "False",
+     "InitiatingUserId_es_el_usuario_del_spike": "True",
+     "PrimaryEntityId_vacio": "False",
+     "Target_Id_vacio": "False",
+     "Target_Id_igual_a_PrimaryEntityId": "True",
+     "Target_tiene_atributo_id_primario": "False",
+     "OutputParameters_id": "ausente",
+     "ParentContext": "no",
+     "IsInTransaction": "False",
+     "IsolationMode": "2"
+    },
+    {
+     "paso": "ctx:Create.PreOperation.cliente",
+     "stage": "20",
+     "mode": "0",
+     "depth": "1",
+     "UserId_igual_a_InitiatingUserId": "True",
+     "UserId_es_el_usuario_del_spike": "True",
+     "UserId_es_SYSTEM": "False",
+     "InitiatingUserId_es_el_usuario_del_spike": "True",
+     "PrimaryEntityId_vacio": "False",
+     "Target_Id_vacio": "False",
+     "Target_Id_igual_a_PrimaryEntityId": "True",
+     "Target_tiene_atributo_id_primario": "True",
+     "OutputParameters_id": "ausente",
+     "ParentContext": "si:Create.sanic_carp_tbl_cliente.depth1",
+     "IsInTransaction": "True",
+     "IsolationMode": "2"
+    },
+    {
+     "paso": "ctx:Create.PostOperation.cliente",
+     "stage": "40",
+     "mode": "0",
+     "depth": "1",
+     "UserId_igual_a_InitiatingUserId": "True",
+     "UserId_es_el_usuario_del_spike": "True",
+     "UserId_es_SYSTEM": "False",
+     "InitiatingUserId_es_el_usuario_del_spike": "True",
+     "PrimaryEntityId_vacio": "False",
+     "Target_Id_vacio": "False",
+     "Target_Id_igual_a_PrimaryEntityId": "True",
+     "Target_tiene_atributo_id_primario": "True",
+     "OutputParameters_id": "presente_con_valor",
+     "ParentContext": "si:Create.sanic_carp_tbl_cliente.depth1",
+     "IsInTransaction": "True",
+     "IsolationMode": "2"
+    }
+   ],
+   "idsweb (Web API, POST sin id)": [
+    {
+     "paso": "ctx:Create.PreValidation.cliente",
+     "stage": "10",
+     "depth": "1",
+     "PrimaryEntityId_vacio": "False",
+     "Target_Id_vacio": "False",
+     "Target_Id_igual_a_PrimaryEntityId": "True",
+     "Target_tiene_atributo_id_primario": "False",
+     "OutputParameters_id": "ausente",
+     "IsInTransaction": "False"
+    },
+    {
+     "paso": "ctx:Create.PreOperation.cliente",
+     "stage": "20",
+     "depth": "1",
+     "PrimaryEntityId_vacio": "False",
+     "Target_Id_vacio": "False",
+     "Target_Id_igual_a_PrimaryEntityId": "True",
+     "Target_tiene_atributo_id_primario": "True",
+     "OutputParameters_id": "ausente",
+     "IsInTransaction": "True"
+    },
+    {
+     "paso": "ctx:Create.PostOperation.cliente",
+     "stage": "40",
+     "depth": "1",
+     "PrimaryEntityId_vacio": "False",
+     "Target_Id_vacio": "False",
+     "Target_Id_igual_a_PrimaryEntityId": "True",
+     "Target_tiene_atributo_id_primario": "True",
+     "OutputParameters_id": "presente_con_valor",
+     "IsInTransaction": "True"
+    }
+   ]
+  },
+  "f_shared_variables": {
+   "sv": [
+    {
+     "step": "Create.PreValidation.cliente",
+     "depth": "1",
+     "UserId_es_el_usuario_del_spike": "True",
+     "tiene_la_variable_puesta_en_PreOperation_del_cliente": "False",
+     "tiene_la_variable_en_ParentContext": "False",
+     "claves_propias": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact]",
+     "claves_del_padre": "[]"
+    },
+    {
+     "step": "Create.PreOperation.cliente",
+     "depth": "1",
+     "UserId_es_el_usuario_del_spike": "True",
+     "tiene_la_variable_puesta_en_PreOperation_del_cliente": "False",
+     "tiene_la_variable_en_ParentContext": "False",
+     "claves_propias": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact,telemetryrootcontext]",
+     "claves_del_padre": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact]"
+    },
+    {
+     "step": "Create.PreValidation.conversacion",
+     "depth": "2",
+     "UserId_es_el_usuario_del_spike": "True",
+     "tiene_la_variable_puesta_en_PreOperation_del_cliente": "False",
+     "tiene_la_variable_en_ParentContext": "False",
+     "claves_propias": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact]",
+     "claves_del_padre": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact,telemetryrootcontext]"
+    },
+    {
+     "step": "Create.PreOperation.conversacion",
+     "depth": "2",
+     "UserId_es_el_usuario_del_spike": "True",
+     "tiene_la_variable_puesta_en_PreOperation_del_cliente": "False",
+     "tiene_la_variable_en_ParentContext": "False",
+     "claves_propias": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact,telemetryrootcontext]",
+     "claves_del_padre": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact]"
+    },
+    {
+     "step": "Create.PostOperation.conversacion",
+     "depth": "2",
+     "UserId_es_el_usuario_del_spike": "True",
+     "tiene_la_variable_puesta_en_PreOperation_del_cliente": "False",
+     "tiene_la_variable_en_ParentContext": "False",
+     "claves_propias": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact,telemetryrootcontext]",
+     "claves_del_padre": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact]"
+    },
+    {
+     "step": "Create.PostOperation.cliente",
+     "depth": "1",
+     "UserId_es_el_usuario_del_spike": "True",
+     "tiene_la_variable_puesta_en_PreOperation_del_cliente": "True",
+     "tiene_la_variable_en_ParentContext": "False",
+     "claves_propias": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact,spk.sondaPreOp,telemetryrootcontext]",
+     "claves_del_padre": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact]"
+    }
+   ],
+   "sys": [
+    {
+     "step": "Create.PreValidation.cliente",
+     "depth": "1",
+     "UserId_es_el_usuario_del_spike": "True",
+     "tiene_la_variable_puesta_en_PreOperation_del_cliente": "False",
+     "tiene_la_variable_en_ParentContext": "False",
+     "claves_propias": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact]",
+     "claves_del_padre": "[]"
+    },
+    {
+     "step": "Create.PreOperation.cliente",
+     "depth": "1",
+     "UserId_es_el_usuario_del_spike": "True",
+     "tiene_la_variable_puesta_en_PreOperation_del_cliente": "False",
+     "tiene_la_variable_en_ParentContext": "False",
+     "claves_propias": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact,telemetryrootcontext]",
+     "claves_del_padre": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact]"
+    },
+    {
+     "step": "Create.PostOperation.cliente",
+     "depth": "1",
+     "UserId_es_el_usuario_del_spike": "True",
+     "tiene_la_variable_puesta_en_PreOperation_del_cliente": "True",
+     "tiene_la_variable_en_ParentContext": "False",
+     "claves_propias": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact,spk.sondaPreOp,telemetryrootcontext]",
+     "claves_del_padre": "[AcceptLang,DefaultsAddedFlag,IsAutoTransact]"
+    }
+   ]
+  },
+  "g_transaccion": {
+   "tx0": [
+    {
+     "secuencia": 2,
+     "paso": "tx_inicio"
+    },
+    {
+     "secuencia": 3,
+     "paso": "nested_create_a_ok",
+     "resultado": "ok",
+     "id_devuelto_igual_al_enviado": "True"
+    },
+    {
+     "secuencia": 4,
+     "paso": "nested_create_c_despues_de_la_falla",
+     "resultado": "ok",
+     "id_devuelto_igual_al_enviado": "True"
+    },
+    {
+     "secuencia": 5,
+     "paso": "tx_retrieve_de_la_primera",
+     "resultado": "ok"
+    },
+    {
+     "secuencia": 6,
+     "paso": "nested_create_d_otra_mas",
+     "resultado": "ok",
+     "id_devuelto_igual_al_enviado": "True"
+    },
+    {
+     "secuencia": 7,
+     "paso": "tx_fin",
+     "el_plugin_termina_sin_lanzar": "True"
+    }
+   ],
+   "tx1": [
+    {
+     "secuencia": 2,
+     "paso": "tx_inicio"
+    },
+    {
+     "secuencia": 3,
+     "paso": "nested_create_a_ok",
+     "resultado": "ok",
+     "id_devuelto_igual_al_enviado": "True"
+    },
+    {
+     "secuencia": 4,
+     "paso": "nested_create_b_duplicada_K01",
+     "resultado": "FALLA",
+     "ErrorCode": "-2147088238",
+     "hex": "0x80060892",
+     "InnerFault": "ninguno",
+     "mensaje": "Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try"
+    },
+    {
+     "secuencia": 5,
+     "paso": "nested_create_c_despues_de_la_falla",
+     "resultado": "FALLA",
+     "ErrorCode": "-2146893812",
+     "hex": "0x8009000C",
+     "InnerFault": "ninguno",
+     "mensaje": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+    },
+    {
+     "secuencia": 6,
+     "paso": "tx_retrieve_de_la_primera",
+     "resultado": "FALLA",
+     "ErrorCode": "-2147220969",
+     "hex": "0x80040217",
+     "InnerFault": "ninguno",
+     "mensaje": "Entity 'sanic_carp_tbl_conversacion' With Id = <guid> Does Not Exist"
+    },
+    {
+     "secuencia": 7,
+     "paso": "nested_create_d_otra_mas",
+     "resultado": "FALLA",
+     "ErrorCode": "-2146893812",
+     "hex": "0x8009000C",
+     "InnerFault": "ninguno",
+     "mensaje": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+    },
+    {
+     "secuencia": 8,
+     "paso": "tx_fin",
+     "el_plugin_termina_sin_lanzar": "True"
+    }
+   ],
+   "tx2": [
+    {
+     "secuencia": 2,
+     "paso": "tx_inicio"
+    },
+    {
+     "secuencia": 3,
+     "paso": "nested_create_a_ok",
+     "resultado": "ok",
+     "id_devuelto_igual_al_enviado": "True"
+    },
+    {
+     "secuencia": 4,
+     "paso": "tx_retrieve_inexistente",
+     "resultado": "FALLA",
+     "ErrorCode": "-2147220969",
+     "hex": "0x80040217",
+     "InnerFault": "ninguno",
+     "mensaje": "Entity 'sanic_carp_tbl_cliente' With Id = <guid> Does Not Exist"
+    },
+    {
+     "secuencia": 5,
+     "paso": "nested_create_c_despues_de_la_falla",
+     "resultado": "ok",
+     "id_devuelto_igual_al_enviado": "True"
+    },
+    {
+     "secuencia": 6,
+     "paso": "tx_retrieve_de_la_primera",
+     "resultado": "ok"
+    },
+    {
+     "secuencia": 7,
+     "paso": "nested_create_d_otra_mas",
+     "resultado": "ok",
+     "id_devuelto_igual_al_enviado": "True"
+    },
+    {
+     "secuencia": 8,
+     "paso": "tx_fin",
+     "el_plugin_termina_sin_lanzar": "True"
+    }
+   ],
+   "tx3": [
+    {
+     "secuencia": 2,
+     "paso": "tx_inicio"
+    },
+    {
+     "secuencia": 3,
+     "paso": "nested_create_a_ok",
+     "resultado": "ok",
+     "id_devuelto_igual_al_enviado": "True"
+    },
+    {
+     "secuencia": 4,
+     "paso": "tx_update_inexistente",
+     "resultado": "FALLA",
+     "ErrorCode": "-2147220969",
+     "hex": "0x80040217",
+     "InnerFault": "ninguno",
+     "mensaje": "Entity 'sanic_carp_tbl_cliente' With Id = <guid> Does Not Exist"
+    },
+    {
+     "secuencia": 5,
+     "paso": "nested_create_c_despues_de_la_falla",
+     "resultado": "FALLA",
+     "ErrorCode": "-2146893812",
+     "hex": "0x8009000C",
+     "InnerFault": "ninguno",
+     "mensaje": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+    },
+    {
+     "secuencia": 6,
+     "paso": "tx_retrieve_de_la_primera",
+     "resultado": "FALLA",
+     "ErrorCode": "-2147220969",
+     "hex": "0x80040217",
+     "InnerFault": "ninguno",
+     "mensaje": "Entity 'sanic_carp_tbl_conversacion' With Id = <guid> Does Not Exist"
+    },
+    {
+     "secuencia": 7,
+     "paso": "nested_create_d_otra_mas",
+     "resultado": "FALLA",
+     "ErrorCode": "-2146893812",
+     "hex": "0x8009000C",
+     "InnerFault": "ninguno",
+     "mensaje": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+    },
+    {
+     "secuencia": 8,
+     "paso": "tx_fin",
+     "el_plugin_termina_sin_lanzar": "True"
+    }
+   ],
+   "tx4": [
+    {
+     "secuencia": 2,
+     "paso": "tx_inicio"
+    },
+    {
+     "secuencia": 3,
+     "paso": "nested_create_a_ok",
+     "resultado": "ok",
+     "id_devuelto_igual_al_enviado": "True"
+    },
+    {
+     "secuencia": 4,
+     "paso": "nested_create_b_lookup_inexistente",
+     "resultado": "FALLA",
+     "ErrorCode": "-2147220969",
+     "hex": "0x80040217",
+     "InnerFault": "ninguno",
+     "mensaje": "Entity 'sanic_carp_tbl_cliente' With Id = <guid> Does Not Exist"
+    },
+    {
+     "secuencia": 5,
+     "paso": "nested_create_c_despues_de_la_falla",
+     "resultado": "FALLA",
+     "ErrorCode": "-2146893812",
+     "hex": "0x8009000C",
+     "InnerFault": "ninguno",
+     "mensaje": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+    },
+    {
+     "secuencia": 6,
+     "paso": "tx_retrieve_de_la_primera",
+     "resultado": "FALLA",
+     "ErrorCode": "-2147220969",
+     "hex": "0x80040217",
+     "InnerFault": "ninguno",
+     "mensaje": "Entity 'sanic_carp_tbl_conversacion' With Id = <guid> Does Not Exist"
+    },
+    {
+     "secuencia": 7,
+     "paso": "nested_create_d_otra_mas",
+     "resultado": "FALLA",
+     "ErrorCode": "-2146893812",
+     "hex": "0x8009000C",
+     "InnerFault": "ninguno",
+     "mensaje": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+    },
+    {
+     "secuencia": 8,
+     "paso": "tx_fin",
+     "el_plugin_termina_sin_lanzar": "True"
+    }
+   ]
+  },
+  "tipos_dentro_del_sandbox": {
+   "Update.PreOperation.arreglo #corr5": {
+    "depth": "1",
+    "UserId_igual_a_InitiatingUserId": "True",
+    "Target": {
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:13.0000000Z",
+     "modifiedonbehalfby": "null",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T19:45:32.0000000Z",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "PreImagen": {
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:31.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_saldoinicial": "System.Decimal;2000.5000000000;escala=10",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001"
+    },
+    "Retrieve": {
+     "createdby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:13.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "owningbusinessunit": "Microsoft.Xrm.Sdk.EntityReference;tabla=businessunit;Name_nulo=False",
+     "owningteam": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=True",
+     "sanic_canalorigen": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_cantidadreaperturas": "System.Int32;0",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=False",
+     "sanic_comentarios": "System.String;largo=16;empieza_ZZF=True",
+     "sanic_cuentadebitar": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_cuotamensual": "System.Decimal;150.0400000000;escala=10",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:31.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_fechaformalizacion": "System.DateTime;Kind=Unspecified;2026-10-10T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_instantaneacedula": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_moneda": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_montoabonado": "System.Decimal;100.2500000000;escala=10",
+     "sanic_nombre": "System.String;largo=10;empieza_ZZF=False",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_oficialid": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_producto": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_saldoinicial": "System.Decimal;2000.5000000000;escala=10",
+     "sanic_saldoremanente": "System.Decimal;900.2500000000;escala=10",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_totalpagar": "System.Decimal;900.2500000000;escala=10",
+     "sanic_versionplantillaid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_versionplantilla;Name_nulo=False",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0",
+     "statuscode": "Microsoft.Xrm.Sdk.OptionSetValue;1",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "RetrieveMultiple": {
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:31.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_saldoinicial": "System.Decimal;2000.5000000000;escala=10",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0"
+    }
+   },
+   "Update.PreOperation.arreglo #corr10": {
+    "depth": "1",
+    "UserId_igual_a_InitiatingUserId": "True",
+    "Target": {
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:13.0000000Z",
+     "modifiedonbehalfby": "null",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-02T00:00:00.0000000",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "PreImagen": {
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:33.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_saldoinicial": "System.Decimal;2000.5000000000;escala=10",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001"
+    },
+    "Retrieve": {
+     "createdby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:13.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "owningbusinessunit": "Microsoft.Xrm.Sdk.EntityReference;tabla=businessunit;Name_nulo=False",
+     "owningteam": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=True",
+     "sanic_canalorigen": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_cantidadreaperturas": "System.Int32;0",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=False",
+     "sanic_comentarios": "System.String;largo=16;empieza_ZZF=True",
+     "sanic_cuentadebitar": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_cuotamensual": "System.Decimal;150.0400000000;escala=10",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:33.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_fechaformalizacion": "System.DateTime;Kind=Unspecified;2026-10-10T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_instantaneacedula": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_moneda": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_montoabonado": "System.Decimal;100.2500000000;escala=10",
+     "sanic_nombre": "System.String;largo=10;empieza_ZZF=False",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_oficialid": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_producto": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_saldoinicial": "System.Decimal;2000.5000000000;escala=10",
+     "sanic_saldoremanente": "System.Decimal;900.2500000000;escala=10",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_totalpagar": "System.Decimal;900.2500000000;escala=10",
+     "sanic_versionplantillaid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_versionplantilla;Name_nulo=False",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0",
+     "statuscode": "Microsoft.Xrm.Sdk.OptionSetValue;1",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "RetrieveMultiple": {
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:33.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_saldoinicial": "System.Decimal;2000.5000000000;escala=10",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0"
+    }
+   },
+   "Update.PreOperation.arreglo #corr12": {
+    "depth": "1",
+    "UserId_igual_a_InitiatingUserId": "True",
+    "Target": {
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:13.0000000Z",
+     "modifiedonbehalfby": "null",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:31.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_saldoinicial": "System.Decimal;2000.5;escala=1",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "PreImagen": {
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:30.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-04-01T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_saldoinicial": "System.Decimal;1000.5000000000;escala=10",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001"
+    },
+    "Retrieve": {
+     "createdby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "owningbusinessunit": "Microsoft.Xrm.Sdk.EntityReference;tabla=businessunit;Name_nulo=False",
+     "owningteam": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=True",
+     "sanic_canalorigen": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_cantidadreaperturas": "System.Int32;0",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=False",
+     "sanic_comentarios": "System.String;largo=16;empieza_ZZF=True",
+     "sanic_cuentadebitar": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_cuotamensual": "System.Decimal;150.0400000000;escala=10",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:30.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-04-01T00:00:00.0000000",
+     "sanic_fechaformalizacion": "System.DateTime;Kind=Unspecified;2026-10-10T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_instantaneacedula": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_moneda": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_montoabonado": "System.Decimal;100.2500000000;escala=10",
+     "sanic_nombre": "System.String;largo=10;empieza_ZZF=False",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_oficialid": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_producto": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_saldoinicial": "System.Decimal;1000.5000000000;escala=10",
+     "sanic_saldoremanente": "System.Decimal;900.2500000000;escala=10",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_totalpagar": "System.Decimal;900.2500000000;escala=10",
+     "sanic_versionplantillaid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_versionplantilla;Name_nulo=False",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0",
+     "statuscode": "Microsoft.Xrm.Sdk.OptionSetValue;1",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "RetrieveMultiple": {
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:30.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-04-01T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_saldoinicial": "System.Decimal;1000.5000000000;escala=10",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0"
+    }
+   },
+   "Create.PreOperation.arreglo #corr13": {
+    "depth": "1",
+    "UserId_igual_a_InitiatingUserId": "True",
+    "Target": {
+     "createdby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "modifiedonbehalfby": "null",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=True",
+     "owningbusinessunit": "Microsoft.Xrm.Sdk.EntityReference;tabla=businessunit;Name_nulo=True",
+     "sanic_canalorigen": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_cantidadreaperturas": "System.Int32;0",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=True",
+     "sanic_comentarios": "System.String;largo=16;empieza_ZZF=True",
+     "sanic_cuentadebitar": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_cuotamensual": "System.Decimal;150.04;escala=2",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:30.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-04-01T00:00:00.0000000",
+     "sanic_fechaformalizacion": "System.DateTime;Kind=Unspecified;2026-10-10T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_instantaneacedula": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_moneda": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_montoabonado": "System.Decimal;100.25;escala=2",
+     "sanic_nombre": "System.String;largo=10;empieza_ZZF=False",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_oficialid": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_producto": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_saldoinicial": "System.Decimal;1000.50;escala=2",
+     "sanic_saldoremanente": "System.Decimal;900.25;escala=2",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_totalpagar": "System.Decimal;900.25;escala=2",
+     "sanic_versionplantillaid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_versionplantilla;Name_nulo=True",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0",
+     "statuscode": "Microsoft.Xrm.Sdk.OptionSetValue;1",
+     "timezoneruleversionnumber": "System.Int32;4"
+    }
+   },
+   "Update.PreOperation.arreglo #corr15": {
+    "depth": "1",
+    "UserId_igual_a_InitiatingUserId": "True",
+    "Target": {
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:13.0000000Z",
+     "modifiedonbehalfby": "null",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:33.0000000Z",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "PreImagen": {
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T19:45:32.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_saldoinicial": "System.Decimal;2000.5000000000;escala=10",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001"
+    },
+    "Retrieve": {
+     "createdby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:13.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "owningbusinessunit": "Microsoft.Xrm.Sdk.EntityReference;tabla=businessunit;Name_nulo=False",
+     "owningteam": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=True",
+     "sanic_canalorigen": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_cantidadreaperturas": "System.Int32;0",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=False",
+     "sanic_comentarios": "System.String;largo=16;empieza_ZZF=True",
+     "sanic_cuentadebitar": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_cuotamensual": "System.Decimal;150.0400000000;escala=10",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T19:45:32.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_fechaformalizacion": "System.DateTime;Kind=Unspecified;2026-10-10T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_instantaneacedula": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_moneda": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_montoabonado": "System.Decimal;100.2500000000;escala=10",
+     "sanic_nombre": "System.String;largo=10;empieza_ZZF=False",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_oficialid": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_producto": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_saldoinicial": "System.Decimal;2000.5000000000;escala=10",
+     "sanic_saldoremanente": "System.Decimal;900.2500000000;escala=10",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_totalpagar": "System.Decimal;900.2500000000;escala=10",
+     "sanic_versionplantillaid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_versionplantilla;Name_nulo=False",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0",
+     "statuscode": "Microsoft.Xrm.Sdk.OptionSetValue;1",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "RetrieveMultiple": {
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T19:45:32.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-05-01T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_saldoinicial": "System.Decimal;2000.5000000000;escala=10",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0"
+    }
+   },
+   "Create.PostOperation.arreglo #corr13": {
+    "depth": "1",
+    "UserId_igual_a_InitiatingUserId": "True",
+    "Target": {
+     "createdby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "modifiedonbehalfby": "null",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=True",
+     "owningbusinessunit": "Microsoft.Xrm.Sdk.EntityReference;tabla=businessunit;Name_nulo=True",
+     "sanic_canalorigen": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_cantidadreaperturas": "System.Int32;0",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=True",
+     "sanic_comentarios": "System.String;largo=16;empieza_ZZF=True",
+     "sanic_cuentadebitar": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_cuotamensual": "System.Decimal;150.04;escala=2",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:30.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-04-01T00:00:00.0000000",
+     "sanic_fechaformalizacion": "System.DateTime;Kind=Unspecified;2026-10-10T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_instantaneacedula": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_moneda": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_montoabonado": "System.Decimal;100.25;escala=2",
+     "sanic_nombre": "System.String;largo=10;empieza_ZZF=False",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_oficialid": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=True",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_producto": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_saldoinicial": "System.Decimal;1000.50;escala=2",
+     "sanic_saldoremanente": "System.Decimal;900.25;escala=2",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_totalpagar": "System.Decimal;900.25;escala=2",
+     "sanic_versionplantillaid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_versionplantilla;Name_nulo=True",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0",
+     "statuscode": "Microsoft.Xrm.Sdk.OptionSetValue;1",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "Retrieve": {
+     "createdby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "modifiedby": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "modifiedon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "owningbusinessunit": "Microsoft.Xrm.Sdk.EntityReference;tabla=businessunit;Name_nulo=False",
+     "owningteam": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=True",
+     "sanic_canalorigen": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_cantidadreaperturas": "System.Int32;0",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_clienteid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_cliente;Name_nulo=False",
+     "sanic_comentarios": "System.String;largo=16;empieza_ZZF=True",
+     "sanic_cuentadebitar": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_cuotamensual": "System.Decimal;150.0400000000;escala=10",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:30.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-04-01T00:00:00.0000000",
+     "sanic_fechaformalizacion": "System.DateTime;Kind=Unspecified;2026-10-10T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_instantaneacedula": "System.String;largo=12;empieza_ZZF=True",
+     "sanic_moneda": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_montoabonado": "System.Decimal;100.2500000000;escala=10",
+     "sanic_nombre": "System.String;largo=10;empieza_ZZF=False",
+     "sanic_numeroproducto": "System.String;largo=15;empieza_ZZF=True",
+     "sanic_oficialid": "Microsoft.Xrm.Sdk.EntityReference;tabla=systemuser;Name_nulo=False",
+     "sanic_plazo": "System.Int32;6",
+     "sanic_producto": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_saldoinicial": "System.Decimal;1000.5000000000;escala=10",
+     "sanic_saldoremanente": "System.Decimal;900.2500000000;escala=10",
+     "sanic_tipo": "Microsoft.Xrm.Sdk.OptionSetValue;159460001",
+     "sanic_totalpagar": "System.Decimal;900.2500000000;escala=10",
+     "sanic_versionplantillaid": "Microsoft.Xrm.Sdk.EntityReference;tabla=sanic_carp_tbl_versionplantilla;Name_nulo=False",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0",
+     "statuscode": "Microsoft.Xrm.Sdk.OptionSetValue;1",
+     "timezoneruleversionnumber": "System.Int32;4"
+    },
+    "RetrieveMultiple": {
+     "createdon": "System.DateTime;Kind=Utc;2026-10-15T01:22:12.0000000Z",
+     "ownerid": "Microsoft.Xrm.Sdk.EntityReference;tabla=team;Name_nulo=False",
+     "sanic_carp_tbl_arregloid": "System.Guid;vacio=False",
+     "sanic_fechacongelamiento": "System.DateTime;Kind=Utc;2026-03-05T13:45:30.0000000Z",
+     "sanic_fechafin": "System.DateTime;Kind=Unspecified;2027-04-01T00:00:00.0000000",
+     "sanic_fechainicio": "System.DateTime;Kind=Unspecified;2026-11-01T00:00:00.0000000",
+     "sanic_saldoinicial": "System.Decimal;1000.5000000000;escala=10",
+     "statecode": "Microsoft.Xrm.Sdk.OptionSetValue;0"
+    }
+   }
+  },
+  "rev": [
+   {
+    "paso": "rev_lanza",
+    "nombre_presente": "True"
+   }
+  ]
+ }
+}

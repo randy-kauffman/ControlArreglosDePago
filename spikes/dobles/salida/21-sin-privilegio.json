@@ -1,0 +1,604 @@
+{
+  "cabecera": {
+    "fixture": "21-sin-privilegio",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF-; usuario de aplicacion no administrador (el mismo de spikes/fixtures/salida/06-whoami-systemuser.json) por CallerId",
+    "notas": [
+      "Punto (a). El usuario se busco en Dev por applicationid = PP_MAIL_CLIENT_ID (la consulta del exportador); su GUID no se escribe.",
+      "En la linea base: deshabilitado=true, roles asignados (conteo)=0. No se le asigno nada ni se lo habilito: si la suplantacion falla por eso, se informa tal cual."
+    ]
+  },
+  "contenido": {
+    "casos": [
+      {
+        "caso": "WhoAmI con CallerId = usuario de aplicacion no administrador",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220955,
+            "ErrorCode_hex": "0x80040225",
+            "Message": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "0fff0009-0000-4000-8000-0000000000be"
+              },
+              "1": {
+                "tipo_del_valor": "System.String",
+                "valor": "User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000bf"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "0"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "unManagedidsusernotenabled"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Api/PrePipeline"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<CheckDisabledStatus>b__132_0(ValueTuple`2 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__3`2.<InvokeActionAndLogErrorType>b__3_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckDisabledStatus(IUser user, IOrganizationContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<VerifyUser>b__247_0(ValueTuple`3 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__7`2.<InvokeActionAndLogErrorType>b__7_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Boolean shouldLog, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, Boolean shouldLog, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Xrm.Kernel.Contracts.Internal.SecurityLibraryAdapter.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.VerifyUser(Guid userId)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.SetCaller(Guid callerId, Boolean setCallerLanguage, Boolean verifyUser, Int32 callerLanguageCode, Guid previousCallerBusinessId, IUser caller)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.OnBeginRequest(Guid userId, Boolean startTransaction, IsolationLevel isolationLevel, ExecutionOperationContext operationContext, CallerOriginToken originToken)\r\n   at Microsoft.Crm.Extensibility.ExternalMessageDispatcher.ExecuteInternal(IInProcessOrganizationServiceFactory serviceFactory, IPlatformMessageDispatcherFactory dispatcherFactory, Guid callerRegardingObjectId, Int32 invocationSource, Version endpointVersion, OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.DispatchRequest(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, SdkResponseDescription responseDescription, SdkPerformanceCounterContext sdkPerformanceCounterContext, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentationOperation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.<>c__DisplayClass27_0.<ExecuteRequest>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "00000000-0000-0000-0000-000000000000"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:17.3995961Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        },
+        "codigo": "0x80040225"
+      },
+      {
+        "caso": "Retrieve de una Conversacion ZZF- (lectura)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220955,
+            "ErrorCode_hex": "0x80040225",
+            "Message": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "0fff0009-0000-4000-8000-0000000000be"
+              },
+              "1": {
+                "tipo_del_valor": "System.String",
+                "valor": "User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000c0"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "0"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "unManagedidsusernotenabled"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Api/PrePipeline"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<CheckDisabledStatus>b__132_0(ValueTuple`2 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__3`2.<InvokeActionAndLogErrorType>b__3_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckDisabledStatus(IUser user, IOrganizationContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<VerifyUser>b__247_0(ValueTuple`3 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__7`2.<InvokeActionAndLogErrorType>b__7_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Boolean shouldLog, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, Boolean shouldLog, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Xrm.Kernel.Contracts.Internal.SecurityLibraryAdapter.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.VerifyUser(Guid userId)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.SetCaller(Guid callerId, Boolean setCallerLanguage, Boolean verifyUser, Int32 callerLanguageCode, Guid previousCallerBusinessId, IUser caller)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.OnBeginRequest(Guid userId, Boolean startTransaction, IsolationLevel isolationLevel, ExecutionOperationContext operationContext, CallerOriginToken originToken)\r\n   at Microsoft.Crm.Extensibility.ExternalMessageDispatcher.ExecuteInternal(IInProcessOrganizationServiceFactory serviceFactory, IPlatformMessageDispatcherFactory dispatcherFactory, Guid callerRegardingObjectId, Int32 invocationSource, Version endpointVersion, OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.DispatchRequest(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, SdkResponseDescription responseDescription, SdkPerformanceCounterContext sdkPerformanceCounterContext, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentationOperation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.<>c__DisplayClass27_0.<ExecuteRequest>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "00000000-0000-0000-0000-000000000000"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:17.5402121Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        },
+        "codigo": "0x80040225"
+      },
+      {
+        "caso": "RetrieveMultiple de Conversacion (lectura)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220955,
+            "ErrorCode_hex": "0x80040225",
+            "Message": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "0fff0009-0000-4000-8000-0000000000be"
+              },
+              "1": {
+                "tipo_del_valor": "System.String",
+                "valor": "User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000c1"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "0"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "unManagedidsusernotenabled"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Api/PrePipeline"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<CheckDisabledStatus>b__132_0(ValueTuple`2 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__3`2.<InvokeActionAndLogErrorType>b__3_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckDisabledStatus(IUser user, IOrganizationContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<VerifyUser>b__247_0(ValueTuple`3 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__7`2.<InvokeActionAndLogErrorType>b__7_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Boolean shouldLog, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, Boolean shouldLog, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Xrm.Kernel.Contracts.Internal.SecurityLibraryAdapter.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.VerifyUser(Guid userId)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.SetCaller(Guid callerId, Boolean setCallerLanguage, Boolean verifyUser, Int32 callerLanguageCode, Guid previousCallerBusinessId, IUser caller)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.OnBeginRequest(Guid userId, Boolean startTransaction, IsolationLevel isolationLevel, ExecutionOperationContext operationContext, CallerOriginToken originToken)\r\n   at Microsoft.Crm.Extensibility.ExternalMessageDispatcher.ExecuteInternal(IInProcessOrganizationServiceFactory serviceFactory, IPlatformMessageDispatcherFactory dispatcherFactory, Guid callerRegardingObjectId, Int32 invocationSource, Version endpointVersion, OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.DispatchRequest(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, SdkResponseDescription responseDescription, SdkPerformanceCounterContext sdkPerformanceCounterContext, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentationOperation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.<>c__DisplayClass27_0.<ExecuteRequest>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "00000000-0000-0000-0000-000000000000"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:17.7277117Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        },
+        "codigo": "0x80040225"
+      },
+      {
+        "caso": "Update de una Conversacion ZZF- (escritura)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220955,
+            "ErrorCode_hex": "0x80040225",
+            "Message": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "0fff0009-0000-4000-8000-0000000000be"
+              },
+              "1": {
+                "tipo_del_valor": "System.String",
+                "valor": "User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000c2"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "0"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "unManagedidsusernotenabled"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Api/PrePipeline"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<CheckDisabledStatus>b__132_0(ValueTuple`2 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__3`2.<InvokeActionAndLogErrorType>b__3_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckDisabledStatus(IUser user, IOrganizationContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<VerifyUser>b__247_0(ValueTuple`3 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__7`2.<InvokeActionAndLogErrorType>b__7_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Boolean shouldLog, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, Boolean shouldLog, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Xrm.Kernel.Contracts.Internal.SecurityLibraryAdapter.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.VerifyUser(Guid userId)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.SetCaller(Guid callerId, Boolean setCallerLanguage, Boolean verifyUser, Int32 callerLanguageCode, Guid previousCallerBusinessId, IUser caller)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.OnBeginRequest(Guid userId, Boolean startTransaction, IsolationLevel isolationLevel, ExecutionOperationContext operationContext, CallerOriginToken originToken)\r\n   at Microsoft.Crm.Extensibility.ExternalMessageDispatcher.ExecuteInternal(IInProcessOrganizationServiceFactory serviceFactory, IPlatformMessageDispatcherFactory dispatcherFactory, Guid callerRegardingObjectId, Int32 invocationSource, Version endpointVersion, OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.DispatchRequest(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, SdkResponseDescription responseDescription, SdkPerformanceCounterContext sdkPerformanceCounterContext, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentationOperation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.<>c__DisplayClass27_0.<ExecuteRequest>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "00000000-0000-0000-0000-000000000000"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:17.8839695Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        },
+        "codigo": "0x80040225"
+      },
+      {
+        "caso": "Create de un Cliente ZZF- (creacion)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220955,
+            "ErrorCode_hex": "0x80040225",
+            "Message": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "0fff0009-0000-4000-8000-0000000000be"
+              },
+              "1": {
+                "tipo_del_valor": "System.String",
+                "valor": "User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000c3"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "0"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "unManagedidsusernotenabled"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Api/PrePipeline"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<CheckDisabledStatus>b__132_0(ValueTuple`2 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__3`2.<InvokeActionAndLogErrorType>b__3_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckDisabledStatus(IUser user, IOrganizationContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<VerifyUser>b__247_0(ValueTuple`3 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__7`2.<InvokeActionAndLogErrorType>b__7_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Boolean shouldLog, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, Boolean shouldLog, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Xrm.Kernel.Contracts.Internal.SecurityLibraryAdapter.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.VerifyUser(Guid userId)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.SetCaller(Guid callerId, Boolean setCallerLanguage, Boolean verifyUser, Int32 callerLanguageCode, Guid previousCallerBusinessId, IUser caller)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.OnBeginRequest(Guid userId, Boolean startTransaction, IsolationLevel isolationLevel, ExecutionOperationContext operationContext, CallerOriginToken originToken)\r\n   at Microsoft.Crm.Extensibility.ExternalMessageDispatcher.ExecuteInternal(IInProcessOrganizationServiceFactory serviceFactory, IPlatformMessageDispatcherFactory dispatcherFactory, Guid callerRegardingObjectId, Int32 invocationSource, Version endpointVersion, OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.DispatchRequest(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, SdkResponseDescription responseDescription, SdkPerformanceCounterContext sdkPerformanceCounterContext, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentationOperation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.<>c__DisplayClass27_0.<ExecuteRequest>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "00000000-0000-0000-0000-000000000000"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:18.0714622Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        },
+        "codigo": "0x80040225"
+      },
+      {
+        "caso": "Retrieve de una tabla nativa sin lectura probable (role)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220955,
+            "ErrorCode_hex": "0x80040225",
+            "Message": "The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.",
+            "ErrorDetails": {
+              "0": {
+                "tipo_del_valor": "System.String",
+                "valor": "0fff0009-0000-4000-8000-0000000000be"
+              },
+              "1": {
+                "tipo_del_valor": "System.String",
+                "valor": "User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different."
+              },
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000c4"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "0"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "unManagedidsusernotenabled"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Api/PrePipeline"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: The specified user(Id = 0fff0009-0000-4000-8000-0000000000be) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=0fff0009-0000-4000-8000-000000000004. OriginalCaller=00000000-0000-0000-0000-000000000000 is different.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<CheckDisabledStatus>b__132_0(ValueTuple`2 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__3`2.<InvokeActionAndLogErrorType>b__3_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckDisabledStatus(IUser user, IOrganizationContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.<>c.<VerifyUser>b__247_0(ValueTuple`3 args)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.<>c__7`2.<InvokeActionAndLogErrorType>b__7_0(ValueTuple`2 args)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TArg](ILogger logger, XrmTelemetryActivityType activityType, Boolean shouldLog, Action`1 action, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObjectUtilities.InvokeActionAndLogErrorType[R,TArg](Action`1 action, XrmTelemetrySingletonActivityType`1 activityType, Boolean shouldLog, ILogger logger, TArg arg)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Xrm.Kernel.Contracts.Internal.SecurityLibraryAdapter.VerifyUser(Guid user, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.VerifyUser(Guid userId)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.SetCaller(Guid callerId, Boolean setCallerLanguage, Boolean verifyUser, Int32 callerLanguageCode, Guid previousCallerBusinessId, IUser caller)\r\n   at Microsoft.Crm.BusinessEntities.ExecutionContext.OnBeginRequest(Guid userId, Boolean startTransaction, IsolationLevel isolationLevel, ExecutionOperationContext operationContext, CallerOriginToken originToken)\r\n   at Microsoft.Crm.Extensibility.ExternalMessageDispatcher.ExecuteInternal(IInProcessOrganizationServiceFactory serviceFactory, IPlatformMessageDispatcherFactory dispatcherFactory, Guid callerRegardingObjectId, Int32 invocationSource, Version endpointVersion, OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.DispatchRequest(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, SdkResponseDescription responseDescription, SdkPerformanceCounterContext sdkPerformanceCounterContext, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentationOperation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.<>c__DisplayClass27_0.<ExecuteRequest>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "00000000-0000-0000-0000-000000000000"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:18.2433424Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        },
+        "codigo": "0x80040225"
+      },
+      {
+        "caso": "control: la misma lectura sin CallerId",
+        "resultado": "ok",
+        "valor": {
+          "tipo": "System.Boolean",
+          "valor": true
+        }
+      }
+    ]
+  }
+}

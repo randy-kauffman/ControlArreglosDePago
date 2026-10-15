@@ -1,0 +1,780 @@
+{
+ "cabecera": {
+  "fuente": "salida/[0-3]*.json (fallas capturadas por la consola con ServiceClient 1.2.26)",
+  "nota": "una entrada por ErrorCode; los mensajes no llevan GUID"
+ },
+ "contenido": {
+  "0x80040201": {
+   "veces": 1,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    1
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "Malformed XML in the Paging Cookie"
+   ],
+   "casos": [
+    "16-paginacion-cookie.json: p2 con cookie basura 'xyz'"
+   ],
+   "ErrorCode_decimal": -2147220991
+  },
+  "0x80040203": {
+   "veces": 39,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    2
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "Condition for attribute 'sanic_carp_tbl_conversacion.statuscode': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'.",
+    "Condition for attribute 'sanic_carp_tbl_conversacion.statecode': statecode values are expected to be passed as strings or int",
+    "Condition for attribute 'sanic_carp_tbl_conversacion.sanic_resultado': expected argument(s) of type 'System.Int32' but received 'Microsoft.Xrm.Sdk.OptionSetValue'."
+   ],
+   "casos": [
+    "10-condiciones-valores-tipados.json: OptionSetValue: statuscode Equal OptionSetValue(1)",
+    "10-condiciones-valores-tipados.json: OptionSetValue: statecode Equal OptionSetValue(0)",
+    "10-condiciones-valores-tipados.json: OptionSetValue: sanic_resultado Equal OptionSetValue(159460002)",
+    "10-condiciones-valores-tipados.json: OptionSetValue: sanic_resultado In [OptionSetValue, OptionSetValue]",
+    "10-condiciones-valores-tipados.json: OptionSetValue: sanic_resultado NotEqual OptionSetValue(159460002)",
+    "10-condiciones-valores-tipados.json: OptionSetValue: sanic_resultado GreaterThan OptionSetValue(159460001)",
+    "10-condiciones-valores-tipados.json: EntityReference: sanic_clienteid Equal EntityReference",
+    "10-condiciones-valores-tipados.json: EntityReference: sanic_clienteid In [EntityReference]"
+   ],
+   "ErrorCode_decimal": -2147220989
+  },
+  "0x80040217": {
+   "veces": 14,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    1,
+    2
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "Entity 'sanic_carp_tbl_cliente' With Id = <guid> Does Not Exist",
+    "Entity 'sanic_carp_tbl_versionplantilla' With Id = <guid> Does Not Exist",
+    "Entity 'sanic_carp_tbl_arreglo' With Id = <guid> Does Not Exist"
+   ],
+   "casos": [
+    "17-autonumerico.json: conv: Create con lookup a cliente inexistente",
+    "17-autonumerico.json: arr: Create con lookup a version inexistente",
+    "17-autonumerico.json: gen: Create con lookup a arreglo inexistente",
+    "17b-autonumerico-otras-fallas.json: conv: Create con tabla de lookup equivocada (sanic_clienteid -> version)",
+    "18-texto-y-esquema.json: Update lookup a la tabla equivocada (Arreglo.sanic_clienteid = Conversacion)",
+    "18-texto-y-esquema.json: Create de Conversacion con lookup a la tabla equivocada (sanic_clienteid = Version)",
+    "18-texto-y-esquema.json: Update de Conversacion.sanic_clienteid a un cliente inexistente",
+    "18-texto-y-esquema.json: Create de Conversacion con sanic_clienteid a un cliente inexistente"
+   ],
+   "ErrorCode_decimal": -2147220969
+  },
+  "0x80040225": {
+   "veces": 6,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    0
+   ],
+   "claves_ErrorDetails": [
+    "0",
+    "1",
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "The specified user(Id = <guid>) is disabled. Consider enabling this user. Additional Details: User IsDisabled=True, IsLicensed=False. ImpersonatingSystemUserId=<guid>. Or"
+   ],
+   "casos": [
+    "21-sin-privilegio.json: WhoAmI con CallerId = usuario de aplicacion no administrador",
+    "21-sin-privilegio.json: Retrieve de una Conversacion ZZF- (lectura)",
+    "21-sin-privilegio.json: RetrieveMultiple de Conversacion (lectura)",
+    "21-sin-privilegio.json: Update de una Conversacion ZZF- (escritura)",
+    "21-sin-privilegio.json: Create de un Cliente ZZF- (creacion)",
+    "21-sin-privilegio.json: Retrieve de una tabla nativa sin lectura probable (role)"
+   ],
+   "ErrorCode_decimal": -2147220955
+  },
+  "0x80040227": {
+   "veces": 5,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    1
+   ],
+   "claves_ErrorDetails": [
+    "0",
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_cliente (ObjectTypeCode: 11194)\r for Id(s) : ",
+    "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_conversacion (ObjectTypeCode: 11201)\r for Id(",
+    "The object you tried to delete is associated with another object and cannot be deleted. Deleting records from sanic_carp_tbl_versionplantilla (ObjectTypeCode: 11195)\r for"
+   ],
+   "casos": [
+    "20-borrado-por-relacion.json: REL-01 (restringido): borrar el Cliente cli-B que tiene la Conversacion conv-Nm1",
+    "20-borrado-por-relacion.json: REL-02 (restringido): borrar el Cliente rel-cliC que tiene el Arreglo rel-arrC",
+    "20-borrado-por-relacion.json: REL-03 (restringido): borrar la Conversacion rel-convX que es la conversacion de origen del Arreglo rel-arrC",
+    "20-borrado-por-relacion.json: REL-04 (restringido): borrar la Version ver-A que tienen los Arreglos",
+    "20-borrado-por-relacion.json: REL-07 (restringido): borrar la Version ver-B que tiene las Generaciones gen-G1 y gen-G2 (y el Mapeo rel-mapeo"
+   ],
+   "ErrorCode_decimal": -2147220953
+  },
+  "0x80040239": {
+   "veces": 6,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    1
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+    "DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+    "Date is less than the minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00"
+   ],
+   "casos": [
+    "11-fechas-escritas.json: UL conversacion sanic_fechafinalizacion: DateTime.MinValue (0001-01-01, Kind Utc)",
+    "11-fechas-escritas.json: UL conversacion sanic_fechafinalizacion: 1752-12-31",
+    "11-fechas-escritas.json: UL arreglo sanic_fechacongelamiento: DateTime.MinValue (0001-01-01, Kind Utc)",
+    "11-fechas-escritas.json: UL arreglo sanic_fechacongelamiento: 1752-12-31",
+    "11-fechas-escritas.json: DO arreglo sanic_fechafin: DateTime.MinValue (0001-01-01, Kind Unspecified)",
+    "11-fechas-escritas.json: DO arreglo sanic_fechafin: 1752-12-31"
+   ],
+   "ErrorCode_decimal": -2147220935
+  },
+  "0x80040265": {
+   "veces": 1,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    0
+   ],
+   "claves_ErrorDetails": [
+    "OperationStatus",
+    "Plugin.ExceptionFromPluginExecute",
+    "Plugin.ExceptionRetriable",
+    "Plugin.ExceptionSource",
+    "Plugin.OriginalException",
+    "Plugin.PluginTrace",
+    "SubErrorCode"
+   ],
+   "mensajes": [
+    "SND-rev: revierte el Create despues del autonumerico"
+   ],
+   "casos": [
+    "30-sonda-escenarios.json: Create de Conversacion 'ZZF-SND-rev-a' (el plugin lo revierte)"
+   ],
+   "ErrorCode_decimal": -2147220891
+  },
+  "0x8004049E": {
+   "veces": 1,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    2
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "Invalid PrincipalType=11194. Principal type must be either SystemUser, Team or Organization."
+   ],
+   "casos": [
+    "18-texto-y-esquema.json: Update ownerid a la tabla equivocada (ownerid = Cliente)"
+   ],
+   "ErrorCode_decimal": -2147220322
+  },
+  "0x80040800": {
+   "veces": 1,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    0
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "The 'Retrieve' method does not support entities of type 'systemuserroles'. MessageProcessorCache returned MessageProcessor.Empty. "
+   ],
+   "casos": [
+    "19-nativas-sin-muestra.json: systemuserroles: Retrieve ColumnSet(true) por id"
+   ],
+   "ErrorCode_decimal": -2147219456
+  },
+  "0x80041102": {
+   "veces": 3,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    0,
+    1
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "The entity with a name = 'SANIC_CARP_TBL_CLIENTE' with namemapping = 'Logical' was not found in the MetadataCache.LazyDynamicMetadataCache with version 13082910 and times",
+    "The entity with a name = 'sanic_carp_tbl_noexiste' with namemapping = 'Logical' was not found in the MetadataCache.LazyDynamicMetadataCache with version 13082910 and time"
+   ],
+   "casos": [
+    "15-name-del-lookup.json: Create con el lookup a una referencia cuyo LogicalName esta en mayusculas ('SANIC_CARP_TBL_CLIENTE')",
+    "18-texto-y-esquema.json: Retrieve de una tabla inexistente",
+    "18-texto-y-esquema.json: RetrieveMultiple de una tabla inexistente"
+   ],
+   "ErrorCode_decimal": -2147217150
+  },
+  "0x80041103": {
+   "veces": 8,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    0,
+    1
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_carp_tbl_clienteid' and NameMapping = 'Platform' (look up attribute by name is case-sens",
+    "'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive).",
+    "'sanic_carp_tbl_arreglo' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive)."
+   ],
+   "casos": [
+    "16-paginacion-cookie.json: p2 de Conversacion con la cookie de OTRA TABLA (Cliente)",
+    "17b-autonumerico-otras-fallas.json: conv: Create con columna inexistente",
+    "17b-autonumerico-otras-fallas.json: arr: Create con columna inexistente",
+    "18-texto-y-esquema.json: Update de columna inexistente (sanic_noexiste) en Cliente",
+    "18-texto-y-esquema.json: Create de Cliente con columna inexistente",
+    "18-texto-y-esquema.json: Retrieve con columna inexistente en el ColumnSet",
+    "18-texto-y-esquema.json: RetrieveMultiple con columna inexistente en una condicion",
+    "18-texto-y-esquema.json: RetrieveMultiple con columna inexistente en un orden"
+   ],
+   "ErrorCode_decimal": -2147217149
+  },
+  "0x80041129": {
+   "veces": 2,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    1
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "Order by columns do not match those in paging cookie.",
+    "Paging Cookie And Query Do Not Match. The counts are not equal."
+   ],
+   "casos": [
+    "16-paginacion-cookie.json: p2 de la consulta principal con la cookie de OTRA consulta (otro filtro y otro orden)",
+    "16-paginacion-cookie.json: p2 con cookie XML minima '<cookie page=\"9\"/>'"
+   ],
+   "ErrorCode_decimal": -2147217111
+  },
+  "0x8004431A": {
+   "veces": 3,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    1
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "A validation error occurred. The value 999 of 'sanic_resultado' on record of type 'sanic_carp_tbl_conversacion' is outside the valid range. Accepted Values: 159460001,159",
+    "A validation error occurred. The value 999 of 'sanic_tipo' on record of type 'sanic_carp_tbl_arreglo' is outside the valid range. Accepted Values: 159460001,159460002",
+    "A validation error occurred. The value 999 of 'sanic_producto' on record of type 'sanic_carp_tbl_arreglo' is outside the valid range. Accepted Values: 159460001,159460002"
+   ],
+   "casos": [
+    "17b-autonumerico-otras-fallas.json: conv: Create con choice inexistente (sanic_resultado = 999)",
+    "18-texto-y-esquema.json: Update OptionSetValue inexistente en choice (sanic_tipo = 999)",
+    "18-texto-y-esquema.json: Create de Arreglo con choice inexistente (sanic_producto = 999)"
+   ],
+   "ErrorCode_decimal": -2147204326
+  },
+  "0x80044330": {
+   "veces": 1,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    1
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "A validation error occurred for sanic_carp_tbl_arreglo.sanic_saldoinicial. The value 1000000000000 of type System.Decimal is outside the valid range(0 to 999999999.99)."
+   ],
+   "casos": [
+    "18-texto-y-esquema.json: Update decimal fuera de rango (1e12) en decimal(2)"
+   ],
+   "ErrorCode_decimal": -2147204304
+  },
+  "0x80044331": {
+   "veces": 7,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    1
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "A validation error occurred.  The length of the 'sanic_huellamessageid' attribute of the 'sanic_carp_tbl_conversacion' entity exceeded the maximum allowed length of '64'.",
+    "A validation error occurred.  The length of the 'sanic_celular' attribute of the 'sanic_carp_tbl_cliente' entity exceeded the maximum allowed length of '20'."
+   ],
+   "casos": [
+    "17b-autonumerico-otras-fallas.json: conv: Create con huella de 65 caracteres (texto largo)",
+    "18-texto-y-esquema.json: sanic_celular T(20): ASCII x max+1",
+    "18-texto-y-esquema.json: sanic_celular T(20): e con acento precompuesto x max+1",
+    "18-texto-y-esquema.json: sanic_celular T(20): emoji x max/2+1: max+2 unidades UTF-16",
+    "18-texto-y-esquema.json: sanic_celular T(20): emoji x max: 2*max unidades, max puntos de codigo",
+    "18-texto-y-esquema.json: sanic_celular T(20): e + acento combinante x max: 2*max unidades, max grafemas",
+    "18-texto-y-esquema.json: Create de Conversacion con huella de 65 caracteres (T(64))"
+   ],
+   "ErrorCode_decimal": -2147204303
+  },
+  "0x80044354": {
+   "veces": 4,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    0,
+    1
+   ],
+   "claves_ErrorDetails": [
+    "0",
+    "1",
+    "2",
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "Invalid Attribute Value Type for sanic_saldoinicial. Expected: Double (either Decimal or Float or Money), Found: System.Int32",
+    "Invalid Attribute Value Type for sanic_carp_tbl_arreglo.sanic_saldoinicial. Expected: Decimal, Found: Microsoft.Xrm.Sdk.Money",
+    "Invalid Attribute Value Type for sanic_saldoinicial. Expected: Double (either Decimal or Float or Money), Found: System.String"
+   ],
+   "casos": [
+    "18-texto-y-esquema.json: Update int en columna decimal (sanic_saldoinicial = 5)",
+    "18-texto-y-esquema.json: Update Money en columna decimal",
+    "18-texto-y-esquema.json: Update string en columna decimal",
+    "18-texto-y-esquema.json: Update string en columna de lookup (sanic_clienteid = 'x')"
+   ],
+   "ErrorCode_decimal": -2147204268
+  },
+  "0x80048408": {
+   "veces": 34,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    2
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "2 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id <guid>.",
+    "1 is not a valid status code for state code sanic_carp_tbl_conversacionState.Inactive on sanic_carp_tbl_conversacion with Id <guid>.",
+    "159460001 is not a valid status code for state code sanic_carp_tbl_conversacionState.Active on sanic_carp_tbl_conversacion with Id <guid>."
+   ],
+   "casos": [
+    "13-estados.json: S1 en 0/1: Update con SOLO statuscode=2 (Finalizada, motivo de otro estado)",
+    "13-estados.json: S1 en 0/1: Update con statecode=0 + statuscode=2 (par invalido)",
+    "13-estados.json: S1 en 1/2: Update con SOLO statuscode=1 (Abierta, motivo de otro estado)",
+    "13-estados.json: S2 en 0/1: Update con SOLO statuscode=159460001 (Unida, motivo de otro estado)",
+    "13-estados.json: Create con statecode=1 + statuscode=2",
+    "13-estados.json: Create con statecode=1 + statuscode=159460001",
+    "13-estados.json: Create con SOLO statuscode=2 (sin statecode)",
+    "13-estados.json: Create con SOLO statuscode=159460001 (sin statecode)"
+   ],
+   "ErrorCode_decimal": -2147187704
+  },
+  "0x80060892": {
+   "veces": 2,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    2
+   ],
+   "claves_ErrorDetails": [
+    "0",
+    "1",
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey",
+    "DuplicateAttributes",
+    "DuplicateEntity"
+   ],
+   "mensajes": [
+    "Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be",
+    "Entity Key KEY - CARP - Arreglo - Producto, numero de producto y numero de arreglo violated. A record with the same value for Numero de arreglo, Numero de prestamo o tarj"
+   ],
+   "casos": [
+    "17-autonumerico.json: conv: Create con huella duplicada (K-01)",
+    "17-autonumerico.json: arr: Create con clave K-02 duplicada"
+   ],
+   "ErrorCode_decimal": -2147088238
+  },
+  "0x8009000C": {
+   "veces": 3,
+   "exterior": [
+    "System.ServiceModel.FaultException`1"
+   ],
+   "HResult_exterior": [
+    -2146233088
+   ],
+   "largo_cadena": [
+    1
+   ],
+   "niveles_InnerFault": [
+    2
+   ],
+   "claves_ErrorDetails": [
+    "ApiActivityIdKey",
+    "ApiDepthKey",
+    "ApiExceptionCategory",
+    "ApiExceptionHttpStatusCode",
+    "ApiExceptionMessageName",
+    "ApiExceptionOwnerKey",
+    "ApiExceptionSourceKey",
+    "ApiOriginalExceptionKey",
+    "ApiPluginSolutionNameKey",
+    "ApiSourceActivityKey",
+    "ApiStepKey",
+    "ApiStepSolutionNameKey"
+   ],
+   "mensajes": [
+    "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+   ],
+   "casos": [
+    "30-sonda-escenarios.json: Create de cliente 'ZZF-SND-tx1-a' (con id enviado)",
+    "30-sonda-escenarios.json: Create de cliente 'ZZF-SND-tx3-a' (con id enviado)",
+    "30-sonda-escenarios.json: Create de cliente 'ZZF-SND-tx4-a' (con id enviado)"
+   ],
+   "ErrorCode_decimal": -2146893812
+  }
+ }
+}

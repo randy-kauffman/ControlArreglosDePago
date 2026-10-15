@@ -1,0 +1,1888 @@
+{
+ "guid_registrados_total": 262,
+ "guid_registrados_filas": 239,
+ "guid_registrados_plugins": 23,
+ "guid_que_no_existen_(404)": 262,
+ "guid_que_AUN_existen": [],
+ "relectura_por_guid": [
+  {
+   "clave": "cli-A",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "37f663ff-f37c-497a-88c3-5faeaa9ef25c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "ver-A",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "ccdf9a9e-e043-494f-8954-63afc2858b69",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "ver-B",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "20a8c9ed-9f0b-4dee-af93-ac2d97859b82",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Ca",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "11eecf5d-6957-4da3-94de-0fd328087d2b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Cb",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "c4d5787e-eb7d-492c-a183-c3eb3c219e94",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Cc",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "0104ab70-5eaa-49d9-b93f-7af9eb26ecc4",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Cd",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "bf7be9cc-bd3f-498b-a31d-482c61ccad92",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Ce",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "99d78a3c-eb32-467e-a5a6-ff09ea90635f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-valor-enviado",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "8feaa4e2-ec9b-4e45-b466-9d59845e6dc6",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Cf",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "638e1ac4-466e-432c-a0bb-61984c656c3b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-A1",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "45f4af28-9526-4ffb-95e4-17e58d16d944",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-A2",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "4adb4bf8-615f-4483-92e1-5fd67ddea4d7",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-A3",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "85f01a8e-a406-44b0-8cf2-631301698a4f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-A4",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "9a0bdf7b-5398-4bfc-acfa-78fa47b200d0",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "gen-G1",
+   "tabla": "sanic_carp_tbl_generacionformato",
+   "guid": "70e289f2-7ba3-4e3c-b0e6-9d9a821b46b6",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "gen-G2",
+   "tabla": "sanic_carp_tbl_generacionformato",
+   "guid": "e9763902-ae63-4cb5-8416-d7981048f08e",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "47159955-bab5-4404-bdf3-0e7593598bbe",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "b336ec9f-cc67-45dd-a95c-8a38625e920b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "59dc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S6",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "5ddc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S9",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "61dc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-R1",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "d59c9a69-0326-4670-bae7-fb7a7c8a7266",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-R2",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "68dc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-R4",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "6cdc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-R5",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "6edc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-E0",
+   "tabla": "email",
+   "guid": "70dc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-C0",
+   "tabla": "email",
+   "guid": "74dc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-C1",
+   "tabla": "email",
+   "guid": "77dc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-C2",
+   "tabla": "email",
+   "guid": "7adc0038-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-E1",
+   "tabla": "email",
+   "guid": "2febdc4d-0cf5-4499-a7ed-704c886362b5",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P01",
+   "tabla": "email",
+   "guid": "27f3ab74-a9c3-4ae1-9baf-969cc1b5c521",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P02",
+   "tabla": "email",
+   "guid": "34ef3522-7767-43ad-a676-1933e87a91c1",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P03",
+   "tabla": "email",
+   "guid": "37941349-992c-431d-89f8-3173b1e74ff7",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P04",
+   "tabla": "email",
+   "guid": "2a336361-244c-4b70-a0f9-e567a7471bb5",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P05",
+   "tabla": "email",
+   "guid": "ec6db1f0-631d-4057-866d-7b1b77364453",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P08",
+   "tabla": "email",
+   "guid": "5128ade1-9690-46d7-9e5e-ec23d36dd547",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P11",
+   "tabla": "email",
+   "guid": "23f263aa-1668-42f6-8999-07e1cdebd966",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P12",
+   "tabla": "email",
+   "guid": "a3e0881d-6305-407c-8095-b6213e6fa9e9",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P13",
+   "tabla": "email",
+   "guid": "539de913-6b5f-4601-8308-9f800e6083ea",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P14",
+   "tabla": "email",
+   "guid": "b9ac23e5-4d87-4b7b-911c-4ea638f7a770",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P15",
+   "tabla": "email",
+   "guid": "a99e21c9-a88d-42a8-91cc-4710cc2e3150",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P18",
+   "tabla": "email",
+   "guid": "bcd77c16-fe3f-4d82-97b3-f8e4f8191544",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P21",
+   "tabla": "email",
+   "guid": "a3190b30-62cc-42e2-9c71-8d2c7cd805b6",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P22",
+   "tabla": "email",
+   "guid": "e3b580ba-c6aa-448d-b1de-68adf7eae977",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P23",
+   "tabla": "email",
+   "guid": "fe4e9a44-9916-4612-93cc-efbe1724a4a9",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P24",
+   "tabla": "email",
+   "guid": "082d9200-53e6-4ac9-85af-946a65652618",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P25",
+   "tabla": "email",
+   "guid": "02f2ea78-e109-4e19-aa06-734bd4a29469",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P28",
+   "tabla": "email",
+   "guid": "a3c7a53e-5392-4c9a-9e28-c9417ce8d899",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I1",
+   "tabla": "email",
+   "guid": "defd0b44-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I2",
+   "tabla": "email",
+   "guid": "e1fd0b44-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I5",
+   "tabla": "email",
+   "guid": "9183bf10-5fca-4c92-88fa-2dca32551a1f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I6",
+   "tabla": "email",
+   "guid": "cf02f4aa-9403-40de-849c-b2ab85a49cf7",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Nm1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "10e63fe7-0ce2-4120-8c35-132f31dd819c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-B",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "27bebb6b-4eb6-4104-955a-81086d6250f5",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Nm2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "3934d5c4-48ab-41e7-9b59-a9a1f1da3e8a",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-createdon",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "5bc2064a-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-formula",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "5dc2064a-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-sin-nombre",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "5fc2064a-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-sin-cliente",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "60c2064a-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sin-huella-1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "62c2064a-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sin-huella-2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "64c2064a-34c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-cliC",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "4b731c3b-f1e6-4a8f-86c9-c4baf642cbd9",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-convX",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "462fa51a-2516-4d13-9992-89c9b02c99bb",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-arrC",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "843cf96c-6ad1-4123-8327-bafd95fda861",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-mapeoM1",
+   "tabla": "sanic_carp_tbl_mapeocelda",
+   "guid": "44e6f8cc-ee8c-40e6-8365-13177acb6e64",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-cuotaQ2",
+   "tabla": "sanic_carp_tbl_cuota",
+   "guid": "90aac5bb-5f0e-4ef1-ae9f-4c9b7f5a104f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-convY",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "f346e521-acaf-4c7b-b146-6b0d0fac66a0",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-convW",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "0be005d1-65c1-4634-8e1d-be36fd67d9ab",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-convZ",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "18889cd5-f18b-43d7-9ae0-61f6eb2c5912",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-emailZ",
+   "tabla": "email",
+   "guid": "ca1d317c-54e5-4e3a-b7c9-f010a41fc208",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-A",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "7f56f6d2-c452-4f16-89e8-5a65feae4801",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "ver-A",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "c35bd331-3083-4724-8d39-6c93665830c0",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "ver-B",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "0ac6a292-264f-4c42-9a5a-da26375f2218",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Ca",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "9d567c64-9368-4081-beee-13c6d7153b53",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Cb",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "07d580bf-5ac9-497d-82b2-775fa8676a3f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Cc",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "f14eb406-7761-46ff-b13d-e507967c62aa",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Cd",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "af1ce904-8fba-40e0-aee3-a9fe558f4389",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Ce",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "fdb173bc-7554-4e66-960b-1f3d173234e6",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-valor-enviado",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "92786178-b6bb-48f7-b584-104eba583917",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Cf",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "fb326baa-a4ec-4cba-87c2-2a21849bc9db",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-A1",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "d5d635de-c591-4d20-a079-6014cd74b633",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-A2",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "28b98ba7-faf4-4eb0-a4de-4308f95ac985",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-A3",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "93e6d3c3-5109-4c66-89c2-9b1ba0f82f7c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-A4",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "97d8a1be-2e14-4d4f-b55f-1e699927330c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "gen-G1",
+   "tabla": "sanic_carp_tbl_generacionformato",
+   "guid": "d48440f1-3870-429d-8495-47d550f45696",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "gen-G2",
+   "tabla": "sanic_carp_tbl_generacionformato",
+   "guid": "ea809c94-d626-489a-9150-21ead95f892d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "gen-G3",
+   "tabla": "sanic_carp_tbl_generacionformato",
+   "guid": "b7e35ea1-60b1-4ed0-8608-10b52462af9e",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "2a3f03e3-f73e-4960-8419-a796040c4e81",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "4c0523f4-045c-408e-9784-6f1010ae5004",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "45351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S6",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "49351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S6b",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "4b351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-S9",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "50351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-R1",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "c519571d-c992-40b6-947b-d41c8f67ecb6",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-R2",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "5a351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-R4",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "5d351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-R5",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "5f351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-E0",
+   "tabla": "email",
+   "guid": "62351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-C0",
+   "tabla": "email",
+   "guid": "65351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-C1",
+   "tabla": "email",
+   "guid": "68351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-C2",
+   "tabla": "email",
+   "guid": "6b351519-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-E1",
+   "tabla": "email",
+   "guid": "65f86261-167a-4cf6-b124-67b93488498f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P01",
+   "tabla": "email",
+   "guid": "0ff63059-bcb6-4908-a2a3-a58cfb69dc54",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P02",
+   "tabla": "email",
+   "guid": "81eded33-9c9f-4b2d-abbb-23590b5ce740",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P03",
+   "tabla": "email",
+   "guid": "647ebb84-091c-4aef-aa5c-cf1429d42924",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P04",
+   "tabla": "email",
+   "guid": "3f6f747f-53e2-4e22-9dab-e649f5b19da5",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P05",
+   "tabla": "email",
+   "guid": "b34a16ae-81bd-493f-b354-ed781f6f92c0",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P08",
+   "tabla": "email",
+   "guid": "a2302886-a184-4dc8-afc3-f53e5e91fbd2",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P11",
+   "tabla": "email",
+   "guid": "574db5a9-452f-4f34-bb24-031bb6dd2e34",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P12",
+   "tabla": "email",
+   "guid": "35e64bb8-fb78-4ed9-bc66-c5c5c2c58c3e",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P13",
+   "tabla": "email",
+   "guid": "dc9a063a-5958-4a7c-8808-a70043bb8ec7",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P14",
+   "tabla": "email",
+   "guid": "6a9677db-c59e-48fe-ae2a-7b4f2ac4580e",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P15",
+   "tabla": "email",
+   "guid": "db5f5dc9-5275-46e4-87d7-e0e358595ce7",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P18",
+   "tabla": "email",
+   "guid": "b7d8c9e8-a2e7-4e63-a439-dcb787d74110",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P21",
+   "tabla": "email",
+   "guid": "0ec26c24-0227-49e7-8ec7-fb1fdf08a915",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P22",
+   "tabla": "email",
+   "guid": "3e95d60a-7174-4af5-a7dd-31e72934d94f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P23",
+   "tabla": "email",
+   "guid": "91d3c2bb-8a40-4204-bcee-713ab28d0c8f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P24",
+   "tabla": "email",
+   "guid": "78f40470-74f5-4579-9a6e-a4c099464dcb",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P25",
+   "tabla": "email",
+   "guid": "7dd4614c-b697-47c0-8672-c37031ab6cbf",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-P28",
+   "tabla": "email",
+   "guid": "8e921ee3-63cf-4285-a50e-d562e599f431",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I1",
+   "tabla": "email",
+   "guid": "5b5f501f-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I2",
+   "tabla": "email",
+   "guid": "5e5f501f-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I3",
+   "tabla": "email",
+   "guid": "615f501f-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I4",
+   "tabla": "email",
+   "guid": "645f501f-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I5",
+   "tabla": "email",
+   "guid": "b886f5d3-1683-402f-a8b0-bd4451b77c9e",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "email-I6",
+   "tabla": "email",
+   "guid": "c74e22cb-35e7-49a1-978d-f0c9ed27314e",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Nm1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "7e1afc56-0359-443c-9f5b-b6f558e4ef88",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-B",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "b877ade1-6bcc-45d1-afc5-9550d2e39644",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-Nm2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "896807f4-7f7a-4e13-8204-635bc2db95b7",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-createdon",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "85a14925-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-overridden",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "87a14925-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-formula",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "1680502b-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-sin-nombre",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "1880502b-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-sin-cliente",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "1980502b-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sin-huella-1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "1b80502b-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sin-huella-2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "1d80502b-35c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-cliC",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "6f54d7b5-2c03-494b-86a2-311a967aa6dd",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-convX",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "7e6fab72-a0bd-4e57-8486-c0d495394120",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-arrC",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "d1eb01fb-789c-4810-a685-8d93456c60a2",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-mapeoM1",
+   "tabla": "sanic_carp_tbl_mapeocelda",
+   "guid": "3135468e-9ad6-489b-8034-897c15a7324b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-cuotaQ2",
+   "tabla": "sanic_carp_tbl_cuota",
+   "guid": "6f1eff95-f794-48a3-9eb1-4b1a3ce7644c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-convY",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "3548b05c-caef-486b-a970-c4bb0457f475",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-convW",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "19c0a92c-7af6-46ad-89b2-a865031b2616",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-convZ",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "f6a28c71-90df-496c-9717-a18814f25e81",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "rel-emailZ",
+   "tabla": "email",
+   "guid": "719bfaa5-214c-4381-aacd-879a54f13246",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-S",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "2af67713-ced3-469a-8550-a3f698885e91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "ver-S",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "19737abb-fe1d-442f-8cf6-f9f1b2de71b5",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-ids-a",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "803ee83b-36c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-idsenv-b",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "d5b2483a-7504-411b-96de-f6565ed88956",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sv-x1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "82b64322-c40d-430d-99b6-3b28d350052a",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sv-anidada",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "bbe9e2b6-0bcb-4513-abf3-dc5670255e32",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-sv",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "780471c9-42bb-4ae5-8979-c8320524d37d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sv-x2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "d7b8827a-d3bf-4290-a5bc-ca8285b80212",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sys-x1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "3426e67e-c54e-4718-b766-4d37ae51d03f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sys-anidada",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "d693a6e2-d031-426f-a09b-b426db4e1084",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-sys",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "decf7e7d-bf3e-4ac0-94d9-9a3b0c15e617",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sys-x2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "664da0ca-5c9b-4f63-bdf4-35e8ce548dd8",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx0-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "358c4d97-dca0-4451-808f-1a371ded2fba",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx0-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "89dcdd3c-70f5-462a-90e4-e3a546822108",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx0-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "a3281d8d-d1b7-43cb-9e41-551a42cf728b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx0-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "d7eb1446-4c91-41c6-9aa7-53f5265f64c2",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx0",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "bb5ddae7-8e33-4a0a-9a80-9ada5901c3a2",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx1-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "8e2a5236-2860-4676-95c6-f0084a9cd7a6",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx1-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "12362133-d3dc-4a68-9171-41d2ac181b5b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx1-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "05902fc2-205d-4f42-a381-f297a84c5d0f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx1-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "4e08fea7-06fc-4af7-9f22-e87777636671",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx1",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "f0612e02-f2f3-4cec-a0c9-d18937e5543d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx2-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "3363f32d-b206-46dd-8c08-d9171159dc47",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx2-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "435df23d-3664-474d-8784-c9574f4b4502",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx2-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "4a5ad52d-22ec-48bb-b5b8-93ec88e59b83",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx2-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "1c852a6e-5d66-4a12-9525-caeae31f35f1",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx2",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "0cfc737e-3200-47bd-90e5-f458a4ec4f7d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx3-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "4e40162b-1c2d-4ba7-98b8-7d9da932bd10",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx3-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "8a1662bf-120b-4704-94c3-5d30797fc03c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx3-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "ef640e31-a0c2-4c55-b4fd-64ea025d0620",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx3-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "7f355310-4503-44f5-9c47-9452fb30be0e",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx3",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "2c3a8738-3527-4af1-bd9c-dcb8e20f4a01",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx4-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "c906c864-4552-480d-86d5-9f2c64efaea1",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx4-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "0a6641c6-f3e4-4336-9de5-49c780e5b9d9",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx4-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "5f71f11a-8594-45bb-bb9c-aa503ccd3646",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx4-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "1a102f8f-773a-4f91-9b0c-ae079730cba1",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx4",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "2e4dc2d3-d5fc-4133-b880-0c51e079a8c1",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-rev-0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "6b86aa91-a83b-480c-a148-f66162097c18",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-rev-1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "aa5b6dc3-39a7-4feb-8459-540bfb231fde",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-tipos",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "e8ebc416-c553-4090-ae3d-4c85fae4118b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-S",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "ca43c1f4-ace3-4fbc-8103-bcc1a2ace763",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "ver-S",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "b5dd60a8-787d-49c1-a95d-1f7287fe18b1",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-ids-a",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "89ae78d2-36c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-idsenv-b",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "c27455a7-bcbf-4791-8ca2-47d7b636b302",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sv-x1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "72eebf71-5975-46bd-b5d1-14cc2bc7dafa",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sv-anidada",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "ddb5472a-541d-40e3-8b79-ee331f94fb5f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-sv",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "d52cbd1a-bdee-4bf0-bddb-8dbadae5594d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sv-x2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "83fae8ad-a73b-4707-9f02-2e5af5830532",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sys-x1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "07055d21-50d7-4482-b3d5-8a08abf56e86",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sys-anidada",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "29ea352e-171d-4a79-8523-3f41de0b4842",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-sys",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "b3fa8a74-3f72-497a-b6bf-3ff8c9bc5f6f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-sys-x2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "bb988906-7f72-4549-9e3c-2ee2ac98d19a",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx0-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "dee78110-2c77-4e6a-b4b1-347434905173",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx0-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "a680bffa-4c1b-4c83-a2ab-9ea6cebca784",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx0-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "55c256a8-70c5-483a-be93-e79354b7994d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx0-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "d124812c-c681-480b-b3ce-352449e38260",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx0",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "fe960732-c167-452c-a51e-91ee0a91d176",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx1-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "f05d55a5-2727-482a-b7e3-6f7d2ba4b8a1",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx1-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "d7f2b835-a844-427a-a50f-a9b1edc194d0",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx1-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "828e1676-f335-47f5-9e8f-34e15f6870a8",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx1-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "90b3a390-4d30-4ad6-9239-db11de257fa6",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx1",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "f09de60c-7dfc-4cdf-ace5-c193b5ae99dd",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx2-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "10d56b26-5551-4179-aba0-e55bff430c58",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx2-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "0c9ad208-a063-461f-9cbd-825d23ceba59",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx2-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "f4663df1-2dec-4177-a6d3-8cb8ca963590",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx2-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "35041225-56ff-48ec-9e95-3a52347cc3f5",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx2",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "b27d969c-af9f-4279-98f9-44ab0b502473",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx3-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "8c46f388-4f85-4ea3-950d-be53ade74042",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx3-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "e434d8b6-40fc-4025-b119-97487c84325d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx3-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "b2a546ec-eab9-454c-af55-873935af3c97",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx3-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "41cec2fe-38ac-4ea1-8b71-3f659ce66627",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx3",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "0d8f3053-be88-4cef-8672-e390c95ac3a5",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx4-g0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "99e9ad74-dd4b-4401-b4e6-a383d5a3298f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx4-g1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "953d1f01-b810-429c-a246-a804bc10a4ef",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx4-g2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "53b36597-bf6c-4847-b3d0-db66fecf9a9f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "tx4-g3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "5250901f-98f3-439a-a822-a663dab060a2",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-tx4",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "4f82aed0-e92e-4ab9-a63d-5d0bd20c3192",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-rev-0",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "54b25e24-5b1c-4ab0-ad9f-5370ab07dee9",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-rev-1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "8b992dca-7b90-411b-90b1-187a03760255",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-tipos",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "0c0e79c7-ec10-4e4a-bf1c-e722be2a109d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-idsweb-a",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "76d71510-37c8-f111-a05a-000d3a3b5b91",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "cli-A",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "93829867-95a2-43db-b73d-fedd58067504",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "ver-A",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "47c84520-f49a-4017-a9d4-4b410cc6ed88",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-T1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "57c899b0-b865-4239-885a-28f3dd7f5062",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-T1",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "3dc9380e-8075-4bae-8a22-e73e09f67ab4",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-E1",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "2ea4ea9d-1bd8-4d53-a917-d7203e58b355",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-E2",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "1f54f538-ec30-4ce2-a7b4-b406d033d46f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-E3",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "4da31b7b-3d08-4bc4-8b33-5932cb59dd09",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-E4",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "a8e90931-3db9-4b3d-a00e-5a428a497b75",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-E5",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "86a7cb07-18bd-4881-a3f1-bd1188627451",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "conv-E6",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "9f582013-f8d2-4f02-8ad3-632092d213ba",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-E1",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "7037f38c-6c69-468a-a935-47db9ad4e266",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-E2",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "df720009-08d6-4c49-bb12-e63856981b71",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "arr-E3",
+   "tabla": "sanic_carp_tbl_arreglo",
+   "guid": "16bc4e15-0870-4f33-a73c-e45b473bae01",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "paquete spk_SondaDobles",
+   "tabla": "pluginpackages",
+   "guid": "3ca9b795-ed71-4895-b651-e9906c38548f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "paquete spk_SondaDobles",
+   "tabla": "pluginpackages",
+   "guid": "b296e8da-4128-4e9c-a2c0-4a81efa82f8c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_cliente - Create - PreValidation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "c72ec74c-2c21-45a9-ace6-60df2af38a68",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_cliente - Create - PreOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "3e156c32-54d8-46e2-a081-023aa0ad8ed7",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_cliente - Create - PostOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "0e27ce8b-1b57-4164-8884-5c223845b6de",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_conversacion - Create - PreValidation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "c956f83d-82d7-4a7c-9736-d27dfc2a687f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_conversacion - Create - PreOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "7adf0ab6-925e-4246-9d7e-76813450f78b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_conversacion - Create - PostOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "4c1cc915-5973-4491-93ef-276a10efc348",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Create - PreOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "047c9d0f-3c27-4cba-9476-3f42ce03c61a",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Create - PostOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "237ee541-2ad6-4cc5-bcb8-416dbf944110",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Update - PreOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "0df496dd-bd0f-4d9b-a49c-835a14efd385",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "imagen PreImagen de STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Update - PreOperation",
+   "tabla": "sdkmessageprocessingstepimages",
+   "guid": "343c7a8b-bb9b-4dba-ab30-a574089d3ea8",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "paquete spk_SondaDobles",
+   "tabla": "pluginpackages",
+   "guid": "9073607f-f336-4593-abb8-4e91ffe5e80f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_cliente - Create - PreValidation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "3ca10296-cfed-4af4-a0b7-a1001dfd1f18",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_cliente - Create - PreOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "4442a854-7954-4075-af78-f787ab355b75",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_cliente - Create - PostOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "6fc5ab7f-781e-4ad4-b900-b1aac82ed55b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_conversacion - Create - PreValidation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "8f94c73e-9ea8-4d98-b1d2-617a1b0652fe",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_conversacion - Create - PreOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "e35756ed-df20-43ca-8645-5adb9a8705e8",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_conversacion - Create - PostOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "2d9d65eb-0a86-47d9-a646-c6e030890aae",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Create - PreOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "5837cc51-1332-4c3e-bb6c-4402f71b1179",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Create - PostOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "fba6cd79-dbb1-4bee-8631-ed24728612cd",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Update - PreOperation",
+   "tabla": "sdkmessageprocessingsteps",
+   "guid": "57e85a51-978c-4da5-a7be-3d9d9446bd5d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "imagen PreImagen de STEP - SPK - Sonda - sanic_carp_tbl_arreglo - Update - PreOperation",
+   "tabla": "sdkmessageprocessingstepimages",
+   "guid": "715f2ad5-5e2b-45f3-9a9b-7d94d040da59",
+   "http": 404,
+   "no_existe": true
+  }
+ ],
+ "residuales_ZZF_por_tabla": {},
+ "residuales_Sonda": {},
+ "filas_en_tablas_del_proyecto_ahora": {
+  "conversacion": 0,
+  "arreglo": 0,
+  "cliente": 0,
+  "versionplantilla": 0,
+  "cuota": 0,
+  "generacionformato": 0,
+  "mapeocelda": 0
+ },
+ "filas_en_tablas_del_proyecto_antes": {
+  "conversacion": 0,
+  "arreglo": 0,
+  "cliente": 0,
+  "versionplantilla": 0,
+  "cuota": 0,
+  "generacionformato": 0,
+  "mapeocelda": 0
+ },
+ "solucion_proyecto_componentes_antes": 26,
+ "solucion_proyecto_componentes_ahora": 26,
+ "solucion_proyecto_componentes_nuevos": [],
+ "solucion_proyecto_componentes_que_faltan": [],
+ "emails_total_antes": 560,
+ "emails_total_ahora": 560,
+ "environmentvariabledefinitions_sanic_zzf": 0,
+ "pluginpackages_antes_ahora": [
+  8,
+  8
+ ],
+ "pluginassemblies_antes_ahora": [
+  157,
+  157
+ ],
+ "steps_no_administrados_antes_ahora": [
+  40585,
+  40585
+ ],
+ "customapis_antes_ahora": [
+  474,
+  474
+ ],
+ "plugintypes_Sonda": 0,
+ "limpieza_verificada_OK": true
+}

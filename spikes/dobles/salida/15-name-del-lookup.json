@@ -1,0 +1,259 @@
+{
+  "cabecera": {
+    "fixture": "15-name-del-lookup",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF-",
+    "notas": [
+      "Punto (9): la plataforma ignora el Name que se envia en un EntityReference? Que Name devuelve al releer?",
+      "No se vuelca el Name leido (es el nombre primario real del destino, p. ej. del team): solo si es nulo, si empieza con ZZF, si es el enviado y su largo."
+    ]
+  },
+  "contenido": {
+    "casos": [
+      {
+        "caso": "Create con Name enviado distinto en sanic_clienteid, ownerid (team) y sanic_oficialasignadoid (systemuser); Retrieve",
+        "resultado": "ok",
+        "valor": {
+          "sanic_clienteid": {
+            "presente": true,
+            "logicalName": "sanic_carp_tbl_cliente",
+            "Name_es_nulo": false,
+            "Name_empieza_con_ZZF": true,
+            "Name_es_el_enviado": false,
+            "Name_largo": 8
+          },
+          "ownerid": {
+            "presente": true,
+            "logicalName": "team",
+            "Name_es_nulo": false,
+            "Name_empieza_con_ZZF": false,
+            "Name_es_el_enviado": false,
+            "Name_largo": 16
+          },
+          "sanic_oficialasignadoid": {
+            "presente": true,
+            "logicalName": "systemuser",
+            "Name_es_nulo": false,
+            "Name_empieza_con_ZZF": false,
+            "Name_es_el_enviado": false,
+            "Name_largo": 19
+          },
+          "fila_completa_anonimizada": {
+            "tipo": "Microsoft.Xrm.Sdk.Entity",
+            "LogicalName": "sanic_carp_tbl_conversacion",
+            "Id": "0fff0009-0000-4000-8000-00000000006c",
+            "RowVersion": "13085185",
+            "KeyAttributes": {},
+            "EntityState": null,
+            "atributos": {
+              "ownerid": {
+                "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+                "valor": {
+                  "logicalName": "team",
+                  "id": "0fff0009-0000-4000-8000-000000000005",
+                  "name": "ZZF Team 1"
+                }
+              },
+              "sanic_carp_tbl_conversacionid": {
+                "tipo": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000006c"
+              },
+              "sanic_clienteid": {
+                "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+                "valor": {
+                  "logicalName": "sanic_carp_tbl_cliente",
+                  "id": "0fff0009-0000-4000-8000-000000000010",
+                  "name": "ZZF-José"
+                }
+              },
+              "sanic_oficialasignadoid": {
+                "tipo": "Microsoft.Xrm.Sdk.EntityReference",
+                "valor": {
+                  "logicalName": "systemuser",
+                  "id": "0fff0009-0000-4000-8000-000000000004",
+                  "name": "ZZF Usuario 1"
+                }
+              }
+            },
+            "FormattedValues": {
+              "ownerid": "ZZF Team 1",
+              "sanic_clienteid": "ZZF-José",
+              "sanic_oficialasignadoid": "ZZF Usuario 1"
+            }
+          }
+        }
+      },
+      {
+        "caso": "RetrieveMultiple de la misma fila con las mismas columnas",
+        "resultado": "ok",
+        "valor": {
+          "sanic_clienteid": {
+            "presente": true,
+            "logicalName": "sanic_carp_tbl_cliente",
+            "Name_es_nulo": false,
+            "Name_empieza_con_ZZF": true,
+            "Name_es_el_enviado": false,
+            "Name_largo": 8
+          },
+          "ownerid": {
+            "presente": true,
+            "logicalName": "team",
+            "Name_es_nulo": false,
+            "Name_empieza_con_ZZF": false,
+            "Name_es_el_enviado": false,
+            "Name_largo": 16
+          },
+          "sanic_oficialasignadoid": {
+            "presente": true,
+            "logicalName": "systemuser",
+            "Name_es_nulo": false,
+            "Name_empieza_con_ZZF": false,
+            "Name_es_el_enviado": false,
+            "Name_largo": 19
+          }
+        }
+      },
+      {
+        "caso": "Update con Name enviado en sanic_clienteid (cambia a otro cliente: se crea cli-B) y relectura",
+        "resultado": "ok",
+        "valor": {
+          "sanic_clienteid": {
+            "presente": true,
+            "logicalName": "sanic_carp_tbl_cliente",
+            "Name_es_nulo": false,
+            "Name_empieza_con_ZZF": true,
+            "Name_es_el_enviado": false,
+            "Name_largo": 9
+          }
+        }
+      },
+      {
+        "caso": "Create con Name = null y con Name = '' ",
+        "resultado": "ok",
+        "valor": {
+          "con_Name_nulo": {
+            "presente": true,
+            "logicalName": "sanic_carp_tbl_cliente",
+            "Name_es_nulo": false,
+            "Name_empieza_con_ZZF": true,
+            "Name_es_el_enviado": false,
+            "Name_largo": 8
+          },
+          "con_Name_vacio": {
+            "presente": true,
+            "logicalName": "sanic_carp_tbl_cliente",
+            "Name_es_nulo": false,
+            "Name_empieza_con_ZZF": true,
+            "Name_es_el_enviado": false,
+            "Name_largo": 8
+          }
+        }
+      },
+      {
+        "caso": "Create con el lookup a una referencia cuyo LogicalName esta en mayusculas ('SANIC_CARP_TBL_CLIENTE')",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "The entity with a name = 'SANIC_CARP_TBL_CLIENTE' with namemapping = 'Logical' was not found in the MetadataCache.LazyDynamicMetadataCache with version 13082910 and timestamp 13082910",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) The entity with a name = 'SANIC_CARP_TBL_CLIENTE' with namemapping = 'Logical' was not found in the MetadataCache.LazyDynamicMetadataCache with version 13082910 and timestamp 13082910"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147217150,
+            "ErrorCode_hex": "0x80041102",
+            "Message": "The entity with a name = 'SANIC_CARP_TBL_CLIENTE' with namemapping = 'Logical' was not found in the MetadataCache.LazyDynamicMetadataCache with version 13082910 and timestamp 13082910",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000006d"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "QueryBuilderNoEntity"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.Metadata.EntityMetadataNotFoundException: The entity with a name = 'SANIC_CARP_TBL_CLIENTE' with namemapping = 'Logical' was not found in the MetadataCache.LazyDynamicMetadataCache with version 13082910 and timestamp 13082910 ---> Microsoft.Crm.Metadata.EntityMetadataNotFoundException: The entity with a name = 'SANIC_CARP_TBL_CLIENTE' with namemapping = 'Logical' was not found in the MetadataCache.LazyDynamicMetadataCache with version 13082910 and timestamp 13082910\r\n   at Microsoft.Crm.Metadata.DynamicMetadataCache.GetEntity(String entityName, NameMappingType mapping)\r\n   at Microsoft.Crm.BusinessEntities.EntityConversionHelper.GetObjectTypeCode(ICrmConversionContext conversionContext, String logicalName, Guid organizationId)\r\n   at Microsoft.Crm.BusinessEntities.EntityReferenceAttributeConverter.ConvertToBusinessEntity(Object value, AttributeMetadata attributeMetadata, Dictionary`2 abbrvToChildAttributeMetadata, ICrmConversionContext context, BusinessEntity target)\r\n   at Microsoft.Crm.BusinessEntities.EntityToBusinessEntityConverter.ConvertUsingExistingBusinessEntity(EntityMetadata entityMetadata, ICrmConversionContext conversionContext, Entity entity, BusinessEntity businessEntity, EntityAttributeConverterFactory entityAttributeConverterFactory)\r\n   at Microsoft.Crm.BusinessEntities.EntityToBusinessEntityConverter.Convert(ICrmConversionContext conversionContext, Entity entity)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.DictionaryMapper.Map(ParameterCollection inputs, ICrmConversionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalOperationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000009"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:04.9133567Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147217150,
+              "ErrorCode_hex": "0x80041102",
+              "Message": "The entity with a name = 'SANIC_CARP_TBL_CLIENTE' with namemapping = 'Logical' was not found in the MetadataCache.LazyDynamicMetadataCache with version 13082910 and timestamp 13082910",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:04.9133567Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80041102"
+      }
+    ]
+  }
+}

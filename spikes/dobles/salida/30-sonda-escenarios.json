@@ -1,0 +1,744 @@
+{
+  "cabecera": {
+    "fixture": "30-sonda-escenarios",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF- (marca ZZF-SND-); las filas anidadas las crea el plugin con GUID reservado y registrado antes",
+    "notas": [
+      "Lo que observo el plugin esta en 31-sonda-trazas.json (plugintracelogs). Aqui: la operacion desde afuera, su resultado y que filas quedaron.",
+      "Ventana de las trazas: desde 2026-10-15T01:22:01.1220406Z (UTC)."
+    ]
+  },
+  "ventana_inicio_utc": "2026-10-15T01:22:01.1220406Z",
+  "ventana_fin_utc": "2026-10-15T01:22:13.7120682Z",
+  "contenido": {
+    "escenarios": [
+      {
+        "escenario": "ids / idsenv",
+        "descripcion": "Create de Cliente SIN id enviado y CON id enviado: Target.Id y PrimaryEntityId en PreValidation, PreOperation y PostOperation (trazas)",
+        "sin_id": {
+          "caso": "Create de cliente 'ZZF-SND-ids-a' (sin id enviado)",
+          "resultado": "ok",
+          "valor": {
+            "id_devuelto_igual_al_enviado": null,
+            "existe_despues": true
+          }
+        },
+        "con_id": {
+          "caso": "Create de cliente 'ZZF-SND-idsenv-b' (con id enviado)",
+          "resultado": "ok",
+          "valor": {
+            "id_devuelto_igual_al_enviado": true,
+            "existe_despues": true
+          }
+        }
+      },
+      {
+        "escenario": "sv",
+        "descripcion": "PreOperation del Create de Cliente pone una SharedVariable y crea una Conversacion con IOrganizationService (mismo usuario); los steps de la Conversacion (PreValidation, PreOperation, PostOperation) y el PostOperation del Cliente leen sus SharedVariables",
+        "create_cliente": {
+          "caso": "Create de cliente 'ZZF-SND-sv-a' (con id enviado)",
+          "resultado": "ok",
+          "valor": {
+            "id_devuelto_igual_al_enviado": true,
+            "existe_despues": true
+          }
+        },
+        "existencia": {
+          "cli-sv": true,
+          "conv-sv-anidada": true
+        },
+        "autonumerico": {
+          "alta_plana_antes": 1111,
+          "alta_hecha_por_el_plugin": 1112,
+          "alta_plana_despues": 1113
+        }
+      },
+      {
+        "escenario": "sys",
+        "descripcion": "PreOperation del Create de Cliente pone una SharedVariable y crea una Conversacion con IOrganizationService (SYSTEM); los steps de la Conversacion (PreValidation, PreOperation, PostOperation) y el PostOperation del Cliente leen sus SharedVariables",
+        "create_cliente": {
+          "caso": "Create de cliente 'ZZF-SND-sys-a' (con id enviado)",
+          "resultado": "ok",
+          "valor": {
+            "id_devuelto_igual_al_enviado": true,
+            "existe_despues": true
+          }
+        },
+        "existencia": {
+          "cli-sys": true,
+          "conv-sys-anidada": true
+        },
+        "autonumerico": {
+          "alta_plana_antes": 1114,
+          "alta_hecha_por_el_plugin": 1115,
+          "alta_plana_despues": 1116
+        }
+      },
+      {
+        "escenario": "tx0",
+        "descripcion": "control: dos escrituras anidadas que funcionan (sin falla atrapada)",
+        "create_cliente": {
+          "caso": "Create de cliente 'ZZF-SND-tx0-a' (con id enviado)",
+          "resultado": "ok",
+          "valor": {
+            "id_devuelto_igual_al_enviado": true,
+            "existe_despues": true
+          }
+        },
+        "existencia": {
+          "cli-tx0": true,
+          "tx0-g0": true,
+          "tx0-g1": false,
+          "tx0-g2": true,
+          "tx0-g3": true
+        }
+      },
+      {
+        "escenario": "tx1",
+        "descripcion": "se atrapa una clave alterna duplicada (K-01) en una escritura anidada y se SIGUE con otras escrituras",
+        "create_cliente": {
+          "caso": "Create de cliente 'ZZF-SND-tx1-a' (con id enviado)",
+          "resultado": "falla",
+          "falla": {
+            "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+            "cadena_de_tipos": [
+              "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+            ],
+            "cadena": [
+              {
+                "orden": 0,
+                "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                "mensaje": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+                "HResult": -2146233088,
+                "propiedades_propias": {
+                  "Action": null,
+                  "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                  "Reason": "(System.ServiceModel.FaultReason) ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+                }
+              }
+            ],
+            "el_exterior_es_FaultException_OrganizationServiceFault": true,
+            "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+            "fault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2146893812,
+              "ErrorCode_hex": "0x8009000C",
+              "Message": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+              "ErrorDetails": {
+                "ApiActivityIdKey": {
+                  "tipo_del_valor": "System.Guid",
+                  "valor": "0fff0009-0000-4000-8000-000000000001"
+                },
+                "ApiDepthKey": {
+                  "tipo_del_valor": "System.Int32",
+                  "valor": "1"
+                },
+                "ApiExceptionCategory": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "ClientError"
+                },
+                "ApiExceptionHttpStatusCode": {
+                  "tipo_del_valor": "System.Int32",
+                  "valor": "400"
+                },
+                "ApiExceptionMessageName": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "IsvTransactionCount"
+                },
+                "ApiExceptionOwnerKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                },
+                "ApiExceptionSourceKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Plugin/Spk.SondaDobles.SondaPlugin, Spk.SondaDobles, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null"
+                },
+                "ApiOriginalExceptionKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing. ---> Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                },
+                "ApiPluginSolutionNameKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Active"
+                },
+                "ApiSourceActivityKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": ""
+                },
+                "ApiStepKey": {
+                  "tipo_del_valor": "System.Guid",
+                  "valor": "0fff0009-0000-4000-8000-000000000002"
+                },
+                "ApiStepSolutionNameKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Active"
+                }
+              },
+              "Timestamp": {
+                "iso": "2026-10-15T01:22:08.1836511Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": 161,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2146893812,
+                "ErrorCode_hex": "0x8009000C",
+                "Message": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+                "ErrorDetails": {
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "400"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "IsvTransactionCount"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Spk.SondaDobles.SondaPlugin, Spk.SondaDobles, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing. ---> Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Active"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000002"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Active"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T01:22:08.1836511Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2146893812,
+                  "ErrorCode_hex": "0x8009000C",
+                  "Message": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T01:22:08.1836511Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            }
+          },
+          "codigo": "0x8009000C"
+        },
+        "existencia": {
+          "cli-tx1": false,
+          "tx1-g0": false,
+          "tx1-g1": false,
+          "tx1-g2": false,
+          "tx1-g3": false
+        }
+      },
+      {
+        "escenario": "tx2",
+        "descripcion": "se atrapa un Retrieve de fila inexistente y se sigue con otras escrituras",
+        "create_cliente": {
+          "caso": "Create de cliente 'ZZF-SND-tx2-a' (con id enviado)",
+          "resultado": "ok",
+          "valor": {
+            "id_devuelto_igual_al_enviado": true,
+            "existe_despues": true
+          }
+        },
+        "existencia": {
+          "cli-tx2": true,
+          "tx2-g0": true,
+          "tx2-g1": false,
+          "tx2-g2": true,
+          "tx2-g3": true
+        }
+      },
+      {
+        "escenario": "tx3",
+        "descripcion": "se atrapa un Update de fila inexistente y se sigue con otras escrituras",
+        "create_cliente": {
+          "caso": "Create de cliente 'ZZF-SND-tx3-a' (con id enviado)",
+          "resultado": "falla",
+          "falla": {
+            "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+            "cadena_de_tipos": [
+              "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+            ],
+            "cadena": [
+              {
+                "orden": 0,
+                "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                "mensaje": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+                "HResult": -2146233088,
+                "propiedades_propias": {
+                  "Action": null,
+                  "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                  "Reason": "(System.ServiceModel.FaultReason) ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+                }
+              }
+            ],
+            "el_exterior_es_FaultException_OrganizationServiceFault": true,
+            "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+            "fault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2146893812,
+              "ErrorCode_hex": "0x8009000C",
+              "Message": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+              "ErrorDetails": {
+                "ApiActivityIdKey": {
+                  "tipo_del_valor": "System.Guid",
+                  "valor": "0fff0009-0000-4000-8000-000000000003"
+                },
+                "ApiDepthKey": {
+                  "tipo_del_valor": "System.Int32",
+                  "valor": "1"
+                },
+                "ApiExceptionCategory": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "ClientError"
+                },
+                "ApiExceptionHttpStatusCode": {
+                  "tipo_del_valor": "System.Int32",
+                  "valor": "400"
+                },
+                "ApiExceptionMessageName": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "IsvTransactionCount"
+                },
+                "ApiExceptionOwnerKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                },
+                "ApiExceptionSourceKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Plugin/Spk.SondaDobles.SondaPlugin, Spk.SondaDobles, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null"
+                },
+                "ApiOriginalExceptionKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing. ---> Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                },
+                "ApiPluginSolutionNameKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Active"
+                },
+                "ApiSourceActivityKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": ""
+                },
+                "ApiStepKey": {
+                  "tipo_del_valor": "System.Guid",
+                  "valor": "0fff0009-0000-4000-8000-000000000002"
+                },
+                "ApiStepSolutionNameKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Active"
+                }
+              },
+              "Timestamp": {
+                "iso": "2026-10-15T01:22:10.2930311Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": 161,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2146893812,
+                "ErrorCode_hex": "0x8009000C",
+                "Message": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+                "ErrorDetails": {
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000003"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "400"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "IsvTransactionCount"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Spk.SondaDobles.SondaPlugin, Spk.SondaDobles, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing. ---> Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Active"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000002"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Active"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T01:22:10.2930311Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2146893812,
+                  "ErrorCode_hex": "0x8009000C",
+                  "Message": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T01:22:10.2930311Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            }
+          },
+          "codigo": "0x8009000C"
+        },
+        "existencia": {
+          "cli-tx3": false,
+          "tx3-g0": false,
+          "tx3-g1": false,
+          "tx3-g2": false,
+          "tx3-g3": false
+        }
+      },
+      {
+        "escenario": "tx4",
+        "descripcion": "se atrapa un Create con lookup a fila inexistente y se sigue con otras escrituras",
+        "create_cliente": {
+          "caso": "Create de cliente 'ZZF-SND-tx4-a' (con id enviado)",
+          "resultado": "falla",
+          "falla": {
+            "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+            "cadena_de_tipos": [
+              "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+            ],
+            "cadena": [
+              {
+                "orden": 0,
+                "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                "mensaje": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+                "HResult": -2146233088,
+                "propiedades_propias": {
+                  "Action": null,
+                  "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                  "Reason": "(System.ServiceModel.FaultReason) ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing."
+                }
+              }
+            ],
+            "el_exterior_es_FaultException_OrganizationServiceFault": true,
+            "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+            "fault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2146893812,
+              "ErrorCode_hex": "0x8009000C",
+              "Message": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+              "ErrorDetails": {
+                "ApiActivityIdKey": {
+                  "tipo_del_valor": "System.Guid",
+                  "valor": "0fff0009-0000-4000-8000-000000000004"
+                },
+                "ApiDepthKey": {
+                  "tipo_del_valor": "System.Int32",
+                  "valor": "1"
+                },
+                "ApiExceptionCategory": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "ClientError"
+                },
+                "ApiExceptionHttpStatusCode": {
+                  "tipo_del_valor": "System.Int32",
+                  "valor": "400"
+                },
+                "ApiExceptionMessageName": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "IsvTransactionCount"
+                },
+                "ApiExceptionOwnerKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                },
+                "ApiExceptionSourceKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Plugin/Spk.SondaDobles.SondaPlugin, Spk.SondaDobles, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null"
+                },
+                "ApiOriginalExceptionKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing. ---> Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                },
+                "ApiPluginSolutionNameKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Active"
+                },
+                "ApiSourceActivityKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": ""
+                },
+                "ApiStepKey": {
+                  "tipo_del_valor": "System.Guid",
+                  "valor": "0fff0009-0000-4000-8000-000000000002"
+                },
+                "ApiStepSolutionNameKey": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Active"
+                }
+              },
+              "Timestamp": {
+                "iso": "2026-10-15T01:22:11.2149074Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": 161,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2146893812,
+                "ErrorCode_hex": "0x8009000C",
+                "Message": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+                "ErrorDetails": {
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000004"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "400"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "IsvTransactionCount"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Spk.SondaDobles.SondaPlugin, Spk.SondaDobles, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing. ---> Microsoft.Crm.CrmException: ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Active"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000002"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Active"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T01:22:11.2149074Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2146893812,
+                  "ErrorCode_hex": "0x8009000C",
+                  "Message": "ISV code reduced the open transaction count. Custom plug-ins should not catch exceptions from OrganizationService calls and continue processing.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T01:22:11.2149074Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            }
+          },
+          "codigo": "0x8009000C"
+        },
+        "existencia": {
+          "cli-tx4": false,
+          "tx4-g0": false,
+          "tx4-g1": false,
+          "tx4-g2": false,
+          "tx4-g3": false
+        }
+      },
+      {
+        "escenario": "rev",
+        "descripcion": "el PostOperation de un Create de Conversacion lanza InvalidPluginExecutionException DESPUES de que la plataforma asigno el autonumerico: se revierte",
+        "create_que_se_revierte": {
+          "caso": "Create de Conversacion 'ZZF-SND-rev-a' (el plugin lo revierte)",
+          "resultado": "falla",
+          "falla": {
+            "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+            "cadena_de_tipos": [
+              "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+            ],
+            "cadena": [
+              {
+                "orden": 0,
+                "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                "mensaje": "SND-rev: revierte el Create despues del autonumerico",
+                "HResult": -2146233088,
+                "propiedades_propias": {
+                  "Action": null,
+                  "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                  "Reason": "(System.ServiceModel.FaultReason) SND-rev: revierte el Create despues del autonumerico"
+                }
+              }
+            ],
+            "el_exterior_es_FaultException_OrganizationServiceFault": true,
+            "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+            "fault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220891,
+              "ErrorCode_hex": "0x80040265",
+              "Message": "SND-rev: revierte el Create despues del autonumerico",
+              "ErrorDetails": {
+                "OperationStatus": {
+                  "tipo_del_valor": "System.Int32",
+                  "valor": "0"
+                },
+                "Plugin.ExceptionFromPluginExecute": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "Spk.SondaDobles.SondaPlugin"
+                },
+                "Plugin.ExceptionRetriable": {
+                  "tipo_del_valor": "System.Boolean",
+                  "valor": "False"
+                },
+                "Plugin.ExceptionSource": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "PluginExecution"
+                },
+                "Plugin.OriginalException": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "PluginExecution"
+                },
+                "Plugin.PluginTrace": {
+                  "tipo_del_valor": "System.String",
+                  "valor": "SND|rev|a|1|ctx:Create.PostOperation.conversacion|stage=40|mode=0|depth=1|msg=Create|tabla=sanic_carp_tbl_conversacion|UserId_igual_a_InitiatingUserId=True|UserId_es_el_usuario_del_spike=True|UserId_es_SYSTEM=False|InitiatingUserId_es_el_usuario_del_spike=True|PrimaryEntityId_vacio=False|Target_Id_vacio=False|Target_Id_igual_a_PrimaryEntityId=True|Target_tiene_atributo_id_primario=True|OutputParameters_id=presente_con_valor|ParentContext=si:Create.sanic_carp_tbl_conversacion.depth1|IsInTransaction=True|IsolationMode=2\r\nSND|rev|a|2|rev_lanza|nombre_presente=True"
+                },
+                "SubErrorCode": {
+                  "tipo_del_valor": "System.Int32",
+                  "valor": "-2146233088"
+                }
+              },
+              "Timestamp": {
+                "iso": "2026-10-15T01:22:12.1055358Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": 744,
+              "InnerFault": null
+            }
+          },
+          "codigo": "0x80040265"
+        },
+        "autonumerico": {
+          "alta_plana_antes": 1134,
+          "alta_plana_despues": 1136
+        },
+        "la_fila_revertida_existe": false
+      },
+      {
+        "escenario": "tipos",
+        "descripcion": "Create y Update de un Arreglo: tipos .NET y DateTime.Kind del Target, de la pre-imagen y de un Retrieve hecho desde el plugin",
+        "create": {
+          "caso": "Create de Arreglo 'ZZF-SND-tipos-a' (UL Utc, DO Unspecified)",
+          "resultado": "ok",
+          "valor": null
+        },
+        "update_UL_Utc": {
+          "caso": "Update: UL Utc 13:45:31, DO Unspecified 2027-05-01, decimal",
+          "resultado": "ok",
+          "valor": null
+        },
+        "update_UL_Local": {
+          "caso": "Update: UL Local 13:45:32 (UTC-6)",
+          "resultado": "ok",
+          "valor": null
+        },
+        "update_UL_Unspecified": {
+          "caso": "Update: UL Unspecified 13:45:33",
+          "resultado": "ok",
+          "valor": null
+        },
+        "update_DO_Utc_tarde": {
+          "caso": "Update: DO Utc 2027-05-02 23:30",
+          "resultado": "ok",
+          "valor": null
+        }
+      }
+    ]
+  }
+}

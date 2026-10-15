@@ -1,0 +1,820 @@
+{
+  "cabecera": {
+    "fixture": "17b-autonumerico-otras-fallas",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF- (borradas al final)",
+    "notas": [
+      "Complemento del punto (11): otras clases de Create fallido (columna inexistente, texto largo, choice inexistente, tipo equivocado, lookup a la tabla equivocada, par de estado invalido en Arreglo) y si consumen numero.",
+      "NO se uso SetAutoNumberSeed. delta 1 = no consumio; delta 2 = el Create fallido consumio un numero."
+    ]
+  },
+  "contenido": {
+    "secuencia_cronologica": [
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "operacion": "alta E1",
+        "sanic_nombre": "CONV-001138",
+        "numero": 1138
+      },
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "operacion": "alta E2 (tras Create fallido por columna inexistente)",
+        "sanic_nombre": "CONV-001139",
+        "numero": 1139
+      },
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "operacion": "alta E3 (tras Create fallido por texto largo)",
+        "sanic_nombre": "CONV-001141",
+        "numero": 1141
+      },
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "operacion": "alta E4 (tras Create fallido por choice inexistente)",
+        "sanic_nombre": "CONV-001143",
+        "numero": 1143
+      },
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "operacion": "alta E5 (tras Create fallido por tipo equivocado)",
+        "sanic_nombre": "CONV-001145",
+        "numero": 1145
+      },
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "operacion": "alta E6 (tras Create fallido por lookup a tabla equivocada)",
+        "sanic_nombre": "CONV-001147",
+        "numero": 1147
+      },
+      {
+        "tabla": "sanic_carp_tbl_arreglo",
+        "operacion": "alta A-E1",
+        "sanic_nombre": "ARR-001052",
+        "numero": 1052
+      },
+      {
+        "tabla": "sanic_carp_tbl_arreglo",
+        "operacion": "alta A-E2 (tras Create fallido por columna inexistente)",
+        "sanic_nombre": "ARR-001053",
+        "numero": 1053
+      },
+      {
+        "tabla": "sanic_carp_tbl_arreglo",
+        "operacion": "alta A-E3 (tras Create fallido por par invalido)",
+        "sanic_nombre": "ARR-001055",
+        "numero": 1055
+      }
+    ],
+    "deltas_entre_altas_exitosas_consecutivas": [
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "de": "alta E1",
+        "a": "alta E2 (tras Create fallido por columna inexistente)",
+        "delta": 1
+      },
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "de": "alta E2 (tras Create fallido por columna inexistente)",
+        "a": "alta E3 (tras Create fallido por texto largo)",
+        "delta": 2
+      },
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "de": "alta E3 (tras Create fallido por texto largo)",
+        "a": "alta E4 (tras Create fallido por choice inexistente)",
+        "delta": 2
+      },
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "de": "alta E4 (tras Create fallido por choice inexistente)",
+        "a": "alta E5 (tras Create fallido por tipo equivocado)",
+        "delta": 2
+      },
+      {
+        "tabla": "sanic_carp_tbl_conversacion",
+        "de": "alta E5 (tras Create fallido por tipo equivocado)",
+        "a": "alta E6 (tras Create fallido por lookup a tabla equivocada)",
+        "delta": 2
+      },
+      {
+        "tabla": "sanic_carp_tbl_arreglo",
+        "de": "alta A-E1",
+        "a": "alta A-E2 (tras Create fallido por columna inexistente)",
+        "delta": 1
+      },
+      {
+        "tabla": "sanic_carp_tbl_arreglo",
+        "de": "alta A-E2 (tras Create fallido por columna inexistente)",
+        "a": "alta A-E3 (tras Create fallido por par invalido)",
+        "delta": 2
+      }
+    ],
+    "creates_fallidos": [
+      {
+        "caso": "conv: Create con columna inexistente",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive).",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive)."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147217149,
+            "ErrorCode_hex": "0x80041103",
+            "Message": "'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive).",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000000c"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "0"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "QueryBuilderNoAttribute"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Api/PrePipeline"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.Metadata.AttributeMetadataNotFoundException: 'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive).\r\n   at Microsoft.Crm.Sdk.PropertyFilter.Filter(Entity entity, String[] excluded, ExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.MessageProcessor.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalMessageDispatcher.<>c__DisplayClass5_0.<Execute>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.Extensibility.ExternalMessageDispatcher.ExecuteInternal(IInProcessOrganizationServiceFactory serviceFactory, IPlatformMessageDispatcherFactory dispatcherFactory, Guid callerRegardingObjectId, Int32 invocationSource, Version endpointVersion, OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.DispatchRequest(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, SdkResponseDescription responseDescription, SdkPerformanceCounterContext sdkPerformanceCounterContext, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentationOperation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.<>c__DisplayClass27_0.<ExecuteRequest>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "00000000-0000-0000-0000-000000000000"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:15.5058049Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        },
+        "codigo": "0x80041103"
+      },
+      {
+        "caso": "conv: Create con huella de 65 caracteres (texto largo)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "A validation error occurred.  The length of the 'sanic_huellamessageid' attribute of the 'sanic_carp_tbl_conversacion' entity exceeded the maximum allowed length of '64'.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) A validation error occurred.  The length of the 'sanic_huellamessageid' attribute of the 'sanic_carp_tbl_conversacion' entity exceeded the maximum allowed length of '64'."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147204303,
+            "ErrorCode_hex": "0x80044331",
+            "Message": "A validation error occurred.  The length of the 'sanic_huellamessageid' attribute of the 'sanic_carp_tbl_conversacion' entity exceeded the maximum allowed length of '64'.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000000d"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "StringLengthTooLong"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.TargetAttributeValidationPlugin"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.ObjectModel.CrmStringAttributeValidationException: A validation error occurred.  The length of the 'sanic_huellamessageid' attribute of the 'sanic_carp_tbl_conversacion' entity exceeded the maximum allowed length of '64'. ---> Microsoft.Crm.ObjectModel.CrmStringAttributeValidationException: A validation error occurred.  The length of the 'sanic_huellamessageid' attribute of the 'sanic_carp_tbl_conversacion' entity exceeded the maximum allowed length of '64'.\r\n   at Microsoft.Crm.ObjectModel.StringAttributeValidator.Validate(Entity entity, KeyValuePair`2 property, AttributeMetadata attributeMetadata, ExecutionContext platformContext)\r\n   at Microsoft.Crm.ObjectModel.AttributeValidationPlugin.PerformValidation(Entity entity, EntityMetadata entityMetadata, ExecutionContext platformContext, Entity parentEntity)\r\n   at Microsoft.Crm.ObjectModel.AttributeValidationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000000e"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:15.7404108Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": 165,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147204303,
+              "ErrorCode_hex": "0x80044331",
+              "Message": "A validation error occurred.  The length of the 'sanic_huellamessageid' attribute of the 'sanic_carp_tbl_conversacion' entity exceeded the maximum allowed length of '64'.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:15.7404108Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80044331"
+      },
+      {
+        "caso": "conv: Create con choice inexistente (sanic_resultado = 999)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "A validation error occurred. The value 999 of 'sanic_resultado' on record of type 'sanic_carp_tbl_conversacion' is outside the valid range. Accepted Values: 159460001,159460002,159460003",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) A validation error occurred. The value 999 of 'sanic_resultado' on record of type 'sanic_carp_tbl_conversacion' is outside the valid range. Accepted Values: 159460001,159460002,159460003"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147204326,
+            "ErrorCode_hex": "0x8004431A",
+            "Message": "A validation error occurred. The value 999 of 'sanic_resultado' on record of type 'sanic_carp_tbl_conversacion' is outside the valid range. Accepted Values: 159460001,159460002,159460003",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000000f"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "PicklistValueOutOfRange"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.TargetAttributeValidationPlugin"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.ObjectModel.CrmPicklistAttributeValidationException: A validation error occurred. The value 999 of 'sanic_resultado' on record of type 'sanic_carp_tbl_conversacion' is outside the valid range. Accepted Values: 159460001,159460002,159460003 ---> Microsoft.Crm.ObjectModel.CrmPicklistAttributeValidationException: A validation error occurred. The value 999 of 'sanic_resultado' on record of type 'sanic_carp_tbl_conversacion' is outside the valid range. Accepted Values: 159460001,159460002,159460003\r\n   at Microsoft.Crm.ObjectModel.EnumAttributeValidator.ValidateOptionValue(Entity entity, KeyValuePair`2 property, OptionSetValue optionValue, AttributeMetadata attributeMetadata, ExecutionContext platformContext)\r\n   at Microsoft.Crm.ObjectModel.PicklistAttributeValidator.Validate(Entity entity, KeyValuePair`2 property, AttributeMetadata attributeMetadata, ExecutionContext platformContext)\r\n   at Microsoft.Crm.ObjectModel.AttributeValidationPlugin.PerformValidation(Entity entity, EntityMetadata entityMetadata, ExecutionContext platformContext, Entity parentEntity)\r\n   at Microsoft.Crm.ObjectModel.AttributeValidationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000000e"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:15.9904283Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": 165,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147204326,
+              "ErrorCode_hex": "0x8004431A",
+              "Message": "A validation error occurred. The value 999 of 'sanic_resultado' on record of type 'sanic_carp_tbl_conversacion' is outside the valid range. Accepted Values: 159460001,159460002,159460003",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:15.9904283Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x8004431A"
+      },
+      {
+        "caso": "conv: Create con tipo equivocado (sanic_cantidadrespuestas = '5')",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Incorrect attribute value type System.String",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Incorrect attribute value type System.String"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220989,
+            "ErrorCode_hex": "0x80040203",
+            "Message": "Incorrect attribute value type System.String",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000010"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidArgument"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.TargetAttributeValidationPlugin"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: Incorrect attribute value type System.String ---> Microsoft.Crm.CrmArgumentException: Incorrect attribute value type System.String ---> System.ArgumentException: Incorrect attribute value type System.String\r\nParameter name: sanic_cantidadrespuestas\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.ObjectModel.IntegerAttributeValidator.Validate(Entity entity, KeyValuePair`2 property, AttributeMetadata attributeMetadata, ExecutionContext platformContext)\r\n   at Microsoft.Crm.ObjectModel.AttributeValidationPlugin.PerformValidation(Entity entity, EntityMetadata entityMetadata, ExecutionContext platformContext, Entity parentEntity)\r\n   at Microsoft.Crm.ObjectModel.AttributeValidationPlugin.Execute(IServiceProvider serviceProvider)\r\n   at Microsoft.Crm.Extensibility.V5PluginProxyStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000000e"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:16.2716797Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": 165,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220989,
+              "ErrorCode_hex": "0x80040203",
+              "Message": "Incorrect attribute value type System.String",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:16.2716797Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: Incorrect attribute value type System.String\r\nParameter name: sanic_cantidadrespuestas",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:29:16.2716797Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80040203"
+      },
+      {
+        "caso": "conv: Create con tabla de lookup equivocada (sanic_clienteid -> version)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Entity 'sanic_carp_tbl_cliente' With Id = 0fff0009-0000-4000-8000-000000000011 Does Not Exist",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Entity 'sanic_carp_tbl_cliente' With Id = 0fff0009-0000-4000-8000-000000000011 Does Not Exist"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220969,
+            "ErrorCode_hex": "0x80040217",
+            "Message": "Entity 'sanic_carp_tbl_cliente' With Id = 0fff0009-0000-4000-8000-000000000011 Does Not Exist",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000012"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "404"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "ObjectDoesNotExist"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.BusinessEntities.CrmObjectNotFoundException: Entity 'sanic_carp_tbl_cliente' With Id = 0fff0009-0000-4000-8000-000000000011 Does Not Exist ---> Microsoft.Crm.BusinessEntities.CrmObjectNotFoundException: Entity 'sanic_carp_tbl_cliente' With Id = 0fff0009-0000-4000-8000-000000000011 Does Not Exist\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.GetValuesFromDatabaseAbstract(String entityName, Guid entityId, Boolean allowNonUniqueRows, ArrayList attributes, ArrayList extraConditions, Boolean isRetrieveUnpublished, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.GetValuesFromDatabaseAbstract(String entityName, Guid entityId, Boolean allowNonUniqueRows, ArrayList attributes, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityAttributes..ctor(SecurityTraits traits, Guid objectId, Boolean allowNonUniqueRows, ArrayList attributes, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.GetSecurityAttributesForAppend(SecurityTraits traits, Guid objectId, ArrayList attributes, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.GetSecurityAttributes(BusinessEntity entity, AttributeMetadata attribute, ExtensionEventArgs e, Relationship& relationship, SecurityTraits& traits)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.CheckAppendAccess(BusinessEntity entity, ExtensionEventArgs e, Boolean setReferencedAttributesOnly)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateHandlerAppendAppendToPrivilegeCheck(SecurityTraits traits, SecurityAttributes attributes, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateSecurityCheck(Object sender, ExtensionEventArgs e, BusinessEntity entity)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreCreateEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass270_0.<Create>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000013"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:16.5372866Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220969,
+              "ErrorCode_hex": "0x80040217",
+              "Message": "Entity 'sanic_carp_tbl_cliente' With Id = 0fff0009-0000-4000-8000-000000000011 Does Not Exist",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:16.5372866Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040217"
+      },
+      {
+        "caso": "arr: Create con columna inexistente",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "'sanic_carp_tbl_arreglo' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive).",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 'sanic_carp_tbl_arreglo' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive)."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147217149,
+            "ErrorCode_hex": "0x80041103",
+            "Message": "'sanic_carp_tbl_arreglo' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive).",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000014"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "0"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "QueryBuilderNoAttribute"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Api/PrePipeline"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.Metadata.AttributeMetadataNotFoundException: 'sanic_carp_tbl_arreglo' entity doesn't contain attribute with Name = 'sanic_noexiste' and NameMapping = 'Logical' (look up attribute by name is case-sensitive).\r\n   at Microsoft.Crm.Sdk.PropertyFilter.Filter(Entity entity, String[] excluded, ExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.MessageProcessor.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.InternalMessageDispatcher.<>c__DisplayClass5_0.<Execute>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.Extensibility.ExternalMessageDispatcher.ExecuteInternal(IInProcessOrganizationServiceFactory serviceFactory, IPlatformMessageDispatcherFactory dispatcherFactory, Guid callerRegardingObjectId, Int32 invocationSource, Version endpointVersion, OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.DispatchRequest(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, SdkResponseDescription responseDescription, SdkPerformanceCounterContext sdkPerformanceCounterContext, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.ExecuteRequestRequestWithInstrumentationOperation(OrganizationRequest request, OrganizationInternalRequest organizationInternalRequest, IHttpContext httpContext)\r\n   at Microsoft.Crm.Extensibility.OrganizationSdkServiceInternal.<>c__DisplayClass27_0.<ExecuteRequest>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "00000000-0000-0000-0000-000000000000"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:16.9748352Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": null
+          }
+        },
+        "codigo": "0x80041103"
+      },
+      {
+        "caso": "arr: Create con par statecode/statuscode invalido (0,2)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "2 is not a valid status code for state code sanic_carp_tbl_arregloState.Active on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000015.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 2 is not a valid status code for state code sanic_carp_tbl_arregloState.Active on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000015."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "2 is not a valid status code for state code sanic_carp_tbl_arregloState.Active on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000015.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000016"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 2 is not a valid status code for state code sanic_carp_tbl_arregloState.Active on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000015. ---> Microsoft.Crm.CrmArgumentException: 2 is not a valid status code for state code sanic_carp_tbl_arregloState.Active on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000015. ---> System.ArgumentException: 2 is not a valid status code for state code sanic_carp_tbl_arregloState.Active on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000015.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForCreate(IBusinessEntity businessEntity)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass270_0.<Create>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000017"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:29:17.2248266Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "2 is not a valid status code for state code sanic_carp_tbl_arregloState.Active on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000015.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:29:17.2248266Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 2 is not a valid status code for state code sanic_carp_tbl_arregloState.Active on sanic_carp_tbl_arreglo with Id 0fff0009-0000-4000-8000-000000000015.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:29:17.2248266Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      }
+    ]
+  }
+}

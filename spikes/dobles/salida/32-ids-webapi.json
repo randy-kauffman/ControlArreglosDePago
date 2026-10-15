@@ -1,0 +1,45 @@
+{
+ "cabecera": {
+  "fuente": "Web API (POST sin id) + plugintracelogs",
+  "nota": "mismo usuario de aplicacion que la consola; la sonda anota Target.Id y PrimaryEntityId por etapa",
+  "nota_2": "El POST sin id devolvio HTTP 204 en la corrida; las trazas se releyeron con --solo-trazas porque tardaron mas que la espera de la primera lectura. La fila se borro (DELETE 204)."
+ },
+ "contenido": {
+  "post_status_http": 204,
+  "etapas": [
+   {
+    "paso": "ctx:Create.PostOperation.cliente",
+    "stage": "40",
+    "depth": "1",
+    "PrimaryEntityId_vacio": "False",
+    "Target_Id_vacio": "False",
+    "Target_Id_igual_a_PrimaryEntityId": "True",
+    "Target_tiene_atributo_id_primario": "True",
+    "OutputParameters_id": "presente_con_valor",
+    "IsInTransaction": "True"
+   },
+   {
+    "paso": "ctx:Create.PreOperation.cliente",
+    "stage": "20",
+    "depth": "1",
+    "PrimaryEntityId_vacio": "False",
+    "Target_Id_vacio": "False",
+    "Target_Id_igual_a_PrimaryEntityId": "True",
+    "Target_tiene_atributo_id_primario": "True",
+    "OutputParameters_id": "ausente",
+    "IsInTransaction": "True"
+   },
+   {
+    "paso": "ctx:Create.PreValidation.cliente",
+    "stage": "10",
+    "depth": "1",
+    "PrimaryEntityId_vacio": "False",
+    "Target_Id_vacio": "False",
+    "Target_Id_igual_a_PrimaryEntityId": "True",
+    "Target_tiene_atributo_id_primario": "False",
+    "OutputParameters_id": "ausente",
+    "IsInTransaction": "False"
+   }
+  ]
+ }
+}

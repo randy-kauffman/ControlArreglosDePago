@@ -1,0 +1,605 @@
+{
+  "cabecera": {
+    "fixture": "16-paginacion-cookie",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF- (conversaciones ZZF-d-*, Count=2, orden por sanic_huellamessageid asc)",
+    "notas": [
+      "Punto (10): PagingCookie de otra consulta, otra pagina, otra tabla o malformada. El limite de 50.000 filas de la paginacion simple NO SE MIDE (costo): NO MEDIDO.",
+      "'claves' son las filas devueltas por clave del spike en el orden en que llegaron."
+    ]
+  },
+  "contenido": {
+    "casos": [
+      {
+        "caso": "p1 (Count=2, orden por huella)",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 1,
+          "n": 2,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "1"
+        }
+      },
+      {
+        "caso": "p2 con la cookie de p1 (correcto)",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 2,
+          "n": 2,
+          "claves": [
+            "conv-Cc",
+            "conv-Cd"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "2"
+        }
+      },
+      {
+        "caso": "p2 SIN cookie (paginacion simple)",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 2,
+          "n": 2,
+          "claves": [
+            "conv-Cc",
+            "conv-Cd"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "2"
+        }
+      },
+      {
+        "caso": "p3 con la cookie de p2 (correcto)",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 3,
+          "n": 2,
+          "claves": [
+            "conv-Ce",
+            "conv-Cf"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "3"
+        }
+      },
+      {
+        "caso": "p3 con la cookie de p1 (cookie de OTRA pagina: se salta la 2)",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 3,
+          "n": 2,
+          "claves": [
+            "conv-Ce",
+            "conv-Cf"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "3"
+        }
+      },
+      {
+        "caso": "p2 con la cookie de p2 (la de la MISMA pagina pedida)",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 2,
+          "n": 2,
+          "claves": [
+            "conv-Cc",
+            "conv-Cd"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "2"
+        }
+      },
+      {
+        "caso": "p1 con la cookie de p2 (cookie de una pagina posterior)",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 1,
+          "n": 2,
+          "claves": [
+            "conv-Ca",
+            "conv-Cb"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "1"
+        }
+      },
+      {
+        "caso": "p1 de OTRA consulta (filtro 'ZZF-d-C', orden por sanic_asunto)",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 1,
+          "n": 2,
+          "claves": [
+            "conv-createdon",
+            "conv-Ca"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "1"
+        }
+      },
+      {
+        "caso": "p2 de la consulta principal con la cookie de OTRA consulta (otro filtro y otro orden)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Order by columns do not match those in paging cookie.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Order by columns do not match those in paging cookie."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147217111,
+            "ErrorCode_hex": "0x80041129",
+            "Message": "Order by columns do not match those in paging cookie.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000009c"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "QueryBuilderPagingOrderBy"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: Order by columns do not match those in paging cookie. ---> Microsoft.Crm.CrmException: Order by columns do not match those in paging cookie.\r\n   at Microsoft.Crm.BusinessEntities.PagingHelper._AddFiltering(OrderExpressionCollection orderCollection, FilterExpression filterExpression, Hashtable orderNameValuePairs, Boolean pageBack)\r\n   at Microsoft.Crm.BusinessEntities.PagingHelper.AddPagingFilters(EntityExpression entityExpression, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:15.3370866Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147217111,
+              "ErrorCode_hex": "0x80041129",
+              "Message": "Order by columns do not match those in paging cookie.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:15.3370866Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80041129"
+      },
+      {
+        "caso": "p1 de OTRA tabla (Cliente, orden por sanic_nombre)",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 1,
+          "n": 1,
+          "claves": [
+            "cli-B"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "1"
+        }
+      },
+      {
+        "caso": "p2 de Conversacion con la cookie de OTRA TABLA (Cliente)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_carp_tbl_clienteid' and NameMapping = 'Platform' (look up attribute by name is case-sensitive).orgIndex: 73, id: 0fff0009-0000-4000-8000-00000000009d, logicalName: sanic_carp_tbl_conversacion",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_carp_tbl_clienteid' and NameMapping = 'Platform' (look up attribute by name is case-sensitive).orgIndex: 73, id: 0fff0009-0000-4000-8000-00000000009d, logicalName: sanic_carp_tbl_conversacion"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147217149,
+            "ErrorCode_hex": "0x80041103",
+            "Message": "'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_carp_tbl_clienteid' and NameMapping = 'Platform' (look up attribute by name is case-sensitive).orgIndex: 73, id: 0fff0009-0000-4000-8000-00000000009d, logicalName: sanic_carp_tbl_conversacion",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000009e"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "QueryBuilderNoAttribute"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.Metadata.AttributeMetadataNotFoundException: 'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_carp_tbl_clienteid' and NameMapping = 'Platform' (look up attribute by name is case-sensitive).orgIndex: 73, id: 0fff0009-0000-4000-8000-00000000009d, logicalName: sanic_carp_tbl_conversacion ---> Microsoft.Crm.Metadata.AttributeMetadataNotFoundException: 'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_carp_tbl_clienteid' and NameMapping = 'Platform' (look up attribute by name is case-sensitive).orgIndex: 73, id: 0fff0009-0000-4000-8000-00000000009d, logicalName: sanic_carp_tbl_conversacion\r\n   at Microsoft.Crm.Metadata.EntityMetadata.GetAttribute(String attributeName, NameMappingType mapping)\r\n   at Microsoft.Crm.BusinessEntities.PagingHelper.Deserialize(String pagingCookie, EntityExpression entityExpression, Boolean isValuePagedAggregateCookie, ParentEntityCondition& parentEntityCondition)\r\n   at Microsoft.Crm.BusinessEntities.PagingHelper.AddPagingFilters(EntityExpression entityExpression, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:15.5089609Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147217149,
+              "ErrorCode_hex": "0x80041103",
+              "Message": "'sanic_carp_tbl_conversacion' entity doesn't contain attribute with Name = 'sanic_carp_tbl_clienteid' and NameMapping = 'Platform' (look up attribute by name is case-sensitive).orgIndex: 73, id: 0fff0009-0000-4000-8000-00000000009d, logicalName: sanic_carp_tbl_conversacion",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:15.5089609Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80041103"
+      },
+      {
+        "caso": "p2 con cookie basura 'xyz'",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Malformed XML in the Paging Cookie",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Malformed XML in the Paging Cookie"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220991,
+            "ErrorCode_hex": "0x80040201",
+            "Message": "Malformed XML in the Paging Cookie",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000009f"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidXml"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: Malformed XML in the Paging Cookie ---> Microsoft.Crm.CrmException: Malformed XML in the Paging Cookie\r\n   at Microsoft.Crm.BusinessEntities.PagingHelper.Deserialize(String pagingCookie, EntityExpression entityExpression, Boolean isValuePagedAggregateCookie, ParentEntityCondition& parentEntityCondition)\r\n   at Microsoft.Crm.BusinessEntities.PagingHelper.AddPagingFilters(EntityExpression entityExpression, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:15.5870855Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220991,
+              "ErrorCode_hex": "0x80040201",
+              "Message": "Malformed XML in the Paging Cookie",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:15.5870855Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040201"
+      },
+      {
+        "caso": "p2 con cookie XML minima '<cookie page=\"9\"/>'",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Paging Cookie And Query Do Not Match. The counts are not equal.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Paging Cookie And Query Do Not Match. The counts are not equal."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147217111,
+            "ErrorCode_hex": "0x80041129",
+            "Message": "Paging Cookie And Query Do Not Match. The counts are not equal.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-0000000000a0"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "QueryBuilderPagingOrderBy"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmException: Paging Cookie And Query Do Not Match. The counts are not equal. ---> Microsoft.Crm.CrmException: Paging Cookie And Query Do Not Match. The counts are not equal.\r\n   at Microsoft.Crm.BusinessEntities.PagingHelper._AddFiltering(OrderExpressionCollection orderCollection, FilterExpression filterExpression, Hashtable orderNameValuePairs, Boolean pageBack)\r\n   at Microsoft.Crm.BusinessEntities.PagingHelper.AddPagingFilters(EntityExpression entityExpression, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass613_0.<DoRetrieveMultiple>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000018"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:10:15.6652119Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147217111,
+              "ErrorCode_hex": "0x80041129",
+              "Message": "Paging Cookie And Query Do Not Match. The counts are not equal.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:10:15.6652119Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80041129"
+      },
+      {
+        "caso": "p2 con cookie vacia ''",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 2,
+          "n": 2,
+          "claves": [
+            "conv-Cc",
+            "conv-Cd"
+          ],
+          "MoreRecords": true,
+          "cookie_vacia": false,
+          "cookie_page_attr": "2"
+        }
+      },
+      {
+        "caso": "p2 con la cookie de p1 pero editada a page=\"1\" -> page=\"7\"",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 2,
+          "n": 0,
+          "claves": [],
+          "MoreRecords": false,
+          "cookie_vacia": true,
+          "cookie_page_attr": ""
+        }
+      },
+      {
+        "caso": "p40 (mas alla del final) sin cookie",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 40,
+          "n": 0,
+          "claves": [],
+          "MoreRecords": false,
+          "cookie_vacia": true,
+          "cookie_page_attr": ""
+        }
+      },
+      {
+        "caso": "p40 con la cookie de p1",
+        "resultado": "ok",
+        "valor": {
+          "pagina_pedida": 40,
+          "n": 0,
+          "claves": [],
+          "MoreRecords": false,
+          "cookie_vacia": true,
+          "cookie_page_attr": ""
+        }
+      }
+    ]
+  }
+}

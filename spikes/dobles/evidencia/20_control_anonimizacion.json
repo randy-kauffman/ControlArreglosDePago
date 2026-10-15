@@ -1,0 +1,59 @@
+{
+ "archivos_revisados": 19,
+ "correos_encontrados": 3,
+ "correos_con_dominio_distinto_de_example.com": 0,
+ "url_de_la_organizacion": 0,
+ "cualquier_crm.dynamics.com": 0,
+ "buzones_PP_MAIL_BUZON_1a4": 0,
+ "partes_locales_de_los_buzones": 0,
+ "dominio_del_tenant": 0,
+ "ids_tenant_y_aplicaciones": 0,
+ "guid_reales_por_categoria": {
+  "systemuser": 0,
+  "team": 0,
+  "businessunit": 0,
+  "queue": 0,
+  "organization": 0,
+  "usuarios_del_spike_y_system": 0,
+  "bu_team_org_de_la_linea_base": 0,
+  "mailbox_y_roles": 0
+ },
+ "cadenas_valor_revisadas": 15785,
+ "nombres_reales_por_categoria": {
+  "systemuser": {
+   "valores_comparados": 350,
+   "coincidencias": 0
+  },
+  "team": {
+   "valores_comparados": 1473,
+   "coincidencias": 0
+  },
+  "businessunit": {
+   "valores_comparados": 174,
+   "coincidencias": 0
+  },
+  "queue": {
+   "valores_comparados": 281,
+   "coincidencias": 0
+  },
+  "correos_usuarios_y_colas": {
+   "valores_comparados": 632,
+   "coincidencias": 0
+  },
+  "organizacion": {
+   "valores_comparados": 1,
+   "coincidencias": 0
+  }
+ },
+ "nombres_excluidos_por_ser_etiquetas_de_plataforma": [
+  "Microsoft",
+  "SYSTEM",
+  "for Outlook"
+ ],
+ "secretos_en_archivos_del_spike": {
+  "archivos_de_texto_revisados": 79,
+  "apariciones": 0
+ },
+ "total_hallazgos": 0,
+ "control_OK": true
+}

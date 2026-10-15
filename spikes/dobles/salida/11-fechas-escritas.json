@@ -1,0 +1,1594 @@
+{
+  "cabecera": {
+    "fixture": "11-fechas-escritas",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF- (Update de columnas de fecha de una Conversacion y un Arreglo)",
+    "notas": [
+      "Puntos (2) y (e). Cada caso: Update de la columna, Retrieve de la misma columna. 'enviado' y 'leido' llevan iso, Kind y ticks; 'delta' = leido - enviado en ticks (1 tick = 100 ns).",
+      "UL = fechahora usuario local (sanic_fechafinalizacion, sanic_fechacongelamiento); DO = solo fecha (sanic_fechafin). El proceso corre en America/Managua (UTC-6): Local != UTC, asi que el caso Local es discriminante.",
+      "El Kind de lo ESCRITO se mide con Update; un Create serializa la fecha igual (mismo DataContract) y no se repite para no consumir autonumerico."
+    ]
+  },
+  "contenido": {
+    "precision": [
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 13:45:30.789 (milisegundos)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.7890000Z",
+            "kind": "Utc",
+            "ticks": 639083151307890000
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": -7890000
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 13:45:30.1234567 (ticks, 7 digitos)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.1234567Z",
+            "kind": "Utc",
+            "ticks": 639083151301234567
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": -1234567
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 13:45:30.9999999 (redondeo hacia arriba?)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.9999999Z",
+            "kind": "Utc",
+            "ticks": 639083151309999999
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": -9999999
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 13:45:30.0000001 (1 tick)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000001Z",
+            "kind": "Utc",
+            "ticks": 639083151300000001
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": -1
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 13:45:59.500 (medio segundo)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:59.5000000Z",
+            "kind": "Utc",
+            "ticks": 639083151595000000
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151590000000
+          },
+          "delta_leido_menos_enviado_ticks": -5000000
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 23:59:59.999 (fin del dia)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:59:59.9990000Z",
+            "kind": "Utc",
+            "ticks": 639083519999990000
+          },
+          "leido": {
+            "iso": "2026-03-05T23:59:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083519990000000
+          },
+          "delta_leido_menos_enviado_ticks": -9990000
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 13:45:30.789 (milisegundos)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.7890000Z",
+            "kind": "Utc",
+            "ticks": 639083151307890000
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": -7890000
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 13:45:30.1234567 (ticks, 7 digitos)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.1234567Z",
+            "kind": "Utc",
+            "ticks": 639083151301234567
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": -1234567
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 13:45:30.9999999 (redondeo hacia arriba?)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.9999999Z",
+            "kind": "Utc",
+            "ticks": 639083151309999999
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": -9999999
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 13:45:30.0000001 (1 tick)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000001Z",
+            "kind": "Utc",
+            "ticks": 639083151300000001
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": -1
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 13:45:59.500 (medio segundo)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:59.5000000Z",
+            "kind": "Utc",
+            "ticks": 639083151595000000
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151590000000
+          },
+          "delta_leido_menos_enviado_ticks": -5000000
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 23:59:59.999 (fin del dia)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:59:59.9990000Z",
+            "kind": "Utc",
+            "ticks": 639083519999990000
+          },
+          "leido": {
+            "iso": "2026-03-05T23:59:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083519990000000
+          },
+          "delta_leido_menos_enviado_ticks": -9990000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 13:45:30.789 (milisegundos)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.7890000",
+            "kind": "Unspecified",
+            "ticks": 639083151307890000
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -495307890000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 13:45:30.1234567 (ticks, 7 digitos)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.1234567",
+            "kind": "Unspecified",
+            "ticks": 639083151301234567
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -495301234567
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 13:45:30.9999999 (redondeo hacia arriba?)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.9999999",
+            "kind": "Unspecified",
+            "ticks": 639083151309999999
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -495309999999
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 13:45:30.0000001 (1 tick)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000001",
+            "kind": "Unspecified",
+            "ticks": 639083151300000001
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -495300000001
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 13:45:59.500 (medio segundo)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:59.5000000",
+            "kind": "Unspecified",
+            "ticks": 639083151595000000
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -495595000000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 23:59:59.999 (fin del dia)",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:59:59.9990000",
+            "kind": "Unspecified",
+            "ticks": 639083519999990000
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -863999990000
+        }
+      }
+    ],
+    "rango": [
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: DateTime.MinValue (0001-01-01, Kind Utc)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220935,
+            "ErrorCode_hex": "0x80040239",
+            "Message": "DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000000b"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidDateTime"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Step/Microsoft.Crm.Extensibility.ImageRetrievalStep"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00 ---> System.ArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: userTime\r\nActual value was 1/1/0001 12:00:00 AM.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.ValidateDateTime(String parameterName, DateTime dateTime, Behavior behavior)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.Initialize(DateTime userTime, DateTime universalTime, Behavior dateTimeBehavior)\r\n   at Microsoft.Crm.BusinessEntities.DynamicCrmDateTimeBuilder.GetConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.DynamicCrmDateTimeBuilder.ConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTimePropertyConverter.InternalFromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.<>c__DisplayClass7_0.<FromEntity>b__0()\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.InternalConvertFrom[T](Guid orgId, AttributeMetadata attributeMetadata, Object value, Func`1 converterFunction)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.FromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.EntityToDynamicEntityConverter.Convert(ICrmConversionContext conversionContext, Entity entity)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.PropertyBagConverter.ConvertToPropertyBag[T](ICrmConversionContext context, IEnumerable`1 collection, Dictionary`2 conversionMap)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.ConvertParameterCollectionToPropertyBag(PipelineExecutionContext context, ParameterCollection parameterCollection)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.get_InputParameters()\r\n   at Microsoft.Crm.HasDuplicatesPlugin.GetImages(IIsolatablePluginExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.GetImages(PipelineExecutionContext context, Object pluginDefinition)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.MergeEntityRequests(PipelineExecutionContext context, Dictionary`2 entityRequests, Boolean isBulkImageOptimizationEnabled)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.<>c__DisplayClass8_0.<Execute>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000036"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:31.7175088Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220970,
+              "ErrorCode_hex": "0x80040216",
+              "Message": "System.ArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: userTime\r\nActual value was 1/1/0001 12:00:00 AM.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:31.7175088Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040239"
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 1752-12-31",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220935,
+            "ErrorCode_hex": "0x80040239",
+            "Message": "DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000037"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidDateTime"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Step/Microsoft.Crm.Extensibility.ImageRetrievalStep"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00 ---> System.ArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: userTime\r\nActual value was 12/31/1752 12:00:00 AM.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.ValidateDateTime(String parameterName, DateTime dateTime, Behavior behavior)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.Initialize(DateTime userTime, DateTime universalTime, Behavior dateTimeBehavior)\r\n   at Microsoft.Crm.BusinessEntities.DynamicCrmDateTimeBuilder.GetConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.DynamicCrmDateTimeBuilder.ConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTimePropertyConverter.InternalFromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.<>c__DisplayClass7_0.<FromEntity>b__0()\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.InternalConvertFrom[T](Guid orgId, AttributeMetadata attributeMetadata, Object value, Func`1 converterFunction)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.FromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.EntityToDynamicEntityConverter.Convert(ICrmConversionContext conversionContext, Entity entity)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.PropertyBagConverter.ConvertToPropertyBag[T](ICrmConversionContext context, IEnumerable`1 collection, Dictionary`2 conversionMap)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.ConvertParameterCollectionToPropertyBag(PipelineExecutionContext context, ParameterCollection parameterCollection)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.get_InputParameters()\r\n   at Microsoft.Crm.HasDuplicatesPlugin.GetImages(IIsolatablePluginExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.GetImages(PipelineExecutionContext context, Object pluginDefinition)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.MergeEntityRequests(PipelineExecutionContext context, Dictionary`2 entityRequests, Boolean isBulkImageOptimizationEnabled)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.<>c__DisplayClass8_0.<Execute>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000036"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:31.8425132Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220970,
+              "ErrorCode_hex": "0x80040216",
+              "Message": "System.ArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: userTime\r\nActual value was 12/31/1752 12:00:00 AM.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:31.8425132Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040239"
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 1753-01-01",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1753-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 552877920000000000
+          },
+          "leido": {
+            "iso": "1753-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 552877920000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 1753-01-01 00:00:00.001",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1753-01-01T00:00:00.0010000Z",
+            "kind": "Utc",
+            "ticks": 552877920000010000
+          },
+          "leido": {
+            "iso": "1753-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 552877920000000000
+          },
+          "delta_leido_menos_enviado_ticks": -10000
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 1899-12-31",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1899-12-31T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 599265216000000000
+          },
+          "leido": {
+            "iso": "1899-12-31T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 599265216000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 1900-01-01",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1900-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 599266080000000000
+          },
+          "leido": {
+            "iso": "1900-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 599266080000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 9999-12-31 00:00:00",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "9999-12-31T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378112000000000
+          },
+          "leido": {
+            "iso": "9999-12-31T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378112000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 9999-12-31 23:59:59",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "9999-12-31T23:59:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378975990000000
+          },
+          "leido": {
+            "iso": "9999-12-31T23:59:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378975990000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: DateTime.MaxValue",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "9999-12-31T23:59:59.9999999Z",
+            "kind": "Utc",
+            "ticks": 3155378975999999999
+          },
+          "leido": {
+            "iso": "9999-12-31T23:59:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378975990000000
+          },
+          "delta_leido_menos_enviado_ticks": -9999999
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: DateTime.MinValue (0001-01-01, Kind Utc)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220935,
+            "ErrorCode_hex": "0x80040239",
+            "Message": "DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000038"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidDateTime"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Step/Microsoft.Crm.Extensibility.ImageRetrievalStep"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00 ---> System.ArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: userTime\r\nActual value was 1/1/0001 12:00:00 AM.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.ValidateDateTime(String parameterName, DateTime dateTime, Behavior behavior)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.Initialize(DateTime userTime, DateTime universalTime, Behavior dateTimeBehavior)\r\n   at Microsoft.Crm.BusinessEntities.DynamicCrmDateTimeBuilder.GetConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.DynamicCrmDateTimeBuilder.ConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTimePropertyConverter.InternalFromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.<>c__DisplayClass7_0.<FromEntity>b__0()\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.InternalConvertFrom[T](Guid orgId, AttributeMetadata attributeMetadata, Object value, Func`1 converterFunction)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.FromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.EntityToDynamicEntityConverter.Convert(ICrmConversionContext conversionContext, Entity entity)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.PropertyBagConverter.ConvertToPropertyBag[T](ICrmConversionContext context, IEnumerable`1 collection, Dictionary`2 conversionMap)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.ConvertParameterCollectionToPropertyBag(PipelineExecutionContext context, ParameterCollection parameterCollection)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.get_InputParameters()\r\n   at Microsoft.Crm.HasDuplicatesPlugin.GetImages(IIsolatablePluginExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.GetImages(PipelineExecutionContext context, Object pluginDefinition)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.MergeEntityRequests(PipelineExecutionContext context, Dictionary`2 entityRequests, Boolean isBulkImageOptimizationEnabled)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.<>c__DisplayClass8_0.<Execute>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000036"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:35.5305627Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220970,
+              "ErrorCode_hex": "0x80040216",
+              "Message": "System.ArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: userTime\r\nActual value was 1/1/0001 12:00:00 AM.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:35.5305627Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040239"
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 1752-12-31",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220935,
+            "ErrorCode_hex": "0x80040239",
+            "Message": "DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000039"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidDateTime"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Step/Microsoft.Crm.Extensibility.ImageRetrievalStep"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00 ---> System.ArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: userTime\r\nActual value was 12/31/1752 12:00:00 AM.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.ValidateDateTime(String parameterName, DateTime dateTime, Behavior behavior)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.Initialize(DateTime userTime, DateTime universalTime, Behavior dateTimeBehavior)\r\n   at Microsoft.Crm.BusinessEntities.DynamicCrmDateTimeBuilder.GetConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.DynamicCrmDateTimeBuilder.ConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTimePropertyConverter.InternalFromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.<>c__DisplayClass7_0.<FromEntity>b__0()\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.InternalConvertFrom[T](Guid orgId, AttributeMetadata attributeMetadata, Object value, Func`1 converterFunction)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.FromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.EntityToDynamicEntityConverter.Convert(ICrmConversionContext conversionContext, Entity entity)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.PropertyBagConverter.ConvertToPropertyBag[T](ICrmConversionContext context, IEnumerable`1 collection, Dictionary`2 conversionMap)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.ConvertParameterCollectionToPropertyBag(PipelineExecutionContext context, ParameterCollection parameterCollection)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.get_InputParameters()\r\n   at Microsoft.Crm.HasDuplicatesPlugin.GetImages(IIsolatablePluginExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.GetImages(PipelineExecutionContext context, Object pluginDefinition)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.MergeEntityRequests(PipelineExecutionContext context, Dictionary`2 entityRequests, Boolean isBulkImageOptimizationEnabled)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.<>c__DisplayClass8_0.<Execute>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000036"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:35.6086949Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220970,
+              "ErrorCode_hex": "0x80040216",
+              "Message": "System.ArgumentOutOfRangeException: DateTime is less than minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: userTime\r\nActual value was 12/31/1752 12:00:00 AM.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:35.6086949Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040239"
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 1753-01-01",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1753-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 552877920000000000
+          },
+          "leido": {
+            "iso": "1753-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 552877920000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 1753-01-01 00:00:00.001",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1753-01-01T00:00:00.0010000Z",
+            "kind": "Utc",
+            "ticks": 552877920000010000
+          },
+          "leido": {
+            "iso": "1753-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 552877920000000000
+          },
+          "delta_leido_menos_enviado_ticks": -10000
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 1899-12-31",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1899-12-31T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 599265216000000000
+          },
+          "leido": {
+            "iso": "1899-12-31T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 599265216000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 1900-01-01",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1900-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 599266080000000000
+          },
+          "leido": {
+            "iso": "1900-01-01T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 599266080000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 9999-12-31 00:00:00",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "9999-12-31T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378112000000000
+          },
+          "leido": {
+            "iso": "9999-12-31T00:00:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378112000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 9999-12-31 23:59:59",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "9999-12-31T23:59:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378975990000000
+          },
+          "leido": {
+            "iso": "9999-12-31T23:59:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378975990000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: DateTime.MaxValue",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "9999-12-31T23:59:59.9999999Z",
+            "kind": "Utc",
+            "ticks": 3155378975999999999
+          },
+          "leido": {
+            "iso": "9999-12-31T23:59:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 3155378975990000000
+          },
+          "delta_leido_menos_enviado_ticks": -9999999
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: DateTime.MinValue (0001-01-01, Kind Unspecified)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Date is less than the minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Date is less than the minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220935,
+            "ErrorCode_hex": "0x80040239",
+            "Message": "Date is less than the minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000003a"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidDateTime"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Step/Microsoft.Crm.Extensibility.ImageRetrievalStep"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentOutOfRangeException: Date is less than the minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00 ---> System.ArgumentOutOfRangeException: Date is less than the minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: dateOnly\r\nActual value was 1/1/0001 12:00:00 AM.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.ValidateDate(DateTime dateTime)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.ValidateDateTime(String parameterName, DateTime dateTime, Behavior behavior)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.Initialize(Style style, DateTime dateTime, Behavior dateTimeBehavior)\r\n   at Microsoft.Crm.BusinessEntities.DateOnlyCrmDateTimeBuilder.GetConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.DateOnlyCrmDateTimeBuilder.ConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTimePropertyConverter.InternalFromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.<>c__DisplayClass7_0.<FromEntity>b__0()\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.InternalConvertFrom[T](Guid orgId, AttributeMetadata attributeMetadata, Object value, Func`1 converterFunction)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.FromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.EntityToDynamicEntityConverter.Convert(ICrmConversionContext conversionContext, Entity entity)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.PropertyBagConverter.ConvertToPropertyBag[T](ICrmConversionContext context, IEnumerable`1 collection, Dictionary`2 conversionMap)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.ConvertParameterCollectionToPropertyBag(PipelineExecutionContext context, ParameterCollection parameterCollection)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.get_InputParameters()\r\n   at Microsoft.Crm.HasDuplicatesPlugin.GetImages(IIsolatablePluginExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.GetImages(PipelineExecutionContext context, Object pluginDefinition)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.MergeEntityRequests(PipelineExecutionContext context, Dictionary`2 entityRequests, Boolean isBulkImageOptimizationEnabled)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.<>c__DisplayClass8_0.<Execute>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000036"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:39.0462997Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220970,
+              "ErrorCode_hex": "0x80040216",
+              "Message": "System.ArgumentOutOfRangeException: Date is less than the minumum value supported by CrmDateTime. Actual value: 01/01/0001 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: dateOnly\r\nActual value was 1/1/0001 12:00:00 AM.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:39.0462997Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040239"
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 1752-12-31",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "Date is less than the minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) Date is less than the minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00"
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147220935,
+            "ErrorCode_hex": "0x80040239",
+            "Message": "Date is less than the minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000003b"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidDateTime"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Step/Microsoft.Crm.Extensibility.ImageRetrievalStep"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentOutOfRangeException: Date is less than the minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00 ---> System.ArgumentOutOfRangeException: Date is less than the minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: dateOnly\r\nActual value was 12/31/1752 12:00:00 AM.\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.ValidateDate(DateTime dateTime)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.ValidateDateTime(String parameterName, DateTime dateTime, Behavior behavior)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTime.Initialize(Style style, DateTime dateTime, Behavior dateTimeBehavior)\r\n   at Microsoft.Crm.BusinessEntities.DateOnlyCrmDateTimeBuilder.GetConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.DateOnlyCrmDateTimeBuilder.ConvertToCrmDateTime(DateTime dateTime, IUserAndOrganizationContext userAndOrganizationContext, DateTimeToCrmDateTimeConversionStrategy strategy, TimeZone userTimeZone)\r\n   at Microsoft.Crm.BusinessEntities.CrmDateTimePropertyConverter.InternalFromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.<>c__DisplayClass7_0.<FromEntity>b__0()\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.InternalConvertFrom[T](Guid orgId, AttributeMetadata attributeMetadata, Object value, Func`1 converterFunction)\r\n   at Microsoft.Crm.BusinessEntities.PropertyConverterBase.FromEntity(ICrmConversionContext conversionContext, AttributeMetadata attributeMetadata, Object value, String formattedValue)\r\n   at Microsoft.Crm.BusinessEntities.EntityToDynamicEntityConverter.Convert(ICrmConversionContext conversionContext, Entity entity)\r\n   at Microsoft.Crm.BusinessEntities.ConversionHelpers.Convert(ICrmConversionContext conversionContext, Object source, Type destinationType)\r\n   at Microsoft.Crm.Extensibility.PropertyBagConverter.ConvertToPropertyBag[T](ICrmConversionContext context, IEnumerable`1 collection, Dictionary`2 conversionMap)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.ConvertParameterCollectionToPropertyBag(PipelineExecutionContext context, ParameterCollection parameterCollection)\r\n   at Microsoft.Crm.Extensibility.ProxyPluginExecutionContext.get_InputParameters()\r\n   at Microsoft.Crm.HasDuplicatesPlugin.GetImages(IIsolatablePluginExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.GetImages(PipelineExecutionContext context, Object pluginDefinition)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.MergeEntityRequests(PipelineExecutionContext context, Dictionary`2 entityRequests, Boolean isBulkImageOptimizationEnabled)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.ExecuteInternal(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.ImageRetrievalStep.<>c__DisplayClass8_0.<Execute>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000036"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:39.1244315Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147220970,
+              "ErrorCode_hex": "0x80040216",
+              "Message": "System.ArgumentOutOfRangeException: Date is less than the minumum value supported by CrmDateTime. Actual value: 12/31/1752 00:00:00, Minimum value supported: 01/01/1753 00:00:00\r\nParameter name: dateOnly\r\nActual value was 12/31/1752 12:00:00 AM.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:39.1244315Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": null
+            }
+          }
+        },
+        "codigo": "0x80040239"
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 1753-01-01",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1753-01-01T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 552877920000000000
+          },
+          "leido": {
+            "iso": "1753-01-01T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 552877920000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 1753-01-01 00:00:00.001",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1753-01-01T00:00:00.0010000",
+            "kind": "Unspecified",
+            "ticks": 552877920000010000
+          },
+          "leido": {
+            "iso": "1753-01-01T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 552877920000000000
+          },
+          "delta_leido_menos_enviado_ticks": -10000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 1899-12-31",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1899-12-31T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 599265216000000000
+          },
+          "leido": {
+            "iso": "1899-12-31T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 599265216000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 1900-01-01",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "1900-01-01T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 599266080000000000
+          },
+          "leido": {
+            "iso": "1900-01-01T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 599266080000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 9999-12-31 00:00:00",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "9999-12-31T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 3155378112000000000
+          },
+          "leido": {
+            "iso": "9999-12-31T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 3155378112000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 9999-12-31 23:59:59",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "9999-12-31T23:59:59.0000000",
+            "kind": "Unspecified",
+            "ticks": 3155378975990000000
+          },
+          "leido": {
+            "iso": "9999-12-31T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 3155378112000000000
+          },
+          "delta_leido_menos_enviado_ticks": -863990000000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: DateTime.MaxValue",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "9999-12-31T23:59:59.9999999",
+            "kind": "Unspecified",
+            "ticks": 3155378975999999999
+          },
+          "leido": {
+            "iso": "9999-12-31T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 3155378112000000000
+          },
+          "delta_leido_menos_enviado_ticks": -863999999999
+        }
+      }
+    ],
+    "kind_escrito_e": [
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 13:45:30 Kind=Local",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000000-06:00",
+            "kind": "Local",
+            "ticks": 639083151300000000
+          },
+          "leido": {
+            "iso": "2026-03-05T19:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083367300000000
+          },
+          "delta_leido_menos_enviado_ticks": 216000000000
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 13:45:30 Kind=Unspecified",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000000",
+            "kind": "Unspecified",
+            "ticks": 639083151300000000
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 13:45:30 Kind=Utc",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 23:30:00 Kind=Local",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:30:00.0000000-06:00",
+            "kind": "Local",
+            "ticks": 639083502000000000
+          },
+          "leido": {
+            "iso": "2026-03-06T05:30:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083718000000000
+          },
+          "delta_leido_menos_enviado_ticks": 216000000000
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 23:30:00 Kind=Unspecified",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:30:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639083502000000000
+          },
+          "leido": {
+            "iso": "2026-03-05T23:30:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083502000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL conversacion sanic_fechafinalizacion: 23:30:00 Kind=Utc",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:30:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083502000000000
+          },
+          "leido": {
+            "iso": "2026-03-05T23:30:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083502000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 13:45:30 Kind=Local",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000000-06:00",
+            "kind": "Local",
+            "ticks": 639083151300000000
+          },
+          "leido": {
+            "iso": "2026-03-05T19:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083367300000000
+          },
+          "delta_leido_menos_enviado_ticks": 216000000000
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 13:45:30 Kind=Unspecified",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000000",
+            "kind": "Unspecified",
+            "ticks": 639083151300000000
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 13:45:30 Kind=Utc",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "leido": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 23:30:00 Kind=Local",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:30:00.0000000-06:00",
+            "kind": "Local",
+            "ticks": 639083502000000000
+          },
+          "leido": {
+            "iso": "2026-03-06T05:30:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083718000000000
+          },
+          "delta_leido_menos_enviado_ticks": 216000000000
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 23:30:00 Kind=Unspecified",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:30:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639083502000000000
+          },
+          "leido": {
+            "iso": "2026-03-05T23:30:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083502000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "UL arreglo sanic_fechacongelamiento: 23:30:00 Kind=Utc",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:30:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083502000000000
+          },
+          "leido": {
+            "iso": "2026-03-05T23:30:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083502000000000
+          },
+          "delta_leido_menos_enviado_ticks": 0
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 13:45:30 Kind=Local",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000000-06:00",
+            "kind": "Local",
+            "ticks": 639083151300000000
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -495300000000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 13:45:30 Kind=Unspecified",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000000",
+            "kind": "Unspecified",
+            "ticks": 639083151300000000
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -495300000000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 13:45:30 Kind=Utc",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T13:45:30.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083151300000000
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -495300000000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 23:30:00 Kind=Local",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:30:00.0000000-06:00",
+            "kind": "Local",
+            "ticks": 639083502000000000
+          },
+          "leido": {
+            "iso": "2026-03-06T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639083520000000000
+          },
+          "delta_leido_menos_enviado_ticks": 18000000000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 23:30:00 Kind=Unspecified",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:30:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639083502000000000
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -846000000000
+        }
+      },
+      {
+        "caso": "DO arreglo sanic_fechafin: 23:30:00 Kind=Utc",
+        "resultado": "ok",
+        "valor": {
+          "enviado": {
+            "iso": "2026-03-05T23:30:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639083502000000000
+          },
+          "leido": {
+            "iso": "2026-03-05T00:00:00.0000000",
+            "kind": "Unspecified",
+            "ticks": 639082656000000000
+          },
+          "delta_leido_menos_enviado_ticks": -846000000000
+        }
+      }
+    ]
+  }
+}

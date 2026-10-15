@@ -1,0 +1,1772 @@
+{
+  "cabecera": {
+    "fixture": "14-email",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF- (correos sin partes from/to: ninguno tiene destinatarios, NINGUNO se envio, no se uso SendEmail)",
+    "notas": [
+      "Puntos (7) y (8). Sin ninguna direccion en el repo ni en el correo: los correos no llevan activityparty.",
+      "NO MEDIDO por riesgo de envio: statuscode 6 (Pending Send) y 7 (Sending), los estados que toma un correo al enviarse.",
+      "senton se compara con modifiedon (mismo instante del servidor?) y con el reloj del cliente antes y despues del Update."
+    ]
+  },
+  "contenido": {
+    "punto_7_statuscode_por_defecto": [
+      {
+        "caso": "Create sin estado",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:09:50.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233900000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:09:50.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233900000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "Create con SOLO statecode=0",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:09:50.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233900000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:09:50.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233900000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "Create con SOLO statecode=1",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:09:50.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233900000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:09:50.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233900000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "Create con SOLO statecode=2",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:09:50.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233900000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:09:50.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233900000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "E1: Update con SOLO statecode=0",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 0,
+            "statuscode": null
+          },
+          "despues": {
+            "statecode": 0,
+            "statuscode": 1
+          }
+        }
+      },
+      {
+        "caso": "E1: Update con SOLO statecode=1",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 1,
+            "statuscode": null
+          },
+          "despues": {
+            "statecode": 1,
+            "statuscode": 2
+          }
+        }
+      },
+      {
+        "caso": "E1: Update con SOLO statecode=2",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 1,
+            "statuscode": 2
+          },
+          "enviado": {
+            "statecode": 2,
+            "statuscode": null
+          },
+          "despues": {
+            "statecode": 2,
+            "statuscode": 5
+          }
+        }
+      },
+      {
+        "caso": "E1: Update con SOLO statecode=0",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 2,
+            "statuscode": 5
+          },
+          "enviado": {
+            "statecode": 0,
+            "statuscode": null
+          },
+          "despues": {
+            "statecode": 0,
+            "statuscode": 1
+          }
+        }
+      },
+      {
+        "caso": "E1: Update con SOLO statecode=2",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 2,
+            "statuscode": null
+          },
+          "despues": {
+            "statecode": 2,
+            "statuscode": 5
+          }
+        }
+      },
+      {
+        "caso": "E1: Update con SOLO statecode=1",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 2,
+            "statuscode": 5
+          },
+          "enviado": {
+            "statecode": 1,
+            "statuscode": null
+          },
+          "despues": {
+            "statecode": 1,
+            "statuscode": 2
+          }
+        }
+      }
+    ],
+    "punto_7_pares": [
+      {
+        "caso": "par (0,1) sobre un correo nacido en (0,1)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "despues": {
+            "statecode": 0,
+            "statuscode": 1
+          }
+        }
+      },
+      {
+        "caso": "par (0,2) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "2 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-000000000058.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 2 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-000000000058."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "2 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-000000000058.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000059"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 2 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-000000000058. ---> Microsoft.Crm.CrmArgumentException: 2 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-000000000058. ---> System.ArgumentException: 2 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-000000000058.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:54.0373913Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "2 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-000000000058.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:54.0373913Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 2 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-000000000058.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:54.0373913Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "par (0,3) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "3 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005b.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 3 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005b."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "3 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005b.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005c"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 3 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005b. ---> Microsoft.Crm.CrmArgumentException: 3 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005b. ---> System.ArgumentException: 3 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005b.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:54.3186431Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "3 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005b.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:54.3186431Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 3 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005b.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:54.3186431Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "par (0,4) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "4 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005d.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 4 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005d."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "4 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005d.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005e"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 4 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005d. ---> Microsoft.Crm.CrmArgumentException: 4 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005d. ---> System.ArgumentException: 4 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005d.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:54.5842685Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "4 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005d.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:54.5842685Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 4 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005d.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:54.5842685Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "par (0,5) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "5 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005f.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 5 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005f."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "5 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005f.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000051"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 5 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005f. ---> Microsoft.Crm.CrmArgumentException: 5 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005f. ---> System.ArgumentException: 5 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005f.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:54.8498919Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "5 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005f.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:54.8498919Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 5 is not a valid status code for state code EmailState.Open on email with Id 0fff0009-0000-4000-8000-00000000005f.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:54.8498919Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "par (0,8) sobre un correo nacido en (0,1)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 0,
+            "statuscode": 8
+          },
+          "despues": {
+            "statecode": 0,
+            "statuscode": 8
+          }
+        }
+      },
+      {
+        "caso": "par (1,1) sobre un correo nacido en (0,1)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 1,
+            "statuscode": 1
+          },
+          "despues": {
+            "statecode": 1,
+            "statuscode": 2
+          }
+        }
+      },
+      {
+        "caso": "par (1,2) sobre un correo nacido en (0,1)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 1,
+            "statuscode": 2
+          },
+          "despues": {
+            "statecode": 1,
+            "statuscode": 2
+          }
+        }
+      },
+      {
+        "caso": "par (1,3) sobre un correo nacido en (0,1)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 1,
+            "statuscode": 3
+          },
+          "despues": {
+            "statecode": 1,
+            "statuscode": 3
+          }
+        }
+      },
+      {
+        "caso": "par (1,4) sobre un correo nacido en (0,1)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 1,
+            "statuscode": 4
+          },
+          "despues": {
+            "statecode": 1,
+            "statuscode": 4
+          }
+        }
+      },
+      {
+        "caso": "par (1,5) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "5 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000060.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 5 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000060."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "5 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000060.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000061"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 5 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000060. ---> Microsoft.Crm.CrmArgumentException: 5 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000060. ---> System.ArgumentException: 5 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000060.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:57.1937451Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "5 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000060.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:57.1937451Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 5 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000060.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:57.1937451Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "par (1,8) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "8 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000062.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 8 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000062."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "8 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000062.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000063"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 8 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000062. ---> Microsoft.Crm.CrmArgumentException: 8 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000062. ---> System.ArgumentException: 8 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000062.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:57.5531201Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "8 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000062.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:57.5531201Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 8 is not a valid status code for state code EmailState.Completed on email with Id 0fff0009-0000-4000-8000-000000000062.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:57.5531201Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "par (2,1) sobre un correo nacido en (0,1)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 2,
+            "statuscode": 1
+          },
+          "despues": {
+            "statecode": 2,
+            "statuscode": 5
+          }
+        }
+      },
+      {
+        "caso": "par (2,2) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "2 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000064.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 2 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000064."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "2 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000064.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000065"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 2 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000064. ---> Microsoft.Crm.CrmArgumentException: 2 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000064. ---> System.ArgumentException: 2 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000064.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:58.5532424Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "2 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000064.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:58.5532424Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 2 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000064.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:58.5532424Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "par (2,3) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "3 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000066.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 3 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000066."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "3 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000066.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000067"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 3 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000066. ---> Microsoft.Crm.CrmArgumentException: 3 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000066. ---> System.ArgumentException: 3 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000066.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:58.9126175Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "3 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000066.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:58.9126175Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 3 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000066.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:58.9126175Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "par (2,4) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "4 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000068.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 4 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000068."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "4 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000068.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-000000000069"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 4 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000068. ---> Microsoft.Crm.CrmArgumentException: 4 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000068. ---> System.ArgumentException: 4 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000068.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:59.1782378Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "4 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000068.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:59.1782378Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 4 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-000000000068.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:59.1782378Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      },
+      {
+        "caso": "par (2,5) sobre un correo nacido en (0,1)",
+        "resultado": "ok",
+        "valor": {
+          "antes": {
+            "statecode": 0,
+            "statuscode": 1
+          },
+          "enviado": {
+            "statecode": 2,
+            "statuscode": 5
+          },
+          "despues": {
+            "statecode": 2,
+            "statuscode": 5
+          }
+        }
+      },
+      {
+        "caso": "par (2,8) sobre un correo nacido en (0,1)",
+        "resultado": "falla",
+        "falla": {
+          "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+          "cadena_de_tipos": [
+            "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+          ],
+          "cadena": [
+            {
+              "orden": 0,
+              "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "mensaje": "8 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-00000000006a.",
+              "HResult": -2146233088,
+              "propiedades_propias": {
+                "Action": null,
+                "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                "Reason": "(System.ServiceModel.FaultReason) 8 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-00000000006a."
+              }
+            }
+          ],
+          "el_exterior_es_FaultException_OrganizationServiceFault": true,
+          "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+          "fault": {
+            "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+            "ErrorCode_decimal": -2147187704,
+            "ErrorCode_hex": "0x80048408",
+            "Message": "8 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-00000000006a.",
+            "ErrorDetails": {
+              "ApiActivityIdKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000006b"
+              },
+              "ApiDepthKey": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "1"
+              },
+              "ApiExceptionCategory": {
+                "tipo_del_valor": "System.String",
+                "valor": "ClientError"
+              },
+              "ApiExceptionHttpStatusCode": {
+                "tipo_del_valor": "System.Int32",
+                "valor": "400"
+              },
+              "ApiExceptionMessageName": {
+                "tipo_del_valor": "System.String",
+                "valor": "InvalidStateCodeStatusCode"
+              },
+              "ApiExceptionOwnerKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+              },
+              "ApiExceptionSourceKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Plugin/Microsoft.Crm.Common.ObjectModel.EmailService"
+              },
+              "ApiOriginalExceptionKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "Microsoft.Crm.CrmArgumentException: 8 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-00000000006a. ---> Microsoft.Crm.CrmArgumentException: 8 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-00000000006a. ---> System.ArgumentException: 8 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-00000000006a.\r\nParameter name: statusCode\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.Validate(EntityMetadata entityMetadata, Int32 stateCode, Int32 statusCode, Guid businessEntityId)\r\n   at Microsoft.Crm.BusinessEntities.StatusCodeValidator.ValidateForUpdate(IBusinessEntity businessEntity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.ObjectModel.GenericActivityServiceBase.UpdateInternalCore(GenericActivity entity, ExecutionContext context)\r\n   at Microsoft.Crm.ObjectModel.CommunicationActivityServiceBase.Update(IBusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.Common.ObjectModel.EmailService.Update(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+              },
+              "ApiPluginSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              },
+              "ApiSourceActivityKey": {
+                "tipo_del_valor": "System.String",
+                "valor": ""
+              },
+              "ApiStepKey": {
+                "tipo_del_valor": "System.Guid",
+                "valor": "0fff0009-0000-4000-8000-00000000005a"
+              },
+              "ApiStepSolutionNameKey": {
+                "tipo_del_valor": "System.String",
+                "valor": "System"
+              }
+            },
+            "Timestamp": {
+              "iso": "2026-10-15T01:09:59.8501144Z",
+              "kind": "Utc"
+            },
+            "TraceText_longitud": null,
+            "InnerFault": {
+              "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+              "ErrorCode_decimal": -2147187704,
+              "ErrorCode_hex": "0x80048408",
+              "Message": "8 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-00000000006a.",
+              "ErrorDetails": {},
+              "Timestamp": {
+                "iso": "2026-10-15T01:09:59.8501144Z",
+                "kind": "Utc"
+              },
+              "TraceText_longitud": null,
+              "InnerFault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220970,
+                "ErrorCode_hex": "0x80040216",
+                "Message": "System.ArgumentException: 8 is not a valid status code for state code EmailState.Canceled on email with Id 0fff0009-0000-4000-8000-00000000006a.\r\nParameter name: statusCode",
+                "ErrorDetails": {},
+                "Timestamp": {
+                  "iso": "2026-10-15T01:09:59.8501144Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": null
+              }
+            }
+          }
+        },
+        "codigo": "0x80048408"
+      }
+    ],
+    "punto_8_senton_e_inreplyto": [
+      {
+        "caso": "Create entrante con inreplyto (nace 0/1)",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:09:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233990000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:09:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233990000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "Create saliente con inreplyto (nace 0/1)",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234000000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:10:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234000000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": true
+        }
+      },
+      {
+        "caso": "Create entrante con inreplyto SIN corchetes angulares ('zzf-d-padre-plano')",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234000000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:10:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234000000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "Create entrante con inreplyto, directioncode=false, SIN messageid",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234000000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:10:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234000000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "I1: Update posterior de inreplyto (correo abierto 0/1)",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234000000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:09:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233990000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "I1: Update de inreplyto junto con el cambio a Received (1/4)",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 1,
+          "statuscode": 4,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:01.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234010000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:09:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233990000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "I1 (ya 1/4 completado): Update posterior de inreplyto",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 1,
+          "statuscode": 4,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:01.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234010000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:09:59.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276233990000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      },
+      {
+        "caso": "I2 (saliente, abierto): Update de inreplyto",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:01.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234010000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:10:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234000000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": true
+        }
+      },
+      {
+        "caso": "I2: Update de inreplyto a null y luego a otro valor (el valor no se guarda; nada que borrar)",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 0,
+          "statuscode": 1,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:01.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234010000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:10:00.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234000000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": true
+        }
+      },
+      {
+        "caso": "I2: Update a Sent (1/3); senton vs modifiedon vs reloj del cliente",
+        "resultado": "ok",
+        "valor": {
+          "relectura": {
+            "statecode": 1,
+            "statuscode": 3,
+            "senton": {
+              "iso": "2026-10-15T01:10:01.0000000Z",
+              "kind": "Utc",
+              "ticks": 639276234010000000
+            },
+            "modifiedon": {
+              "iso": "2026-10-15T01:10:01.0000000Z",
+              "kind": "Utc",
+              "ticks": 639276234010000000
+            },
+            "actualend": {
+              "iso": "2026-10-15T01:10:00.0000000Z",
+              "kind": "Utc",
+              "ticks": 639276234000000000
+            },
+            "inreplyto_presente": false,
+            "inreplyto_igual_al_enviado": null,
+            "directioncode": true
+          },
+          "cliente_antes_utc": {
+            "iso": "2026-10-15T01:10:01.9152413Z",
+            "kind": "Utc",
+            "ticks": 639276234019152413
+          },
+          "cliente_despues_utc": {
+            "iso": "2026-10-15T01:10:02.0562360Z",
+            "kind": "Utc",
+            "ticks": 639276234020562360
+          },
+          "senton_menos_modifiedon_ms": 0,
+          "senton_dentro_de_la_ventana_del_cliente": true,
+          "senton_menos_inicio_del_cliente_ms": -915.2413
+        }
+      },
+      {
+        "caso": "I5: Update a Sent (1/3) con senton enviado a mano (2020-01-01)",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 1,
+          "statuscode": 3,
+          "senton": {
+            "iso": "2026-10-15T01:10:02.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234020000000
+          },
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:02.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234020000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:10:02.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234020000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": true
+        }
+      },
+      {
+        "caso": "I6: Update a Received (1/4); senton aparece?",
+        "resultado": "ok",
+        "valor": {
+          "statecode": 1,
+          "statuscode": 4,
+          "senton": null,
+          "modifiedon": {
+            "iso": "2026-10-15T01:10:02.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234020000000
+          },
+          "actualend": {
+            "iso": "2026-10-15T01:10:02.0000000Z",
+            "kind": "Utc",
+            "ticks": 639276234020000000
+          },
+          "inreplyto_presente": false,
+          "inreplyto_igual_al_enviado": null,
+          "directioncode": false
+        }
+      }
+    ]
+  }
+}
