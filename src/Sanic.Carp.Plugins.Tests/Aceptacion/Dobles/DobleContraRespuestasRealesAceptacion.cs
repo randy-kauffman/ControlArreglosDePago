@@ -896,7 +896,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var id = almacen.Create(new Entity(tabla) { ["systemuserid"] = Guid.NewGuid() });
             Assert.ThrowsAny<ArgumentException>(() => almacen.Update(new Entity(tabla, id) { [columna] = equivocada }));
             Assert.DoesNotContain(almacen.Todas(tabla), f => f.Contains(columna) && f[columna] is EntityReference);
-            Assert.IsType<Guid>(almacen.Retrieve(tabla, id, new ColumnSet(true))["systemuserid"]);
+            // Orquestador, 2026-10-15 (lote 3b): se relee por RetrieveMultiple porque systemuserroles no admite Retrieve (0x80040800, PA_MED_NAT_01,
+            // spikes/dobles/salida/19-nativas-sin-muestra.json); teammembership se relee igual para que las dos tablas pasen por el mismo camino.
+            var releida = almacen.RetrieveMultiple(new QueryExpression(tabla) { ColumnSet = new ColumnSet(true) }).Entities.Single(e => e.Id == id);
+            Assert.IsType<Guid>(releida["systemuserid"]);
         }
 
         [Fact]

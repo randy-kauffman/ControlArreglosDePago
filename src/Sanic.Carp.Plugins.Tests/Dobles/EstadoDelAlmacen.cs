@@ -99,11 +99,30 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         public Guid Usuario;
     }
 
+    /// <summary>
+    /// La transacción de la plataforma que está abierta (diseno/03 4.5, "Transacción", punto 8 del lote 3b): la foto con la que se revierte todo y si una falla de escritura ya la abortó. La abre la operación de más
+    /// afuera cuando empiezan PreOperation y PostOperation, o <see cref="FabricaDeServiciosSimulada.EjecutarComoPlataforma"/> para el plugin de una Custom API.
+    /// </summary>
+    internal sealed class TransaccionAbierta
+    {
+        public InstantaneaDelAlmacen Foto;
+        public bool Abortada;
+    }
+
     /// <summary>Todo lo que comparten las vistas de un mismo almacén (<see cref="OrganizationServiceEnMemoria.ComoUsuario"/>).</summary>
     internal sealed class EstadoDelAlmacen
     {
         public IReloj Reloj;
         public Guid IdDeSystem;
+
+        /// <summary>Zona con la que se convierte una hora <c>Local</c> escrita (<see cref="OrganizationServiceEnMemoria.ZonaLocal"/>); por defecto la del proceso, como el cliente real al serializar.</summary>
+        public TimeZoneInfo ZonaLocal = TimeZoneInfo.Local;
+
+        /// <summary>La transacción abierta, o <c>null</c> fuera de PreOperation y PostOperation.</summary>
+        public TransaccionAbierta Transaccion;
+
+        public readonly HashSet<(Guid Usuario, string Tabla, OperacionDeDatos Operacion)> PrivilegiosDenegados = new HashSet<(Guid Usuario, string Tabla, OperacionDeDatos Operacion)>();
+        public readonly HashSet<(Guid Usuario, string Tabla, string Columna)> EscriturasDeColumnaDenegadas = new HashSet<(Guid Usuario, string Tabla, string Columna)>();
         public Guid UnidadDeNegocioId = new Guid("0fff0003-0000-4000-8000-000000000001");
         public Guid OrganizacionId = new Guid("0fff0005-0000-4000-8000-000000000001");
         public readonly Dictionary<Guid, Guid> UnidadesDeUsuarios = new Dictionary<Guid, Guid>();
@@ -166,54 +185,4 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         }
     }
 
-    /// <summary>
-    /// Las <c>FaultException&lt;OrganizationServiceFault&gt;</c> con la forma de las reales (fixture 07, 2026-10-14): excepción directa, sin
-    /// <c>InnerException</c>, <c>Message</c> igual a <c>Detail.Message</c>, <c>Timestamp</c> Utc y <c>InnerFault</c> encadenado con el mismo código
-    /// (3 niveles para la clave alterna y 2 para cualquier otro código, que es lo que midió Dev).
-    /// </summary>
-    internal static class FabricaDeFallas
-    {
-        public static FaultException<OrganizationServiceFault> Crear(int codigo, string mensaje, DateTime ahora, string nombreDeMensaje, int estadoHttp)
-        {
-            var instante = FormaDeLaPlataforma.AUtc(ahora);
-            int niveles = codigo == CodigosDeFalla.ClaveDuplicada ? 3 : 2;
-            OrganizationServiceFault interna = null;
-            for (int nivel = niveles - 1; nivel >= 0; nivel--)
-            {
-                var detalle = new OrganizationServiceFault
-                {
-                    ErrorCode = codigo,
-                    Message = mensaje,
-                    Timestamp = instante,
-                    InnerFault = interna
-                };
-                // El nivel más interno de la falla real viene sin detalles; los externos llevan los de la plataforma.
-                if (nivel < niveles - 1)
-                {
-                    detalle.ErrorDetails["ApiDepthKey"] = 1;
-                    detalle.ErrorDetails["ApiExceptionCategory"] = "ClientError";
-                    detalle.ErrorDetails["ApiExceptionHttpStatusCode"] = estadoHttp;
-                    detalle.ErrorDetails["ApiExceptionMessageName"] = nombreDeMensaje;
-                }
-                interna = detalle;
-            }
-            return new FaultException<OrganizationServiceFault>(interna, new FaultReason(mensaje));
-        }
-
-        public static FaultException<OrganizationServiceFault> FilaInexistente(string tabla, Guid id, DateTime ahora)
-        {
-            return Crear(CodigosDeFalla.FilaInexistente, "Entity '" + tabla + "' With Id = " + id + " Does Not Exist", ahora, "ObjectDoesNotExist", 404);
-        }
-
-        public static FaultException<OrganizationServiceFault> SinAcceso(Guid usuario, string tabla, Guid id, DateTime ahora)
-        {
-            return Crear(CodigosDeFalla.SinAcceso, "Principal user (Id=" + usuario + ") has no read access on entity '" + tabla + "' with Id = " + id
-                + ". Código NO verificado contra la plataforma (ver CodigosDeFalla.SinAcceso).", ahora, "AccessDenied", 403);
-        }
-
-        public static FaultException<OrganizationServiceFault> SolicitudInvalida(string mensaje, DateTime ahora)
-        {
-            return Crear(CodigosDeFalla.SolicitudInvalida, mensaje, ahora, "InvalidArgument", 400);
-        }
-    }
 }

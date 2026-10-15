@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -10,26 +12,23 @@ using Microsoft.Xrm.Sdk.Query;
 namespace Sanic.Carp.Plugins.Tests.Dobles
 {
     /// <summary>
-    /// Evalúa una <see cref="QueryExpression"/> contra las filas en memoria (diseno/03 4.5, "Condiciones" y "Paginación"). Todo lo que no
-    /// simula, lo dice con <see cref="NotSupportedException"/> y el nombre de lo que falta: un doble a medias deja pasar en el puesto lo
-    /// que falla en Dev (decisión del arquitecto, 2026-10-14).
+    /// Evalúa una <see cref="QueryExpression"/> contra las filas en memoria (diseno/03 4.5, "Condiciones" y "Paginación"). Lo que no simula, lo dice con <see cref="NotSupportedException"/> y el nombre de lo que
+    /// falta: un doble a medias deja pasar en el puesto lo que falla en Dev (decisión del arquitecto, 2026-10-14). Lo que Dev rechaza, lo rechaza con la <c>FaultException</c> y el <c>ErrorCode</c> que midió
+    /// (lote 3b, <c>spikes/dobles/RESULTADO.md</c>).
     /// <para>
-    /// La lógica de las condiciones es de tres valores (cumple, no cumple, desconocido), como SQL: <c>NotEqual</c> sobre una columna
-    /// AUSENTE es desconocido, porque no hay una respuesta verificada de la plataforma (¿incluye los nulos?). Si una fila termina
-    /// desconocida, la consulta lanza <see cref="InvalidOperationException"/> en vez de adivinar (D-59); si otra condición ya la descarta
-    /// (<c>And</c> con un "no cumple"), la fila no importa y no se lanza nada.
+    /// <b>Qué dice la plataforma (medido).</b> <c>NotEqual</c> sobre una columna AUSENTE incluye la fila (como <c>NotIn</c>); un subfiltro vacío dentro de otro se ignora (ni verdadero ni falso) y un criterio con
+    /// solo filtros vacíos equivale a no tener criterio; un <c>OptionSetValue</c>, un <c>EntityReference</c> o un <c>Money</c> como valor de una condición, un operador de un solo valor con 0, 2 o más valores,
+    /// <c>Null</c> o <c>NotNull</c> con un valor e <c>In</c> sin valores fallan <c>0x80040203</c>; el texto se compara sin distinguir mayúsculas NI acentos; una cookie entrante que no es XML falla
+    /// <c>0x80040201</c> y la de otra consulta, <c>0x80041129</c> (o <c>0x80041103</c> si nombra una columna que la tabla no tiene). Nada de esto depende de los datos: una tabla vacía lanza igual.
     /// </para>
     /// <para>
-    /// <b>VUELTA 2 (hallazgo 6): ~~lo anterior depende de los datos~~ <c>NotEqual</c> lanza por la FORMA de la consulta</b>, con la tabla vacía o con todas las filas llenas, salvo que el mismo <c>And</c> tenga
-    /// una condición sobre la misma columna que excluya los ausentes (<c>NotNull</c>, <c>Equal</c>, <c>In</c>, <c>Greater*</c>, <c>Less*</c>) o que la columna sea <c>statecode</c>, <c>statuscode</c> o el id primario.
-    /// También lanzan por la forma: un operador de un solo valor con varios, un subfiltro vacío, <c>PageInfo.Count</c> mayor que 5000, <c>TopCount</c> con <c>PageInfo</c> y una tabla o columna
-    /// que no existe en el esquema. Ver 4.5 y <c>OrdenYConsultasInvalidasAceptacion</c>.
+    /// <b>Lo que sigue lanzando <see cref="InvalidOperationException"/></b> son los dos límites de la documentación de Learn, que Dev no se midió (<c>PageInfo.Count</c> mayor que 5000 y <c>TopCount</c> con
+    /// <c>PageInfo</c>), <c>PageNumber</c> mayor que 1 con <c>Count</c> en 0 y comparar valores de tipos incompatibles en una columna que el doble no tipa. <c>Like</c>, <c>BeginsWith</c>, <c>NotIn</c> y los demás
+    /// operadores no se simulan (<see cref="NotSupportedException"/>).
     /// </para>
     /// </summary>
     internal static class EvaluadorDeConsultas
     {
-        private enum Resultado { No, Si, Desconocido }
-
         private static readonly HashSet<ConditionOperator> Soportados = new HashSet<ConditionOperator>
         {
             ConditionOperator.Equal, ConditionOperator.NotEqual, ConditionOperator.In, ConditionOperator.Null, ConditionOperator.NotNull,
@@ -47,15 +46,9 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             ConditionOperator.Equal, ConditionOperator.NotEqual, ConditionOperator.GreaterThan, ConditionOperator.GreaterEqual, ConditionOperator.LessThan, ConditionOperator.LessEqual
         };
 
-        /// <summary>Los operadores que, sobre la misma columna y en el mismo <c>And</c>, dejan afuera a las filas donde la columna está ausente.</summary>
-        private static readonly HashSet<ConditionOperator> ExcluyenAusentes = new HashSet<ConditionOperator>
-        {
-            ConditionOperator.NotNull, ConditionOperator.Equal, ConditionOperator.In, ConditionOperator.GreaterThan, ConditionOperator.GreaterEqual, ConditionOperator.LessThan, ConditionOperator.LessEqual
-        };
-
         /// <summary>
-        /// Lanza <see cref="NotSupportedException"/> si la consulta usa algo que el doble no simula y <see cref="InvalidOperationException"/> si su FORMA es inválida o no tiene respuesta
-        /// verificada (diseno/03 4.5, "Paginación", vuelta 2, hallazgo 6): nunca según los datos, así que una tabla vacía lanza igual.
+        /// Lanza <see cref="NotSupportedException"/> si la consulta usa algo que el doble no simula y <see cref="InvalidOperationException"/> si su FORMA rompe uno de los límites de Learn (diseno/03 4.5, "Paginación"):
+        /// nunca según los datos, así que una tabla vacía lanza igual.
         /// </summary>
         public static void Validar(QueryExpression consulta)
         {
@@ -72,7 +65,6 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             if (paginada && consulta.PageInfo.Count <= 0 && consulta.PageInfo.PageNumber > 1)
                 throw new InvalidOperationException("PageInfo trae PageNumber " + consulta.PageInfo.PageNumber.ToString(CultureInfo.InvariantCulture) + " con Count en 0: el tamaño de la página no está definido y la plataforma no tiene "
                     + "verificado cuál usaría (¿el de 5000 por defecto?). El doble no adivina: indique PageInfo.Count.");
-            if (consulta.Criteria != null) ValidarForma(consulta.Criteria, true, consulta.EntityName);
         }
 
         /// <summary>
@@ -102,36 +94,85 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             foreach (var hijo in filtro.Filters) ValidarFiltro(hijo);
         }
 
-        /// <summary>Las reglas que dependen de la forma del filtro: subfiltro vacío, varios valores en un operador de uno solo y <c>NotEqual</c> sobre una columna que puede estar ausente.</summary>
-        private static void ValidarForma(FilterExpression filtro, bool esRaiz, string tabla)
+        /// <summary>
+        /// La cantidad de valores y el tipo de cada valor de cada condición (<c>0x80040203</c>, <c>12-operadores-y-filtros.json</c> y <c>10-condiciones-valores-tipados.json</c>), también en filtros anidados. Depende de la
+        /// FORMA de la consulta, no de los datos. Se llama después de comprobar que las columnas existen.
+        /// </summary>
+        public static void ValidarCondiciones(string tabla, FilterExpression filtro, EsquemaDelAlmacen esquema, DateTime ahora)
         {
-            if (!esRaiz && filtro.Conditions.Count == 0 && filtro.Filters.Count == 0)
-                throw new InvalidOperationException("La consulta trae un subfiltro vacío dentro de otro filtro: no tiene respuesta verificada (¿se ignora, es verdadero, falla?) y el doble no adivina. Quite el subfiltro.");
-
             foreach (var condicion in filtro.Conditions)
             {
-                if (DeUnSoloValor.Contains(condicion.Operator) && ValoresDe(condicion).Count > 1)
-                    throw new InvalidOperationException("La condición " + condicion.Operator + " sobre '" + condicion.AttributeName + "' trae " + ValoresDe(condicion).Count.ToString(CultureInfo.InvariantCulture)
-                        + " valores y compara contra uno solo: la plataforma no lo tiene verificado (¿lo trata como In?, ¿falla?) y el doble no ignora los demás. Use In.");
-                if (condicion.Operator == ConditionOperator.NotEqual && !NotEqualEsSeguro(filtro, condicion, tabla))
-                    throw new InvalidOperationException("La consulta usa NotEqual sobre '" + condicion.AttributeName + "' sin una condición NotNull, Equal, In, GreaterThan, GreaterEqual, LessThan o LessEqual sobre la misma "
-                        + "columna en el mismo And: la plataforma no tiene verificado si NotEqual incluye las filas donde la columna está vacía (SQL las excluye, Dataverse puede incluirlas) y el doble no adivina. "
-                        + "Escriba la consulta de modo que no dependa de eso (por ejemplo, agregue NotNull sobre la columna).");
+                var valores = ValoresDe(condicion);
+                var columna = condicion.AttributeName;
+                switch (condicion.Operator)
+                {
+                    case ConditionOperator.Null:
+                    case ConditionOperator.NotNull:
+                        if (valores.Count > 0)
+                            throw FabricaDeFallas.SolicitudInvalida("Condition operator '" + condicion.Operator + "' requires that no values are set. Values.Length: " + valores.Count.ToString(CultureInfo.InvariantCulture), ahora);
+                        break;
+                    case ConditionOperator.In:
+                        if (valores.Count == 0) throw FabricaDeFallas.SolicitudInvalida("The value passed for ConditionOperator.In is empty. Attribute Name: " + columna, ahora);
+                        break;
+                    default:
+                        if (DeUnSoloValor.Contains(condicion.Operator) && valores.Count != 1)
+                            throw FabricaDeFallas.SolicitudInvalida("The ConditonOperator." + condicion.Operator + " requires 1 value/s, not " + valores.Count.ToString(CultureInfo.InvariantCulture)
+                                + ". Parameter Name: " + columna, ahora);
+                        break;
+                }
+                foreach (var valor in valores) ValidarTipoDelValor(tabla, columna, valor, esquema, ahora);
             }
-            foreach (var hijo in filtro.Filters) ValidarForma(hijo, false, tabla);
+            foreach (var hijo in filtro.Filters) ValidarCondiciones(tabla, hijo, esquema, ahora);
+        }
+
+        private static void ValidarTipoDelValor(string tabla, string columna, object valor, EsquemaDelAlmacen esquema, DateTime ahora)
+        {
+            if (!(valor is OptionSetValue) && !(valor is EntityReference) && !(valor is Money)) return;
+            // Para statecode la plataforma lo dice con otras palabras: los valores van como texto o entero.
+            if (string.Equals(columna, "statecode", StringComparison.Ordinal))
+                throw FabricaDeFallas.SolicitudInvalida("Condition for attribute '" + tabla + "." + columna + "': statecode values are expected to be passed as strings or int", ahora);
+            throw FabricaDeFallas.SolicitudInvalida("Condition for attribute '" + tabla + "." + columna + "': expected argument(s) of type '" + esquema.TipoEsperadoDeCondicion(tabla, columna, valor)
+                + "' but received '" + valor.GetType().FullName + "'.", ahora);
         }
 
         /// <summary>
-        /// <c>NotEqual</c> no depende de cómo trate la plataforma a los vacíos si la columna siempre está llena (<c>statecode</c>, <c>statuscode</c> y el id primario) o si el mismo <c>And</c> lleva otra condición
-        /// sobre esa columna que ya excluye los ausentes. Una condición de otra columna, o de un <c>Or</c>, no cuenta.
+        /// Una cookie entrante no vacía de una consulta paginada (<c>16-paginacion-cookie.json</c>): si no es XML, <c>0x80040201</c>; si nombra una columna que la tabla no tiene, <c>0x80041103</c>; si trae otra cantidad
+        /// de columnas o columnas de orden distintas de las de la consulta, <c>0x80041129</c>. La página la decide <c>PageNumber</c>, no la cookie: el <c>page</c> editado de la cookie no se emula (no medido).
         /// </summary>
-        private static bool NotEqualEsSeguro(FilterExpression filtro, ConditionExpression condicion, string tabla)
+        public static void ValidarCookie(QueryExpression consulta, EsquemaDelAlmacen esquema, string columnaDeId, DateTime ahora)
         {
-            var columna = condicion.AttributeName;
-            if (string.Equals(columna, "statecode", StringComparison.Ordinal) || string.Equals(columna, "statuscode", StringComparison.Ordinal)
-                || string.Equals(columna, FormaDeLaPlataforma.ColumnaDeId(tabla), StringComparison.Ordinal)) return true;
-            if (filtro.FilterOperator != LogicalOperator.And) return false;
-            return filtro.Conditions.Any(otra => !ReferenceEquals(otra, condicion) && string.Equals(otra.AttributeName, columna, StringComparison.Ordinal) && ExcluyenAusentes.Contains(otra.Operator));
+            if (!EsPaginada(consulta) || string.IsNullOrEmpty(consulta.PageInfo.PagingCookie)) return;
+            XElement raiz;
+            try
+            {
+                raiz = XElement.Parse(consulta.PageInfo.PagingCookie);
+            }
+            catch (XmlException)
+            {
+                throw FabricaDeFallas.CookieMalFormada(ahora);
+            }
+
+            var deLaCookie = raiz.Elements().Select(e => e.Name.LocalName).ToList();
+            if (esquema.ClaseDe(consulta.EntityName) == ClaseDeTabla.Propia || esquema.ClaseDe(consulta.EntityName) == ClaseDeTabla.NativaConMuestra)
+            {
+                foreach (var nombre in deLaCookie)
+                    if (!esquema.TieneColumna(consulta.EntityName, nombre)) throw FabricaDeFallas.ColumnaInexistente(consulta.EntityName, nombre, false, ahora);
+            }
+            var deLaConsulta = NombresDeLaCookie(consulta.Orders ?? (IList<OrderExpression>)new List<OrderExpression>(), columnaDeId);
+            if (deLaCookie.Count != deLaConsulta.Count)
+                throw FabricaDeFallas.CookieDeOtraConsulta("Paging Cookie And Query Do Not Match. The counts are not equal.", ahora);
+            if (!deLaCookie.SequenceEqual(deLaConsulta, StringComparer.Ordinal))
+                throw FabricaDeFallas.CookieDeOtraConsulta("Order by columns do not match those in paging cookie.", ahora);
+        }
+
+        /// <summary>Las columnas que lleva la cookie de una consulta: las del orden (sin repetir y sin el id primario, en su orden) y al final el id primario.</summary>
+        private static List<string> NombresDeLaCookie(IEnumerable<OrderExpression> ordenes, string columnaDeId)
+        {
+            var nombres = new List<string>();
+            foreach (var orden in ordenes)
+                if (!nombres.Contains(orden.AttributeName, StringComparer.Ordinal) && !string.Equals(orden.AttributeName, columnaDeId, StringComparison.Ordinal)) nombres.Add(orden.AttributeName);
+            nombres.Add(columnaDeId);
+            return nombres;
         }
 
         /// <summary>Todas las columnas que la consulta nombra: las del <c>ColumnSet</c> (si no es <c>AllColumns</c>), las de las condiciones —también anidadas— y las de los órdenes.</summary>
@@ -191,46 +232,24 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         {
             var resultado = new List<Entity>();
             foreach (var fila in filas)
-            {
-                var cumple = criterio == null ? Resultado.Si : EvaluarFiltro(criterio, fila, oculta);
-                if (cumple == Resultado.Si)
-                {
-                    resultado.Add(fila);
-                }
-                else if (cumple == Resultado.Desconocido)
-                {
-                    var columnas = new List<string>();
-                    ColumnasAusentesConNotEqual(criterio, fila, oculta, columnas);
-                    throw new InvalidOperationException("La consulta usa NotEqual sobre la columna AUSENTE " + string.Join(", ", columnas.Distinct(StringComparer.Ordinal))
-                        + " en la fila " + fila.LogicalName + " " + fila.Id
-                        + ": la plataforma no tiene una respuesta verificada (SQL excluye los nulos, Dataverse puede incluirlos) y el doble no adivina. "
-                        + "Escriba la consulta de modo que no dependa de eso (por ejemplo, NotEqual junto con NotNull o con una columna siempre llena).");
-                }
-            }
+                if (criterio == null || EvaluarFiltro(criterio, fila, oculta)) resultado.Add(fila);
             return resultado;
         }
 
-        private static void ColumnasAusentesConNotEqual(FilterExpression filtro, Entity fila, Func<string, bool> oculta, List<string> columnas)
+        /// <summary>Un filtro sin condiciones y sin subfiltros con algo adentro: la plataforma lo ignora (medido, <c>12-operadores-y-filtros.json</c> punto_5).</summary>
+        private static bool EsVacio(FilterExpression filtro)
         {
-            foreach (var condicion in filtro.Conditions)
-                if (condicion.Operator == ConditionOperator.NotEqual && ValorDe(fila, condicion.AttributeName, oculta) == null) columnas.Add(condicion.AttributeName);
-            foreach (var hijo in filtro.Filters) ColumnasAusentesConNotEqual(hijo, fila, oculta, columnas);
+            return filtro.Conditions.Count == 0 && filtro.Filters.All(EsVacio);
         }
 
-        private static Resultado EvaluarFiltro(FilterExpression filtro, Entity fila, Func<string, bool> oculta)
+        private static bool EvaluarFiltro(FilterExpression filtro, Entity fila, Func<string, bool> oculta)
         {
-            var resultados = new List<Resultado>();
+            var resultados = new List<bool>();
             foreach (var condicion in filtro.Conditions) resultados.Add(EvaluarCondicion(condicion, fila, oculta));
-            foreach (var hijo in filtro.Filters) resultados.Add(EvaluarFiltro(hijo, fila, oculta));
-            if (resultados.Count == 0) return Resultado.Si;
-
-            if (filtro.FilterOperator == LogicalOperator.Or)
-            {
-                if (resultados.Contains(Resultado.Si)) return Resultado.Si;
-                return resultados.Contains(Resultado.Desconocido) ? Resultado.Desconocido : Resultado.No;
-            }
-            if (resultados.Contains(Resultado.No)) return Resultado.No;
-            return resultados.Contains(Resultado.Desconocido) ? Resultado.Desconocido : Resultado.Si;
+            foreach (var hijo in filtro.Filters)
+                if (!EsVacio(hijo)) resultados.Add(EvaluarFiltro(hijo, fila, oculta));
+            if (resultados.Count == 0) return true;
+            return filtro.FilterOperator == LogicalOperator.Or ? resultados.Contains(true) : !resultados.Contains(false);
         }
 
         private static object ValorDe(Entity fila, string columna, Func<string, bool> oculta)
@@ -240,32 +259,33 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             return fila.Attributes.TryGetValue(columna, out valor) ? valor : null;
         }
 
-        private static Resultado EvaluarCondicion(ConditionExpression condicion, Entity fila, Func<string, bool> oculta)
+        private static bool EvaluarCondicion(ConditionExpression condicion, Entity fila, Func<string, bool> oculta)
         {
             var guardado = ValorDe(fila, condicion.AttributeName, oculta);
             var ausente = guardado == null;
             switch (condicion.Operator)
             {
-                case ConditionOperator.Null: return ausente ? Resultado.Si : Resultado.No;
-                case ConditionOperator.NotNull: return ausente ? Resultado.No : Resultado.Si;
+                case ConditionOperator.Null: return ausente;
+                case ConditionOperator.NotNull: return !ausente;
             }
 
-            var valores = ValoresDe(condicion);
-            if (ausente) return condicion.Operator == ConditionOperator.NotEqual ? Resultado.Desconocido : Resultado.No;
+            // NotEqual sobre una columna ausente INCLUYE la fila (medido): para la plataforma un nulo es distinto de cualquier valor. Lo demás sobre una columna ausente no cumple.
+            if (ausente) return condicion.Operator == ConditionOperator.NotEqual;
 
+            var valores = ValoresDe(condicion);
             var izquierda = ParaComparar(guardado);
             switch (condicion.Operator)
             {
                 case ConditionOperator.In:
                     foreach (var valor in valores)
-                        if (Cumple(izquierda, valor, condicion, c => c == 0)) return Resultado.Si;
-                    return Resultado.No;
-                case ConditionOperator.Equal: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c == 0) ? Resultado.Si : Resultado.No;
-                case ConditionOperator.NotEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c != 0) ? Resultado.Si : Resultado.No;
-                case ConditionOperator.GreaterThan: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c > 0) ? Resultado.Si : Resultado.No;
-                case ConditionOperator.GreaterEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c >= 0) ? Resultado.Si : Resultado.No;
-                case ConditionOperator.LessThan: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c < 0) ? Resultado.Si : Resultado.No;
-                case ConditionOperator.LessEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c <= 0) ? Resultado.Si : Resultado.No;
+                        if (Cumple(izquierda, valor, condicion, c => c == 0)) return true;
+                    return false;
+                case ConditionOperator.Equal: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c == 0);
+                case ConditionOperator.NotEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c != 0);
+                case ConditionOperator.GreaterThan: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c > 0);
+                case ConditionOperator.GreaterEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c >= 0);
+                case ConditionOperator.LessThan: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c < 0);
+                case ConditionOperator.LessEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c <= 0);
                 default:
                     throw new NotSupportedException("El doble no simula el operador de condición " + condicion.Operator + ".");
             }
@@ -352,11 +372,14 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             return false;
         }
 
-        /// <summary>Compara dos valores ya comparables y del mismo tipo. El texto no distingue mayúsculas (la colación de la base; NO verificado).</summary>
+        /// <summary>
+        /// Compara dos valores ya comparables y del mismo tipo. El texto no distingue mayúsculas NI acentos (medido, <c>18-texto-y-esquema.json</c> punto_c: <c>ZZF-José</c> se halla con <c>zzf-jose</c>,
+        /// <c>ZZF-JOSÉ</c>, <c>ZZF-Josè</c> y <c>ZZF-Jose</c> más una marca combinante).
+        /// </summary>
         public static int Comparar(object a, object b)
         {
             var texto = a as string;
-            if (texto != null) return string.Compare(texto, (string)b, StringComparison.OrdinalIgnoreCase);
+            if (texto != null) return string.Compare(TextoSinAcentos.Quitar(texto), TextoSinAcentos.Quitar((string)b), StringComparison.OrdinalIgnoreCase);
             if (a is decimal) return ((decimal)a).CompareTo((decimal)b);
             if (a is DateTime) return ((DateTime)a).Ticks.CompareTo(((DateTime)b).Ticks);
             if (a is bool) return ((bool)a).CompareTo((bool)b);
@@ -432,11 +455,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             var primera = filasDeLaPagina[0];
             var ultima = filasDeLaPagina[filasDeLaPagina.Count - 1];
             var raiz = new XElement("cookie", new XAttribute("page", pagina.ToString(CultureInfo.InvariantCulture)));
-            var nombres = new List<string>();
-            foreach (var orden in ordenes)
-                if (!nombres.Contains(orden.AttributeName, StringComparer.Ordinal) && !string.Equals(orden.AttributeName, columnaDeId, StringComparison.Ordinal)) nombres.Add(orden.AttributeName);
-            nombres.Add(columnaDeId);
-            foreach (var nombre in nombres)
+            foreach (var nombre in NombresDeLaCookie(ordenes, columnaDeId))
             {
                 var esId = string.Equals(nombre, columnaDeId, StringComparison.Ordinal);
                 var textoUltima = esId ? "{" + ultima.Id.ToString() + "}" : FormaDeLaPlataforma.TextoDeCookie(ValorDe(ultima, nombre, oculta));

@@ -52,7 +52,12 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         /// <summary>El valor que se usa en una CONDICIÓN (primitivo: el rechazo de <c>OptionSetValue</c>/<c>EntityReference</c>/<c>Money</c> como valor de condición está PENDIENTE DE MUESTRA).</summary>
         public static object ParaCondicion(ColumnaDelDiccionario columna)
         {
-            var valido = Valido(columna);
+            return ComoValorDeCondicion(Valido(columna));
+        }
+
+        /// <summary>El valor primitivo que va en una condición para comparar contra <paramref name="valido"/> (lo medido: una condición no acepta OptionSetValue ni EntityReference).</summary>
+        public static object ComoValorDeCondicion(object valido)
+        {
             var opcion = valido as OptionSetValue;
             if (opcion != null) return opcion.Value;
             var referencia = valido as EntityReference;

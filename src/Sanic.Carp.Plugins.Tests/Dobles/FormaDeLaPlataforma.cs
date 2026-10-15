@@ -29,50 +29,95 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         }
 
         /// <summary>
-        /// Lo que queda guardado cuando se escribe <paramref name="valor"/> en <paramref name="columna"/>, o <c>null</c> si la columna no
-        /// debe quedar (ausente, no nulo). <paramref name="sembrando"/> conserva el texto vacío tal cual: la plataforma devuelve <c>""</c> en
-        /// filas que no pasaron por la API (fixture 06); un <c>Create</c> o <c>Update</c> lo borra (DC-01).
+        /// Una tabla intersect lleva <c>Guid</c> crudo en sus columnas; cualquier otro tipo (por ejemplo un <c>EntityReference</c>) lanza <see cref="ArgumentException"/>
+        /// (defecto D-59: el código y el doble no pueden repetir el mismo error). Es una regla de uso del doble, no una falla medida de la plataforma.
         /// </summary>
-        public static object Guardar(string tabla, string columna, object valor, bool sembrando)
+        public static void ComprobarIntersect(string tabla, string columna, object valor)
         {
-            if (valor == null) return null;
-
+            if (valor == null) return;
             string[] deIntersect;
             if (ColumnasDeIntersect.TryGetValue(tabla, out deIntersect) && Array.IndexOf(deIntersect, columna) >= 0 && !(valor is Guid))
             {
                 throw new ArgumentException("La tabla intersect '" + tabla + "' lleva un Guid crudo en '" + columna + "', no un "
                     + valor.GetType().Name + " (defecto D-59: el código y el doble no pueden repetir el mismo error).", nameof(valor));
             }
+        }
+
+        /// <summary>
+        /// Lo que queda guardado cuando se escribe <paramref name="valor"/> en <paramref name="columna"/>, o <c>null</c> si la columna no
+        /// debe quedar (ausente, no nulo). <paramref name="sembrando"/> conserva el texto vacío tal cual: la plataforma devuelve <c>""</c> en
+        /// filas que no pasaron por la API (fixture 06); un <c>Create</c> o <c>Update</c> lo borra (DC-01). <paramref name="zona"/> es la zona con la que
+        /// se convierte una hora <c>Local</c> al escribir (<see cref="OrganizationServiceEnMemoria.ZonaLocal"/>); al sembrar se usa la del proceso.
+        /// </summary>
+        public static object Guardar(string tabla, string columna, object valor, bool sembrando, TimeZoneInfo zona)
+        {
+            if (valor == null) return null;
+            ComprobarIntersect(tabla, columna, valor);
 
             var texto = valor as string;
             if (texto != null) return texto.Length == 0 && !sembrando ? null : texto;
 
-            if (valor is DateTime) return Fecha(tabla, columna, (DateTime)valor, sembrando);
+            if (valor is DateTime) return Fecha(tabla, columna, (DateTime)valor, sembrando, zona);
             if (valor is decimal) return Escala10((decimal)valor);
             return Copias.Valor(valor);
         }
 
         /// <summary>
-        /// Una columna de solo fecha sale <c>Unspecified</c> a las 00:00, sin conversión de zona (0.6); una de fecha y hora de usuario local sale <c>Utc</c>.
-        /// <b>Vuelta 2, hallazgo 5:</b> al ESCRIBIR, una de fecha y hora con <c>Kind</c> <c>Local</c> o <c>Unspecified</c> se RECHAZA (el reloj del proyecto es UTC, 0.6: una hora sin zona es un desfase en espera);
-        /// al sembrar, la <c>Local</c> se pasa a UTC y la <c>Unspecified</c> se toma como UTC, porque la siembra declara datos que la plataforma ya devolvió en UTC.
+        /// Medido en Dev (<c>11-fechas-escritas.json</c>, lote 3b). Fecha y hora de usuario local (UL): <c>Utc</c> se guarda tal cual, <c>Unspecified</c> se toma como UTC y <c>Local</c> se convierte a UTC con la zona
+        /// del almacén; se trunca a SEGUNDOS (no redondea) y sale <c>Utc</c>. Solo fecha (DO): la fecha del instante convertido a UTC, a las 00:00 y <c>Unspecified</c> (23:30 local en UTC-6 es el día siguiente).
+        /// Al sembrar no se trunca (la siembra declara datos que la plataforma ya devolvió): la UL pasa a UTC con la zona del proceso y la DO toma la fecha del valor.
         /// </summary>
-        private static DateTime Fecha(string tabla, string columna, DateTime valor, bool sembrando)
+        private static DateTime Fecha(string tabla, string columna, DateTime valor, bool sembrando, TimeZoneInfo zona)
         {
-            if (ColumnasDeFecha.EsSoloFecha(tabla, columna)) return new DateTime(valor.Date.Ticks, DateTimeKind.Unspecified);
-            if (!sembrando && valor.Kind != DateTimeKind.Utc)
-                throw new ArgumentException("La columna '" + columna + "' de la tabla '" + tabla + "' es una fecha y hora y se escribió con Kind " + valor.Kind
-                    + ": el reloj del proyecto es UTC (diseno/03 0.6) y una hora sin zona o en hora local es un desfase en espera. Escriba un DateTime con Kind Utc.");
-            return AUtc(valor);
+            var soloFecha = ColumnasDeFecha.EsSoloFecha(tabla, columna);
+            if (sembrando) return soloFecha ? new DateTime(valor.Date.Ticks, DateTimeKind.Unspecified) : AUtc(valor);
+            var utc = AUtc(valor, zona);
+            if (soloFecha) return new DateTime(utc.Date.Ticks, DateTimeKind.Unspecified);
+            return new DateTime(utc.Ticks - utc.Ticks % TimeSpan.TicksPerSecond, DateTimeKind.Utc);
         }
 
+        /// <summary>El instante truncado a segundos, <c>Utc</c>: así lo guarda la plataforma (<c>senton</c>, <c>modifiedon</c>; <c>14-email.json</c>).</summary>
+        public static DateTime TruncarASegundos(DateTime instante)
+        {
+            var utc = AUtc(instante);
+            return new DateTime(utc.Ticks - utc.Ticks % TimeSpan.TicksPerSecond, DateTimeKind.Utc);
+        }
+
+        /// <summary>Un <c>Local</c> pasa a UTC con la zona del proceso, un <c>Unspecified</c> se toma como UTC. Es lo que hace <see cref="OrganizationServiceEnMemoria.Sembrar"/>.</summary>
         public static DateTime AUtc(DateTime valor)
+        {
+            return AUtc(valor, TimeZoneInfo.Local);
+        }
+
+        /// <summary>
+        /// Lleva <paramref name="valor"/> a UTC: <c>Utc</c> igual, <c>Unspecified</c> como UTC (medido) y <c>Local</c> convertido con <paramref name="zona"/>. Un instante que desborda el rango de <see cref="DateTime"/>
+        /// al convertir se acota (<c>DateTime.MinValue</c> y <c>DateTime.MaxValue</c> son valores que las pruebas escriben a propósito).
+        /// </summary>
+        public static DateTime AUtc(DateTime valor, TimeZoneInfo zona)
         {
             switch (valor.Kind)
             {
-                case DateTimeKind.Local: return valor.ToUniversalTime();
+                case DateTimeKind.Local: return LocalAUtc(valor, zona);
                 case DateTimeKind.Unspecified: return DateTime.SpecifyKind(valor, DateTimeKind.Utc);
                 default: return valor;
+            }
+        }
+
+        private static DateTime LocalAUtc(DateTime valor, TimeZoneInfo zona)
+        {
+            var sinKind = DateTime.SpecifyKind(valor, DateTimeKind.Unspecified);
+            try
+            {
+                return DateTime.SpecifyKind(TimeZoneInfo.ConvertTimeToUtc(sinKind, zona), DateTimeKind.Utc);
+            }
+            catch (ArgumentException)
+            {
+                // Una hora que no existe en la zona (el salto del horario de verano) o un valor en el borde del rango: se usa el desfase base de la zona y se acota.
+                var desfase = zona.BaseUtcOffset;
+                var ticks = sinKind.Ticks - desfase.Ticks;
+                if (ticks < DateTime.MinValue.Ticks) ticks = DateTime.MinValue.Ticks;
+                if (ticks > DateTime.MaxValue.Ticks) ticks = DateTime.MaxValue.Ticks;
+                return new DateTime(ticks, DateTimeKind.Utc);
             }
         }
 

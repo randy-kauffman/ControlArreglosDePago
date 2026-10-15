@@ -87,36 +87,38 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
     /// <b>Orden.</b> Etapa (PreValidation, PreOperation, [escritura], PostOperation) y dentro de la etapa por <c>Orden</c> ascendente, y a
     /// igual orden por registro. Los steps reciben como <c>Target</c> una COPIA del que mandó quien llamó, y ESA copia
     /// es la que se escribe: lo que un PreValidation o un PreOperation le agregue o le cambie se escribe (patrones.md §2), sin alterar el objeto del
-    /// llamador. En Create, el <c>Id</c> del <c>Target</c>
-    /// es el que trajo quien llamó (vacío si no trajo) hasta la escritura, y desde PostOperation es el de la fila creada
-    /// (<c>PrimaryEntityId</c> y <c>OutputParameters["id"]</c> también). Un step de PostOperation recibe el <c>Target</c> que se escribió.
+    /// llamador. En Create, el <c>Id</c> del <c>Target</c> y el <c>PrimaryEntityId</c> NUNCA están vacíos, en ninguna etapa y con o sin id enviado (medido, <c>41-sonda-resumen.json</c> f_ids): son el id
+    /// que tendrá la fila. En PreValidation el <c>Target</c> no trae el atributo del id primario; en PreOperation y PostOperation sí (lo agrega la plataforma, no figura en
+    /// <see cref="OrganizationServiceEnMemoria.Escrituras"/>). <c>OutputParameters["id"]</c> solo existe en PostOperation. Un step de PostOperation recibe el <c>Target</c> que se escribió.
     /// </para>
     /// <para>
     /// <b>Contexto.</b> <c>MessageName</c>, <c>Stage</c> (10/20/40), <c>Mode</c>, <c>PrimaryEntityName</c>, <c>PrimaryEntityId</c> (el de la
-    /// fila afectada; en Create antes de escribir, el que trajo el <c>Target</c>), <c>InputParameters["Target"]</c> (<c>Entity</c>; en Delete
+    /// fila afectada), <c>InputParameters["Target"]</c> (<c>Entity</c>; en Delete
     /// <c>EntityReference</c>; en Assign también "Assignee"), <c>OperationCreatedOn</c> = el reloj del almacén, <c>OrganizationId</c> y
     /// <c>BusinessUnitId</c> del almacén. <b>Identidad:</b> <c>UserId</c> = <c>InitiatingUserId</c> = la identidad del servicio que escribe
     /// (SYSTEM si la escritura salió del servicio de SYSTEM, patrones.md "Elevar a SYSTEM…"). <b>Profundidad:</b> una escritura pedida
     /// desde fuera de un step (o de un plugin lanzado con <c>EjecutarComoPlataforma</c>) tiene <c>Depth</c> 1; una pedida mientras un step
-    /// (o ese plugin) se ejecuta, <c>Depth</c> del que se ejecuta + 1 y <c>ParentContext</c> = su contexto. Pasar de profundidad 8
-    /// lanza <see cref="InvalidOperationException"/> (la plataforma corta los ciclos). <c>SharedVariables</c> son compartidas por las
-    /// etapas de UNA misma operación y NO pasan a las escrituras anidadas (patrones.md: no llegan a los steps anidados).
+    /// (o ese plugin) se ejecuta, <c>Depth</c> del que se ejecuta + 1. Pasar de profundidad 8
+    /// lanza <see cref="InvalidOperationException"/> (la plataforma corta los ciclos). <b>ParentContext</b> (medido): nulo en PreValidation de profundidad 1; en PreOperation y PostOperation síncronos NO es nulo aun con
+    /// <c>Depth</c> 1: es un contexto del mismo mensaje, tabla y profundidad (la operación principal), cuyo propio <c>ParentContext</c> es el contexto del llamador si la escritura es anidada; el PreValidation de una
+    /// escritura anidada tiene como padre directo al contexto del llamador. <c>SharedVariables</c> son compartidas por las
+    /// etapas de UNA misma operación y NO pasan a las escrituras anidadas (patrones.md: no llegan a los steps anidados); las claves propias de la plataforma no se reproducen.
     /// <b>Pre-imagen:</b> si el step declaró una, en <c>PreEntityImages[nombre]</c>, tomada ANTES de escribir con
     /// <see cref="OrganizationServiceEnMemoria.ImagenPrevia"/> para el usuario del contexto (V-6: las columnas ocultas a ese usuario
     /// están AUSENTES); solo en Update y Delete.
     /// </para>
     /// <para>
     /// <b>Transacción.</b> La operación de más afuera (profundidad 1) toma una <see cref="OrganizationServiceEnMemoria.Instantanea"/> antes
-    /// de PreOperation; si cualquier step síncrono de PreOperation o PostOperation, o la propia escritura, lanza, se restaura el almacén
+    /// de PreOperation y abre la transacción; si cualquier step síncrono de PreOperation o PostOperation, o la propia escritura, lanza, se restaura el almacén
     /// y la excepción sube SIN cambios (la misma instancia). Una excepción de PreValidation sube sin restaurar nada (aún no hay
-    /// transacción). Las escrituras anidadas comparten la transacción de la de más afuera.
+    /// transacción). Las escrituras anidadas comparten la transacción de la de más afuera. Si un step síncrono atrapa una falla de ESCRITURA y termina sin lanzar, el pipeline lanza
+    /// <c>0x8009000C</c> al terminar el step y la operación de más afuera falla con ella, sin dejar nada escrito (medido, <c>30-sonda-escenarios.json</c> tx1 a tx4).
     /// </para>
     /// <para>
     /// <b>Asíncronos.</b> Un step <see cref="ModoDeStep.Asincrono"/> (solo PostOperation) no corre dentro de la operación: queda en cola
-    /// y corre en <see cref="EjecutarAsincronos"/>, con su propio contexto (<c>Mode</c> 1), y una excepción suya NO revierte nada: queda en
-    /// <see cref="Ejecuciones"/>. <b>VUELTA 2 (hallazgo 7):</b> ~~lo que escriba un asíncrono dispara sus steps a profundidad 1, sin padre~~ un asíncrono corre con la <c>Depth</c> de la operación
-    /// que lo encoló y lo que escribe dispara sus steps a esa profundidad + 1, con <c>ParentContext</c> nulo; pasar de 8 lanza <see cref="InvalidOperationException"/> (queda en
-    /// <see cref="Ejecuciones"/>), así que una cadena de asíncronos se corta en el octavo y <see cref="EjecutarAsincronos"/> termina.
+    /// y corre en <see cref="EjecutarAsincronos"/>, con su propio contexto (<c>Mode</c> 1, <c>ParentContext</c> nulo: no se midió), y una excepción suya NO revierte nada: queda en
+    /// <see cref="Ejecuciones"/>. Un asíncrono corre con la <c>Depth</c> de la operación que lo encoló y lo que escribe dispara sus steps a esa profundidad + 1, con <c>ParentContext</c> nulo; pasar de 8 lanza
+    /// <see cref="InvalidOperationException"/> (queda en <see cref="Ejecuciones"/>), así que una cadena de asíncronos se corta en el octavo y <see cref="EjecutarAsincronos"/> termina.
     /// </para>
     /// </summary>
     internal sealed class PipelineSimulado : IPipelineDeEscrituras
@@ -160,7 +162,16 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             public Guid Correlacion = Guid.NewGuid();
             public Dictionary<RegistroDeStep, Entity> Imagenes = new Dictionary<RegistroDeStep, Entity>();
             public List<RegistroDeStep> Aplicables;
+
+            /// <summary>El contexto de la operación principal: el <c>ParentContext</c> de sus steps síncronos de PreOperation y PostOperation (medido). Se arma la primera vez que un step lo pide.</summary>
+            public ContextoDePluginSimulado Contexto;
+
+            /// <summary>La escritura la pidió un step asíncrono: el trabajo asíncrono no es una llamada anidada de un contexto vivo y el <c>ParentContext</c> de sus steps no se midió, así que queda nulo.</summary>
+            public bool DeUnAsincrono;
         }
+
+        /// <summary>La etapa de la operación principal (MainOperation) en la plataforma: entre PreOperation y PostOperation. Solo la lleva el contexto padre de los steps.</summary>
+        private const int EtapaDeLaOperacionPrincipal = 30;
 
         /// <summary>Se conecta al almacén de <paramref name="fabrica"/> (<c>Almacen.Pipeline = this</c>). Una fábrica ya conectada a otro pipeline lanza <see cref="InvalidOperationException"/>.</summary>
         public PipelineSimulado(FabricaDeServiciosSimulada fabrica)
@@ -237,6 +248,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 Entradas = entradas,
                 Padre = padre,
                 Profundidad = profundidad,
+                DeUnAsincrono = padre == null && _profundidadDelAsincrono > 0,
                 IdPrimario = entidad != null ? entidad.Id : (referencia != null ? referencia.Id : Guid.Empty)
             };
 
@@ -257,10 +269,16 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             // PreValidation corre antes de que exista la transacción: lo que escriba y una excepción suya no se restauran.
             CorrerEtapa(operacion, EtapaDeStep.PreValidation);
             // V-8, B1: si un step de PreValidation dejó la primaria autonumérica sin valor, la plataforma la vuelve a asignar antes de PreOperation (el número anterior se pierde).
-            if (mensaje == "Create" && entidad != null) servicio.CompletarAutonumerico(entidad);
+            if (mensaje == "Create" && entidad != null)
+            {
+                servicio.CompletarAutonumerico(entidad);
+                // Desde PreOperation el Target trae el atributo del id primario (lo agrega la plataforma; medido).
+                servicio.CompletarIdPrimario(entidad);
+            }
 
             // La operación de más afuera abre la transacción; las anidadas comparten la suya.
             var instantanea = padre == null ? servicio.Instantanea() : null;
+            var transaccion = instantanea == null ? null : servicio.AbrirTransaccion(instantanea);
             var marcaDeCola = _cola.Count;
             try
             {
@@ -282,6 +300,10 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                     if (_cola.Count > marcaDeCola) _cola.RemoveRange(marcaDeCola, _cola.Count - marcaDeCola);
                 }
                 throw;
+            }
+            finally
+            {
+                if (transaccion != null) transaccion.Dispose();
             }
         }
 
@@ -342,7 +364,8 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 OperationCreatedOn = servicio.Reloj.AhoraUtc,
                 BusinessUnitId = servicio.UnidadDeNegocioDe(servicio.Identidad),
                 OrganizationId = servicio.OrganizacionId,
-                ParentContext = operacion.Padre,
+                // Medido: en PreOperation y PostOperation síncronos el ParentContext es el contexto de la operación principal; en PreValidation y en un asíncrono, el del llamador (nulo a profundidad 1).
+                ParentContext = step.Modo == ModoDeStep.Sincrono && step.Etapa != EtapaDeStep.PreValidation && !operacion.DeUnAsincrono ? ContextoDeLaOperacion(operacion) : operacion.Padre,
                 SharedVariables = operacion.Compartidas,
                 CorrelationId = operacion.Correlacion,
                 IsInTransaction = step.Modo == ModoDeStep.Sincrono && step.Etapa != EtapaDeStep.PreValidation
@@ -354,6 +377,34 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             return contexto;
         }
 
+        /// <summary>El contexto de la operación principal de <paramref name="operacion"/>: mismo mensaje, tabla, profundidad e identidad; su padre es el contexto del llamador (nulo a profundidad 1).</summary>
+        private ContextoDePluginSimulado ContextoDeLaOperacion(Operacion operacion)
+        {
+            if (operacion.Contexto != null) return operacion.Contexto;
+            var servicio = operacion.Servicio;
+            var contexto = new ContextoDePluginSimulado
+            {
+                MessageName = operacion.Mensaje,
+                Stage = EtapaDeLaOperacionPrincipal,
+                Mode = (int)ModoDeStep.Sincrono,
+                Depth = operacion.Profundidad,
+                PrimaryEntityName = operacion.Tabla,
+                PrimaryEntityId = operacion.IdPrimario,
+                UserId = servicio.Identidad,
+                InitiatingUserId = servicio.Identidad,
+                OperationCreatedOn = servicio.Reloj.AhoraUtc,
+                BusinessUnitId = servicio.UnidadDeNegocioDe(servicio.Identidad),
+                OrganizationId = servicio.OrganizacionId,
+                ParentContext = operacion.Padre,
+                SharedVariables = operacion.Compartidas,
+                CorrelationId = operacion.Correlacion,
+                IsInTransaction = true
+            };
+            foreach (var clave in operacion.Entradas.Keys.ToList()) contexto.InputParameters[clave] = operacion.Entradas[clave];
+            operacion.Contexto = contexto;
+            return contexto;
+        }
+
         private void Ejecutar(RegistroDeStep step, ContextoDePluginSimulado contexto, bool anidaLasEscrituras, bool capturarLaExcepcion)
         {
             var indice = _ejecuciones.Count;
@@ -362,6 +413,8 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             try
             {
                 step.Plugin.Execute(new ProveedorDeServiciosSimulado(contexto, _fabrica));
+                // Un step síncrono dentro de la transacción que atrapó una falla de escritura y siguió no puede terminar bien: la plataforma aborta la operación (0x8009000C, medido).
+                if (anidaLasEscrituras && step.Etapa != EtapaDeStep.PreValidation) _fabrica.Almacen.ExigirTransaccionNoAbortada();
             }
             catch (Exception error)
             {

@@ -263,9 +263,12 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var almacen = new OrganizationServiceEnMemoria();
             var sinLaColumna = Guid.NewGuid();
             var conElValor = Guid.NewGuid();
-            almacen.Sembrar(new Entity(tabla, sinLaColumna), new Entity(tabla, conElValor) { [columna] = ValoresDeEjemplo.Valido(c) });
+            // Orquestador, 2026-10-15 (lote 3b): el valor se arma UNA vez. Valido devuelve un Guid nuevo en cada llamada para los lookups, así que
+            // ParaCondicion(c) comparaba contra otro Guid y ningún doble correcto podía cumplir la prueba en las 18 columnas lookup.
+            var valor = ValoresDeEjemplo.Valido(c);
+            almacen.Sembrar(new Entity(tabla, sinLaColumna), new Entity(tabla, conElValor) { [columna] = valor });
             var consulta = Consulta(tabla);
-            consulta.Criteria.AddCondition(columna, ConditionOperator.NotEqual, ValoresDeEjemplo.ParaCondicion(c));
+            consulta.Criteria.AddCondition(columna, ConditionOperator.NotEqual, ValoresDeEjemplo.ComoValorDeCondicion(valor));
 
             Assert.Empty(new OrganizationServiceEnMemoria().RetrieveMultiple(consulta).Entities);
             Assert.Equal(new[] { sinLaColumna }, almacen.RetrieveMultiple(consulta).Entities.Select(e => e.Id).ToArray());

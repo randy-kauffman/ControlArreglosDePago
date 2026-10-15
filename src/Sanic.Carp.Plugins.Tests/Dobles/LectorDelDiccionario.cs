@@ -20,9 +20,21 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         public int? Largo { get; set; }
         public string Choice { get; set; }
         public string Destino { get; set; }
+
+        /// <summary>De un decimal, <c>decimal(p)</c>: los decimales que guarda la columna. <c>null</c> si el documento no lo dice.</summary>
+        public int? Escala { get; set; }
+
+        /// <summary>De un decimal con rango, <c>[min..max]</c>: el mínimo. <c>null</c> si el documento no trae rango.</summary>
+        public decimal? Minimo { get; set; }
+
+        /// <summary>De un decimal con rango, <c>[min..max]</c>: el máximo.</summary>
+        public decimal? Maximo { get; set; }
     }
 
-    /// <summary>Una relación 1:N de la sección 6.2: su id (<c>REL-01</c>), su nombre, la tabla padre, la tabla hija y el lookup que la hija lleva hacia el padre.</summary>
+    /// <summary>
+    /// Una relación 1:N de la sección 6.2 (o la nativa de 6.3): su id (<c>REL-01</c>), su nombre, la tabla padre, la tabla hija, el lookup que la hija lleva hacia el padre y su comportamiento al borrar el padre
+    /// (<c>restringido</c>, <c>parental</c> —Cascade— o <c>quitar_vinculo</c> —RemoveLink—, sección 6.1).
+    /// </summary>
     internal sealed class RelacionLeida
     {
         public string Id { get; set; }
@@ -30,6 +42,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         public string Padre { get; set; }
         public string Hija { get; set; }
         public string Lookup { get; set; }
+        public string Comportamiento { get; set; }
     }
 
     /// <summary>El formato de una primaria autonumérica (<c>CONV-{SEQNUM:6}</c>): prefijo y cantidad mínima de dígitos.</summary>
@@ -82,6 +95,13 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         private static readonly Regex Largo = new Regex("[TM]\\((\\d+)\\)", RegexOptions.CultureInvariant);
         private static readonly Regex DestinoDelLookup = new Regex("destino `([a-z0-9_]+)`", RegexOptions.CultureInvariant);
         private static readonly Regex NombreLogico = new Regex("^`([a-z0-9_]+)`", RegexOptions.CultureInvariant);
+        private static readonly Regex DecimalConRango = new Regex(
+            @"decimal\((\d+)\)(?:\s*\[(-?\d+(?:\.\d+)?)\.\.(-?\d+(?:\.\d+)?)\])?", RegexOptions.CultureInvariant);
+        private static readonly Regex TablaDeLaRelacionNativa = new Regex("`(sanic_carp_tbl_[a-z]+)_Emails`", RegexOptions.CultureInvariant);
+
+        /// <summary>El lookup del correo hacia lo que trata (<c>regardingobjectid</c>) y la tabla estándar del correo: la relación nativa NAT-01 (sección 6.3) los nombra con palabras, no con identificadores.</summary>
+        private const string LookupDeRegarding = "regardingobjectid";
+        private const string TablaDelCorreo = "email";
 
         /// <summary>Lee el diccionario del repositorio (sube desde la carpeta de ejecución hasta encontrar <c>diseno/02-diccionario-datos.md</c>).</summary>
         public static DiccionarioLeido LeerDelRepositorio()
@@ -106,6 +126,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             var choices = new Dictionary<string, IReadOnlyList<int>>(StringComparer.Ordinal);
             var autonumericos = new Dictionary<string, FormatoAutonumerico>(StringComparer.Ordinal);
             var relaciones = new List<string[]>();
+            var nativas = new List<string[]>();
 
             string seccion = string.Empty;
             string tabla = null;
@@ -166,10 +187,19 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 {
                     relaciones.Add(celdas);
                 }
+                else if (seccion.StartsWith("6.", StringComparison.Ordinal) && celdas.Length > 6 && celdas[1].StartsWith("NAT-", StringComparison.Ordinal))
+                {
+                    nativas.Add(celdas);
+                }
             }
 
             var relacionesLeidas = new List<RelacionLeida>();
             foreach (var celdas in relaciones) relacionesLeidas.Add(AgregarLookup(tablas, celdas));
+            foreach (var celdas in nativas)
+            {
+                var nativa = LeerNativa(celdas);
+                if (nativa != null) relacionesLeidas.Add(nativa);
+            }
 
             return new DiccionarioLeido
             {
@@ -192,10 +222,31 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             var padre = NombreDeTabla(tablas, nombre.Groups[1].Value);
             var hija = NombreDeTabla(tablas, nombre.Groups[2].Value);
             var lookup = celdas[5].Trim('`');
-            var relacion = new RelacionLeida { Id = celdas[1], Nombre = celdas[2].Trim('`'), Padre = padre, Hija = hija, Lookup = lookup };
+            var relacion = new RelacionLeida { Id = celdas[1], Nombre = celdas[2].Trim('`'), Padre = padre, Hija = hija, Lookup = lookup, Comportamiento = celdas[6].Replace("*", string.Empty).Trim() };
             if (!tablas.ContainsKey(hija)) return relacion;      // la hija es una tabla estándar (REL-19: email): su lookup está en la sección 5
             tablas[hija].Add(new ColumnaLeida { Tabla = hija, Nombre = lookup, Tipo = TipoDeColumna.Lookup, Destino = padre });
             return relacion;
+        }
+
+        /// <summary>
+        /// La relación nativa de la sección 6.3 (NAT-01, Regarding de <c>email</c> a Conversación): la tabla padre sale del nombre que el documento le da (<c>sanic_carp_tbl_conversacion_Emails</c>) y el
+        /// comportamiento es Cascade si el documento dice que el Delete de la conversación se propaga a sus correos (spike 3, D-31). Si la fila no dice nada de eso, devuelve <c>null</c>: el doble no inventa.
+        /// </summary>
+        private static RelacionLeida LeerNativa(string[] celdas)
+        {
+            var nombre = TablaDeLaRelacionNativa.Match(celdas[2]);
+            if (!nombre.Success) return null;
+            var propaga = celdas[6].IndexOf("Delete", StringComparison.Ordinal) >= 0 && celdas[6].IndexOf("se propagan", StringComparison.Ordinal) >= 0;
+            if (!propaga) return null;
+            return new RelacionLeida
+            {
+                Id = celdas[1],
+                Nombre = nombre.Groups[1].Value + "_Emails",
+                Padre = nombre.Groups[1].Value,
+                Hija = TablaDelCorreo,
+                Lookup = LookupDeRegarding,
+                Comportamiento = "parental"
+            };
         }
 
         private static string NombreDeTabla(Dictionary<string, List<ColumnaLeida>> tablas, string corto)
@@ -225,7 +276,20 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 columna.Choice = ChoiceDeLaColumna.Match(tipo).Groups[1].Value;
             }
             else if (tipo.StartsWith("entero", StringComparison.Ordinal)) columna.Tipo = TipoDeColumna.Entero;
-            else if (tipo.StartsWith("decimal", StringComparison.Ordinal)) columna.Tipo = TipoDeColumna.Decimal;
+            else if (tipo.StartsWith("decimal", StringComparison.Ordinal))
+            {
+                columna.Tipo = TipoDeColumna.Decimal;
+                var forma = DecimalConRango.Match(tipo);
+                if (forma.Success)
+                {
+                    columna.Escala = int.Parse(forma.Groups[1].Value, CultureInfo.InvariantCulture);
+                    if (forma.Groups[2].Success)
+                    {
+                        columna.Minimo = decimal.Parse(forma.Groups[2].Value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+                        columna.Maximo = decimal.Parse(forma.Groups[3].Value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+                    }
+                }
+            }
             else if (tipo.StartsWith("texto", StringComparison.Ordinal) || tipo.StartsWith("memo", StringComparison.Ordinal) || tipo.StartsWith("primaria", StringComparison.Ordinal))
             {
                 columna.Tipo = TipoDeColumna.Texto;

@@ -55,7 +55,8 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         /// <paramref name="plugin"/> con un <see cref="ProveedorDeServiciosSimulado"/> armado con <paramref name="contexto"/> y esta
         /// fábrica y, si lanza, <see cref="OrganizationServiceEnMemoria.Restaurar"/> y relanza LA MISMA excepción. Si hay un pipeline
         /// conectado, el contexto figura como el que se está ejecutando mientras corre el plugin, así que sus escrituras son anidadas
-        /// (Depth + 1, <c>ParentContext</c> = el contexto). Devuelve el proveedor usado.
+        /// (Depth + 1, <c>ParentContext</c> = el contexto). Si el plugin atrapa una falla de ESCRITURA y sigue, la transacción se aborta (lote 3b, medido): lo escrito se revierte, la escritura siguiente
+        /// falla <c>0x8009000C</c> y, al terminar el plugin sin lanzar, falla <c>0x8009000C</c> también esta llamada. Devuelve el proveedor usado.
         /// </summary>
         public ProveedorDeServiciosSimulado EjecutarComoPlataforma(IPlugin plugin, ContextoDePluginSimulado contexto)
         {
@@ -63,11 +64,13 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             if (contexto == null) throw new ArgumentNullException(nameof(contexto));
             var proveedor = new ProveedorDeServiciosSimulado(contexto, this);
             var instantanea = Almacen.Instantanea();
+            var transaccion = Almacen.AbrirTransaccion(instantanea);
             var pipeline = Almacen.Pipeline;
             var entrada = pipeline == null ? null : pipeline.Entrar(contexto);
             try
             {
                 plugin.Execute(proveedor);
+                if (transaccion != null) Almacen.ExigirTransaccionNoAbortada();
             }
             catch
             {
@@ -78,6 +81,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             finally
             {
                 if (entrada != null) entrada.Dispose();
+                if (transaccion != null) transaccion.Dispose();
             }
             return proveedor;
         }
