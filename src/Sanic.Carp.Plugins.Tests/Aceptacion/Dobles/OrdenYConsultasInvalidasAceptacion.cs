@@ -147,7 +147,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
     /// QueryExpression"): "The default and maximum page size is 5,000 rows for standard tables" y "Don't use the QueryExpression.TopCount property with paging. These different methods of
     /// limiting the results of a query are not compatible". Sobre la cookie: "PagingCookie is null for the first request" y "A paging cookie should be used when returned by the previous
     /// page", "Recommended" pero sin ella el modelo cae a paginación simple (límite de 50.000 filas): <b>decisión del arquitecto: el doble NO exige la cookie entrante</b> (PA_CIN_08).
-    /// Lo demás es decisión de prudencia por falta de muestra, anotada en 4.5: <c>NotEqual</c> sobre columna ausente, <c>Equal</c> con varios valores, subfiltro vacío.
+    /// <b>Lote 3b (medido en Dev, 2026-10-15):</b> la prudencia de la vuelta 2 sobre <c>NotEqual</c> sobre columna ausente, <c>Equal</c> con varios valores y subfiltro vacío se resolvió con la medición: NotEqual INCLUYE los nulos,
+    /// varios valores en un operador de uno solo dan 0x80040203 y el subfiltro vacío se ignora. Siguen siendo <see cref="InvalidOperationException"/> los de la documentación de Learn (tamaño de página y TopCount con PageInfo).
     /// </summary>
     public class ConsultasInvalidasAceptacion
     {
@@ -184,17 +185,19 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         // ---- NotEqual: por la forma, no por los datos ----
 
         [Fact]
-        public void PA_CIN_01_NotEqualSinUnaCondicionQueExcluyaLosAusentesLanzaAunqueTodasLasFilasTenganLaColumna()
+        public void PA_CIN_01_NotEqualSinUnaCondicionQueExcluyaLosAusentesDevuelveLasFilasConLaColumnaAusente_ConLaTablaVaciaDevuelveNada()
         {
+            // lote 3b, medido en Dev: INVERTIDA (12-operadores-y-filtros.json punto_4, 'NotEqual incluye los nulos'). Antes lanzaba InvalidOperationException por la FORMA de la consulta, haya o no filas.
             var consulta = Consulta();
-            consulta.Criteria.AddCondition("zzf_estado", ConditionOperator.NotEqual, 1);
+            consulta.Criteria.AddCondition("zzf_texto", ConditionOperator.NotEqual, "a");
+            var almacen = ConTodasConEstado();
+            almacen.Sembrar(Zzf(Guid.NewGuid(), "zzf_estado", 1));   // sin zzf_texto: ausente, entra
 
-            var conFilasLlenas = Assert.Throws<InvalidOperationException>(() => ConTodasConEstado().RetrieveMultiple(consulta));
-            var conLaTablaVacia = Assert.Throws<InvalidOperationException>(() => new OrganizationServiceEnMemoria().RetrieveMultiple(consulta));
+            var conFilas = almacen.RetrieveMultiple(consulta).Entities;
+            var conLaTablaVacia = new OrganizationServiceEnMemoria().RetrieveMultiple(consulta).Entities;
 
-            Assert.Contains("NotEqual", conFilasLlenas.Message, StringComparison.Ordinal);
-            Assert.Contains("zzf_estado", conFilasLlenas.Message, StringComparison.Ordinal);
-            Assert.Contains("zzf_estado", conLaTablaVacia.Message, StringComparison.Ordinal);
+            Assert.Equal(3, conFilas.Count);   // b, c y la que no tiene texto; 'a' queda afuera
+            Assert.Empty(conLaTablaVacia);
         }
 
         [Theory]
@@ -220,8 +223,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         }
 
         [Fact]
-        public void PA_CIN_03_LaCompaniaDeOtraColumnaOLaDeUnOrNoCuentan()
+        public void PA_CIN_03_LaCompaniaDeOtraColumnaOLaDeUnOrYaNoCambianNada_NotEqualIncluyeLosAusentes()
         {
+            // lote 3b, medido en Dev: INVERTIDA. Antes ni la compañía de otra columna ni la de un Or alcanzaban y la consulta lanzaba; ahora no hay nada que lanzar y se evalúa.
             var deOtraColumna = Consulta();
             deOtraColumna.Criteria.AddCondition("zzf_texto", ConditionOperator.NotNull);
             deOtraColumna.Criteria.AddCondition("zzf_estado", ConditionOperator.NotEqual, 2);
@@ -230,8 +234,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             o.AddCondition("zzf_estado", ConditionOperator.NotNull);
             o.AddCondition("zzf_estado", ConditionOperator.NotEqual, 2);
 
-            Assert.Throws<InvalidOperationException>(() => ConTodasConEstado().RetrieveMultiple(deOtraColumna));
-            Assert.Throws<InvalidOperationException>(() => ConTodasConEstado().RetrieveMultiple(enUnOr));
+            Assert.Equal(new[] { Fila1, Fila3 }, ConTodasConEstado().RetrieveMultiple(deOtraColumna).Entities.Select(e => e.Id).OrderBy(i => i).ToArray());
+            Assert.Equal(3, ConTodasConEstado().RetrieveMultiple(enUnOr).Entities.Count);
         }
 
         [Theory]
@@ -252,15 +256,19 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
         [Theory]
         [MemberData(nameof(ColumnasParaNotEqual))]
-        public void PA_CIN_05_NotEqualSobreUnaColumnaPropiaSinCompaniaLanzaAunConLaTablaVacia(string tabla, string columna)
+        public void PA_CIN_05_NotEqualSobreUnaColumnaPropiaSinCompaniaIncluyeLaFilaSinLaColumna_YExcluyeLaQueTieneElValor(string tabla, string columna)
         {
+            // lote 3b, medido en Dev: INVERTIDA. Antes lanzaba con la tabla vacía para las 89 columnas. Ahora: la fila que no tiene la columna entra y la que tiene el valor comparado sale.
             var c = DiccionarioDeDatos.Leer()[tabla].First(x => x.Nombre == columna);
+            var almacen = new OrganizationServiceEnMemoria();
+            var sinLaColumna = Guid.NewGuid();
+            var conElValor = Guid.NewGuid();
+            almacen.Sembrar(new Entity(tabla, sinLaColumna), new Entity(tabla, conElValor) { [columna] = ValoresDeEjemplo.Valido(c) });
             var consulta = Consulta(tabla);
             consulta.Criteria.AddCondition(columna, ConditionOperator.NotEqual, ValoresDeEjemplo.ParaCondicion(c));
 
-            var error = Assert.Throws<InvalidOperationException>(() => new OrganizationServiceEnMemoria().RetrieveMultiple(consulta));
-
-            Assert.Contains(columna, error.Message, StringComparison.Ordinal);
+            Assert.Empty(new OrganizationServiceEnMemoria().RetrieveMultiple(consulta).Entities);
+            Assert.Equal(new[] { sinLaColumna }, almacen.RetrieveMultiple(consulta).Entities.Select(e => e.Id).ToArray());
         }
 
         // ---- Varios valores ----
@@ -272,16 +280,16 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         [InlineData(ConditionOperator.GreaterEqual)]
         [InlineData(ConditionOperator.LessThan)]
         [InlineData(ConditionOperator.LessEqual)]
-        public void PA_CIN_06_UnOperadorDeUnSoloValorConVariosValoresLanza_NoIgnoraLosDemas(ConditionOperator operador)
+        public void PA_CIN_06_UnOperadorDeUnSoloValorConVariosValoresFalla0x80040203_NoIgnoraLosDemas(ConditionOperator operador)
         {
+            // lote 3b, medido en Dev (12-operadores-y-filtros.json punto_3): 'The ConditonOperator.<Op> requires 1 value/s, not N' => 0x80040203. Antes InvalidOperationException "por prudencia".
             var consulta = Consulta();
             consulta.Criteria.AddCondition("zzf_estado", ConditionOperator.NotNull);
             consulta.Criteria.AddCondition("zzf_estado", operador, 1, 2);
 
-            var error = Assert.Throws<InvalidOperationException>(() => ConTodasConEstado().RetrieveMultiple(consulta));
+            var error = Falla(() => ConTodasConEstado().RetrieveMultiple(consulta));
 
-            Assert.Contains(operador.ToString(), error.Message, StringComparison.Ordinal);
-            Assert.Contains("zzf_estado", error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.SolicitudInvalida, "The ConditonOperator." + operador + " requires 1 value/s, not 2. Parameter Name: zzf_estado");
         }
 
         [Fact]
@@ -301,9 +309,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         [Theory]
         [InlineData(LogicalOperator.Or)]
         [InlineData(LogicalOperator.And)]
-        public void PA_CIN_07_UnSubfiltroVacioLanzaVengaDondeVengaYLaFilaNoImporta(LogicalOperator operadorDelPadre)
+        public void PA_CIN_07_UnSubfiltroVacioSeIgnoraVengaDondeVengaYLaFilaNoImporta(LogicalOperator operadorDelPadre)
         {
-            // Un filtro sin condiciones ni subfiltros dentro de otro no tiene respuesta verificada (el doble lo trataba como VERDADERO, también dentro de un Or). Se lanza con la tabla vacía.
+            // lote 3b, medido en Dev: INVERTIDA (12-operadores-y-filtros.json punto_5: el subfiltro vacío se ignora; ni verdadero ni falso). Antes lanzaba InvalidOperationException, también con la tabla vacía.
             var directo = Consulta();
             directo.Criteria.FilterOperator = operadorDelPadre;
             directo.Criteria.AddCondition("zzf_estado", ConditionOperator.Equal, 1);
@@ -312,9 +320,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             profundo.Criteria.AddCondition("zzf_estado", ConditionOperator.Equal, 1);
             profundo.Criteria.AddFilter(operadorDelPadre).AddFilter(LogicalOperator.Or);
 
-            Assert.Throws<InvalidOperationException>(() => new OrganizationServiceEnMemoria().RetrieveMultiple(directo));
-            Assert.Throws<InvalidOperationException>(() => ConTodasConEstado().RetrieveMultiple(directo));
-            Assert.Throws<InvalidOperationException>(() => new OrganizationServiceEnMemoria().RetrieveMultiple(profundo));
+            Assert.Empty(new OrganizationServiceEnMemoria().RetrieveMultiple(directo).Entities);
+            Assert.Equal(new[] { Fila1, Fila3 }, ConTodasConEstado().RetrieveMultiple(directo).Entities.Select(e => e.Id).OrderBy(i => i).ToArray());
+            Assert.Empty(new OrganizationServiceEnMemoria().RetrieveMultiple(profundo).Entities);
+            Assert.Equal(new[] { Fila1, Fila3 }, ConTodasConEstado().RetrieveMultiple(profundo).Entities.Select(e => e.Id).OrderBy(i => i).ToArray());
         }
 
         [Fact]

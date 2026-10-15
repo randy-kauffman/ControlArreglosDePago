@@ -33,26 +33,21 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
 
         // ---- Condiciones de tres valores ----
 
-        // REEMPLAZA a NotEqualSobreAusente_JuntoAUnaCondicionQueYaDescartaLaFila_NoLanza (vuelta 2, hallazgo 6: NotEqual lanza por la FORMA de la consulta, no por los datos).
+        // lote 3b, medido en Dev: INVERTIDAS las dos (12-operadores-y-filtros.json punto_4, NotEqual incluye los nulos). Antes lanzaban por la FORMA de la consulta (vuelta 2, hallazgo 6).
         [Fact]
-        public void NotEqualSobreAusente_AunConUnaCondicionDeOtraColumnaQueDescartaLaFila_LanzaPorLaForma()
+        public void NotEqualSobreAusente_AunConUnaCondicionDeOtraColumnaQueDescartaLaFila_NoLanzaYSeEvalua()
         {
-            // Antes no lanzaba porque otra condición del And descartaba la fila. Ahora una condición de OTRA columna no cuenta (diseno/03 4.5, "Paginación", punto e): lanza igual.
             var almacen = ConFilasSinNumero();
             var consulta = new QueryExpression(TablaZzf) { ColumnSet = new ColumnSet() };
             consulta.Criteria.AddCondition("zzf_estado", ConditionOperator.Equal, 2);
             consulta.Criteria.AddCondition("zzf_numero", ConditionOperator.NotEqual, 3);
 
-            var conFilas = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(consulta));
-            var conLaTablaVacia = Assert.Throws<InvalidOperationException>(() => new OrganizationServiceEnMemoria().RetrieveMultiple(consulta));
-
-            Assert.Contains("zzf_numero", conFilas.Message, StringComparison.Ordinal);
-            Assert.Contains("zzf_numero", conLaTablaVacia.Message, StringComparison.Ordinal);
+            Assert.Empty(almacen.RetrieveMultiple(consulta).Entities);   // ninguna fila tiene zzf_estado 2
+            Assert.Empty(new OrganizationServiceEnMemoria().RetrieveMultiple(consulta).Entities);
         }
 
-        // REEMPLAZA a NotEqualSobreAusente_EnUnOrConOtraCondicionVerdadera_NoLanza_PeroSinNingunaVerdaderaSi: la primera mitad (el Or con una condición verdadera) ya no pasa.
         [Fact]
-        public void NotEqualSobreAusente_EnUnOr_LanzaConOSinOtraCondicionVerdadera()
+        public void NotEqualSobreAusente_EnUnOr_EntraConOSinOtraCondicionVerdadera()
         {
             var almacen = ConFilasSinNumero();
             var verdadera = new QueryExpression(TablaZzf) { ColumnSet = new ColumnSet() };
@@ -64,11 +59,8 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             sinVerdadera.Criteria.AddCondition("zzf_estado", ConditionOperator.Equal, 2);
             sinVerdadera.Criteria.AddCondition("zzf_numero", ConditionOperator.NotEqual, 3);
 
-            var conVerdadera = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(verdadera));
-            var error = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(sinVerdadera));
-
-            Assert.Contains("zzf_numero", conVerdadera.Message, StringComparison.Ordinal);
-            Assert.Contains("zzf_numero", error.Message, StringComparison.Ordinal);
+            Assert.Equal(2, almacen.RetrieveMultiple(verdadera).Entities.Count);
+            Assert.Equal(2, almacen.RetrieveMultiple(sinVerdadera).Entities.Count);   // Fila1 no tiene numero (ausente => NotEqual verdadero) y Fila2 tiene 5
         }
 
         [Fact]
@@ -236,10 +228,10 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
         {
             var almacen = new OrganizationServiceEnMemoria();
 
-            var error = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity("sanic_carp_tbl_arreglo") { ["sanic_saldoinicial"] = new Money(5m) }));
+            // lote 3b, medido en Dev: 0x80044354 'Invalid Attribute Value Type for sanic_carp_tbl_arreglo.sanic_saldoinicial. Expected: Decimal, Found: Microsoft.Xrm.Sdk.Money' (antes ArgumentException).
+            var error = Falla(() => almacen.Create(new Entity("sanic_carp_tbl_arreglo") { ["sanic_saldoinicial"] = new Money(5m) }));
 
-            Assert.Contains("sanic_carp_tbl_arreglo", error.Message, StringComparison.Ordinal);
-            Assert.Contains("sanic_saldoinicial", error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.TipoDeAtributoInvalido, "sanic_saldoinicial");
             Assert.Empty(almacen.Todas("sanic_carp_tbl_arreglo"));
         }
     }

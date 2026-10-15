@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.ServiceModel;
 using System.Text.RegularExpressions;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
@@ -55,6 +56,12 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             }
         }
 
+        /// <summary>lote 3b: REL-10 a REL-19 (padre <c>systemuser</c>, declaradas Restrict y NO medidas: no se crean ni borran usuarios). Las otras nueve se miden en <c>MedidoEnDevRelacionesAceptacion</c>.</summary>
+        public static IEnumerable<object[]> RelacionesConPadreUsuario()
+        {
+            return Relaciones().Where(r => (string)r[2] == "systemuser");
+        }
+
         [Fact]
         public void CL3_H1_00_ElDiccionarioTrae19RelacionesYLaPruebaLasLee()
         {
@@ -63,10 +70,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         }
 
         [Theory]
-        [MemberData(nameof(Relaciones))]
+        [MemberData(nameof(RelacionesConPadreUsuario))]
         public void CL3_H1_01_DeleteDeUnaFilaConHijasEnLaRelacion_LanzaNotSupportedNombrandoLaRelacion_YNoBorraNada(string id, string nombre, string padre, string hija, string lookup)
         {
-            // cierre del lote 3, revisión vuelta 2, H1
+            // cierre del lote 3, revisión vuelta 2, H1. Lote 3b, medido en Dev: REL-01 a REL-09 y NAT-01 ya se emulan (MedidoEnDevRelacionesAceptacion); esta teoría queda SOLO para REL-10 a REL-19 (padre systemuser, no medidas).
             var almacen = new OrganizationServiceEnMemoria();
             var idDelPadre = Guid.NewGuid();
             var idDeLaHija = Guid.NewGuid();
@@ -102,7 +109,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
             Assert.False(almacen.Existe(Cliente, cliente));
             Assert.Single(almacen.Escrituras);
-            Assert.Throws<NotSupportedException>(() => almacen.Delete(Cliente, otroCliente));
+            // lote 3b, medido en Dev: REL-01 es Restrict => 0x80040227 (antes NotSupportedException).
+            ApoyoMedido.AssertFalla(ApoyoDeDobles.Falla(() => almacen.Delete(Cliente, otroCliente)), CodigosDeFalla.RestriccionDeRelacion, "sanic_carp_cliente_conversacion");
         }
 
         [Fact]
@@ -203,11 +211,13 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             almacen.Sembrar(new Entity(Arreglo, id));
             var propietarioInvalido = new EntityReference(Cliente, Guid.NewGuid());
 
-            var deUpdate = Assert.Throws<ArgumentException>(() => almacen.Update(new Entity(Arreglo, id) { ["ownerid"] = propietarioInvalido }));
-            var deAssign = Assert.Throws<ArgumentException>(() => almacen.Execute(Asignar(Arreglo, id, propietarioInvalido)));
+            // lote 3b, medido en Dev: 0x8004049E 'Invalid PrincipalType=... Principal type must be either SystemUser, Team or Organization.' (antes ArgumentException).
+            var deUpdate = ApoyoDeDobles.Falla(() => almacen.Update(new Entity(Arreglo, id) { ["ownerid"] = propietarioInvalido }));
+            var deAssign = ApoyoDeDobles.Falla(() => almacen.Execute(Asignar(Arreglo, id, propietarioInvalido)));
 
-            Assert.Equal(deUpdate.Message, deAssign.Message);
-            Assert.Contains("ownerid", deAssign.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(deUpdate, CodigosDeFalla.PropietarioInvalido, "Principal type must be either SystemUser, Team or Organization.");
+            ApoyoMedido.AssertFalla(deAssign, CodigosDeFalla.PropietarioInvalido, "Principal type must be either SystemUser, Team or Organization.");
+            Assert.Equal(deUpdate.Detail.Message, deAssign.Detail.Message);
             Assert.False(almacen.Leer(Arreglo, id).Contains("ownerid"));
             Assert.Empty(almacen.Escrituras);
         }
@@ -231,12 +241,15 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         }
 
         [Fact]
-        public void CL3_H4_03_ElDobleNoValidaQueElPrincipalExista_NiEnCreateNiEnAssign_LimiteConocido14()
+        public void CL3_H4_03_ElPrincipalDebeExistirEnCreate_PeroAssignNoLoValida_LimiteConocido()
         {
-            // cierre del lote 3, revisión vuelta 2, H4: "el principal debe existir SI el doble lo valida en Create/Update"; no lo valida (integridad referencial, pendiente 14).
+            // cierre del lote 3, revisión vuelta 2, H4. Lote 3b, medido en Dev (punto 14): Create y Update validan que el team o el usuario EXISTAN (0x80040217); AssignRequest NO se midió y no lo valida (límite declarado).
             var almacen = new OrganizationServiceEnMemoria();
-            var id = almacen.Create(new Entity(Arreglo) { ["ownerid"] = new EntityReference("team", Guid.NewGuid()) });
+            var team = Guid.NewGuid();
+            almacen.Sembrar(new Entity("team", team));
 
+            ApoyoMedido.AssertFalla(ApoyoDeDobles.Falla(() => almacen.Create(new Entity(Arreglo) { ["ownerid"] = new EntityReference("team", Guid.NewGuid()) })), CodigosDeFalla.FilaInexistente, "Entity 'team' With Id = ");
+            var id = almacen.Create(new Entity(Arreglo) { ["ownerid"] = new EntityReference("team", team) });
             almacen.Execute(Asignar(Arreglo, id, new EntityReference("systemuser", Guid.NewGuid())));
 
             Assert.Equal("systemuser", ((EntityReference)almacen.Leer(Arreglo, id)["ownerid"]).LogicalName);
@@ -297,19 +310,19 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         // ===================================================================================================================
 
         [Fact]
-        public void CL3_H6_01_UnUpdateConSoloStatecodeIgualAlDeLaFilaLanzaNotSupported_YNoResetaElMotivo()
+        public void CL3_H6_01_UnUpdateConSoloStatecodeIgualAlDeLaFilaReseteaElMotivoAlPorDefecto()
         {
-            // cierre del lote 3, revisión vuelta 2, H6
+            // cierre del lote 3, revisión vuelta 2, H6. INVERTIDA en el lote 3b, medido en Dev (13-estados.json): 'R1 en 0/159460001 + statecode=0 (igual al actual) => 0/1'. Antes lanzaba NotSupportedException.
             var almacen = new OrganizationServiceEnMemoria();
             var vigente = Estados.De(EstadoDeArreglo.Vigente);
+            var borrador = Estados.De(EstadoDeArreglo.Borrador);
             var id = Guid.NewGuid();
             almacen.Sembrar(new Entity(Arreglo, id) { ["statecode"] = new OptionSetValue(vigente.StateCode), ["statuscode"] = new OptionSetValue(vigente.StatusCode) });
 
-            var error = Assert.Throws<NotSupportedException>(() => almacen.Update(new Entity(Arreglo, id) { ["statecode"] = new OptionSetValue(vigente.StateCode) }));
+            almacen.Update(new Entity(Arreglo, id) { ["statecode"] = new OptionSetValue(vigente.StateCode) });
 
-            Assert.Contains("no medido en Dev, pendiente (6)", error.Message, StringComparison.Ordinal);
-            Assert.Equal(vigente.StatusCode, ((OptionSetValue)almacen.Leer(Arreglo, id)["statuscode"]).Value);
-            Assert.Empty(almacen.Escrituras);
+            Assert.Equal(borrador.StatusCode, ((OptionSetValue)almacen.Leer(Arreglo, id)["statuscode"]).Value);
+            Assert.Single(almacen.Escrituras);
         }
 
         [Fact]
@@ -408,17 +421,26 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             { "versionnumber", 12345L }
         };
 
+        /// <summary>lote 3b, medido en Dev: createdon, createdby, owningbusinessunit y versionnumber se IGNORAN sin fallar (PA_MED_ESC_01). Las otras cuatro no se midieron y siguen lanzando.</summary>
+        private static readonly string[] ColumnasDePlataformaMedidas = { "createdon", "createdby", "owningbusinessunit", "versionnumber" };
+
         public static IEnumerable<object[]> ColumnasDePlataforma()
         {
             foreach (var tabla in DiccionarioDeDatos.Leer().Keys)
-                foreach (var columna in ColumnasDePlataformaDeSoloLectura.Keys) yield return new object[] { tabla, columna };
+                foreach (var columna in ColumnasDePlataformaDeSoloLectura.Keys.Where(c => !ColumnasDePlataformaMedidas.Contains(c))) yield return new object[] { tabla, columna };
+        }
+
+        /// <summary>lote 3b: solo la columna de ARCHIVO sigue rechazada; la fórmula se IGNORA sin fallar (medido, <c>PA_MED_ESC_01</c>).</summary>
+        public static IEnumerable<object[]> ColumnasDeArchivo()
+        {
+            return ColumnasDeFormulaYArchivo().Where(o => (string)o[1] != "sanic_antiguedad");
         }
 
         [Theory]
-        [MemberData(nameof(ColumnasDeFormulaYArchivo))]
-        public void CL3_H8_01_UnaColumnaDeFormulaOArchivoNoSeEscribeNiPorCreateNiPorUpdate(string tabla, string columna)
+        [MemberData(nameof(ColumnasDeArchivo))]
+        public void CL3_H8_01_UnaColumnaDeArchivoNoSeEscribeNiPorCreateNiPorUpdate(string tabla, string columna)
         {
-            // cierre del lote 3, revisión vuelta 2, H8
+            // cierre del lote 3, revisión vuelta 2, H8. Lote 3b: la fórmula sanic_antiguedad se ignora sin fallar (18-texto-y-esquema.json); sanic_archivo NO se midió y sigue lanzando (límite declarado).
             var almacen = new OrganizationServiceEnMemoria();
             var id = Guid.NewGuid();
             almacen.Sembrar(new Entity(tabla, id));
@@ -445,7 +467,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
         [Theory]
         [MemberData(nameof(ColumnasDePlataforma))]
-        public void CL3_H8_03_UnaColumnaDePlataformaDeSoloLecturaNoSeEscribeNiPorCreateNiPorUpdate(string tabla, string columna)
+        public void CL3_H8_03_UnaColumnaDePlataformaDeSoloLecturaNoMedidaNoSeEscribeNiPorCreateNiPorUpdate(string tabla, string columna)
         {
             // cierre del lote 3, revisión vuelta 2, H8
             var almacen = new OrganizationServiceEnMemoria();

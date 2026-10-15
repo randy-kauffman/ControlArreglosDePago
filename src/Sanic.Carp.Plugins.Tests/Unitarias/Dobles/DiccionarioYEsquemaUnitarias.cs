@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text.Json;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Sanic.Carp.Plugins.Tests.Dobles;
+using Sanic.Carp.Plugins.Tests.Aceptacion.Dobles;
 using Xunit;
 
 namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
@@ -194,14 +196,17 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
         {
             var almacen = AlmacenCon(Documento);
 
-            almacen.Create(new Entity("sanic_carp_tbl_pedido") { ["sanic_color"] = new OptionSetValue(159460007), ["sanic_total"] = 1m, ["sanic_clienteid"] = new EntityReference("sanic_carp_tbl_cliente", Guid.NewGuid()) });
-            var deChoice = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity("sanic_carp_tbl_pedido") { ["sanic_color"] = new OptionSetValue(159460002) }));
-            var deColumnaDelProyecto = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity("sanic_carp_tbl_pedido") { ["sanic_fechainicio"] = new DateTime(2026, 1, 1) }));
-            var deLargo = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity("sanic_carp_tbl_cliente") { ["sanic_apodo"] = "seis!!" }));
+            var cliente = Guid.NewGuid();
+            almacen.Sembrar(new Entity("sanic_carp_tbl_cliente", cliente));   // lote 3b (integridad referencial, 0x80040217): el destino del lookup existe
+            almacen.Create(new Entity("sanic_carp_tbl_pedido") { ["sanic_color"] = new OptionSetValue(159460007), ["sanic_total"] = 1m, ["sanic_clienteid"] = new EntityReference("sanic_carp_tbl_cliente", cliente) });
+            // lote 3b, medido en Dev: FaultException con el ErrorCode medido (antes ArgumentException).
+            var deChoice = ApoyoDeDobles.Falla(() => almacen.Create(new Entity("sanic_carp_tbl_pedido") { ["sanic_color"] = new OptionSetValue(159460002) }));
+            var deColumnaDelProyecto = ApoyoDeDobles.Falla(() => almacen.Create(new Entity("sanic_carp_tbl_pedido") { ["sanic_fechainicio"] = new DateTime(2026, 1, 1) }));
+            var deLargo = ApoyoDeDobles.Falla(() => almacen.Create(new Entity("sanic_carp_tbl_cliente") { ["sanic_apodo"] = "seis!!" }));
 
-            Assert.Contains("sanic_color", deChoice.Message, StringComparison.Ordinal);
-            Assert.Contains("sanic_fechainicio", deColumnaDelProyecto.Message, StringComparison.Ordinal);
-            Assert.Contains("sanic_apodo", deLargo.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(deChoice, CodigosDeFalla.OpcionInexistente, "sanic_color");
+            ApoyoMedido.AssertFalla(deColumnaDelProyecto, CodigosDeFalla.ColumnaInexistente, "sanic_fechainicio");
+            ApoyoMedido.AssertFalla(deLargo, CodigosDeFalla.TextoDemasiadoLargo, "sanic_apodo");
         }
 
         [Fact]
@@ -221,13 +226,14 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             var id = Guid.NewGuid();
             conMuestra.Sembrar(new Entity("sanic_carp_tbl_cliente", id) { ["createdon"] = new DateTime(2026, 10, 14, 15, 0, 0, DateTimeKind.Utc), ["statecode"] = new OptionSetValue(0) });
             Assert.True(conMuestra.Retrieve("sanic_carp_tbl_cliente", id, new ColumnSet("createdon", "statecode")).Contains("createdon"));
-            var deTipo = Assert.Throws<ArgumentException>(() => conMuestra.Create(new Entity("sanic_carp_tbl_cliente") { ["statecode"] = 0 }));
-            var deColumna = Assert.Throws<InvalidOperationException>(() => sinMuestra.Retrieve("sanic_carp_tbl_cliente", id, new ColumnSet("createdon")));
-            var deProyecto = Assert.Throws<ArgumentException>(() => conMuestra.Create(new Entity("sanic_carp_tbl_cliente") { ["sanic_cedula"] = "x" }));
+            // lote 3b, medido en Dev: faltas con ErrorCode (tipo 0x80040203; columna inexistente 0x80041103), antes ArgumentException e InvalidOperationException.
+            var deTipo = ApoyoDeDobles.Falla(() => conMuestra.Create(new Entity("sanic_carp_tbl_cliente") { ["statecode"] = 0 }));
+            var deColumna = ApoyoDeDobles.Falla(() => sinMuestra.Retrieve("sanic_carp_tbl_cliente", id, new ColumnSet("createdon")));
+            var deProyecto = ApoyoDeDobles.Falla(() => conMuestra.Create(new Entity("sanic_carp_tbl_cliente") { ["sanic_cedula"] = "x" }));
 
-            Assert.Contains("statecode", deTipo.Message, StringComparison.Ordinal);
-            Assert.Contains("createdon", deColumna.Message, StringComparison.Ordinal);
-            Assert.Contains("sanic_cedula", deProyecto.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(deTipo, CodigosDeFalla.SolicitudInvalida);
+            ApoyoMedido.AssertFalla(deColumna, CodigosDeFalla.ColumnaInexistente, "createdon");
+            ApoyoMedido.AssertFalla(deProyecto, CodigosDeFalla.ColumnaInexistente, "sanic_cedula");
         }
 
         [Fact]
@@ -239,13 +245,14 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             var almacen = AlmacenCon(Documento, muestraDeCorreo);
 
             almacen.Create(new Entity("email") { ["subject"] = "ZZF", ["sanic_puntaje"] = 3 });
-            var deColumna = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity("email") { ["messageid"] = "<x@example.com>" }));
-            var deTipo = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity("email") { ["sanic_puntaje"] = 3m }));
-            var deDestino = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity("email") { ["sanic_atendidoporid"] = new EntityReference("team", Guid.NewGuid()) }));
+            // lote 3b, medido en Dev: columna 0x80041103, tipo 0x80040203, lookup a otra tabla 0x80040217 (nombra la tabla destino declarada).
+            var deColumna = ApoyoDeDobles.Falla(() => almacen.Create(new Entity("email") { ["messageid"] = "<x@example.com>" }));
+            var deTipo = ApoyoDeDobles.Falla(() => almacen.Create(new Entity("email") { ["sanic_puntaje"] = 3m }));
+            var deDestino = ApoyoDeDobles.Falla(() => almacen.Create(new Entity("email") { ["sanic_atendidoporid"] = new EntityReference("team", Guid.NewGuid()) }));
 
-            Assert.Contains("messageid", deColumna.Message, StringComparison.Ordinal);
-            Assert.Contains("sanic_puntaje", deTipo.Message, StringComparison.Ordinal);
-            Assert.Contains("sanic_atendidoporid", deDestino.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(deColumna, CodigosDeFalla.ColumnaInexistente, "messageid");
+            ApoyoMedido.AssertFalla(deTipo, CodigosDeFalla.SolicitudInvalida, "Incorrect attribute value type System.Decimal");
+            ApoyoMedido.AssertFalla(deDestino, CodigosDeFalla.FilaInexistente, "Entity 'systemuser' With Id = ");
         }
 
         [Fact]
@@ -253,11 +260,12 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
         {
             var almacen = AlmacenCon(Documento);
 
-            var deLectura = Assert.Throws<InvalidOperationException>(() => almacen.Retrieve("email", Guid.NewGuid(), new ColumnSet(true)));
-            var deEscritura = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity("email")));
+            // lote 3b, medido en Dev: 0x80041102 (tabla inexistente) en lectura y escritura.
+            var deLectura = ApoyoDeDobles.Falla(() => almacen.Retrieve("email", Guid.NewGuid(), new ColumnSet(true)));
+            var deEscritura = ApoyoDeDobles.Falla(() => almacen.Create(new Entity("email")));
 
-            Assert.Contains("email", deLectura.Message, StringComparison.Ordinal);
-            Assert.Contains("email", deEscritura.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(deLectura, CodigosDeFalla.TablaInexistente, "'email'");
+            ApoyoMedido.AssertFalla(deEscritura, CodigosDeFalla.TablaInexistente, "'email'");
         }
     }
 }

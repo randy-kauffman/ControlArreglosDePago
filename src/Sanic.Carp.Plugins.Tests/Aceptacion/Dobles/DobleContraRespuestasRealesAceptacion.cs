@@ -177,20 +177,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var esperado = kindDeEntrada == DateTimeKind.Local ? entrada.ToUniversalTime() : DateTime.SpecifyKind(entrada, DateTimeKind.Utc);
             var almacen = new OrganizationServiceEnMemoria();
 
-            if (kindDeEntrada != DateTimeKind.Utc)
-            {
-                // AJUSTADA en la vuelta 2 (hallazgo 5, 2026-10-14): ANTES una UL con Kind Local o Unspecified se aceptaba "como UTC" al escribir. El reloj del proyecto es UTC
-                // (diseno/03 0.6) y un código que escribe una hora sin Kind está confundiendo zonas: Create y Update la RECHAZAN con ArgumentException (detalle en
-                // FechasDeEscrituraAceptacion). Sembrar sigue normalizando (declara datos ya conocidos, que la plataforma devuelve siempre en Utc).
-                Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(Conversacion) { ["sanic_fechaprimercorreo"] = entrada }));
-                Assert.Empty(almacen.Todas(Conversacion));
-                var sembradaAparte = Almacen(new Entity(Conversacion, Guid.NewGuid()) { ["sanic_fechaprimercorreo"] = entrada });
-                var normalizada = sembradaAparte.Todas(Conversacion).Single()["sanic_fechaprimercorreo"];
-                ComparadorDeFormas.AssertValor("sembrar.sanic_fechaprimercorreo", real, normalizada, estricto: false);
-                Assert.Equal(esperado.Ticks, ((DateTime)normalizada).Ticks);
-                return;
-            }
-
+            // lote 3b, medido en Dev: INVERTIDA la rama de la vuelta 2 (hallazgo 5) que rechazaba Local y Unspecified en Create y Update: la plataforma los ACEPTA (Local convertida a UTC, Unspecified
+            // como UTC; 11-fechas-escritas.json). Las tres Kind recorren ahora el mismo camino: Create, Update y Sembrar. El esperado usa la zona del proceso (ZonaLocal por defecto): vale en cualquier puesto.
             var id = almacen.Create(new Entity(Conversacion) { ["sanic_fechaprimercorreo"] = entrada });
             var devuelta = almacen.Retrieve(Conversacion, id, new ColumnSet("sanic_fechaprimercorreo"))["sanic_fechaprimercorreo"];
 
@@ -221,7 +209,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             Assert.Equal(TimeSpan.Zero, ((DateTime)real).TimeOfDay);
 
             var entrada = DateTime.SpecifyKind(new DateTime(2026, 11, 1, hora, 45, 0), kindDeEntrada);
-            var esperado = new DateTime(2026, 11, 1, 0, 0, 0, DateTimeKind.Unspecified);
+            // lote 3b, medido en Dev: al ESCRIBIR, una DO con Kind Local toma la fecha del instante convertido a UTC (23:30 local => el día siguiente en UTC-6); Sembrar sigue tomando la fecha del valor.
+            var esperadoSembrado = new DateTime(2026, 11, 1, 0, 0, 0, DateTimeKind.Unspecified);
+            var esperado = kindDeEntrada == DateTimeKind.Local ? new DateTime(entrada.ToUniversalTime().Date.Ticks, DateTimeKind.Unspecified) : esperadoSembrado;
             var almacen = new OrganizationServiceEnMemoria();
 
             var idArreglo = almacen.Create(new Entity(Arreglo) { ["sanic_fechainicio"] = entrada, ["sanic_fechaformalizacion"] = entrada });
@@ -242,7 +232,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var sembrada = Almacen(new Entity(Arreglo, Guid.NewGuid()) { ["sanic_fechafin"] = entrada });
             var deSembrar = sembrada.Todas(Arreglo).Single()["sanic_fechafin"];
             ComparadorDeFormas.AssertValor("arreglo.sembrar.sanic_fechafin", real, deSembrar, estricto: false);
-            Assert.Equal(esperado, deSembrar);
+            Assert.Equal(esperadoSembrado, deSembrar);
         }
 
         // =====================================================================================================================
@@ -638,6 +628,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             Assert.Equal(unchecked((int)0x80060892), real.Detail.ErrorCode);
             var almacen = new OrganizationServiceEnMemoria();
             almacen.AgregarClaveAlterna(Conversacion, "sanic_huellamessageid");
+            almacen.Sembrar(new Entity("team", ConfiguracionSimulada.IdDeTeamPropietarioPorDefecto));   // lote 3b (integridad referencial, 0x80040217): el propietario de la fila del constructor tiene que existir
             almacen.Create(ConstructorDeDatos.UnaConversacion().Con("sanic_huellamessageid", "ZZF-h-duplicada").Construir());
             var repetida = ConstructorDeDatos.UnaConversacion().ConId(Guid.NewGuid()).Con("sanic_huellamessageid", "ZZF-h-duplicada").Construir();
 
@@ -909,20 +900,24 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         }
 
         [Fact]
-        public void PA_DOB_16_ElDobleNoRellenaElNameDeUnEntityReference_PuedeSerNulo()
+        public void PA_DOB_16_ElDobleResuelveElNameDeUnEntityReferenceAlLeerSiElDestinoExiste_YConservaElSembradoSiNo()
         {
+            // lote 3b, medido en Dev: INVERTIDA. Antes "el doble no rellena el Name (puede ser nulo)". 15-name-del-lookup.json: la plataforma ignora el Name enviado y lo resuelve al leer.
+            // Lo sembrado cuyo destino NO está en el almacén conserva el Name del fixture (el doble no puede resolver lo que no tiene).
             var real = LectorDeFixtures.Abrir("02-conversacion.json").Entidad("abierta");
             Assert.Null(((EntityReference)real["owningteam"]).Name);
             var almacen = Almacen(real);
-            var id = almacen.Create(new Entity(Conversacion) { ["ownerid"] = new EntityReference("team", ApoyoDeDobles.Team1) });
+            var equipoNuevo = Guid.NewGuid();
+            almacen.Sembrar(new Entity("team", equipoNuevo) { ["name"] = "ZZF Team nuevo" });
+            var id = almacen.Create(new Entity(Conversacion) { ["ownerid"] = new EntityReference("team", equipoNuevo) { Name = "enviado y descartado" } });
 
             var sembrada = almacen.Retrieve(Conversacion, real.Id, new ColumnSet("owningteam", "ownerid"));
             var creada = almacen.Retrieve(Conversacion, id, new ColumnSet("ownerid"));
 
             Assert.Null(((EntityReference)sembrada["owningteam"]).Name);
             Assert.Equal("ZZF Team 1", ((EntityReference)sembrada["ownerid"]).Name);
-            Assert.Null(((EntityReference)creada["ownerid"]).Name);
-            Assert.Equal(ApoyoDeDobles.Team1, ((EntityReference)creada["ownerid"]).Id);
+            Assert.Equal("ZZF Team nuevo", ((EntityReference)creada["ownerid"]).Name);
+            Assert.Equal(equipoNuevo, ((EntityReference)creada["ownerid"]).Id);
         }
     }
 }

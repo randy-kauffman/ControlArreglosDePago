@@ -20,9 +20,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
     /// como UTC y <c>Local</c> pasado a UTC, y el texto sin distinguir mayúsculas (la plataforma compara con la colación de la base: la cola
     /// del buzón se busca "sin distinguir mayúsculas", 0.4 punto 5; NO verificado con una muestra, y el doble no emula la insensibilidad a acentos).</item>
     /// <item><b>Una columna ausente</b> no cumple <c>Equal</c>, <c>In</c> ni ninguna comparación; sí cumple <c>Null</c>; no cumple <c>NotNull</c>.
-    /// <c>NotEqual</c> sobre una fila donde la columna está ausente <b>lanza <see cref="InvalidOperationException"/></b>: la plataforma no
-    /// tiene una respuesta verificada (SQL excluye los nulos, Dataverse puede incluirlos) y un doble que adivina deja pasar en el puesto un
-    /// resultado que en Dev es otro (D-59). Hasta tener una muestra real, la consulta se escribe de modo que no dependa de eso.</item>
+    /// <c>NotEqual</c> sobre una fila donde la columna está ausente la <b>INCLUYE</b> (lote 3b, medido en Dev: <c>12-operadores-y-filtros.json</c> punto_4; antes lanzaba <see cref="InvalidOperationException"/>).</item>
     /// </list>
     /// </summary>
     public class ConsultasEnMemoriaAceptacion
@@ -150,14 +148,15 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         [Theory]
         [InlineData("zzf_numero", 3)]
         [InlineData("zzf_texto", "ALFA")]
-        public void PA_QRY_02b_NotEqualSobreUnaFilaDondeLaColumnaEstaAusenteLanzaPorqueLaPlataformaNoTieneRespuestaVerificada(string columna, object valor)
+        public void PA_QRY_02b_NotEqualSobreUnaFilaDondeLaColumnaEstaAusenteLaIncluye(string columna, object valor)
         {
+            // lote 3b, medido en Dev: INVERTIDA (12-operadores-y-filtros.json, punto_4: 'NotEqual incluye los nulos'). Antes lanzaba InvalidOperationException "porque la plataforma no tiene respuesta verificada".
             var almacen = Sembrado();
 
-            var error = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(Donde(columna, ConditionOperator.NotEqual, valor)));
+            var ids = Ids(almacen, Donde(columna, ConditionOperator.NotEqual, valor));
 
-            Assert.Contains("NotEqual", error.Message, StringComparison.Ordinal);
-            Assert.Contains(columna, error.Message, StringComparison.Ordinal);
+            var esperados = columna == "zzf_numero" ? new[] { Fila1, Fila2, F5, F6 } : new[] { Fila2, Fila3, F4, F6 };   // F6 no tiene numero; F4 no tiene texto
+            Assert.Equal(esperados.OrderBy(i => i).ToArray(), ids);
         }
 
         [Fact]

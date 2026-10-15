@@ -287,6 +287,41 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             _estado.Accesos[(usuario, tabla, id)] = derechos;
         }
 
+        // ---- Lote 3b: zona local y privilegios (firmas del arquitecto; el constructor las implementa) ----
+
+        /// <summary>
+        /// Zona con la que el doble convierte a UTC una fecha y hora escrita con <c>Kind</c> <c>Local</c> (medido en Dev: UL <c>Local</c> se convierte a UTC; <c>Unspecified</c> se toma como UTC).
+        /// Por defecto <see cref="TimeZoneInfo.Local"/>, que es lo que hace el cliente real al serializar; una prueba que no quiera depender de la zona del puesto fija una zona
+        /// propia (por ejemplo <see cref="TimeZoneInfo.CreateCustomTimeZone(string, TimeSpan, string, string)"/>). Es del almacén: todas las vistas la comparten. <c>null</c> lanza <see cref="ArgumentNullException"/>.
+        /// </summary>
+        public TimeZoneInfo ZonaLocal
+        {
+            get { throw new NotImplementedException("lote 3b: el constructor implementa ZonaLocal"); }
+            set { throw new NotImplementedException("lote 3b: el constructor implementa ZonaLocal"); }
+        }
+
+        /// <summary>
+        /// Privilegio por operación (medido el 2026-10-15, <c>22-privilegios.json</c>): para las vistas de <paramref name="usuario"/>, la <paramref name="operacion"/> sobre <paramref name="tabla"/>
+        /// lanza <c>FaultException&lt;OrganizationServiceFault&gt;</c> <see cref="CodigosDeFalla.SinPrivilegio"/> con el mensaje "Principal user (Id=…) is missing prv&lt;Op&gt;&lt;tabla&gt; privilege …"
+        /// (<c>Read</c> para <c>Retrieve</c> y <c>RetrieveMultiple</c>, <c>Create</c>, <c>Write</c> para <c>Update</c> y <c>Delete</c>). La falla ocurre ANTES de validar la escritura y de correr cualquier step. SYSTEM no se ve afectado.
+        /// Solo admite <see cref="OperacionDeDatos.Retrieve"/>, <see cref="OperacionDeDatos.RetrieveMultiple"/>, <see cref="OperacionDeDatos.Create"/>, <see cref="OperacionDeDatos.Update"/> y
+        /// <see cref="OperacionDeDatos.Delete"/>; cualquier otra lanza <see cref="NotSupportedException"/> (el privilegio de Assign no se midió).
+        /// </summary>
+        public void DenegarPrivilegio(Guid usuario, string tabla, OperacionDeDatos operacion)
+        {
+            throw new NotImplementedException("lote 3b: el constructor implementa DenegarPrivilegio");
+        }
+
+        /// <summary>
+        /// Seguridad por columna, parte de ESCRITURA (medido el 2026-10-15): para las vistas de <paramref name="usuario"/>, un <c>Create</c> que trae <paramref name="columna"/> lanza
+        /// <see cref="CodigosDeFalla.ColumnaProtegidaAlCrear"/> y un <c>Update</c> que la trae, <see cref="CodigosDeFalla.ColumnaProtegidaAlActualizar"/>. La LECTURA es aparte
+        /// (<see cref="OcultarColumna"/>: la columna no viene, no falla). Quien quiera el comportamiento completo de la cédula sin perfil usa las dos.
+        /// </summary>
+        public void DenegarEscrituraDeColumna(Guid usuario, string tabla, string columna)
+        {
+            throw new NotImplementedException("lote 3b: el constructor implementa DenegarEscrituraDeColumna");
+        }
+
         // ---- Archivos (InitializeFileBlocksDownload / DownloadBlock) ----
 
         /// <summary>Guarda el contenido de una columna de archivo de una fila.</summary>

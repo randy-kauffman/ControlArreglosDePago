@@ -38,6 +38,15 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             return ((IOrganizationServiceFactory)llamada.Proveedor.GetService(typeof(IOrganizationServiceFactory))).CreateOrganizationService(usuario);
         }
 
+        /// <summary>lote 3b: el contexto <paramref name="objetivo"/> se alcanza siguiendo <c>ParentContext</c> desde <paramref name="desde"/> (a lo sumo 10 saltos).</summary>
+        private static bool AlcanzaPorParentContext(IPluginExecutionContext desde, IPluginExecutionContext objetivo)
+        {
+            var saltos = 0;
+            for (var actual = desde.ParentContext; actual != null && saltos < 10; actual = actual.ParentContext, saltos++)
+                if (ReferenceEquals(actual, objetivo)) return true;
+            return false;
+        }
+
         // ---- Qué se dispara ----
 
         [Fact]
@@ -146,7 +155,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             Assert.Equal(Fila1, contexto.PrimaryEntityId);
             Assert.Equal(ApoyoDeDobles.Usuario1, contexto.UserId);
             Assert.Equal(ApoyoDeDobles.Usuario1, contexto.InitiatingUserId);
-            Assert.Null(contexto.ParentContext);
+            // lote 3b, medido en Dev (41-sonda-resumen.json f_ids): en PreOperation y PostOperation síncronos el ParentContext NO es nulo aun con Depth 1: es un contexto del mismo mensaje, tabla y profundidad.
+            Assert.NotNull(contexto.ParentContext);
+            Assert.Equal("Update", contexto.ParentContext.MessageName);
+            Assert.Equal(TablaZzf, contexto.ParentContext.PrimaryEntityName);
+            Assert.Equal(1, contexto.ParentContext.Depth);
             Assert.Equal(fabrica.Almacen.Reloj.AhoraUtc, contexto.OperationCreatedOn);
             Assert.Equal(fabrica.Almacen.UnidadDeNegocioId, contexto.BusinessUnitId);
             Assert.Equal(fabrica.Almacen.OrganizacionId, contexto.OrganizationId);
@@ -188,7 +201,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             Assert.Equal(1, externo.Depth);
             Assert.Equal(ApoyoDeDobles.Usuario1, externo.InitiatingUserId);
             Assert.Equal(2, anidado.Depth);
-            Assert.Same(externo, anidado.ParentContext);
+            // lote 3b, medido en Dev: el ParentContext de un PreOperation anidado es un contexto de SU operación (mismo mensaje, tabla y Depth 2); el llamador queda alcanzable por la cadena (cuántos saltos: no medido).
+            Assert.NotSame(externo, anidado.ParentContext);
+            Assert.Equal(2, anidado.ParentContext.Depth);
+            Assert.True(AlcanzaPorParentContext(anidado, externo), "la cadena de ParentContext del step anidado llega al contexto del llamador");
             Assert.Equal(fabrica.IdDeSystem, anidado.UserId);
             Assert.Equal(fabrica.IdDeSystem, anidado.InitiatingUserId);
             Assert.Equal(new[] { fabrica.IdDeSystem }, fabrica.Escrituras.Where(e => e.Operacion == OperacionDeDatos.Update).Select(e => e.Identidad).ToArray());
@@ -249,7 +265,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
             var anidado = paso.Llamadas.Single().Contexto;
             Assert.Equal(2, anidado.Depth);
-            Assert.Same(contextoDeLaApi, anidado.ParentContext);
+            Assert.True(AlcanzaPorParentContext(anidado, contextoDeLaApi), "lote 3b: la cadena de ParentContext llega al contexto de la Custom API (antes Assert.Same del ParentContext directo)");
             Assert.Equal(fabrica.IdDeSystem, anidado.InitiatingUserId);
         }
 
@@ -289,8 +305,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         }
 
         [Fact]
-        public void PA_PIP_13_EnCreateSinIdElTargetNoTraeIdEnLasEtapasPreYTrae_ElDeLaFilaCreada_EnPost()
+        public void PA_PIP_13_EnCreateSinIdElTargetYElPrimaryEntityIdYaTraenElIdQueTendraLaFila_EnTodasLasEtapas()
         {
+            // lote 3b, medido en Dev: INVERTIDA (41-sonda-resumen.json f_ids, ServiceClient y Web API): Target.Id y PrimaryEntityId NUNCA están vacíos, tampoco en PreValidation ni sin id enviado. Antes: vacíos en las etapas Pre.
+            // El detalle (atributo del id primario por etapa, OutputParameters) está en MedidoEnDevTransaccionYContextoAceptacion.
             var fabrica = NuevaFabrica(out var pipeline);
             var preval = new PluginEspia("preval");
             var preop = new PluginEspia("preop");
@@ -301,13 +319,13 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
             var id = fabrica.CreateOrganizationService(null).Create(new Entity(TablaZzf) { ["zzf_a"] = 1 });
 
-            Assert.Equal(Guid.Empty, preval.Llamadas.Single().IdDelTargetAlEntrar);
-            Assert.Equal(Guid.Empty, preop.Llamadas.Single().IdDelTargetAlEntrar);
-            Assert.Equal(Guid.Empty, preop.Llamadas.Single().Contexto.PrimaryEntityId);
+            Assert.NotEqual(Guid.Empty, id);
+            Assert.Equal(id, preval.Llamadas.Single().IdDelTargetAlEntrar);
+            Assert.Equal(id, preop.Llamadas.Single().IdDelTargetAlEntrar);
+            Assert.Equal(id, preop.Llamadas.Single().Contexto.PrimaryEntityId);
             Assert.Equal(id, post.Llamadas.Single().IdDelTargetAlEntrar);
             Assert.Equal(id, post.Llamadas.Single().Contexto.PrimaryEntityId);
             Assert.Equal(id, post.Llamadas.Single().Contexto.OutputParameters["id"]);
-            Assert.NotEqual(Guid.Empty, id);
         }
 
         [Fact]

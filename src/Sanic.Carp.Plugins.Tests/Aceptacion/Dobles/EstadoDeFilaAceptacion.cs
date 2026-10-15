@@ -122,24 +122,40 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             }
         }
 
+        /// <summary>lote 3b: los motivos que un Create acepta (los del estado Activo de la tabla).</summary>
+        private static bool EsMotivoDeActivo(string tabla, int status)
+        {
+            if (tabla == Arreglo) return status == Estados.De(EstadoDeArreglo.Borrador).StatusCode || status == Estados.De(EstadoDeArreglo.Vigente).StatusCode;
+            return status == Estados.StatusPorDefecto(Estados.Activo);
+        }
+
         [Theory]
         [MemberData(nameof(ParesInvalidos))]
-        public void PA_ESF_03_UnParDeEstadoInvalidoSeRechazaEnCreateYEnUpdate_NombrandoLaTabla(string tabla, int state, int status)
+        public void PA_ESF_03_UnParDeEstadoInvalidoSeRechazaEnUpdateYEnCreate_ConLaFallaMedida_SalvoQueElCreateIgnoraElStatecode(string tabla, int state, int status)
         {
+            // lote 3b, medido en Dev (13-estados.json): REEMPLAZA al ArgumentException. Update con un par inválido => 0x80048408; un statecode que la tabla no tiene en un Update no se midió (NotSupportedException).
+            // Create IGNORA el statecode: solo falla si el statuscode no es de Activo ('Create con statecode=1 + statuscode=2' falla; (1,1) y (2,1) nacen Activos).
             var almacen = new OrganizationServiceEnMemoria();
             var inicial = new EstadoEfectivo(Estados.Activo, Estados.StatusPorDefecto(Estados.Activo));
             var id = SembrarEnEstado(almacen, tabla, inicial.StateCode, inicial.StatusCode);
+            var update = new Entity(tabla, id) { ["statecode"] = new OptionSetValue(state), ["statuscode"] = new OptionSetValue(status) };
 
-            var deUpdate = Assert.ThrowsAny<ArgumentException>(() =>
-                almacen.Update(new Entity(tabla, id) { ["statecode"] = new OptionSetValue(state), ["statuscode"] = new OptionSetValue(status) }));
-            var deCreate = Assert.ThrowsAny<ArgumentException>(() =>
-                almacen.Create(new Entity(tabla) { ["statecode"] = new OptionSetValue(state), ["statuscode"] = new OptionSetValue(status) }));
+            if (state != Estados.Activo && state != Estados.Inactivo)
+                Assert.Throws<NotSupportedException>(() => almacen.Update(update));
+            else
+                ApoyoMedido.AssertFalla(Falla(() => almacen.Update(update)), CodigosDeFalla.ParDeEstadoInvalido, "is not a valid status code for state code " + tabla + "State.");
+            var alta = new Entity(tabla) { ["statecode"] = new OptionSetValue(state), ["statuscode"] = new OptionSetValue(status) };
+            if (EsMotivoDeActivo(tabla, status))
+            {
+                var creada = almacen.Create(alta);
+                Assert.Equal(Estados.Activo, EstadoDe(almacen.Leer(tabla, creada)).state);
+            }
+            else
+            {
+                ApoyoMedido.AssertFalla(Falla(() => almacen.Create(alta)), CodigosDeFalla.ParDeEstadoInvalido, "is not a valid status code for state code " + tabla + "State.Active on " + tabla);
+            }
 
-            Assert.Contains(tabla, deUpdate.Message, StringComparison.Ordinal);
-            Assert.Contains("statuscode", deUpdate.Message, StringComparison.Ordinal);
-            Assert.Contains(tabla, deCreate.Message, StringComparison.Ordinal);
             Assert.Equal((inicial.StateCode, inicial.StatusCode), EstadoDe(almacen.Leer(tabla, id)));
-            Assert.Single(almacen.Todas(tabla));
         }
 
         public static IEnumerable<object[]> ParesValidos()
@@ -207,23 +223,25 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         }
 
         [Fact]
-        public void PA_ESF_07_LasTablasNativasNoCompletanNiValidanElEstado_SinMuestraNoSeInventa_VERDE_HOY()
+        public void PA_ESF_07_ElCorreoCompletaYValidaElEstado_LasDemasNativasNo()
         {
-            // email.statuscode por defecto de un statecode y los pares válidos de email NO están medidos (V-3 solo midió Received = 4 y Sent = 3, ambos con statecode 1): el doble no los inventa.
+            // lote 3b, medido en Dev (14-email.json): INVERTIDA. Antes "las nativas no completan ni validan el estado". El correo nace (0,1), statecode solo => motivo por defecto (0->1, 1->2, 2->5) y los pares
+            // válidos son los medidos (MedidoEnDevEstadosAceptacion). team, queue, systemuser y las variables de entorno no tienen muestra de sus pares: no se completa ni se valida nada.
             var almacen = new OrganizationServiceEnMemoria();
             var nuevo = almacen.Create(new Entity("email") { ["subject"] = "ZZF-PRUEBA" });
             var existente = Guid.NewGuid();
             almacen.Sembrar(new Entity("email", existente) { ["statecode"] = new OptionSetValue(Estados.Activo), ["statuscode"] = new OptionSetValue(Estados.StatusPorDefecto(Estados.Activo)) });
+            var cola = almacen.Create(new Entity("queue") { ["name"] = "ZZF Cola" });
 
             almacen.Update(new Entity("email", existente) { ["statecode"] = new OptionSetValue(Estados.StateCorreoCompletado) });
             var porSolo = almacen.Leer("email", existente);
 
-            Assert.False(almacen.Leer("email", nuevo).Contains("statecode"));
-            Assert.False(almacen.Leer("email", nuevo).Contains("statuscode"));
-            Assert.Equal((Estados.StateCorreoCompletado, Estados.StatusPorDefecto(Estados.Activo)), EstadoDe(porSolo));   // el motivo viejo queda: no se adivina
+            Assert.Equal((Estados.Activo, Estados.StatusPorDefecto(Estados.Activo)), EstadoDe(almacen.Leer("email", nuevo)));
+            Assert.Equal((Estados.StateCorreoCompletado, 2), EstadoDe(porSolo));   // (1, 2): el motivo por defecto de Completed, medido
             almacen.Update(new Entity("email", existente) { ["statecode"] = new OptionSetValue(Estados.StateCorreoCompletado), ["statuscode"] = new OptionSetValue(Estados.StatusCorreoRecibido) });
             almacen.Update(new Entity("email", existente) { ["statecode"] = new OptionSetValue(Estados.StateCorreoCompletado), ["statuscode"] = new OptionSetValue(Estados.StatusCorreoEnviado) });
             Assert.Equal((Estados.StateCorreoCompletado, Estados.StatusCorreoEnviado), EstadoDe(almacen.Leer("email", existente)));
+            Assert.False(almacen.Leer("queue", cola).Contains("statecode"));
         }
     }
 }

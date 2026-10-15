@@ -41,12 +41,12 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             almacen.Sembrar(new Entity(Arreglo, id) { ["statecode"] = Opcion(borrador.StateCode), ["statuscode"] = Opcion(borrador.StatusCode) });
 
             almacen.Update(new Entity(Arreglo, id) { ["statuscode"] = Opcion(vigente.StatusCode) });
-            var error = Assert.Throws<ArgumentException>(() => almacen.Update(new Entity(Arreglo, id) { ["statuscode"] = Opcion(terminado.StatusCode) }));
+            // lote 3b, medido en Dev (13-estados.json): 0x80048408 (antes ArgumentException); se valida contra el estado ACTUAL y el statecode no cambia.
+            var error = Falla(() => almacen.Update(new Entity(Arreglo, id) { ["statuscode"] = Opcion(terminado.StatusCode) }));
 
             var fila = almacen.Leer(Arreglo, id);
             Assert.Equal((vigente.StateCode, vigente.StatusCode), (((OptionSetValue)fila["statecode"]).Value, ((OptionSetValue)fila["statuscode"]).Value));
-            Assert.Contains(Arreglo, error.Message, StringComparison.Ordinal);
-            Assert.Contains("statuscode", error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.ParDeEstadoInvalido, Arreglo);
         }
 
         [Fact]
@@ -57,26 +57,27 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             var terminado = Estados.De(EstadoDeArreglo.Terminado);
 
             var id = almacen.Create(new Entity(Arreglo) { ["statuscode"] = Opcion(vigente.StatusCode) });
-            var error = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity(Arreglo) { ["statuscode"] = Opcion(terminado.StatusCode) }));
+            var error = Falla(() => almacen.Create(new Entity(Arreglo) { ["statuscode"] = Opcion(terminado.StatusCode) }));   // lote 3b, medido en Dev: 0x80048408
 
             Assert.Equal(Estados.Activo, ((OptionSetValue)almacen.Leer(Arreglo, id)["statecode"]).Value);
-            Assert.Contains("statuscode", error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.ParDeEstadoInvalido, Arreglo);
             Assert.Single(almacen.Todas(Arreglo));
         }
 
         [Fact]
-        public void UnStatecodeQueLaTablaNoTieneSeRechazaAunSinStatuscode_NombrandoLaTabla()
+        public void UnStatecodeQueLaTablaNoTiene_ElCreateLoIgnora_ElUpdateLanzaNotSupportedPorqueNoSeMidio()
         {
+            // lote 3b, medido en Dev: un Create con un statecode inexistente (7) se IGNORA y la fila nace en su estado inicial (13-estados.json). El Update con uno inexistente no se midió: lanza antes que adivinar.
             var almacen = new OrganizationServiceEnMemoria();
             var id = Guid.NewGuid();
             almacen.Sembrar(new Entity(Conversacion, id));
 
-            var deUpdate = Assert.Throws<ArgumentException>(() => almacen.Update(new Entity(Conversacion, id) { ["statecode"] = Opcion(2) }));
-            var deCreate = Assert.Throws<ArgumentException>(() => almacen.Create(new Entity(Conversacion) { ["statecode"] = Opcion(2) }));
+            var error = Assert.Throws<NotSupportedException>(() => almacen.Update(new Entity(Conversacion, id) { ["statecode"] = Opcion(2) }));
+            var creada = almacen.Create(new Entity(Conversacion) { ["statecode"] = Opcion(2) });
 
-            Assert.Contains(Conversacion, deUpdate.Message, StringComparison.Ordinal);
-            Assert.Contains(Conversacion, deCreate.Message, StringComparison.Ordinal);
+            Assert.Contains(Conversacion, error.Message, StringComparison.Ordinal);
             Assert.False(almacen.Leer(Conversacion, id).Contains("statecode"));
+            Assert.Equal(Estados.De(EstadoDeConversacion.Abierta).StateCode, ((OptionSetValue)almacen.Leer(Conversacion, creada)["statecode"]).Value);
         }
 
         // ---- Autonumérico ----
@@ -137,8 +138,9 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             pipeline.Registrar(espia, "Create", Arreglo, EtapaDeStep.PreValidation);
             var servicio = fabrica.CreateOrganizationService(null);
 
-            Assert.Throws<ArgumentException>(() => servicio.Create(new Entity(Arreglo) { ["sanic_columna_inexistente"] = "x" }));
-            Assert.Throws<ArgumentException>(() => servicio.Create(new Entity(Arreglo) { ["sanic_fechainicio"] = DateTime.SpecifyKind(new DateTime(2026, 1, 1), DateTimeKind.Local), ["sanic_saldoinicial"] = new Money(1m) }));
+            // lote 3b, medido en Dev: FaultException (0x80041103 y 0x80044354); una fecha Local ya no es motivo de rechazo.
+            Falla(() => servicio.Create(new Entity(Arreglo) { ["sanic_columna_inexistente"] = "x" }));
+            Falla(() => servicio.Create(new Entity(Arreglo) { ["sanic_fechainicio"] = DateTime.SpecifyKind(new DateTime(2026, 1, 1), DateTimeKind.Local), ["sanic_saldoinicial"] = new Money(1m) }));
 
             Assert.Empty(espia.Llamadas);
             Assert.Empty(fabrica.Escrituras);
@@ -152,9 +154,9 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             var pipeline = new PipelineSimulado(fabrica);
             pipeline.Registrar(new PluginEspia("agrega", accion: l => ((Entity)l.Contexto.InputParameters["Target"])["sanic_columna_inexistente"] = "x"), "Create", Arreglo, EtapaDeStep.PreOperation);
 
-            var error = Assert.Throws<ArgumentException>(() => fabrica.CreateOrganizationService(null).Create(new Entity(Arreglo)));
+            var error = Falla(() => fabrica.CreateOrganizationService(null).Create(new Entity(Arreglo)));   // lote 3b, medido en Dev: 0x80041103
 
-            Assert.Contains("sanic_columna_inexistente", error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.ColumnaInexistente, "sanic_columna_inexistente");
             Assert.Empty(fabrica.Almacen.Todas(Arreglo));
         }
 
@@ -163,15 +165,15 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
         {
             var almacen = new OrganizationServiceEnMemoria();
 
-            var error = Assert.Throws<InvalidOperationException>(() => almacen.Retrieve("sanic_carp_tbl_inventada", Guid.NewGuid(), new ColumnSet()));
+            var error = Falla(() => almacen.Retrieve("sanic_carp_tbl_inventada", Guid.NewGuid(), new ColumnSet()));   // lote 3b, medido en Dev: 0x80041102
 
-            Assert.Contains("sanic_carp_tbl_inventada", error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.TablaInexistente, "sanic_carp_tbl_inventada");
         }
 
         // ---- Correo y variables de entorno: ajustes que la plataforma hace (fixtures 01 y 05) ----
 
         [Fact]
-        public void ElSentonSePoneUnaSolaVez_UnTargetQueLoTraeLoGanaYUnaFilaQueYaLoTieneNoSePisa()
+        public void ElSentonSePoneUnaSolaVez_UnTargetQueLoTraeSeIgnoraYUnaFilaQueYaLoTieneNoSePisa()
         {
             var reloj = new RelojFijo(new DateTime(2026, 10, 14, 16, 30, 0, DateTimeKind.Utc));
             var almacen = new OrganizationServiceEnMemoria(reloj, OrganizationServiceEnMemoria.IdDeSystemPorDefecto);
@@ -192,7 +194,8 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             almacen.Update(aEnviado().WithId(yaEnviado));
 
             Assert.Equal(new DateTime(2026, 10, 14, 16, 30, 0, DateTimeKind.Utc), almacen.Leer(Correo, borrador)["senton"]);
-            Assert.Equal(propio, almacen.Leer(Correo, conSentonPropio)["senton"]);
+            // lote 3b, medido en Dev (14-email.json, I5): un senton enviado a mano se IGNORA; queda el instante del servidor (antes "el Target que lo trae lo gana").
+            Assert.Equal(new DateTime(2026, 10, 14, 16, 30, 0, DateTimeKind.Utc), almacen.Leer(Correo, conSentonPropio)["senton"]);
             Assert.Equal(new DateTime(2026, 10, 14, 16, 30, 0, DateTimeKind.Utc), almacen.Leer(Correo, yaEnviado)["senton"]);
         }
 
@@ -214,7 +217,7 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
         // ---- Consultas ----
 
         [Fact]
-        public void NotEqualSobreElIdPrimarioDeUnCorreoNoNecesitaCompania_PeroSobreOtraColumnaDelCorreoSi()
+        public void NotEqualSobreElIdPrimarioDeUnCorreoYSobreOtraColumnaNoNecesitanCompania()
         {
             var almacen = new OrganizationServiceEnMemoria();
             var porId = new QueryExpression(Correo) { ColumnSet = new ColumnSet() };
@@ -222,9 +225,8 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             var porAsunto = new QueryExpression(Correo) { ColumnSet = new ColumnSet() };
             porAsunto.Criteria.AddCondition("subject", ConditionOperator.NotEqual, "x");
 
-            var error = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(porAsunto));
-
-            Assert.Contains("subject", error.Message, StringComparison.Ordinal);
+            // lote 3b, medido en Dev: NotEqual incluye los nulos; ya no hace falta compañía en ninguna columna.
+            Assert.Empty(almacen.RetrieveMultiple(porAsunto).Entities);
             Assert.Empty(almacen.RetrieveMultiple(porId).Entities);   // el id primario de una actividad es activityid, no emailid
         }
 
@@ -237,10 +239,9 @@ namespace Sanic.Carp.Plugins.Tests.Unitarias.Dobles
             var consulta = new QueryExpression(TablaZzf) { ColumnSet = new ColumnSet() };
             consulta.Criteria.AddCondition(condicion);
 
-            var error = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(consulta));
+            var error = Falla(() => almacen.RetrieveMultiple(consulta));   // lote 3b, medido en Dev: 0x80040203 'requires 1 value/s, not 2'
 
-            Assert.Contains("Equal", error.Message, StringComparison.Ordinal);
-            Assert.Contains("zzf_estado", error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.SolicitudInvalida, "The ConditonOperator.Equal requires 1 value/s, not 2.");
         }
 
         // ---- GeneradorFalso ----

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Sanic.Carp.Plugins.Dominio;
@@ -65,7 +66,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             {
                 case ClaseDeColumna.Texto: return new[] { "entero", "opcion" };
                 case ClaseDeColumna.Entero: return new[] { "decimal", "texto", "money" };
-                case ClaseDeColumna.Decimal: return new[] { "money", "entero", "double", "texto" };
+                case ClaseDeColumna.Decimal: return new[] { "money", "entero", "texto" };   // lote 3b, medido en Dev: un double en un decimal se ACEPTA (18-texto-y-esquema.json), ya no es una variante errónea (PA_MED_FAL_05)
                 case ClaseDeColumna.Choice: return new[] { "entero", "inexistente", "texto" };
                 case ClaseDeColumna.SiNo: return new[] { "entero", "texto" };
                 case ClaseDeColumna.FechaHoraUl: return new[] { "texto", "entero" };
@@ -73,6 +74,19 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
                 case ClaseDeColumna.Lookup: return new[] { "guid", "otra-tabla", "texto" };
                 default: return new string[0];
             }
+        }
+
+        /// <summary>
+        /// lote 3b, medido en Dev: el <c>ErrorCode</c> que da cada tipo equivocado. Medidos (18-texto-y-esquema.json): int/string/Money en decimal y string en lookup = 0x80044354; decimal/string/long en entero,
+        /// string en fecha, int en choice, int/OptionSetValue en texto = 0x80040203; choice inexistente = 0x8004431A; lookup a otra tabla = 0x80040217. Los demás cruces (Money en entero, string en choice o
+        /// en sí/no, int en fecha, Guid en lookup) NO se midieron: el doble los trata como la familia más cercana (extensión declarada en 4.5).
+        /// </summary>
+        public static int CodigoEsperado(ColumnaDelDiccionario columna, string variante)
+        {
+            if (variante == "inexistente") return CodigosDeFalla.OpcionInexistente;
+            if (variante == "otra-tabla") return CodigosDeFalla.FilaInexistente;
+            if (columna.Clase == ClaseDeColumna.Decimal || columna.Clase == ClaseDeColumna.Lookup) return CodigosDeFalla.TipoDeAtributoInvalido;
+            return CodigosDeFalla.SolicitudInvalida;
         }
 
         public static object Erroneo(ColumnaDelDiccionario columna, string variante)
@@ -108,12 +122,12 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
     /// almacén): libres. <i>Cualquier otra tabla</i>: rechazada, para que usarla sea una decisión explícita del arquitecto.
     /// </para>
     /// <para>
-    /// Excepciones: una escritura mal formada (<c>Create</c>, <c>Update</c>, <c>UpdateRequest</c>) lanza <see cref="ArgumentException"/> con el nombre de la tabla y de la columna (la misma
-    /// familia que ya usa el doble para la tabla intersect, PA_DOB_16); una consulta mal formada (<c>Retrieve</c>/<c>RetrieveMultiple</c>) lanza <see cref="InvalidOperationException"/>
-    /// (la misma familia que NotEqual sobre ausentes). <c>Sembrar</c> NO valida: declara datos conocidos (fixtures de Dev, constructores medidos contra el diccionario por
+    /// <b>Lote 3b (medido en Dev, 2026-10-15):</b> una escritura mal formada (<c>Create</c>, <c>Update</c>, <c>UpdateRequest</c>) y una consulta mal formada (<c>Retrieve</c>/<c>RetrieveMultiple</c>) lanzan
+    /// <c>FaultException&lt;OrganizationServiceFault&gt;</c> con el <c>ErrorCode</c> del catálogo (<c>MedidoEnDevFallasAceptacion</c>), ya no <see cref="ArgumentException"/> ni <see cref="InvalidOperationException"/>;
+    /// el destino de un lookup tiene que existir (0x80040217). <c>Sembrar</c> NO valida: declara datos conocidos (fixtures de Dev, constructores medidos contra el diccionario por
     /// <c>ConstructorDeDatosAceptacion</c>) y varias pruebas siembran filas parciales a propósito.
     /// </para>
-    /// No se validan, y quedan como límite conocido de 4.5: rangos numéricos, requeridos, que el destino de un lookup EXISTA, columnas de solo lectura (fórmula, auditoría).
+    /// No se validan, y quedan como límite conocido de 4.5: rangos de los enteros, requeridos, tipos de las nativas y los lookups de las nativas (lote 3b: el destino de un lookup del esquema SÍ se valida y el rango del decimal también).
     /// </summary>
     public class EsquemaDeEscrituraAceptacion
     {
@@ -151,6 +165,13 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             return Diccionario.Value[tabla].First(c => c.Nombre == nombre);
         }
 
+        /// <summary>lote 3b: un lookup escrito por Create o Update apunta a una fila que existe; sembrarla no valida (Sembrar declara datos conocidos).</summary>
+        private static void SembrarDestinoDe(OrganizationServiceEnMemoria almacen, object valor)
+        {
+            var referencia = valor as EntityReference;
+            if (referencia != null && !almacen.Existe(referencia.LogicalName, referencia.Id)) almacen.Sembrar(new Entity(referencia.LogicalName, referencia.Id));
+        }
+
         private static Guid Sembrada(OrganizationServiceEnMemoria almacen, string tabla)
         {
             var id = Guid.NewGuid();
@@ -183,6 +204,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         {
             var valor = ValoresDeEjemplo.Valido(Columna(tabla, columna));
             var almacen = new OrganizationServiceEnMemoria();
+            SembrarDestinoDe(almacen, valor);   // lote 3b (integridad referencial, 0x80040217): Create y Update exigen que el destino del lookup exista
 
             var creada = almacen.Create(new Entity(tabla) { [columna] = valor });
             var existente = Sembrada(almacen, tabla);
@@ -194,18 +216,19 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
         [Theory]
         [MemberData(nameof(ColumnasConVariantesErroneas))]
-        public void PA_ESQ_02_UnValorDeOtroTipoSeRechazaPorCreateYPorUpdate_NombrandoLaTablaYLaColumna(string tabla, string columna, string variante)
+        public void PA_ESQ_02_UnValorDeOtroTipoSeRechazaPorCreateYPorUpdate_ConElErrorCodeMedidoEnDev(string tabla, string columna, string variante)
         {
             var malo = ValoresDeEjemplo.Erroneo(Columna(tabla, columna), variante);
+            var codigo = ValoresDeEjemplo.CodigoEsperado(Columna(tabla, columna), variante);
             var almacen = new OrganizationServiceEnMemoria();
 
-            var deCreate = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(tabla) { [columna] = malo }));
+            // lote 3b, medido en Dev: ya no ArgumentException con la tabla y la columna; FaultException con el ErrorCode medido (el mensaje real de varios no nombra la columna: 'Incorrect attribute value type System.String').
+            var deCreate = Falla(() => almacen.Create(new Entity(tabla) { [columna] = malo }));
             var existente = Sembrada(almacen, tabla);
-            var deUpdate = Assert.ThrowsAny<ArgumentException>(() => almacen.Update(new Entity(tabla, existente) { [columna] = malo }));
+            var deUpdate = Falla(() => almacen.Update(new Entity(tabla, existente) { [columna] = malo }));
 
-            Assert.Contains(columna, deCreate.Message, StringComparison.Ordinal);
-            Assert.Contains(tabla, deCreate.Message, StringComparison.Ordinal);
-            Assert.Contains(columna, deUpdate.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(deCreate, codigo, null, tabla + "." + columna + " " + variante + " Create");
+            ApoyoMedido.AssertFalla(deUpdate, codigo, null, tabla + "." + columna + " " + variante + " Update");
             Assert.Single(almacen.Todas(tabla));
             Assert.False(almacen.Leer(tabla, existente).Contains(columna), "la escritura rechazada no dejó nada");
         }
@@ -218,8 +241,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var existente = Sembrada(almacen, tabla);
 
             almacen.Update(new Entity(tabla, existente) { [columna] = new string('z', largo) });
-            var deCreate = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(tabla) { [columna] = new string('z', largo + 1) }));
-            var deUpdate = Assert.ThrowsAny<ArgumentException>(() => almacen.Update(new Entity(tabla, existente) { [columna] = new string('y', largo + 1) }));
+            // lote 3b, medido en Dev: 0x80044331 (texto más largo que la columna), no ArgumentException.
+            var deCreate = Falla(() => almacen.Create(new Entity(tabla) { [columna] = new string('z', largo + 1) }));
+            var deUpdate = Falla(() => almacen.Update(new Entity(tabla, existente) { [columna] = new string('y', largo + 1) }));
+            ApoyoMedido.AssertFalla(deCreate, CodigosDeFalla.TextoDemasiadoLargo);
+            ApoyoMedido.AssertFalla(deUpdate, CodigosDeFalla.TextoDemasiadoLargo);
 
             Assert.Contains(columna, deCreate.Message, StringComparison.Ordinal);
             Assert.Contains(columna, deUpdate.Message, StringComparison.Ordinal);
@@ -236,8 +262,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
             foreach (var inventada in new[] { "sanic_columna_inexistente", real.Substring(0, real.Length - 1) + "9" })
             {
-                var deCreate = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(tabla) { [inventada] = "zzf" }));
-                var deUpdate = Assert.ThrowsAny<ArgumentException>(() => almacen.Update(new Entity(tabla, existente) { [inventada] = "zzf" }));
+                // lote 3b, medido en Dev: 0x80041103 (columna inexistente), no ArgumentException.
+                var deCreate = Falla(() => almacen.Create(new Entity(tabla) { [inventada] = "zzf" }));
+                var deUpdate = Falla(() => almacen.Update(new Entity(tabla, existente) { [inventada] = "zzf" }));
+                ApoyoMedido.AssertFalla(deCreate, CodigosDeFalla.ColumnaInexistente);
+                ApoyoMedido.AssertFalla(deUpdate, CodigosDeFalla.ColumnaInexistente);
                 Assert.Contains(inventada, deCreate.Message, StringComparison.Ordinal);
                 Assert.Contains(inventada, deUpdate.Message, StringComparison.Ordinal);
             }
@@ -250,13 +279,18 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var almacen = new OrganizationServiceEnMemoria();
             const string tabla = "sanic_carp_tbl_conversacion";
 
-            Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(tabla) { ["statecode"] = 0 }));
-            Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(tabla) { ["statuscode"] = "1" }));
-            Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(tabla) { ["ownerid"] = Guid.NewGuid() }));
-            var deCliente = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(tabla) { ["ownerid"] = new EntityReference("sanic_carp_tbl_cliente", Guid.NewGuid()) }));
-            Assert.Contains("ownerid", deCliente.Message, StringComparison.Ordinal);
-            almacen.Create(new Entity(tabla) { ["ownerid"] = new EntityReference("team", Guid.NewGuid()) });
-            almacen.Create(new Entity(tabla) { ["ownerid"] = new EntityReference("systemuser", Guid.NewGuid()) });
+            // lote 3b, medido en Dev: faltas de tipo = 0x80040203 / 0x80044354 (extensión declarada para statecode, statuscode y ownerid: no se midió un int ahí), ownerid a otra tabla = 0x8004049E,
+            // y el propietario tiene que EXISTIR (0x80040217): se siembran el team y el usuario.
+            var team = Guid.NewGuid();
+            var usuario = Guid.NewGuid();
+            almacen.Sembrar(new Entity("team", team), new Entity("systemuser", usuario));
+            ApoyoMedido.AssertFalla(Falla(() => almacen.Create(new Entity(tabla) { ["statecode"] = 0 })), CodigosDeFalla.SolicitudInvalida);
+            ApoyoMedido.AssertFalla(Falla(() => almacen.Create(new Entity(tabla) { ["statuscode"] = "1" })), CodigosDeFalla.SolicitudInvalida);
+            ApoyoMedido.AssertFalla(Falla(() => almacen.Create(new Entity(tabla) { ["ownerid"] = Guid.NewGuid() })), CodigosDeFalla.TipoDeAtributoInvalido);
+            var deCliente = Falla(() => almacen.Create(new Entity(tabla) { ["ownerid"] = new EntityReference("sanic_carp_tbl_cliente", Guid.NewGuid()) }));
+            ApoyoMedido.AssertFalla(deCliente, CodigosDeFalla.PropietarioInvalido);
+            almacen.Create(new Entity(tabla) { ["ownerid"] = new EntityReference("team", team) });
+            almacen.Create(new Entity(tabla) { ["ownerid"] = new EntityReference("systemuser", usuario) });
             Assert.Equal(2, almacen.Todas(tabla).Count);
         }
 
@@ -269,9 +303,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             const string arreglo = "sanic_carp_tbl_arreglo";
             var existente = Sembrada(almacen, arreglo);
 
-            Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(arreglo) { ["sanic_saldoinicial"] = new Money(5m) }));
-            Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(arreglo) { ["sanic_saldoinicial"] = 5 }));
-            Assert.ThrowsAny<ArgumentException>(() => almacen.Update(new Entity(arreglo, existente) { ["sanic_cuotamensual"] = new Money(5m) }));
+            // lote 3b, medido en Dev: 0x80044354 (Invalid Attribute Value Type), no ArgumentException.
+            ApoyoMedido.AssertFalla(Falla(() => almacen.Create(new Entity(arreglo) { ["sanic_saldoinicial"] = new Money(5m) })), CodigosDeFalla.TipoDeAtributoInvalido);
+            ApoyoMedido.AssertFalla(Falla(() => almacen.Create(new Entity(arreglo) { ["sanic_saldoinicial"] = 5 })), CodigosDeFalla.TipoDeAtributoInvalido);
+            ApoyoMedido.AssertFalla(Falla(() => almacen.Update(new Entity(arreglo, existente) { ["sanic_cuotamensual"] = new Money(5m) })), CodigosDeFalla.TipoDeAtributoInvalido);
             almacen.Update(new Entity(arreglo, existente) { ["sanic_cuotamensual"] = 5m });
             Assert.Equal(10, EscalaDe((decimal)almacen.Leer(arreglo, existente)["sanic_cuotamensual"]));
         }
@@ -283,13 +318,14 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         {
             var almacen = new OrganizationServiceEnMemoria();
 
-            var deCreate = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity("sanic_carp_tbl_inventada") { ["sanic_nombre"] = "x" }));
-            var deUpdate = Assert.ThrowsAny<ArgumentException>(() => almacen.Update(new Entity("sanic_carp_tbl_inventada", Fila1) { ["sanic_nombre"] = "x" }));
-            var deNombreSinPrefijo = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity("inventada_sin_prefijo")));
+            // lote 3b, medido en Dev: 0x80041102 (tabla inexistente), no ArgumentException.
+            var deCreate = Falla(() => almacen.Create(new Entity("sanic_carp_tbl_inventada") { ["sanic_nombre"] = "x" }));
+            var deUpdate = Falla(() => almacen.Update(new Entity("sanic_carp_tbl_inventada", Fila1) { ["sanic_nombre"] = "x" }));
+            var deNombreSinPrefijo = Falla(() => almacen.Create(new Entity("inventada_sin_prefijo")));
 
-            Assert.Contains("sanic_carp_tbl_inventada", deCreate.Message, StringComparison.Ordinal);
-            Assert.Contains("sanic_carp_tbl_inventada", deUpdate.Message, StringComparison.Ordinal);
-            Assert.Contains("inventada_sin_prefijo", deNombreSinPrefijo.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(deCreate, CodigosDeFalla.TablaInexistente, "sanic_carp_tbl_inventada");
+            ApoyoMedido.AssertFalla(deUpdate, CodigosDeFalla.TablaInexistente, "sanic_carp_tbl_inventada");
+            ApoyoMedido.AssertFalla(deNombreSinPrefijo, CodigosDeFalla.TablaInexistente, "inventada_sin_prefijo");
             Assert.Empty(almacen.Todas("sanic_carp_tbl_inventada"));
         }
 
@@ -314,14 +350,17 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var almacen = new OrganizationServiceEnMemoria();
 
             almacen.Create(new Entity("email") { ["subject"] = "ZZF-PRUEBA", ["messageid"] = "<zzf@example.com>", ["directioncode"] = true, ["regardingobjectid"] = new EntityReference("sanic_carp_tbl_conversacion", Guid.NewGuid()) });
-            almacen.Create(new Entity("email") { ["sanic_tiemporespuesta"] = 15, ["sanic_respondidoporid"] = new EntityReference("systemuser", Guid.NewGuid()) });
-            var deColumna = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity("email") { ["sanic_inventada"] = "x" }));
-            var deTipo = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity("email") { ["sanic_tiemporespuesta"] = 15m }));
-            var deLookup = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity("email") { ["sanic_respondidoporid"] = new EntityReference("team", Guid.NewGuid()) }));
+            var oficial = Guid.NewGuid();
+            almacen.Sembrar(new Entity("systemuser", oficial));   // lote 3b: el destino del lookup tiene que existir (0x80040217)
+            almacen.Create(new Entity("email") { ["sanic_tiemporespuesta"] = 15, ["sanic_respondidoporid"] = new EntityReference("systemuser", oficial) });
+            var deColumna = Falla(() => almacen.Create(new Entity("email") { ["sanic_inventada"] = "x" }));
+            var deTipo = Falla(() => almacen.Create(new Entity("email") { ["sanic_tiemporespuesta"] = 15m }));
+            var deLookup = Falla(() => almacen.Create(new Entity("email") { ["sanic_respondidoporid"] = new EntityReference("team", Guid.NewGuid()) }));
 
-            Assert.Contains("sanic_inventada", deColumna.Message, StringComparison.Ordinal);
-            Assert.Contains("sanic_tiemporespuesta", deTipo.Message, StringComparison.Ordinal);
-            Assert.Contains("sanic_respondidoporid", deLookup.Message, StringComparison.Ordinal);
+            // lote 3b, medido en Dev: columna 0x80041103, tipo 0x80040203, lookup a otra tabla 0x80040217 (nombra la tabla destino declarada).
+            ApoyoMedido.AssertFalla(deColumna, CodigosDeFalla.ColumnaInexistente, "sanic_inventada");
+            ApoyoMedido.AssertFalla(deTipo, CodigosDeFalla.SolicitudInvalida, "Incorrect attribute value type System.Decimal");
+            ApoyoMedido.AssertFalla(deLookup, CodigosDeFalla.FilaInexistente, "Entity 'systemuser' With Id = ");
             Assert.Equal(2, almacen.Todas("email").Count);
         }
 
@@ -336,10 +375,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var almacen = new OrganizationServiceEnMemoria();
 
             almacen.Create(new Entity(tabla) { [deFixture] = "ZZF-PRUEBA" });
-            var error = Assert.ThrowsAny<ArgumentException>(() => almacen.Create(new Entity(tabla) { [inventada] = "ZZF-PRUEBA" }));
+            var error = Falla(() => almacen.Create(new Entity(tabla) { [inventada] = "ZZF-PRUEBA" }));   // lote 3b, medido en Dev: 0x80041103
 
-            Assert.Contains(inventada, error.Message, StringComparison.Ordinal);
-            Assert.Contains(tabla, error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.ColumnaInexistente, inventada);
+            Assert.Contains("'" + tabla + "' entity", error.Detail.Message, StringComparison.Ordinal);
         }
 
         [Fact]
@@ -387,9 +426,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             var consulta = new QueryExpression("sanic_carp_tbl_arreglo") { ColumnSet = new ColumnSet() };
             consulta.Criteria.AddCondition("sanic_numeroarregl0", ConditionOperator.Null);
 
-            var error = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(consulta));
+            var error = Falla(() => almacen.RetrieveMultiple(consulta));   // lote 3b, medido en Dev: 0x80041103
 
-            Assert.Contains("sanic_numeroarregl0", error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.ColumnaInexistente, "sanic_numeroarregl0");
         }
 
         [Fact]
@@ -408,11 +447,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
             foreach (var consulta in new[] { enColumnas, enCondicion, enFiltroAnidado, enOrden })
             {
-                var error = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(consulta));
-                Assert.Contains("sanic_columna_inexistente", error.Message, StringComparison.Ordinal);
+                var error = Falla(() => almacen.RetrieveMultiple(consulta));   // lote 3b, medido en Dev: 0x80041103
+                ApoyoMedido.AssertFalla(error, CodigosDeFalla.ColumnaInexistente, "sanic_columna_inexistente");
             }
-            var deRetrieve = Assert.Throws<InvalidOperationException>(() => almacen.Retrieve("sanic_carp_tbl_arreglo", Fila1, new ColumnSet("sanic_columna_inexistente")));
-            Assert.Contains("sanic_columna_inexistente", deRetrieve.Message, StringComparison.Ordinal);
+            var deRetrieve = Falla(() => almacen.Retrieve("sanic_carp_tbl_arreglo", Fila1, new ColumnSet("sanic_columna_inexistente")));
+            ApoyoMedido.AssertFalla(deRetrieve, CodigosDeFalla.ColumnaInexistente, "sanic_columna_inexistente");
         }
 
         [Fact]
@@ -424,9 +463,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
             valida.Criteria.AddCondition("sanic_huellamessageid", ConditionOperator.NotNull);
             valida.AddOrder("sanic_nombre", OrderType.Ascending);
 
-            var error = Assert.Throws<InvalidOperationException>(() => almacen.RetrieveMultiple(inexistente));
+            var error = Falla(() => almacen.RetrieveMultiple(inexistente));   // lote 3b, medido en Dev: 0x80041102
 
-            Assert.Contains("sanic_carp_tbl_inventada", error.Message, StringComparison.Ordinal);
+            ApoyoMedido.AssertFalla(error, CodigosDeFalla.TablaInexistente, "sanic_carp_tbl_inventada");
             Assert.Empty(almacen.RetrieveMultiple(valida).Entities);
         }
     }
