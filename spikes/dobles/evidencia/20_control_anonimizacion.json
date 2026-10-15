@@ -1,5 +1,5 @@
 {
- "archivos_revisados": 19,
+ "archivos_revisados": 20,
  "correos_encontrados": 3,
  "correos_con_dominio_distinto_de_example.com": 0,
  "url_de_la_organizacion": 0,
@@ -18,10 +18,10 @@
   "bu_team_org_de_la_linea_base": 0,
   "mailbox_y_roles": 0
  },
- "cadenas_valor_revisadas": 15785,
+ "cadenas_valor_revisadas": 16462,
  "nombres_reales_por_categoria": {
   "systemuser": {
-   "valores_comparados": 350,
+   "valores_comparados": 349,
    "coincidencias": 0
   },
   "team": {
@@ -48,10 +48,11 @@
  "nombres_excluidos_por_ser_etiquetas_de_plataforma": [
   "Microsoft",
   "SYSTEM",
+  "User",
   "for Outlook"
  ],
  "secretos_en_archivos_del_spike": {
-  "archivos_de_texto_revisados": 79,
+  "archivos_de_texto_revisados": 85,
   "apariciones": 0
  },
  "total_hallazgos": 0,

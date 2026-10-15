@@ -1344,6 +1344,136 @@
       "arr-E3",
       "sanic_carp_tbl_arreglo",
       "16bc4e15-0870-4f33-a73c-e45b473bae01"
+    ],
+    [
+      "priv-cli",
+      "sanic_carp_tbl_cliente",
+      "1c17a173-e127-4fae-9ea9-43afa5eea76f"
+    ],
+    [
+      "priv-cli-del",
+      "sanic_carp_tbl_cliente",
+      "b943ff93-e01f-47c1-a847-63fb3d9d671e"
+    ],
+    [
+      "priv-ver",
+      "sanic_carp_tbl_versionplantilla",
+      "19507b85-cd77-42c3-9f68-f672f5f5b871"
+    ],
+    [
+      "priv-cli",
+      "sanic_carp_tbl_cliente",
+      "c8451c93-bcaf-4c13-9d34-1ff35687d3fa"
+    ],
+    [
+      "priv-cli-del",
+      "sanic_carp_tbl_cliente",
+      "f3689241-1e1f-4005-b8ed-dad8e8814c1d"
+    ],
+    [
+      "priv-ver",
+      "sanic_carp_tbl_versionplantilla",
+      "526194d6-c5c1-412f-9fda-c57d573b09b5"
+    ],
+    [
+      "priv-conv",
+      "sanic_carp_tbl_conversacion",
+      "fd8d2c00-909d-462c-84ce-ec48da262b4d"
+    ],
+    [
+      "priv-cli-creado",
+      "sanic_carp_tbl_cliente",
+      "93b8c1f6-6c27-4548-808d-f3d4b99463b2"
+    ],
+    [
+      "priv-ver-creada",
+      "sanic_carp_tbl_versionplantilla",
+      "d693920d-5c6f-4242-bb3e-6e79fb896dc4"
+    ],
+    [
+      "priv-conv-creada",
+      "sanic_carp_tbl_conversacion",
+      "cc8119b5-52d8-48ac-b53a-7668738a5a94"
+    ],
+    [
+      "priv-cli",
+      "sanic_carp_tbl_cliente",
+      "b96b4dcf-5cd1-438c-bcd4-9a83789af0ef"
+    ],
+    [
+      "priv-cli-del",
+      "sanic_carp_tbl_cliente",
+      "efb9e9d0-08cd-4b2d-a2e3-4f1d77e03ca3"
+    ],
+    [
+      "priv-ver",
+      "sanic_carp_tbl_versionplantilla",
+      "426db8a6-4749-4043-ae46-308e11a274e2"
+    ],
+    [
+      "priv-conv",
+      "sanic_carp_tbl_conversacion",
+      "30fb0647-1077-4343-a212-3ed1466bcf3c"
+    ],
+    [
+      "priv-cli-creado",
+      "sanic_carp_tbl_cliente",
+      "3054bc65-460c-4666-9fb5-d32e64fbaf68"
+    ],
+    [
+      "priv-cli-creado2",
+      "sanic_carp_tbl_cliente",
+      "2f305e3e-aecc-4f69-9ae9-9b9348bbc4b4"
+    ],
+    [
+      "priv-ver-creada",
+      "sanic_carp_tbl_versionplantilla",
+      "e7455805-f56e-43c0-a285-bb6a908cedb6"
+    ],
+    [
+      "priv-conv-creada",
+      "sanic_carp_tbl_conversacion",
+      "75c5772b-21c3-4739-8f0d-12ea3b6cf605"
+    ],
+    [
+      "priv-cli",
+      "sanic_carp_tbl_cliente",
+      "857164c7-b60a-4c88-b505-1f001928522a"
+    ],
+    [
+      "priv-cli-del",
+      "sanic_carp_tbl_cliente",
+      "0df2338b-a20b-436d-a721-64f0c0e2010c"
+    ],
+    [
+      "priv-ver",
+      "sanic_carp_tbl_versionplantilla",
+      "abd01f22-0bb4-4713-8524-1e78a2f6b960"
+    ],
+    [
+      "priv-conv",
+      "sanic_carp_tbl_conversacion",
+      "6d8f46f0-a1aa-4342-adcc-c9a46171fe1b"
+    ],
+    [
+      "priv-cli-creado",
+      "sanic_carp_tbl_cliente",
+      "29c5bdf4-590c-483c-8ad8-50f2399f0ef4"
+    ],
+    [
+      "priv-cli-creado2",
+      "sanic_carp_tbl_cliente",
+      "2efc798e-5b66-40c0-9e98-a9aa6148503b"
+    ],
+    [
+      "priv-ver-creada",
+      "sanic_carp_tbl_versionplantilla",
+      "5a63fef7-1207-46aa-a470-688cebd0d516"
+    ],
+    [
+      "priv-conv-creada",
+      "sanic_carp_tbl_conversacion",
+      "33729e75-33d7-4ab5-99ea-1febf662c41c"
     ]
   ],
   "registros": [
@@ -1462,5 +1592,26 @@
       "sdkmessageprocessingstepimages",
       "715f2ad5-5e2b-45f3-9a9b-7d94d040da59"
     ]
-  ]
+  ],
+  "privilegios_original": {
+    "anotado": "2026-10-15 16:26:30",
+    "isdisabled": true,
+    "accessmode": 4,
+    "businessunitid": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+    "roles_directos_systemuserroles": [],
+    "roles_directos_por_asociacion": [],
+    "roles_directos_nombres": [],
+    "equipos": [
+      [
+        "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+        0,
+        "Arreglos de Pago"
+      ]
+    ],
+    "roles_de_cada_equipo": {
+      "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b": [
+        "49435eac-4a77-4fc6-9ffc-9aa047fe588d"
+      ]
+    }
+  }
 }

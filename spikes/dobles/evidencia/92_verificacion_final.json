@@ -1,0 +1,56 @@
+{
+ "usuario_igual_al_original": {
+  "isdisabled": true,
+  "accessmode": true,
+  "businessunitid": true,
+  "roles_directos": true,
+  "equipos": true
+ },
+ "isdisabled_ahora": true,
+ "roles_directos_ahora": 0,
+ "usuario_restaurado_OK": true,
+ "deriva_de_conteos_globales": {
+  "emails_nuevos": [
+   {
+    "createdon": "2026-10-15T09:00:59Z",
+    "creado_por_el_spike": false,
+    "asunto_ZZF": false
+   },
+   {
+    "createdon": "2026-10-15T09:01:14Z",
+    "creado_por_el_spike": false,
+    "asunto_ZZF": false
+   },
+   {
+    "createdon": "2026-10-15T09:01:25Z",
+    "creado_por_el_spike": false,
+    "asunto_ZZF": false
+   }
+  ],
+  "customapis_nuevas": [
+   {
+    "createdon": "2026-10-15T01:38:08Z",
+    "creada_por_la_cuenta_de_servicio_del_proyecto": true
+   },
+   {
+    "createdon": "2026-10-15T01:38:26Z",
+    "creada_por_la_cuenta_de_servicio_del_proyecto": true
+   }
+  ],
+  "steps_no_administrados_tocados_desde_el_corte": 2,
+  "lectura": "Los 3 correos no son ZZF- ni los creo el spike (entran por el buzon del proyecto). Las 2 Custom API y los steps tocados a las 01:38 UTC los creo la cuenta de servicio del proyecto en otra tarea, DESPUES de que el spike anterior cerrara; este spike (d40) no registra plugins, steps ni Custom API ni crea correos."
+ },
+ "lo_propio_del_spike": {
+  "residuales_ZZF": {},
+  "residuales_Sonda": {},
+  "filas_tablas_propias": {
+   "conversacion": 0,
+   "arreglo": 0,
+   "cliente": 0,
+   "versionplantilla": 0,
+   "cuota": 0,
+   "generacionformato": 0,
+   "mapeocelda": 0
+  }
+ }
+}

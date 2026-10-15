@@ -1,8 +1,8 @@
 {
- "guid_registrados_total": 262,
- "guid_registrados_filas": 239,
+ "guid_registrados_total": 288,
+ "guid_registrados_filas": 265,
  "guid_registrados_plugins": 23,
- "guid_que_no_existen_(404)": 262,
+ "guid_que_no_existen_(404)": 288,
  "guid_que_AUN_existen": [],
  "relectura_por_guid": [
   {
@@ -1679,6 +1679,188 @@
    "no_existe": true
   },
   {
+   "clave": "priv-cli",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "1c17a173-e127-4fae-9ea9-43afa5eea76f",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli-del",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "b943ff93-e01f-47c1-a847-63fb3d9d671e",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-ver",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "19507b85-cd77-42c3-9f68-f672f5f5b871",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "c8451c93-bcaf-4c13-9d34-1ff35687d3fa",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli-del",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "f3689241-1e1f-4005-b8ed-dad8e8814c1d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-ver",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "526194d6-c5c1-412f-9fda-c57d573b09b5",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-conv",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "fd8d2c00-909d-462c-84ce-ec48da262b4d",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli-creado",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "93b8c1f6-6c27-4548-808d-f3d4b99463b2",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-ver-creada",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "d693920d-5c6f-4242-bb3e-6e79fb896dc4",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-conv-creada",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "cc8119b5-52d8-48ac-b53a-7668738a5a94",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "b96b4dcf-5cd1-438c-bcd4-9a83789af0ef",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli-del",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "efb9e9d0-08cd-4b2d-a2e3-4f1d77e03ca3",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-ver",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "426db8a6-4749-4043-ae46-308e11a274e2",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-conv",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "30fb0647-1077-4343-a212-3ed1466bcf3c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli-creado",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "3054bc65-460c-4666-9fb5-d32e64fbaf68",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli-creado2",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "2f305e3e-aecc-4f69-9ae9-9b9348bbc4b4",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-ver-creada",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "e7455805-f56e-43c0-a285-bb6a908cedb6",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-conv-creada",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "75c5772b-21c3-4739-8f0d-12ea3b6cf605",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "857164c7-b60a-4c88-b505-1f001928522a",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli-del",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "0df2338b-a20b-436d-a721-64f0c0e2010c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-ver",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "abd01f22-0bb4-4713-8524-1e78a2f6b960",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-conv",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "6d8f46f0-a1aa-4342-adcc-c9a46171fe1b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli-creado",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "29c5bdf4-590c-483c-8ad8-50f2399f0ef4",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-cli-creado2",
+   "tabla": "sanic_carp_tbl_cliente",
+   "guid": "2efc798e-5b66-40c0-9e98-a9aa6148503b",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-ver-creada",
+   "tabla": "sanic_carp_tbl_versionplantilla",
+   "guid": "5a63fef7-1207-46aa-a470-688cebd0d516",
+   "http": 404,
+   "no_existe": true
+  },
+  {
+   "clave": "priv-conv-creada",
+   "tabla": "sanic_carp_tbl_conversacion",
+   "guid": "33729e75-33d7-4ab5-99ea-1febf662c41c",
+   "http": 404,
+   "no_existe": true
+  },
+  {
    "clave": "paquete spk_SondaDobles",
    "tabla": "pluginpackages",
    "guid": "3ca9b795-ed71-4895-b651-e9906c38548f",
@@ -1865,7 +2047,7 @@
  "solucion_proyecto_componentes_nuevos": [],
  "solucion_proyecto_componentes_que_faltan": [],
  "emails_total_antes": 560,
- "emails_total_ahora": 560,
+ "emails_total_ahora": 563,
  "environmentvariabledefinitions_sanic_zzf": 0,
  "pluginpackages_antes_ahora": [
   8,
@@ -1877,12 +2059,12 @@
  ],
  "steps_no_administrados_antes_ahora": [
   40585,
-  40585
+  40558
  ],
  "customapis_antes_ahora": [
   474,
-  474
+  476
  ],
  "plugintypes_Sonda": 0,
- "limpieza_verificada_OK": true
+ "limpieza_verificada_OK": false
 }

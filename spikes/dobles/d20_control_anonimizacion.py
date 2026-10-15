@@ -81,7 +81,8 @@ nombres["organizacion"] = {o["name"] for o in paginar(dv, "organizations?$select
 # se excluyen los valores que el diseno conserva a proposito (SYSTEM) y los que empiezan con ZZF
 # Fragmentos de nombres de usuarios INTEGRADOS de la plataforma ("Microsoft Dynamics 365 for Outlook"): coinciden con nombres de tipo .NET
 # (Microsoft.Xrm.Sdk...) y con etiquetas tecnicas (formatted values de incomingemaildeliverymethod). No son datos de nadie.
-excluir = {"SYSTEM", "Microsoft", "for Outlook"}
+# "User" (2026-10-15): etiqueta de plataforma, el tipo de principal en ErrorDetails de las fallas de privilegio (22-privilegios.json, valor 'user'); coincide con un usuario cuyo nombre es "User".
+excluir = {"SYSTEM", "Microsoft", "for Outlook", "User"}
 
 
 def hojas(nodo, out):

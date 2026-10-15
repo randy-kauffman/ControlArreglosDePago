@@ -157,6 +157,9 @@ public sealed class Anonimizador
         s = ReGuid.Replace(s, m => Guid(System.Guid.Parse(m.Value), "x").ToString());
         s = ReCorreo.Replace(s, m => MapearCorreo(m.Value));
         foreach (var h in _huespedesOrg) s = s.Replace(h, "zzf-org.example.com", StringComparison.OrdinalIgnoreCase);
+        // Fallas de privilegio (0x80040220): "ApplicationId/FullName: <guid>/<nombre real de la aplicacion>" y nombres de tablas de OTROS proyectos
+        s = Regex.Replace(s, @"(ApplicationId/FullName: [0-9a-fA-F\-]{36}/)[^)]*", "$1zzf-aplicacion");
+        s = Regex.Replace(s, @"(?i)sanic_chtbl\w*|CH-Tbl-[\w\-]+", "tabla_ajena");
         return s;
     }
 }

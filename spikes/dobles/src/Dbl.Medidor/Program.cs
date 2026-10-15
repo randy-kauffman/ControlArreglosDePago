@@ -77,6 +77,7 @@ public static partial class Program
                 case "afuera": Afuera(); break;
                 case "sonda": Sonda(); break;
                 case "extra": Extra(); break;
+                case "priv": PrivilegiosPorEscenario(); break;
                 case "limpiar": break;   // solo el finally
                 default: throw new InvalidOperationException("modo desconocido");
             }

@@ -1,0 +1,84 @@
+{
+ "fecha": "2026-10-15 16:33:03",
+ "roles_quitados": [],
+ "errores": [],
+ "patch_isdisabled_http": 204,
+ "foto_ahora": {
+  "isdisabled": true,
+  "accessmode": 4,
+  "businessunitid": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "roles_directos_systemuserroles": [],
+  "roles_directos_por_asociacion": [],
+  "roles_directos_nombres": [],
+  "equipos": [
+   [
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+    0,
+    "Arreglos de Pago"
+   ]
+  ],
+  "roles_de_cada_equipo": {
+   "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b": [
+    "49435eac-4a77-4fc6-9ffc-9aa047fe588d"
+   ]
+  }
+ },
+ "comparacion": {
+  "isdisabled": {
+   "antes": true,
+   "ahora": true,
+   "igual": true
+  },
+  "accessmode": {
+   "antes": 4,
+   "ahora": 4,
+   "igual": true
+  },
+  "businessunitid": {
+   "antes": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+   "ahora": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+   "igual": true
+  },
+  "roles_directos_systemuserroles": {
+   "antes": [],
+   "ahora": [],
+   "igual": true
+  },
+  "roles_directos_por_asociacion": {
+   "antes": [],
+   "ahora": [],
+   "igual": true
+  },
+  "equipos": {
+   "antes": [
+    [
+     "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+     0,
+     "Arreglos de Pago"
+    ]
+   ],
+   "ahora": [
+    [
+     "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+     0,
+     "Arreglos de Pago"
+    ]
+   ],
+   "igual": true
+  },
+  "roles_de_cada_equipo": {
+   "antes": {
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b": [
+     "49435eac-4a77-4fc6-9ffc-9aa047fe588d"
+    ]
+   },
+   "ahora": {
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b": [
+     "49435eac-4a77-4fc6-9ffc-9aa047fe588d"
+    ]
+   },
+   "igual": true
+  }
+ },
+ "restaurado_OK": true
+}

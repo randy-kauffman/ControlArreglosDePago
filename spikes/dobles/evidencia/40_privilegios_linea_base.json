@@ -1,0 +1,40 @@
+{
+ "fecha": "2026-10-15 16:31:55",
+ "usuario": {
+  "isdisabled": true,
+  "accessmode": 4,
+  "businessunitid": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "roles_directos_systemuserroles": [],
+  "roles_directos_por_asociacion": [],
+  "roles_directos_nombres": [],
+  "equipos": [
+   [
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+    0,
+    "Arreglos de Pago"
+   ]
+  ],
+  "roles_de_cada_equipo": {
+   "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b": [
+    "49435eac-4a77-4fc6-9ffc-9aa047fe588d"
+   ]
+  }
+ },
+ "residuales_zzf": {},
+ "residuales_sonda": {},
+ "filas_en_tablas_del_proyecto": {
+  "conversacion": 0,
+  "arreglo": 0,
+  "cliente": 0,
+  "versionplantilla": 0,
+  "cuota": 0,
+  "generacionformato": 0,
+  "mapeocelda": 0
+ },
+ "roles_del_proyecto_existentes": [
+  "SR - CARP - Purga",
+  "SR - CARP - Oficial",
+  "SR - CARP - Jefe",
+  "SR - CARP - Servicio"
+ ]
+}

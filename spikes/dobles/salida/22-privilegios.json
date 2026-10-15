@@ -1,0 +1,1491 @@
+{
+  "cabecera": {
+    "fixture": "22-privilegios",
+    "origen": "ServiceClient 1.2.26, cliente fuera del sandbox (net8.0)",
+    "ensamblado_cliente": "1.2.0.26",
+    "runtime": ".NET 8.0.30",
+    "zona_horaria_local_del_proceso": "America/Managua",
+    "desfase_local_respecto_de_UTC_horas": -6,
+    "generado_utc": "2026-10-15",
+    "filas": "SINTETICAS ZZF- (creadas por la cuenta de servicio) y una lectura sobre una tabla de otro proyecto sin guardar datos",
+    "notas": [
+      "Punto (a). Usuario de aplicacion no administrador (el de spikes/fixtures/salida/06-whoami-systemuser.json), HABILITADO solo durante la medicion y restaurado despues; su GUID no se escribe.",
+      "El usuario no tiene roles directos, pero es miembro del equipo por defecto de su unidad de negocio, que tiene el rol Oficial del proyecto: los privilegios efectivos son los del Oficial (diseno/04-matriz-privilegios.md).",
+      "Cada caso: tabla, operacion, resultado (ok o falla) y la falla completa (tipo, HRESULT, ErrorCode, InnerFault, claves de ErrorDetails)."
+    ]
+  },
+  "contenido": {
+    "escenarios": {
+      "sin_rol_directo": {
+        "descripcion": "usuario habilitado, 0 roles directos; privilegios efectivos = rol del equipo por defecto de su unidad de negocio",
+        "fuente_del_id_ajeno": "id de una fila existente leido por la cuenta de servicio (no se guarda)",
+        "suplantacion": {
+          "WhoAmI": {
+            "caso": "WhoAmI con CallerId",
+            "resultado": "ok",
+            "valor": {
+              "UserId_es_el_suplantado": false
+            }
+          }
+        },
+        "operaciones": [
+          {
+            "caso": "Retrieve sobre sanic_carp_tbl_cliente",
+            "resultado": "ok",
+            "valor": {
+              "tipo": "System.Boolean",
+              "valor": true
+            },
+            "tabla": "sanic_carp_tbl_cliente",
+            "operacion": "Retrieve"
+          },
+          {
+            "caso": "RetrieveMultiple sobre sanic_carp_tbl_cliente",
+            "resultado": "ok",
+            "valor": {
+              "n": 1
+            },
+            "tabla": "sanic_carp_tbl_cliente",
+            "operacion": "RetrieveMultiple"
+          },
+          {
+            "caso": "Create sobre sanic_carp_tbl_cliente",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have create permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have create permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147158782,
+                "ErrorCode_hex": "0x8004F502",
+                "Message": "Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have create permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Cedula"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Cliente"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000002"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "AttributePrivilegeCreateIsMissing"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have create permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed. ---> Microsoft.Crm.CrmSecurityException: Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have create permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowAttributePermissionsDeniedException(AttributePrivilegeValidationAction action, Nullable`1 type, Nullable`1 attributeId, Boolean throwForCaller, Boolean throwForIdentity, ExecutionContext context, IEnumerable`1 callerMissingAttributes, IEnumerable`1 identityMissingAttributes, IEnumerable`1 connectionOwnerMissingAttributes)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckAttributePrivilegesForCreate(BusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.CheckAttributePrivilegesForCreate(BusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateInPipelineEventHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreCreateInPipelineEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoCreate(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000003"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:35.1427238Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147158782,
+                  "ErrorCode_hex": "0x8004F502",
+                  "Message": "Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have create permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.",
+                  "ErrorDetails": {
+                    "ApiActivityIdKey": {
+                      "tipo_del_valor": "System.Guid",
+                      "valor": "0fff0009-0000-4000-8000-000000000002"
+                    },
+                    "ApiDepthKey": {
+                      "tipo_del_valor": "System.Int32",
+                      "valor": "1"
+                    },
+                    "ApiExceptionCategory": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "ClientError"
+                    },
+                    "ApiExceptionHttpStatusCode": {
+                      "tipo_del_valor": "System.Int32",
+                      "valor": "403"
+                    },
+                    "ApiExceptionMessageName": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "AttributePrivilegeCreateIsMissing"
+                    },
+                    "ApiExceptionOwnerKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                    },
+                    "ApiExceptionSourceKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                    },
+                    "ApiOriginalExceptionKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "Microsoft.Crm.CrmSecurityException: Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have create permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed. ---> Microsoft.Crm.CrmSecurityException: Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have create permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowAttributePermissionsDeniedException(AttributePrivilegeValidationAction action, Nullable`1 type, Nullable`1 attributeId, Boolean throwForCaller, Boolean throwForIdentity, ExecutionContext context, IEnumerable`1 callerMissingAttributes, IEnumerable`1 identityMissingAttributes, IEnumerable`1 connectionOwnerMissingAttributes)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckAttributePrivilegesForCreate(BusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.CheckAttributePrivilegesForCreate(BusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateInPipelineEventHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreCreateInPipelineEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoCreate(IBusinessEntity entity, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                    },
+                    "ApiPluginSolutionNameKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "System"
+                    },
+                    "ApiSourceActivityKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": ""
+                    },
+                    "ApiStepKey": {
+                      "tipo_del_valor": "System.Guid",
+                      "valor": "0fff0009-0000-4000-8000-000000000003"
+                    },
+                    "ApiStepSolutionNameKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "System"
+                    }
+                  },
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:35.1427238Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": {
+                    "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                    "ErrorCode_decimal": -2147158782,
+                    "ErrorCode_hex": "0x8004F502",
+                    "Message": "Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have create permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.",
+                    "ErrorDetails": {},
+                    "Timestamp": {
+                      "iso": "2026-10-15T22:32:35.1427238Z",
+                      "kind": "Utc"
+                    },
+                    "TraceText_longitud": null,
+                    "InnerFault": null
+                  }
+                }
+              }
+            },
+            "codigo": "0x8004F502",
+            "tabla": "sanic_carp_tbl_cliente",
+            "operacion": "Create"
+          },
+          {
+            "caso": "Create (sin la columna sanic_cedula) sobre sanic_carp_tbl_cliente",
+            "resultado": "ok",
+            "valor": null,
+            "tabla": "sanic_carp_tbl_cliente",
+            "operacion": "Create (sin la columna sanic_cedula)"
+          },
+          {
+            "caso": "Update sobre sanic_carp_tbl_cliente",
+            "resultado": "ok",
+            "valor": null,
+            "tabla": "sanic_carp_tbl_cliente",
+            "operacion": "Update"
+          },
+          {
+            "caso": "Retrieve de la columna sanic_cedula (seguridad por columna) sobre sanic_carp_tbl_cliente",
+            "resultado": "ok",
+            "valor": {
+              "columna_presente": false,
+              "atributos_devueltos": [
+                "sanic_carp_tbl_clienteid"
+              ]
+            },
+            "tabla": "sanic_carp_tbl_cliente",
+            "operacion": "Retrieve de la columna sanic_cedula (seguridad por columna)"
+          },
+          {
+            "caso": "Update de la columna sanic_cedula (seguridad por columna) sobre sanic_carp_tbl_cliente",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have update permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have update permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147158777,
+                "ErrorCode_hex": "0x8004F507",
+                "Message": "Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have update permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Cedula"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Cliente"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000004"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "AttributePermissionUpdateIsMissingDuringUpdate"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have update permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed. ---> Microsoft.Crm.CrmSecurityException: Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have update permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowAttributePermissionsDeniedException(AttributePrivilegeValidationAction action, Nullable`1 type, Nullable`1 attributeId, Boolean throwForCaller, Boolean throwForIdentity, ExecutionContext context, IEnumerable`1 callerMissingAttributes, IEnumerable`1 identityMissingAttributes, IEnumerable`1 connectionOwnerMissingAttributes)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.AccessAttributeUpdateCheckInternal(ExecutionContext context, AttributeMetadata am, Guid parentId, Int32 parentObjectTypeCode, EntityMetadata parentEntityMetadata)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.AccessAttributeUpdateCheck(BusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreUpdateInPipelineEventHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreUpdateInPipelineEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoUpdate(IBusinessEntity entity, FilterExpression filter, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000005"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:35.7833701Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147158777,
+                  "ErrorCode_hex": "0x8004F507",
+                  "Message": "Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have update permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.",
+                  "ErrorDetails": {
+                    "ApiActivityIdKey": {
+                      "tipo_del_valor": "System.Guid",
+                      "valor": "0fff0009-0000-4000-8000-000000000004"
+                    },
+                    "ApiDepthKey": {
+                      "tipo_del_valor": "System.Int32",
+                      "valor": "1"
+                    },
+                    "ApiExceptionCategory": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "ClientError"
+                    },
+                    "ApiExceptionHttpStatusCode": {
+                      "tipo_del_valor": "System.Int32",
+                      "valor": "403"
+                    },
+                    "ApiExceptionMessageName": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "AttributePermissionUpdateIsMissingDuringUpdate"
+                    },
+                    "ApiExceptionOwnerKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                    },
+                    "ApiExceptionSourceKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                    },
+                    "ApiOriginalExceptionKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "Microsoft.Crm.CrmSecurityException: Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have update permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed. ---> Microsoft.Crm.CrmSecurityException: Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have update permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowAttributePermissionsDeniedException(AttributePrivilegeValidationAction action, Nullable`1 type, Nullable`1 attributeId, Boolean throwForCaller, Boolean throwForIdentity, ExecutionContext context, IEnumerable`1 callerMissingAttributes, IEnumerable`1 identityMissingAttributes, IEnumerable`1 connectionOwnerMissingAttributes)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.AccessAttributeUpdateCheckInternal(ExecutionContext context, AttributeMetadata am, Guid parentId, Int32 parentObjectTypeCode, EntityMetadata parentEntityMetadata)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.AccessAttributeUpdateCheck(BusinessEntity entity, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreUpdateInPipelineEventHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreUpdateInPipelineEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.DoUpdate(IBusinessEntity entity, FilterExpression filter, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                    },
+                    "ApiPluginSolutionNameKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "System"
+                    },
+                    "ApiSourceActivityKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": ""
+                    },
+                    "ApiStepKey": {
+                      "tipo_del_valor": "System.Guid",
+                      "valor": "0fff0009-0000-4000-8000-000000000005"
+                    },
+                    "ApiStepSolutionNameKey": {
+                      "tipo_del_valor": "System.String",
+                      "valor": "System"
+                    }
+                  },
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:35.7833701Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": {
+                    "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                    "ErrorCode_decimal": -2147158777,
+                    "ErrorCode_hex": "0x8004F507",
+                    "Message": "Caller user with Id 0fff0009-0000-4000-8000-000000000001 does not have update permissions to a Cedula secured field on entity Cliente. The requested operation could not be completed.",
+                    "ErrorDetails": {},
+                    "Timestamp": {
+                      "iso": "2026-10-15T22:32:35.7833701Z",
+                      "kind": "Utc"
+                    },
+                    "TraceText_longitud": null,
+                    "InnerFault": null
+                  }
+                }
+              }
+            },
+            "codigo": "0x8004F507",
+            "tabla": "sanic_carp_tbl_cliente",
+            "operacion": "Update de la columna sanic_cedula (seguridad por columna)"
+          },
+          {
+            "caso": "Delete sobre sanic_carp_tbl_cliente",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_cliente privilege (Id=0fff0009-0000-4000-8000-000000000009) on OTC=11194 for entity 'sanic_carp_tbl_cliente' (LocalizedName='Cliente'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_cliente privilege (Id=0fff0009-0000-4000-8000-000000000009) on OTC=11194 for entity 'sanic_carp_tbl_cliente' (LocalizedName='Cliente'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220960,
+                "ErrorCode_hex": "0x80040220",
+                "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_cliente privilege (Id=0fff0009-0000-4000-8000-000000000009) on OTC=11194 for entity 'sanic_carp_tbl_cliente' (LocalizedName='Cliente'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "prvDeletesanic_carp_tbl_cliente"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Cliente"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "user"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "4": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "11194"
+                  },
+                  "5": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-00000000000a"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "PrivilegeDenied"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_cliente privilege (Id=0fff0009-0000-4000-8000-000000000009) on OTC=11194 for entity 'sanic_carp_tbl_cliente' (LocalizedName='Cliente'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles. ---> Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_cliente privilege (Id=0fff0009-0000-4000-8000-000000000009) on OTC=11194 for entity 'sanic_carp_tbl_cliente' (LocalizedName='Cliente'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowCrmSecurityException(SecurityPrincipal principal, Guid privilegeId, Int32 errorCode, ExecutionContext context, Guid targetBusinessUnitId)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilege(Guid user, Guid privilege, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilegeOrSkip(SecurityTraits traits, PrivilegeType privilegeType, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreDeleteHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.CheckDeleteSecurity(IBusinessEntityMoniker moniker, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass321_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-00000000000b"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:35.9083705Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147220960,
+                  "ErrorCode_hex": "0x80040220",
+                  "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_cliente privilege (Id=0fff0009-0000-4000-8000-000000000009) on OTC=11194 for entity 'sanic_carp_tbl_cliente' (LocalizedName='Cliente'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:35.9083705Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            },
+            "codigo": "0x80040220",
+            "tabla": "sanic_carp_tbl_cliente",
+            "operacion": "Delete"
+          },
+          {
+            "caso": "Retrieve sobre sanic_carp_tbl_versionplantilla",
+            "resultado": "ok",
+            "valor": {
+              "tipo": "System.Boolean",
+              "valor": true
+            },
+            "tabla": "sanic_carp_tbl_versionplantilla",
+            "operacion": "Retrieve"
+          },
+          {
+            "caso": "RetrieveMultiple sobre sanic_carp_tbl_versionplantilla",
+            "resultado": "ok",
+            "valor": {
+              "n": 1
+            },
+            "tabla": "sanic_carp_tbl_versionplantilla",
+            "operacion": "RetrieveMultiple"
+          },
+          {
+            "caso": "Create sobre sanic_carp_tbl_versionplantilla",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000c) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000c) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220960,
+                "ErrorCode_hex": "0x80040220",
+                "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000c) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "prvCreatesanic_carp_tbl_versionplantilla"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Version de plantilla"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "user"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "4": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "11195"
+                  },
+                  "5": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-00000000000d"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "PrivilegeDenied"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000c) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles. ---> Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000c) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowCrmSecurityException(SecurityPrincipal principal, Guid privilegeId, Int32 errorCode, ExecutionContext context, Guid targetBusinessUnitId)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilege(Guid user, Guid privilege, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateHandlerEntityPrivilegeCheck(Object sender, SecurityTraits traits, SecurityAttributes attributes, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateSecurityCheck(Object sender, ExtensionEventArgs e, BusinessEntity entity)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreCreateEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass270_0.<Create>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-00000000000e"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:36.1739989Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147220960,
+                  "ErrorCode_hex": "0x80040220",
+                  "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000c) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:36.1739989Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            },
+            "codigo": "0x80040220",
+            "tabla": "sanic_carp_tbl_versionplantilla",
+            "operacion": "Create"
+          },
+          {
+            "caso": "Update sobre sanic_carp_tbl_versionplantilla",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvWritesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000f) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvWritesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000f) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220960,
+                "ErrorCode_hex": "0x80040220",
+                "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvWritesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000f) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "prvWritesanic_carp_tbl_versionplantilla"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Version de plantilla"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "user"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "4": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "11195"
+                  },
+                  "5": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000010"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "PrivilegeDenied"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvWritesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000f) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles. ---> Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvWritesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000f) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowCrmSecurityException(SecurityPrincipal principal, Guid privilegeId, Int32 errorCode, ExecutionContext context, Guid targetBusinessUnitId)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilege(Guid user, Guid privilege, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilegeOrSkip(SecurityTraits traits, PrivilegeType privilegeType, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreUpdateHandlerEntityPrivilegeCheck(Object sender, SecurityTraits traits, ISecurityAttributes attributes, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreUpdateHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreUpdateEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass312_0.<UpdateWithPipelineAndExtensions>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass299_0.<Update>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000011"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:36.2677198Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147220960,
+                  "ErrorCode_hex": "0x80040220",
+                  "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvWritesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-00000000000f) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:36.2677198Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            },
+            "codigo": "0x80040220",
+            "tabla": "sanic_carp_tbl_versionplantilla",
+            "operacion": "Update"
+          },
+          {
+            "caso": "Delete sobre sanic_carp_tbl_versionplantilla",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-000000000012) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-000000000012) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220960,
+                "ErrorCode_hex": "0x80040220",
+                "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-000000000012) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "prvDeletesanic_carp_tbl_versionplantilla"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Version de plantilla"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "user"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "4": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "11195"
+                  },
+                  "5": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000013"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "PrivilegeDenied"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-000000000012) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles. ---> Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-000000000012) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowCrmSecurityException(SecurityPrincipal principal, Guid privilegeId, Int32 errorCode, ExecutionContext context, Guid targetBusinessUnitId)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilege(Guid user, Guid privilege, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilegeOrSkip(SecurityTraits traits, PrivilegeType privilegeType, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreDeleteHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.CheckDeleteSecurity(IBusinessEntityMoniker moniker, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass321_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000014"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:36.3770979Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147220960,
+                  "ErrorCode_hex": "0x80040220",
+                  "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_versionplantilla privilege (Id=0fff0009-0000-4000-8000-000000000012) on OTC=11195 for entity 'sanic_carp_tbl_versionplantilla' (LocalizedName='Version de plantilla'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:36.3770979Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            },
+            "codigo": "0x80040220",
+            "tabla": "sanic_carp_tbl_versionplantilla",
+            "operacion": "Delete"
+          },
+          {
+            "caso": "Retrieve sobre sanic_carp_tbl_conversacion",
+            "resultado": "ok",
+            "valor": {
+              "tipo": "System.Boolean",
+              "valor": true
+            },
+            "tabla": "sanic_carp_tbl_conversacion",
+            "operacion": "Retrieve"
+          },
+          {
+            "caso": "Create sobre sanic_carp_tbl_conversacion",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000015) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000015) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220960,
+                "ErrorCode_hex": "0x80040220",
+                "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000015) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "prvCreatesanic_carp_tbl_conversacion"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Conversacion"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "user"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "4": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "11201"
+                  },
+                  "5": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000016"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "PrivilegeDenied"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000015) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles. ---> Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000015) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowCrmSecurityException(SecurityPrincipal principal, Guid privilegeId, Int32 errorCode, ExecutionContext context, Guid targetBusinessUnitId)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilege(Guid user, Guid privilege, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateHandlerEntityPrivilegeCheck(Object sender, SecurityTraits traits, SecurityAttributes attributes, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateSecurityCheck(Object sender, ExtensionEventArgs e, BusinessEntity entity)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreCreateHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreCreateEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass270_0.<Create>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000017"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:36.5645915Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147220960,
+                  "ErrorCode_hex": "0x80040220",
+                  "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvCreatesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000015) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:36.5645915Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            },
+            "codigo": "0x80040220",
+            "tabla": "sanic_carp_tbl_conversacion",
+            "operacion": "Create"
+          },
+          {
+            "caso": "Update sobre sanic_carp_tbl_conversacion",
+            "resultado": "ok",
+            "valor": null,
+            "tabla": "sanic_carp_tbl_conversacion",
+            "operacion": "Update"
+          },
+          {
+            "caso": "Delete sobre sanic_carp_tbl_conversacion",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000018) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000018) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220960,
+                "ErrorCode_hex": "0x80040220",
+                "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000018) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "prvDeletesanic_carp_tbl_conversacion"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Conversacion"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "user"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "4": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "11201"
+                  },
+                  "5": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-000000000019"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "PrivilegeDenied"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000018) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles. ---> Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000018) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowCrmSecurityException(SecurityPrincipal principal, Guid privilegeId, Int32 errorCode, ExecutionContext context, Guid targetBusinessUnitId)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilege(Guid user, Guid privilege, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilegeOrSkip(SecurityTraits traits, PrivilegeType privilegeType, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreDeleteHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.CheckDeleteSecurity(IBusinessEntityMoniker moniker, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass321_0.<Delete>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute(ILogger logger, EventId eventId, ActivityType activityType, Action action, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute(ILogger logger, XrmTelemetryActivityType activityType, Action action)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-00000000001a"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:36.8614666Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147220960,
+                  "ErrorCode_hex": "0x80040220",
+                  "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvDeletesanic_carp_tbl_conversacion privilege (Id=0fff0009-0000-4000-8000-000000000018) on OTC=11201 for entity 'sanic_carp_tbl_conversacion' (LocalizedName='Conversacion'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:36.8614666Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            },
+            "codigo": "0x80040220",
+            "tabla": "sanic_carp_tbl_conversacion",
+            "operacion": "Delete"
+          },
+          {
+            "caso": "RetrieveMultiple sobre (tabla ajena al proyecto)",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220960,
+                "ErrorCode_hex": "0x80040220",
+                "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "prvReadtabla_ajena"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "tabla_ajena"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "user"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "4": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "11048"
+                  },
+                  "5": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-00000000001c"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "PrivilegeDenied"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles. ---> Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowCrmSecurityException(SecurityPrincipal principal, Guid privilegeId, Int32 errorCode, ExecutionContext context, Guid targetBusinessUnitId)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilege(Guid user, Guid privilege, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.ShouldUseRecordFilterSecurityPopulator(EntityMetadata entityMetadata, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.CreateSecurityFilterPopulator(RetrieveMultipleSecurityFilterOption securityOption, RetrieveMultipleSecurityFilterPopulatorInitializationData initializationData, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.CreateSecurityFilter(Guid user, EntityMetadata entityMetadata, FilterExpression existingCriteria, Int32 entityColumnCount, ExecutionContext context, Boolean noLock, EntitySecurityPOAattributes entitySecurityPOAattributes, LinkEntityType linkEntityType, RetrieveMultipleSecuritySqlFormat& securitySqlFormat, Boolean forRetrieve, String tableAlias)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.AddSecuritySql(Guid user, EntityExpression entityExpression, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreRetrieveMultipleHandler(ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreRetrieveMultipleEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, DatabaseQueryTarget queryTarget, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.RetrieveMultiple(EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-00000000001d"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:36.9395922Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147220960,
+                  "ErrorCode_hex": "0x80040220",
+                  "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:36.9395922Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            },
+            "codigo": "0x80040220",
+            "tabla": "(tabla ajena al proyecto)",
+            "operacion": "RetrieveMultiple"
+          },
+          {
+            "caso": "Retrieve sobre (tabla ajena al proyecto)",
+            "resultado": "falla",
+            "falla": {
+              "exterior": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+              "cadena_de_tipos": [
+                "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]"
+              ],
+              "cadena": [
+                {
+                  "orden": 0,
+                  "tipo": "System.ServiceModel.FaultException`1[[Microsoft.Xrm.Sdk.OrganizationServiceFault, Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]",
+                  "mensaje": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "HResult": -2146233088,
+                  "propiedades_propias": {
+                    "Action": null,
+                    "Code": "(System.ServiceModel.FaultCode) System.ServiceModel.FaultCode",
+                    "Reason": "(System.ServiceModel.FaultReason) Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles."
+                  }
+                }
+              ],
+              "el_exterior_es_FaultException_OrganizationServiceFault": true,
+              "hay_FaultException_OrganizationServiceFault_en_la_cadena": true,
+              "fault": {
+                "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                "ErrorCode_decimal": -2147220960,
+                "ErrorCode_hex": "0x80040220",
+                "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                "ErrorDetails": {
+                  "0": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "prvReadtabla_ajena"
+                  },
+                  "1": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "tabla_ajena"
+                  },
+                  "2": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "user"
+                  },
+                  "3": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "0fff0009-0000-4000-8000-000000000001"
+                  },
+                  "4": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "11048"
+                  },
+                  "5": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Caller"
+                  },
+                  "ApiActivityIdKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-00000000001e"
+                  },
+                  "ApiDepthKey": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "1"
+                  },
+                  "ApiExceptionCategory": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "ClientError"
+                  },
+                  "ApiExceptionHttpStatusCode": {
+                    "tipo_del_valor": "System.Int32",
+                    "valor": "403"
+                  },
+                  "ApiExceptionMessageName": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "PrivilegeDenied"
+                  },
+                  "ApiExceptionOwnerKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "OwnershipNotFoundInExceptionOwnerSettings"
+                  },
+                  "ApiExceptionSourceKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Plugin/Microsoft.Crm.ObjectModel.CustomBusinessEntityService"
+                  },
+                  "ApiOriginalExceptionKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles. ---> Microsoft.Crm.CrmSecurityException: Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.ThrowCrmSecurityException(SecurityPrincipal principal, Guid privilegeId, Int32 errorCode, ExecutionContext context, Guid targetBusinessUnitId)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilege(Guid user, Guid privilege, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityLibrary.CheckPrivilegeOrSkip(SecurityTraits traits, PrivilegeType privilegeType, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.SecurityExtension.PreRetrieveHandler(ExtensionEventArgs e, Object sender)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.PreRetrieveEventHandler.Invoke(Object sender, ExtensionEventArgs e)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.<>c__DisplayClass292_0.<TryRetrieve>b__0()\r\n   at Microsoft.PowerApps.CoreFramework.ActivityLoggerExtensions.Execute[TResult](ILogger logger, EventId eventId, ActivityType activityType, Func`1 func, IEnumerable`1 additionalCustomProperties)\r\n   at Microsoft.Xrm.Telemetry.XrmTelemetryExtensions.Execute[TResult](ILogger logger, XrmTelemetryActivityType activityType, Func`1 func)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.TryRetrieve(IBusinessEntityMoniker moniker, IEntityExpression entityExpression, ExecutionContext context, LocalizedEnumLabelCache localizedEnumLabelCache, DatabaseQueryTarget queryTarget, BusinessEntity& businessEntity)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.Retrieve(IBusinessEntityMoniker moniker, IEntityExpression entityExpression, ExecutionContext context, LocalizedEnumLabelCache localizedEnumLabelCache, DatabaseQueryTarget queryTarget)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.Retrieve(IBusinessEntityMoniker moniker, IEntityExpression entityExpression, ExecutionContext context)\r\n   at Microsoft.Crm.BusinessEntities.BusinessProcessObject.Retrieve(BusinessEntityMoniker moniker, EntityExpression entityExpression, ExecutionContext context)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Crm.Extensibility.VersionedPluginProxyStepBase.Execute(PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.PipelineInstrumentationHelper.Execute(Boolean instrumentationEnabled, String stopwatchName, ExecuteWithInstrumentation action, PipelineExecutionContext context)\r\n   at Microsoft.Crm.Extensibility.Pipeline.<>c__DisplayClass7_0.<RunStep>b__0()"
+                  },
+                  "ApiPluginSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  },
+                  "ApiSourceActivityKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": ""
+                  },
+                  "ApiStepKey": {
+                    "tipo_del_valor": "System.Guid",
+                    "valor": "0fff0009-0000-4000-8000-00000000001f"
+                  },
+                  "ApiStepSolutionNameKey": {
+                    "tipo_del_valor": "System.String",
+                    "valor": "System"
+                  }
+                },
+                "Timestamp": {
+                  "iso": "2026-10-15T22:32:37.0489769Z",
+                  "kind": "Utc"
+                },
+                "TraceText_longitud": null,
+                "InnerFault": {
+                  "tipo": "Microsoft.Xrm.Sdk.OrganizationServiceFault",
+                  "ErrorCode_decimal": -2147220960,
+                  "ErrorCode_hex": "0x80040220",
+                  "Message": "Principal user (Id=0fff0009-0000-4000-8000-000000000001, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='0fff0009-0000-4000-8000-000000000006', MetadataCachePrivilegesCount=8671, businessUnitId=0fff0009-0000-4000-8000-000000000007, ApplicationId/FullName: 0fff0009-0000-4000-8000-000000000008/zzf-aplicacion), is missing prvReadtabla_ajena privilege (Id=0fff0009-0000-4000-8000-00000000001b) on OTC=11048 for entity 'tabla_ajena' (LocalizedName='tabla_ajena'). context.Caller=0fff0009-0000-4000-8000-000000000001. Consider adding missed privilege to one of the principal (user/team) roles.",
+                  "ErrorDetails": {},
+                  "Timestamp": {
+                    "iso": "2026-10-15T22:32:37.0489769Z",
+                    "kind": "Utc"
+                  },
+                  "TraceText_longitud": null,
+                  "InnerFault": null
+                }
+              }
+            },
+            "codigo": "0x80040220",
+            "tabla": "(tabla ajena al proyecto)",
+            "operacion": "Retrieve"
+          }
+        ],
+        "control": {
+          "caso": "control: Retrieve de la fila priv-cli SIN CallerId (cuenta de servicio)",
+          "resultado": "ok",
+          "valor": {
+            "tipo": "System.Boolean",
+            "valor": true
+          }
+        }
+      }
+    }
+  }
+}
