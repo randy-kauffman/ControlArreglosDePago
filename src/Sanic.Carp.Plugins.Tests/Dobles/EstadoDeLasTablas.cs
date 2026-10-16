@@ -18,8 +18,6 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         private const int MotivoCorreoBorrador = 1;
         private const int MotivoCorreoAbiertoAlterno = 8;
         private const int MotivoCorreoCompletado = 2;
-        private const int MotivoCorreoEnviado = 3;
-        private const int MotivoCorreoRecibido = 4;
         private const int MotivoCorreoCancelado = 5;
         private const int MotivoCorreoPendienteDeEnvio = 6;
         private const int MotivoCorreoEnviando = 7;
@@ -113,7 +111,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             switch (stateCode)
             {
                 case CorreoAbierto: return statusCode == MotivoCorreoBorrador || statusCode == MotivoCorreoAbiertoAlterno;
-                case Estados.StateCorreoCompletado: return statusCode == MotivoCorreoCompletado || statusCode == MotivoCorreoEnviado || statusCode == MotivoCorreoRecibido;
+                case Estados.StateCorreoCompletado: return statusCode == MotivoCorreoCompletado || statusCode == Estados.StatusCorreoEnviado || statusCode == Estados.StatusCorreoRecibido;
                 case CorreoCancelado: return statusCode == MotivoCorreoCancelado;
                 default: return false;
             }

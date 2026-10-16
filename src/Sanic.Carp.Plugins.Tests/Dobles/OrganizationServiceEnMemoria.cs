@@ -316,12 +316,19 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         /// (<c>Read</c> para <c>Retrieve</c> y <c>RetrieveMultiple</c>, <c>Create</c>, <c>Write</c> para <c>Update</c> y <c>Delete</c>). La falla ocurre ANTES de validar la escritura y de correr cualquier step. SYSTEM no se ve afectado.
         /// Solo admite <see cref="OperacionDeDatos.Retrieve"/>, <see cref="OperacionDeDatos.RetrieveMultiple"/>, <see cref="OperacionDeDatos.Create"/>, <see cref="OperacionDeDatos.Update"/> y
         /// <see cref="OperacionDeDatos.Delete"/>; cualquier otra lanza <see cref="NotSupportedException"/> (el privilegio de Assign no se midió).
+        /// El privilegio de lectura es UNO (<c>prvRead</c>, 4.5 cierre del lote 3b, H3): declararlo con <see cref="OperacionDeDatos.Retrieve"/> o con <see cref="OperacionDeDatos.RetrieveMultiple"/> niega las dos.
         /// </summary>
         public void DenegarPrivilegio(Guid usuario, string tabla, OperacionDeDatos operacion)
         {
             if (NombreDelPrivilegio(operacion) == null)
                 throw new NotSupportedException("El privilegio de la operación " + operacion + " no se midió: 22-privilegios.json solo midió la lectura, la creación, la escritura y el borrado (Retrieve, RetrieveMultiple, Create, Update y Delete). "
                     + "El doble lanza antes que adivinar el nombre del privilegio y su comportamiento.");
+            if (operacion == OperacionDeDatos.Retrieve || operacion == OperacionDeDatos.RetrieveMultiple)
+            {
+                _estado.PrivilegiosDenegados.Add((usuario, tabla, OperacionDeDatos.Retrieve));
+                _estado.PrivilegiosDenegados.Add((usuario, tabla, OperacionDeDatos.RetrieveMultiple));
+                return;
+            }
             _estado.PrivilegiosDenegados.Add((usuario, tabla, operacion));
         }
 
@@ -577,7 +584,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         }
 
         /// <summary>
-        /// Borra la fila; inexistente ⇒ <see cref="CodigosDeFalla.FilaInexistente"/>. Aplica el comportamiento de las relaciones del diccionario (secciones 6.2 y 6.3): si alguna hija existente restringe el
+        /// Borra la fila; una tabla inexistente ⇒ <see cref="CodigosDeFalla.TablaInexistente"/> (extrapolación: Dev no midió el <c>Delete</c>) y una fila inexistente ⇒ <see cref="CodigosDeFalla.FilaInexistente"/>. Aplica el comportamiento de las relaciones del diccionario (secciones 6.2 y 6.3): si alguna hija existente restringe el
         /// borrado falla <see cref="CodigosDeFalla.RestriccionDeRelacion"/> nombrando la relación y no borra nada; las hijas Cascade se borran y las RemoveLink quedan con el lookup ausente. Una hija de una relación con
         /// padre <c>systemuser</c> (REL-10 a REL-19, no medidas) lanza <see cref="NotSupportedException"/> nombrando la relación.
         /// </summary>
@@ -1113,6 +1120,8 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         private void AplicarDelete(string tabla, Guid id, int? codigoDeFalla)
         {
             if (codigoDeFalla.HasValue) throw FallaPedida(codigoDeFalla.Value, OperacionDeDatos.Delete, tabla);
+            // La tabla se resuelve antes que la fila, como en las demás operaciones. Dev no midió el Delete: extrapolación declarada (4.5, cierre del lote 3b, H5).
+            _estado.Esquema.ValidarLectura(tabla, new string[0], Ahora);
             if (Buscar(tabla, id) == null) throw FabricaDeFallas.FilaInexistente(tabla, id, Ahora);
             var plan = new PlanDeBorrado();
             Planificar(tabla, id, plan, new HashSet<(string, Guid)> { (tabla, id) });
@@ -1169,7 +1178,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
                     if (string.Equals(relacion.Padre, "systemuser", StringComparison.Ordinal))
                         throw new NotSupportedException("Delete de la fila " + id + " de '" + tabla + "': tiene hijas en la relación " + relacion.Id + " (" + relacion.Nombre + ": '" + relacion.Hija + "'." + relacion.Lookup
-                            + ", fila " + hija.Id + "): el doble no emula Restrict/Cascade; pendiente de muestra (diseno/03 4.5, pendiente 15; REL-10 a REL-19 no se midieron: no se crean ni borran usuarios). Borre primero las hijas.");
+                            + ", fila " + hija.Id + "): el comportamiento de borrado de las relaciones con padre systemuser (REL-10 a REL-19) no está medido, porque no se crean ni se borran usuarios (diseno/03 4.5, cierre del lote 3b, H7). Borre primero las hijas.");
                     switch (relacion.Comportamiento)
                     {
                         case RestringeElBorrado:
@@ -1342,7 +1351,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 foreach (var fila in guardada.Orden)
                     if (EsSystem || !_estado.LecturasNegadas.Contains((_identidad, tabla, fila.Id))) visibles.Add(fila);
             }
-            var coinciden = EvaluadorDeConsultas.Filtrar(visibles, consulta.Criteria, oculta);
+            var coinciden = EvaluadorDeConsultas.Filtrar(visibles, consulta.Criteria, oculta, _estado.ZonaLocal);
             IList<OrderExpression> ordenes = consulta.Orders ?? (IList<OrderExpression>)new List<OrderExpression>();
             var ordenadas = EvaluadorDeConsultas.Ordenar(coinciden, ordenes, oculta);
 

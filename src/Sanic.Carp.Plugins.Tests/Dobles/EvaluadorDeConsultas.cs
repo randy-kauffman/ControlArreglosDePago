@@ -227,12 +227,15 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
         // ---- Filtro ----
 
-        /// <summary>Las filas que cumplen el criterio. <paramref name="oculta"/> dice qué columnas valen como nulas para quien consulta (DC-22).</summary>
-        public static List<Entity> Filtrar(IEnumerable<Entity> filas, FilterExpression criterio, Func<string, bool> oculta)
+        /// <summary>
+        /// Las filas que cumplen el criterio. <paramref name="oculta"/> dice qué columnas valen como nulas para quien consulta (DC-22). <paramref name="zonaLocal"/> es la
+        /// <see cref="OrganizationServiceEnMemoria.ZonaLocal"/> del almacén: convierte el valor <c>DateTime</c> de <c>Kind.Local</c> de una condición, igual que una escritura (4.5, cierre del lote 3b, H4).
+        /// </summary>
+        public static List<Entity> Filtrar(IEnumerable<Entity> filas, FilterExpression criterio, Func<string, bool> oculta, TimeZoneInfo zonaLocal)
         {
             var resultado = new List<Entity>();
             foreach (var fila in filas)
-                if (criterio == null || EvaluarFiltro(criterio, fila, oculta)) resultado.Add(fila);
+                if (criterio == null || EvaluarFiltro(criterio, fila, oculta, zonaLocal)) resultado.Add(fila);
             return resultado;
         }
 
@@ -242,12 +245,12 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             return filtro.Conditions.Count == 0 && filtro.Filters.All(EsVacio);
         }
 
-        private static bool EvaluarFiltro(FilterExpression filtro, Entity fila, Func<string, bool> oculta)
+        private static bool EvaluarFiltro(FilterExpression filtro, Entity fila, Func<string, bool> oculta, TimeZoneInfo zonaLocal)
         {
             var resultados = new List<bool>();
-            foreach (var condicion in filtro.Conditions) resultados.Add(EvaluarCondicion(condicion, fila, oculta));
+            foreach (var condicion in filtro.Conditions) resultados.Add(EvaluarCondicion(condicion, fila, oculta, zonaLocal));
             foreach (var hijo in filtro.Filters)
-                if (!EsVacio(hijo)) resultados.Add(EvaluarFiltro(hijo, fila, oculta));
+                if (!EsVacio(hijo)) resultados.Add(EvaluarFiltro(hijo, fila, oculta, zonaLocal));
             if (resultados.Count == 0) return true;
             return filtro.FilterOperator == LogicalOperator.Or ? resultados.Contains(true) : !resultados.Contains(false);
         }
@@ -259,7 +262,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             return fila.Attributes.TryGetValue(columna, out valor) ? valor : null;
         }
 
-        private static bool EvaluarCondicion(ConditionExpression condicion, Entity fila, Func<string, bool> oculta)
+        private static bool EvaluarCondicion(ConditionExpression condicion, Entity fila, Func<string, bool> oculta, TimeZoneInfo zonaLocal)
         {
             var guardado = ValorDe(fila, condicion.AttributeName, oculta);
             var ausente = guardado == null;
@@ -278,14 +281,14 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             {
                 case ConditionOperator.In:
                     foreach (var valor in valores)
-                        if (Cumple(izquierda, valor, condicion, c => c == 0)) return true;
+                        if (Cumple(izquierda, valor, condicion, zonaLocal, c => c == 0)) return true;
                     return false;
-                case ConditionOperator.Equal: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c == 0);
-                case ConditionOperator.NotEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c != 0);
-                case ConditionOperator.GreaterThan: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c > 0);
-                case ConditionOperator.GreaterEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c >= 0);
-                case ConditionOperator.LessThan: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c < 0);
-                case ConditionOperator.LessEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, c => c <= 0);
+                case ConditionOperator.Equal: return Cumple(izquierda, Primero(valores, condicion), condicion, zonaLocal, c => c == 0);
+                case ConditionOperator.NotEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, zonaLocal, c => c != 0);
+                case ConditionOperator.GreaterThan: return Cumple(izquierda, Primero(valores, condicion), condicion, zonaLocal, c => c > 0);
+                case ConditionOperator.GreaterEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, zonaLocal, c => c >= 0);
+                case ConditionOperator.LessThan: return Cumple(izquierda, Primero(valores, condicion), condicion, zonaLocal, c => c < 0);
+                case ConditionOperator.LessEqual: return Cumple(izquierda, Primero(valores, condicion), condicion, zonaLocal, c => c <= 0);
                 default:
                     throw new NotSupportedException("El doble no simula el operador de condición " + condicion.Operator + ".");
             }
@@ -298,9 +301,9 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             return valores[0];
         }
 
-        private static bool Cumple(object izquierda, object valor, ConditionExpression condicion, Func<int, bool> prueba)
+        private static bool Cumple(object izquierda, object valor, ConditionExpression condicion, TimeZoneInfo zonaLocal, Func<int, bool> prueba)
         {
-            var derecha = ParaComparar(valor);
+            var derecha = ParaComparar(valor, zonaLocal);
             if (derecha == null) return false;
             if (!Coercionar(izquierda, ref derecha))
             {
@@ -312,8 +315,19 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
         // ---- Comparación de valores ----
 
-        /// <summary>Lleva el valor a su forma comparable: choice ⇒ número, referencia ⇒ Guid, Money ⇒ decimal, enteros ⇒ decimal, fecha ⇒ UTC.</summary>
+        /// <summary>
+        /// Lleva un valor YA GUARDADO a su forma comparable. Un valor guardado nunca es <c>Local</c> (la escritura y la siembra lo llevan a UTC), así que la zona no interviene y no se lee la de la máquina.
+        /// </summary>
         public static object ParaComparar(object valor)
+        {
+            return ParaComparar(valor, TimeZoneInfo.Utc);
+        }
+
+        /// <summary>
+        /// Lleva el valor a su forma comparable: choice ⇒ número, referencia ⇒ Guid, Money ⇒ decimal, enteros ⇒ decimal, fecha ⇒ UTC. Un <c>DateTime</c> <c>Local</c> se convierte con <paramref name="zonaLocal"/>
+        /// (la del almacén) y no con la de la máquina: una condición es lo mismo que una escritura (4.5, cierre del lote 3b, H4).
+        /// </summary>
+        public static object ParaComparar(object valor, TimeZoneInfo zonaLocal)
         {
             if (valor == null) return null;
             var opcion = valor as OptionSetValue;
@@ -324,7 +338,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             if (dinero != null) return dinero.Value;
             if (valor is int || valor is long || valor is short || valor is byte) return Convert.ToDecimal(valor, CultureInfo.InvariantCulture);
             if (valor is double || valor is float) return Convert.ToDecimal(valor, CultureInfo.InvariantCulture);
-            if (valor is DateTime) return FormaDeLaPlataforma.AUtc((DateTime)valor);
+            if (valor is DateTime) return FormaDeLaPlataforma.AUtc((DateTime)valor, zonaLocal);
             return valor;
         }
 
@@ -374,17 +388,24 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
 
         /// <summary>
         /// Compara dos valores ya comparables y del mismo tipo. El texto no distingue mayúsculas NI acentos (medido, <c>18-texto-y-esquema.json</c> punto_c: <c>ZZF-José</c> se halla con <c>zzf-jose</c>,
-        /// <c>ZZF-JOSÉ</c>, <c>ZZF-Josè</c> y <c>ZZF-Jose</c> más una marca combinante).
+        /// <c>ZZF-JOSÉ</c>, <c>ZZF-Josè</c> y <c>ZZF-Jose</c> más una marca combinante). Los ESPACIOS FINALES tampoco cuentan, como el relleno de las comparaciones de SQL Server (diseno/03 4.5, "Cierre del lote 3b", H1).
+        /// <b>Lo medido es solo <c>Equal ''</c> contra una fila cuyo texto es <c>'   '</c></b> (<c>18-texto-y-esquema.json</c>, <c>punto_d_cadena_vacia</c>); que valga para cualquier texto, para <c>NotEqual</c>, <c>In</c>, el orden
+        /// y la clave alterna es la extrapolación consistente con esa regla de SQL, sin medir. Solo se descartan espacios (U+0020) del final: los del principio y otros blancos cuentan.
         /// </summary>
         public static int Comparar(object a, object b)
         {
             var texto = a as string;
-            if (texto != null) return string.Compare(TextoSinAcentos.Quitar(texto), TextoSinAcentos.Quitar((string)b), StringComparison.OrdinalIgnoreCase);
+            if (texto != null) return string.Compare(SinEspaciosFinales(TextoSinAcentos.Quitar(texto)), SinEspaciosFinales(TextoSinAcentos.Quitar((string)b)), StringComparison.OrdinalIgnoreCase);
             if (a is decimal) return ((decimal)a).CompareTo((decimal)b);
             if (a is DateTime) return ((DateTime)a).Ticks.CompareTo(((DateTime)b).Ticks);
             if (a is bool) return ((bool)a).CompareTo((bool)b);
             if (a is Guid) return ((Guid)a).CompareTo((Guid)b);
             throw new NotSupportedException("El doble no sabe comparar valores de tipo " + a.GetType().Name + ".");
+        }
+
+        private static string SinEspaciosFinales(string texto)
+        {
+            return texto.TrimEnd(' ');
         }
 
         /// <summary>Igualdad de dos valores guardados (clave alterna): distinto tipo ⇒ distintos.</summary>
