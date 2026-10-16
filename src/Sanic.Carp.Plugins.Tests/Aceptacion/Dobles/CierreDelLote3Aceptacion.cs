@@ -84,7 +84,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
 
             Assert.Contains(id, error.Message, StringComparison.Ordinal);
             Assert.Contains(nombre, error.Message, StringComparison.Ordinal);
-            Assert.Contains("el doble no emula Restrict/Cascade; pendiente de muestra", error.Message, StringComparison.Ordinal);
+            // Orquestador, 2026-10-15 (cierre del lote 3b, H7): el texto del mensaje lo fija CL3B_H7_01 ("no está medido", padre systemuser); acá ya no se exige el texto del lote 3.
+            Assert.Contains("no está medido", error.Message, StringComparison.OrdinalIgnoreCase);
             Assert.True(almacen.Existe(padre, idDelPadre), "la fila padre sigue ahí");
             Assert.True(almacen.Existe(hija, idDeLaHija), "la hija sigue ahí");
             Assert.Empty(almacen.Escrituras);
