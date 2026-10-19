@@ -1694,6 +1694,191 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
             Assert.Throws<InvalidOperationException>(() => Act(D("sanic_fechainicio", Fecha(2026, 12, 5)), Previa(EstadoDeArreglo.Borrador), Persona(), lecturas: new LecturaQueFalla()));
         }
 
+        // ------------------------------------------------------------ cierre del sublote 5c (2026-10-19): PA5C_CIE
+
+        public static IEnumerable<object[]> LasColumnasDelCredito()
+        {
+            yield return new object[] { "sanic_producto" };
+            yield return new object[] { "sanic_numeroproducto" };
+        }
+
+        [Theory]
+        [MemberData(nameof(LasColumnasDelCredito))]
+        public void PA5C_CIE_01_Formalizar_SinElProductoOSinElNumero_CARP_ARR_006_NombrandoLaColumna_AntesDeConsultarElConsecutivo(string columna)
+        {
+            var consecutivos = new ConsecutivosFalsos(1, 2);
+
+            var resultado = Act(Formalizar(), Previa(EstadoDeArreglo.Borrador, true, columna, null), Persona(), consecutivos);
+
+            AssertRechaza(resultado, CodigosDeError.ARR_006, columna);
+            Assert.Empty(consecutivos.Llamadas);
+        }
+
+        [Fact]
+        public void PA5C_CIE_02_Formalizar_SinElProductoNiElNumero_CARP_ARR_006_NombrandoLasDos_EnEseOrden()
+        {
+            var consecutivos = new ConsecutivosFalsos(1, 2);
+
+            var resultado = Act(Formalizar(), Previa(EstadoDeArreglo.Borrador, true, "sanic_producto", null, "sanic_numeroproducto", null), Persona(), consecutivos);
+
+            AssertRechaza(resultado, CodigosDeError.ARR_006, "sanic_producto, sanic_numeroproducto");
+            Assert.Empty(consecutivos.Llamadas);
+        }
+
+        [Fact]
+        public void PA5C_CIE_03_Formalizar_ElOrden_019_Y_012_VanAntesQueLosDatosDelCredito()
+        {
+            // VERDE A PROPÓSITO: fija el lugar de CARP-ARR-006 en el gesto: después de -012 y de -019, antes de consultar el consecutivo.
+            var consecutivos = new ConsecutivosFalsos(1, 2);
+
+            AssertRechaza(Act(Formalizar(), Previa(EstadoDeArreglo.Borrador, false, "sanic_producto", null), Persona(), consecutivos), CodigosDeError.ARR_019);
+            AssertRechaza(Act(Formalizar("sanic_comentarios", "x"), Previa(EstadoDeArreglo.Borrador, true, "sanic_producto", null), Persona(), consecutivos), CodigosDeError.ARR_012, "sanic_comentarios");
+
+            Assert.Empty(consecutivos.Llamadas);
+        }
+
+        public static IEnumerable<object[]> LosEstadosCerrados()
+        {
+            yield return new object[] { EstadoDeArreglo.Terminado };
+            yield return new object[] { EstadoDeArreglo.Anulado };
+            yield return new object[] { EstadoDeArreglo.Descartado };
+        }
+
+        [Theory]
+        [MemberData(nameof(LosEstadosCerrados))]
+        public void PA5C_CIE_10_UnEstadoCerrado_ReenviarElCongelamientoNuloSobreUnNulo_NoEsUnCambio_DC_01(EstadoDeArreglo estado)
+        {
+            var identidad = Persona();
+
+            var resultado = Act(D("sanic_fechacongelamiento", null), Previa(estado), identidad);
+
+            AssertPermiteSinEscribir(resultado);
+            Assert.Equal(0, identidad.LecturasDeSistema);
+        }
+
+        [Theory]
+        [MemberData(nameof(LosEstadosCerrados))]
+        public void PA5C_CIE_11_UnEstadoCerrado_ReenviarElMismoMotivoDeReapertura_NoEsUnCambio_DC_01(EstadoDeArreglo estado)
+        {
+            // VERDE A PROPÓSITO: el disparador de Reabrir ya valía solo en un Vigente; esto fija que siga así.
+            var identidad = Persona();
+
+            var resultado = Act(D("sanic_motivoreapertura", "motivo viejo"), Previa(estado, false, "sanic_motivoreapertura", "motivo viejo"), identidad);
+
+            AssertPermiteSinEscribir(resultado);
+            Assert.Equal(0, identidad.LecturasDeSistema);
+        }
+
+        [Theory]
+        [MemberData(nameof(LosEstadosCerrados))]
+        public void PA5C_CIE_12_UnEstadoCerrado_ConUnCambioReal_SigueDando_CARP_ARR_022(EstadoDeArreglo estado)
+        {
+            // VERDE A PROPÓSITO: el no-cambio del disparador no abre la puerta a un cambio real, ni al otro ni al mismo disparador.
+            AssertRechaza(Act(D("sanic_fechacongelamiento", null, "sanic_comentarios", "x"), Previa(estado), Persona()), CodigosDeError.ARR_022);
+            AssertRechaza(Act(D("sanic_fechacongelamiento", null), Previa(estado, true), Persona()), CodigosDeError.ARR_022);
+        }
+
+        [Fact]
+        public void PA5C_CIE_13_ElDisparadorDeDesbloquearSigueValiendoEnBorradorYVigente()
+        {
+            // VERDE A PROPÓSITO: la restricción a Borrador y Vigente no debe quitarle el disparador a esos dos (PA-ARR-31 y PA-ARR-35).
+            AssertRechaza(Act(D("sanic_fechacongelamiento", null), Previa(EstadoDeArreglo.Borrador), Persona()), CodigosDeError.ARR_017);
+            AssertRechaza(Act(D("sanic_fechacongelamiento", null), Previa(EstadoDeArreglo.Vigente), Persona()), CodigosDeError.ARR_018);
+        }
+
+        [Fact]
+        public void PA5C_CIE_20_Alta_UnaCapacidadNula_SoloLimitaAlRangoDe1A60_ComoLaEdicion()
+        {
+            // El step entrega 0 cuando sanic_capacidad es nula (el diccionario fija [1..60]: 0 no existe) y la regla lo lee como "sin capacidad": nunca "entre 1 y 0".
+            AssertRechaza(Alta(AltaValida("sanic_plazo", 61), UnaVersion(0), Persona()), CodigosDeError.ARR_003, 60, 60);
+            AssertRechaza(Alta(AltaValida("sanic_plazo", 0), UnaVersion(0), Persona()), CodigosDeError.ARR_003, 60, 60);
+
+            var resultado = Alta(AltaValida("sanic_plazo", 30, "sanic_cuotamensual", 30m), UnaVersion(0), Persona());
+
+            AssertPermite(resultado);
+            Assert.Equal(900m, Dec(resultado, "sanic_totalpagar"));
+        }
+
+        private static DateTime MismaFechaConOtraHora(object original, DateTimeKind kind)
+        {
+            var fecha = Assert.IsType<DateTime>(original);
+            return new DateTime(fecha.Year, fecha.Month, fecha.Day, 10, 0, 0, kind);
+        }
+
+        [Theory]
+        [InlineData("sanic_fechainicio", DateTimeKind.Utc)]
+        [InlineData("sanic_fechainicio", DateTimeKind.Local)]
+        [InlineData("sanic_fechainicio", DateTimeKind.Unspecified)]
+        [InlineData("sanic_fechafin", DateTimeKind.Utc)]
+        [InlineData("sanic_fechafin", DateTimeKind.Local)]
+        [InlineData("sanic_fechafin", DateTimeKind.Unspecified)]
+        public void PA5C_CIE_30_FechasDO_LaMismaFechaConOtraHoraOKind_NoEsCambio_NiRecalculaNiPreguntaPorPagos(string columna, DateTimeKind kind)
+        {
+            var previa = Previa(EstadoDeArreglo.Borrador);
+            var lecturas = new LecturasFalsas(pagos: true);
+            var identidad = Persona();
+
+            var resultado = Act(D(columna, MismaFechaConOtraHora(previa[columna], kind)), previa, identidad, lecturas: lecturas);
+
+            AssertPermiteSinEscribir(resultado);
+            Assert.Equal(0, lecturas.ConsultasDePagos);
+            Assert.Empty(lecturas.VersionesPedidas);
+            Assert.Equal(0, identidad.LecturasDeSistema);
+        }
+
+        [Theory]
+        [InlineData(DateTimeKind.Utc)]
+        [InlineData(DateTimeKind.Local)]
+        [InlineData(DateTimeKind.Unspecified)]
+        public void PA5C_CIE_31_FechaDeInicio_UnaFechaDistinta_SiEsCambio_ConPagos_CARP_ARR_021_YSinPagos_RecalculaLaFechaFin(DateTimeKind kind)
+        {
+            // VERDE A PROPÓSITO: la comparación por fecha no puede esconder un cambio de día.
+            var distinta = new DateTime(2026, 11, 6, 10, 0, 0, kind);
+
+            AssertRechaza(Act(D("sanic_fechainicio", distinta), Previa(EstadoDeArreglo.Borrador), Persona(), lecturas: new LecturasFalsas(pagos: true)), CodigosDeError.ARR_021);
+
+            var lecturas = new LecturasFalsas();
+            var resultado = Act(D("sanic_fechainicio", distinta), Previa(EstadoDeArreglo.Borrador), Persona(), lecturas: lecturas);
+            Assert.Equal(new[] { "sanic_fechafin" }, Claves(resultado));
+            Assert.Equal(Fecha(2027, 2, 6), Assert.IsType<DateTime>(resultado.Escribir["sanic_fechafin"]));
+            Assert.Equal(1, lecturas.ConsultasDePagos);
+        }
+
+        [Theory]
+        [InlineData(DateTimeKind.Utc)]
+        [InlineData(DateTimeKind.Local)]
+        [InlineData(DateTimeKind.Unspecified)]
+        public void PA5C_CIE_32_FechaDeFormalizacionImpresa_LaMismaFechaConOtraHoraOKind_NoEsCambio_AunCongelado(DateTimeKind kind)
+        {
+            var previa = Previa(EstadoDeArreglo.Borrador, congelado: true);
+
+            var resultado = Act(D("sanic_fechaformalizacion", MismaFechaConOtraHora(previa["sanic_fechaformalizacion"], kind)), previa, Persona());
+
+            AssertPermiteSinEscribir(resultado);
+        }
+
+        [Theory]
+        [InlineData(DateTimeKind.Utc)]
+        [InlineData(DateTimeKind.Local)]
+        [InlineData(DateTimeKind.Unspecified)]
+        public void PA5C_CIE_33_FechaDeFormalizacionImpresa_UnaFechaDistinta_EnUnCongelado_CARP_ARR_011(DateTimeKind kind)
+        {
+            // VERDE A PROPÓSITO: la contraparte de PA5C_CIE_32.
+            AssertRechaza(Act(D("sanic_fechaformalizacion", new DateTime(2026, 10, 11, 10, 0, 0, kind)), Previa(EstadoDeArreglo.Borrador, congelado: true), Persona()),
+                CodigosDeError.ARR_011, "sanic_fechaformalizacion");
+        }
+
+        [Fact]
+        public void PA5C_CIE_34_Formalizar_ReenviarLaFechaDeInicioConOtraHora_NoEsOtroCambio_NoDa_CARP_ARR_012()
+        {
+            var previa = Previa(EstadoDeArreglo.Borrador, congelado: true);
+
+            var resultado = Act(Formalizar("sanic_fechainicio", MismaFechaConOtraHora(previa["sanic_fechainicio"], DateTimeKind.Utc)), previa, Persona(), new ConsecutivosFalsos(1, 2));
+
+            AssertPermite(resultado);
+            Assert.Equal(3, Assert.IsType<int>(resultado.Escribir["sanic_numeroarreglo"]));
+        }
+
         private sealed class LecturaQueFalla : ILecturasDelArreglo
         {
             public int? CapacidadDeLaVersion(Guid versionId)

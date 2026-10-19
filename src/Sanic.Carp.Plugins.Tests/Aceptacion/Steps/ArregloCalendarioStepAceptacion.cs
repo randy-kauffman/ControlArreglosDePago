@@ -169,6 +169,26 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         }
 
         [Fact]
+        public void PA5C_CIE_S04_FalloAlCrearLaCuota3DelReemplazo_SubeLaExcepcion_YLaTransaccionDejaLasCuotasViejasYElPlazoViejo()
+        {
+            // VERDE A PROPÓSITO: el doble revierte la transacción entera (arreglo incluido) cuando una cuota falla a mitad del reemplazo; no quedan cuotas a medias.
+            var e = SoloCalendario();
+            var id = e.Sembrar(Fila(e, EstadoDeArreglo.Borrador));
+            var viejas = SembrarCuotas(e, id, 6, Fecha(2026, 11, 1), 150m);
+            e.Almacen.LimpiarRegistros();
+            e.Almacen.FallarEn(OperacionDeDatos.Create, Cuota, 3, CodigosDeFalla.ClaveDuplicada);
+
+            var error = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(Cambio(id, "sanic_plazo", 4)));
+
+            Assert.StartsWith("CARP-ARR-900: ", error.Message, StringComparison.Ordinal);
+            Assert.Equal(6, (int)Valor(e, id, "sanic_plazo"));
+            Assert.Equal(viejas.OrderBy(g => g).ToArray(), CuotasDe(e, id).Select(c => c.Id).OrderBy(g => g).ToArray());
+            // El fallo es el de la tercera cuota, no uno anterior: las 6 viejas se borraron y 2 nuevas se crearon (y la transacción lo revirtió todo).
+            Assert.Equal(6, EscriturasDe(e.Almacen, Cuota, OperacionDeDatos.Delete).Count);
+            Assert.Equal(2, EscriturasDe(e.Almacen, Cuota, OperacionDeDatos.Create).Count);
+        }
+
+        [Fact]
         public void PA_CAL_08_UnPostUpdate_SinColumnasDelFiltro_NoHaceNada()
         {
             // VERDE A PROPÓSITO: la plataforma ni siquiera ejecuta el step cuando el Target no trae ninguna columna del filtro (registro de S-22).

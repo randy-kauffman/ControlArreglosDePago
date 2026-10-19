@@ -108,6 +108,18 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         }
 
         [Fact]
+        public void PA5C_CIE_S03_UnaVersionVigenteSinCapacidad_SoloLimitaAlRangoDe1A60_NuncaEntre1Y0()
+        {
+            var e = UnEscenario();
+            e.Sembrar(ConstructorDeDatos.UnaVersion(EstadoDeVersionDePlantilla.Vigente).Con("sanic_capacidad", null));
+
+            Rechaza(() => e.ComoOficial.Create(UnAlta("sanic_plazo", 61)), CodigosDeError.ARR_003, 60, 60);
+            var id = e.ComoOficial.Create(UnAlta("sanic_plazo", 30, "sanic_cuotamensual", 30m));
+
+            Assert.Equal(900m, Assert.IsType<decimal>(e.Fila(Arr, id)["sanic_totalpagar"]));
+        }
+
+        [Fact]
         public void PA_ARR_06_LosMontos_004_007_005()
         {
             var e = UnEscenario();

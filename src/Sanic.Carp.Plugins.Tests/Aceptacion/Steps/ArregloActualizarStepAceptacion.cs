@@ -1043,6 +1043,39 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             Assert.True(e.Fabrica.ServiciosCreados.Count - antes <= 2, "Un step crea a lo sumo el servicio del llamador y el de SYSTEM (4.1, punto 3).");
         }
 
+        // ---------------------------------------------------------------- cierre del sublote 5c (2026-10-19)
+
+        [Theory]
+        [InlineData("sanic_producto")]
+        [InlineData("sanic_numeroproducto")]
+        public void PA5C_CIE_S01_Formalizar_SinElProductoOSinElNumeroDelCredito_CARP_ARR_006_SinConsultarElConsecutivo(string columna)
+        {
+            var e = UnEscenario();
+            var id = e.Sembrar(Fila(e, EstadoDeArreglo.Borrador, congelado: true).Con(columna, null));
+            e.Almacen.LimpiarRegistros();
+
+            Rechaza(() => e.ComoOficial.Update(Formalizar(id)), CodigosDeError.ARR_006, columna);
+
+            AssertFilaIntacta(e);
+            Assert.DoesNotContain(ConsultasDe(e, Arr), c => c.Identidad == e.Almacen.IdDeSystem && c.Operacion == OperacionDeDatos.RetrieveMultiple);
+        }
+
+        [Fact]
+        public void PA5C_CIE_S02_LaMismaFechaDeInicioConOtraHora_SobreUnArregloConPagos_NoEsCambio_NiDa_CARP_ARR_021()
+        {
+            var e = UnEscenario();
+            var id = e.Sembrar(Fila(e, EstadoDeArreglo.Vigente));
+            var cuotas = SembrarCuotas(e, id, 6, Fecha(2026, 11, 1), 150m);
+            Modificar(e, cuotas[0], "sanic_fechapago", Fecha(2026, 11, 2), "sanic_montopagado", 150m);
+            e.Almacen.LimpiarRegistros();
+
+            e.ComoOficial.Update(Cambio(id, "sanic_fechainicio", new DateTime(2026, 11, 1, 10, 0, 0, DateTimeKind.Utc)));
+
+            Assert.Equal(0, ConsultasDePagos(e));
+            Assert.Empty(AgregadasPorLosSteps(UnicaActualizacion(e)));
+            Assert.Equal(6, CuotasDe(e, id).Count);
+        }
+
         // ---------------------------------------------------------------- adaptadores de Datos
 
         [Fact]
