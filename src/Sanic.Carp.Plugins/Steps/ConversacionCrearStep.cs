@@ -29,7 +29,9 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            // Nunca se modifica el Target: quitar o reemplazar el numero en PreOperation dejaria la primaria vacia (V-8, caso B2).
+            var resultado = ReglasDeConversacion.Evaluar(PedidoDeConversacion.DeAlta(contexto.TargetNeutro(), contexto.Identidad));
+            if (!resultado.Permitida) throw resultado.Error;
         }
     }
 }

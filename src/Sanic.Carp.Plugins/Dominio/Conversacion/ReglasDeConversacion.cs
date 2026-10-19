@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Dominio.Errores;
+using Sanic.Carp.Plugins.Dominio.Tiempos;
 
 namespace Sanic.Carp.Plugins.Dominio.Conversacion
 {
     /// <summary>
     /// Las reglas de la Conversación (diseno/03 2.3 y 2.4, firma de 4.4; "Decisiones del arquitecto, 2026-10-19 (sublote 5b)"). Dominio puro: sin <c>Entity</c> ni SDK, sin estado
     /// (ningún campo mutable, ni estático: las listas son <see cref="ReadOnlyCollection{T}"/>), sin leer el reloj (entra en el pedido) y con la identidad perezosa (se consulta
-    /// solo cuando la regla ya vio que hay algo que decidir). <b>STUB DEL ARQUITECTO</b>: <see cref="Evaluar"/> y <see cref="NombreTieneFormatoDeAutonumerico"/> lanzan
-    /// <see cref="NotImplementedException"/>; las dos listas de columnas ya son datos.
-    /// </summary>
+    /// solo cuando la regla ya vio que hay algo que decidir).    /// </summary>
     public static class ReglasDeConversacion
     {
         private static readonly IReadOnlyList<string> PreImagenDeActualizacion = new ReadOnlyCollection<string>(new[]
@@ -40,8 +40,35 @@ namespace Sanic.Carp.Plugins.Dominio.Conversacion
         /// </summary>
         public static bool NombreTieneFormatoDeAutonumerico(string nombre)
         {
-            throw new NotImplementedException();
+            if (nombre == null) return false;
+            // Se recorre a mano (sublote 5b, punto 5): el `$` de .NET acepta un salto de linea final y `\d` acepta digitos de otros alfabetos.
+            var prefijo = "CONV-";
+            if (nombre.Length < prefijo.Length + MinimoDeDigitos || nombre.Length > prefijo.Length + MaximoDeDigitos) return false;
+            if (!nombre.StartsWith(prefijo, StringComparison.Ordinal)) return false;
+            for (int i = prefijo.Length; i < nombre.Length; i++)
+                if (nombre[i] < '0' || nombre[i] > '9') return false;
+            return true;
         }
+
+        private const int MinimoDeDigitos = 6;
+        private const int MaximoDeDigitos = 15;   // la columna mide 20 y `CONV-` ocupa 5 (2.3, paso 2)
+
+        private const string ColNombre = "sanic_nombre";
+        private const string ColEstado = "statecode";
+        private const string ColMotivoDeEstado = "statuscode";
+        private const string ColResultado = "sanic_resultado";
+        private const string ColMotivo = "sanic_motivosinrespuesta";
+        private const string ColDetalle = "sanic_detallesinrespuesta";
+        private const string ColOficial = "sanic_oficialasignadoid";
+        private const string ColCliente = "sanic_clienteid";
+        private const string ColPropietario = "ownerid";
+        private const string ColSinRespuestaDesde = "sanic_sinrespuestadesde";
+        private const string ColPrimerCorreo = "sanic_fechaprimercorreo";
+        private const string ColFechaFinalizacion = "sanic_fechafinalizacion";
+        private const string ColFinalizadoPor = "sanic_finalizadoporid";
+        private const string ColTiempoTotal = "sanic_tiempototal";
+        private const string ColCorreoNuevo = "sanic_correonuevoenfinalizada";
+        private const string TablaDeUsuarios = "systemuser";
 
         /// <summary>
         /// Evalúa UN guardado. Nunca devuelve <c>null</c> ni lanza por una regla de negocio (eso es <see cref="ResultadoDeEvaluacion.Rechazar"/>); lanza
@@ -102,7 +129,199 @@ namespace Sanic.Carp.Plugins.Dominio.Conversacion
         /// </summary>
         public static ResultadoDeEvaluacion Evaluar(PedidoDeConversacion pedido)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+            switch (pedido.Operacion)
+            {
+                case OperacionDeConversacion.Alta: return EvaluarAlta(pedido);
+                case OperacionDeConversacion.Asignacion: return EvaluarAsignacion(pedido);
+                default: return EvaluarActualizacion(pedido);
+            }
+        }
+
+        // ------------------------------------------------------------------ apoyos
+
+        private static object Valor(IReadOnlyDictionary<string, object> valores, string columna)
+        {
+            object valor;
+            return valores != null && valores.TryGetValue(columna, out valor) ? valor : null;
+        }
+
+        // DC-01 con la excepcion del sublote 5b: una columna AUSENTE de la pre-imagen vale nulo (Conversacion no tiene seguridad por columna).
+        private static bool Cambio(PedidoDeConversacion pedido, string columna)
+        {
+            object nuevo;
+            if (!pedido.Target.TryGetValue(columna, out nuevo)) return false;
+            return Cambios.ValoresDistintos(nuevo, Valor(pedido.PreImagen, columna));
+        }
+
+        private static List<string> Cambiadas(PedidoDeConversacion pedido, IEnumerable<string> columnas)
+        {
+            var cambiadas = new List<string>();
+            foreach (var columna in columnas)
+                if (Cambio(pedido, columna)) cambiadas.Add(columna);
+            return cambiadas;
+        }
+
+        private static int? Entero(object valor)
+        {
+            var opcion = valor as ValorDeOpcion;
+            if (opcion != null) return opcion.Valor;
+            if (valor is int) return (int)valor;
+            return null;
+        }
+
+        private static string Lista(IEnumerable<string> columnas)
+        {
+            return string.Join(", ", columnas);
+        }
+
+        // ------------------------------------------------------------------ alta (S-36, 2.3)
+
+        private static ResultadoDeEvaluacion EvaluarAlta(PedidoDeConversacion pedido)
+        {
+            object valor;
+            pedido.Target.TryGetValue(ColNombre, out valor);
+            var texto = valor as string;
+            if (valor == null || (texto != null && texto.Length == 0)) return ResultadoDeEvaluacion.Permitir();
+            if (texto != null && NombreTieneFormatoDeAutonumerico(texto)) return ResultadoDeEvaluacion.Permitir();
+            if (pedido.Identidad.EsEscrituraDelSistema) return ResultadoDeEvaluacion.Permitir();
+            return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_001.Crear(ColNombre));
+        }
+
+        // ------------------------------------------------------------------ asignacion (S-18, 2.4)
+
+        private static ResultadoDeEvaluacion EvaluarAsignacion(PedidoDeConversacion pedido)
+        {
+            if (!Cambio(pedido, ColOficial)) return ResultadoDeEvaluacion.Permitir();
+            if (pedido.Identidad.EsEscrituraDelSistema) return ResultadoDeEvaluacion.Permitir();
+
+            // "Tomar": el actual esta vacio y el nuevo es quien escribe. No se consulta la jefatura.
+            var actualVacio = !Cambios.ValoresDistintos(Valor(pedido.PreImagen, ColOficial), null);
+            var nuevo = Valor(pedido.Target, ColOficial) as ReferenciaDeEntidad;
+            if (actualVacio && nuevo != null && nuevo.Id == pedido.Identidad.ActorId) return ResultadoDeEvaluacion.Permitir();
+
+            return pedido.Identidad.EsJefatura() ? ResultadoDeEvaluacion.Permitir() : ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_008.Crear());
+        }
+
+        // ------------------------------------------------------------------ actualizacion (S-17, 2.3)
+
+        private static ResultadoDeEvaluacion EvaluarActualizacion(PedidoDeConversacion pedido)
+        {
+            var origen = EstadoDeLaPreImagen(pedido.PreImagen);
+            var destino = EstadoDestino(pedido, origen);
+            var estadoCambio = !destino.Equals(Estados.De(origen));
+            var inactiva = origen != EstadoDeConversacion.Abierta;
+
+            // Paso 1: que cambio.
+            var tabla = Columnas.De(Columnas.TablaConversacion);
+            var soloSistema = Cambiadas(pedido, tabla.SoloSistema);
+            var deGesto = Cambiadas(pedido, tabla.DeGesto);
+            var deInactiva = inactiva ? Cambiadas(pedido, new[] { ColCliente, ColOficial, ColPropietario }) : new List<string>();
+            var hayColumnas = soloSistema.Count + deGesto.Count + deInactiva.Count > 0;
+            if (!estadoCambio && !hayColumnas) return ResultadoDeEvaluacion.Permitir();
+
+            // Paso 2: el sistema no se revalida (DC-03, tambien para el estado que la plataforma reescribiria, DC-29).
+            if (pedido.Identidad.EsEscrituraDelSistema) return ResultadoDeEvaluacion.Permitir();
+
+            var esReabrir = origen == EstadoDeConversacion.Finalizada && destino.Equals(Estados.De(EstadoDeConversacion.Abierta));
+
+            // Paso 3: conversacion inactiva (el gesto Reabrir sigue al 3 bis).
+            if (inactiva && hayColumnas && !esReabrir) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_009.Crear());
+
+            // Paso 3 bis: Reabrir es puro (D-40). El orden es el del diseno, no el de Columnas.
+            if (esReabrir)
+            {
+                var otras = Cambiadas(pedido, new[] { ColCliente, ColNombre, ColOficial, ColPropietario });
+                if (otras.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_010.Crear(Lista(otras)));
+            }
+
+            // Paso 4.
+            if (soloSistema.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_001.Crear(Lista(soloSistema)));
+
+            // Paso 5: el estado.
+            if (!estadoCambio)
+                return deGesto.Count > 0 ? ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_005.Crear()) : ResultadoDeEvaluacion.Permitir();
+
+            if (destino.Equals(Estados.De(EstadoDeConversacion.Unida))) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_006.Crear());
+            if (origen == EstadoDeConversacion.Unida) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_002.Crear());
+
+            if (origen == EstadoDeConversacion.Abierta && destino.Equals(Estados.De(EstadoDeConversacion.Finalizada))) return Finalizar(pedido);
+            if (esReabrir) return Reabrir(pedido);
+            return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_002.Crear());
+        }
+
+        private static EstadoDeConversacion EstadoDeLaPreImagen(IReadOnlyDictionary<string, object> preImagen)
+        {
+            var estado = Entero(Valor(preImagen, ColEstado));
+            var motivo = Entero(Valor(preImagen, ColMotivoDeEstado));
+            if (!estado.HasValue || !motivo.HasValue)
+                throw new ArgumentException("La pre-imagen de una actualizacion debe traer statecode y statuscode.", nameof(preImagen));
+            var conocido = Estados.DeConversacion(new EstadoEfectivo(estado.Value, motivo.Value));
+            if (!conocido.HasValue)
+                throw new ArgumentException("La pre-imagen trae un par statecode/statuscode que no existe (diseno/03 0.7).", nameof(preImagen));
+            return conocido.Value;
+        }
+
+        // DC-06 y DC-29: el estado que la plataforma dejaria, no solo el que el Target dice.
+        private static EstadoEfectivo EstadoDestino(PedidoDeConversacion pedido, EstadoDeConversacion origen)
+        {
+            var actual = Estados.De(origen);
+            var estado = Entero(Valor(pedido.Target, ColEstado));
+            var motivo = Entero(Valor(pedido.Target, ColMotivoDeEstado));
+            if (motivo.HasValue) return new EstadoEfectivo(estado ?? actual.StateCode, motivo.Value);
+            if (!estado.HasValue) return actual;
+            // Un statecode que no es 0 ni 1 no tiene motivo por defecto: queda como un par que no existe (-1) y se rechaza como transicion invalida.
+            var porDefecto = estado.Value == Estados.Activo || estado.Value == Estados.Inactivo ? Estados.StatusPorDefecto(estado.Value) : -1;
+            return new EstadoEfectivo(estado.Value, porDefecto);
+        }
+
+        private static ResultadoDeEvaluacion Finalizar(PedidoDeConversacion pedido)
+        {
+            // El resultado se lee del Target, no de la pre-imagen (sublote 5b, punto 4).
+            var resultado = Entero(Valor(pedido.Target, ColResultado));
+            if (!resultado.HasValue) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_003.Crear());
+
+            var sinRespuesta = resultado.Value == (int)ResultadoDeConversacion.SinRespuesta;
+            if (sinRespuesta)
+            {
+                var detalle = Valor(pedido.Target, ColDetalle) as string;
+                if (!Entero(Valor(pedido.Target, ColMotivo)).HasValue || string.IsNullOrWhiteSpace(detalle))
+                    return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_004.Crear());
+            }
+
+            var escribir = new Dictionary<string, object>(StringComparer.Ordinal)
+            {
+                { ColFinalizadoPor, new ReferenciaDeEntidad(TablaDeUsuarios, pedido.Identidad.ActorId) },
+                { ColFechaFinalizacion, pedido.AhoraUtc },
+                { ColSinRespuestaDesde, null }   // DC-10
+            };
+            if (Valor(pedido.PreImagen, ColPrimerCorreo) is DateTime)
+                escribir[ColTiempoTotal] = TiemposDeConversacion.MinutosEntre((DateTime)Valor(pedido.PreImagen, ColPrimerCorreo), pedido.AhoraUtc);
+            if (!sinRespuesta)
+            {
+                escribir[ColMotivo] = null;
+                escribir[ColDetalle] = null;
+            }
+            return ResultadoDeEvaluacion.Permitir(escribir);
+        }
+
+        private static ResultadoDeEvaluacion Reabrir(PedidoDeConversacion pedido)
+        {
+            if (Cambiadas(pedido, new[] { ColResultado, ColMotivo, ColDetalle }).Count > 0)
+                return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CNV_005.Crear());
+
+            // No se toca sanic_sinrespuestadesde (DC-10) ni se escribe statuscode.
+            var escribir = new Dictionary<string, object>(StringComparer.Ordinal)
+            {
+                { ColResultado, null },
+                { ColMotivo, null },
+                { ColDetalle, null },
+                { ColFechaFinalizacion, null },
+                { ColFinalizadoPor, null },
+                { ColTiempoTotal, null },
+                { ColCorreoNuevo, false }
+            };
+            return ResultadoDeEvaluacion.Permitir(escribir);
         }
     }
 }

@@ -32,7 +32,8 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var resultado = ReglasDeConversacion.Evaluar(PedidoDeConversacion.DeAsignacion(contexto.TargetNeutro(), contexto.PreImagenNeutra(), contexto.Identidad));
+            if (!resultado.Permitida) throw resultado.Error;
         }
     }
 }

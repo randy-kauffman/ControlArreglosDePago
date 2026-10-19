@@ -35,7 +35,15 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var pedido = PedidoDeConversacion.DeActualizacion(contexto.TargetNeutro(), contexto.PreImagenNeutra(), contexto.Identidad, contexto.Reloj.AhoraUtc);
+            var resultado = ReglasDeConversacion.Evaluar(pedido);
+            if (!resultado.Permitida) throw resultado.Error;
+
+            // Solo lo que la regla escribe (un null deja la columna vacia); nunca statuscode (2.3, paso 6).
+            var target = contexto.Target;
+            foreach (var par in resultado.Escribir)
+                target[par.Key] = ConversorDeEntidades.AValorDelSdk(par.Value);
+            if (resultado.Escribir.Count > 0) contexto.Trazar("columnas escritas: " + string.Join(", ", resultado.Escribir.Keys));
         }
     }
 }
