@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
 using Sanic.Carp.Plugins.Dominio.Calendario;
 using Sanic.Carp.Plugins.Dominio.Errores;
+using Sanic.Carp.Plugins.Dominio.Montos;
 
 namespace Sanic.Carp.Plugins.Dominio.Arreglo
 {
@@ -56,6 +59,58 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
 
         private static readonly IReadOnlyList<string> Protegidas = new ReadOnlyCollection<string>(new[] { "sanic_cuentadebitar", "sanic_instantaneacedula" });
 
+        private const string PrefijoDelNombre = "ARR-";
+        private const int MinimoDeDigitos = 6;
+        private const int MaximoDeDigitos = 16;   // la columna mide 20 y `ARR-` ocupa 4 (2.5, paso 2)
+
+        private const string ColNombre = "sanic_nombre";
+        private const string ColEstado = "statecode";
+        private const string ColMotivoDeEstado = "statuscode";
+        private const string ColProducto = "sanic_producto";
+        private const string ColNumeroProducto = "sanic_numeroproducto";
+        private const string ColNumeroArreglo = "sanic_numeroarreglo";
+        private const string ColNumeroProvisional = "sanic_numeroprovisional";
+        private const string ColCanalDeOrigen = "sanic_canalorigen";
+        private const string ColSaldoInicial = "sanic_saldoinicial";
+        private const string ColMontoAbonado = "sanic_montoabonado";
+        private const string ColSaldoRemanente = "sanic_saldoremanente";
+        private const string ColPlazo = "sanic_plazo";
+        private const string ColCuotaMensual = "sanic_cuotamensual";
+        private const string ColTotalPagar = "sanic_totalpagar";
+        private const string ColFechaInicio = "sanic_fechainicio";
+        private const string ColFechaFin = "sanic_fechafin";
+        private const string ColCongelamiento = "sanic_fechacongelamiento";
+        private const string ColInstantaneaNombre = "sanic_instantaneanombre";
+        private const string ColInstantaneaCedula = "sanic_instantaneacedula";
+        private const string ColInstantaneaCorreo = "sanic_instantaneacorreo";
+        private const string ColInstantaneaCelular = "sanic_instantaneacelular";
+        private const string ColFechaFormalizado = "sanic_fechaformalizado";
+        private const string ColFormalizadoPor = "sanic_formalizadoporid";
+        private const string ColMotivoDescarte = "sanic_motivodescarte";
+        private const string ColFechaDescarte = "sanic_fechadescarte";
+        private const string ColDescartadoPor = "sanic_descartadoporid";
+        private const string ColMotivoAnulacion = "sanic_motivoanulacion";
+        private const string ColFechaAnulacion = "sanic_fechaanulacion";
+        private const string ColAnuladoPor = "sanic_anuladoporid";
+        private const string ColMotivoReapertura = "sanic_motivoreapertura";
+        private const string ColFechaReapertura = "sanic_fechareapertura";
+        private const string ColReabiertoPor = "sanic_reabiertoporid";
+        private const string ColCantidadReaperturas = "sanic_cantidadreaperturas";
+        private const string ColFechaTermino = "sanic_fechatermino";
+        private const string ColVersion = "sanic_versionplantillaid";
+        private const string ColConversacion = "sanic_conversacionid";
+        private const string TablaDeUsuarios = "systemuser";
+
+        private enum Gesto
+        {
+            Formalizar,
+            Descartar,
+            Anular,
+            ReabrirTerminado,
+            ReabrirVigente,
+            Desbloquear
+        }
+
         /// <summary>
         /// Las 43 columnas de la pre-imagen de S-21 (2.6 y sección 5), en el orden de 2.6. Es la unión de las cuatro categorías de <c>Columnas.De(TablaArreglo)</c> (solo-sistema, de gesto, datos del acuerdo y
         /// libres) más <c>statecode</c> y <c>statuscode</c>; <c>ownerid</c> no va (lo rige el step de propietario, 2.1). El step declara su registro con esta lista y <b>este orden es el de los nombres de columna en los
@@ -77,7 +132,13 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         /// </summary>
         public static bool NombreTieneFormatoDeAutonumerico(string nombre)
         {
-            throw new NotImplementedException();
+            if (nombre == null) return false;
+            // Se recorre a mano (5c, V-8): el `$` de .NET acepta un salto de linea final y `\d` acepta digitos de otros alfabetos.
+            if (nombre.Length < PrefijoDelNombre.Length + MinimoDeDigitos || nombre.Length > PrefijoDelNombre.Length + MaximoDeDigitos) return false;
+            if (!nombre.StartsWith(PrefijoDelNombre, StringComparison.Ordinal)) return false;
+            for (int i = PrefijoDelNombre.Length; i < nombre.Length; i++)
+                if (nombre[i] < '0' || nombre[i] > '9') return false;
+            return true;
         }
 
         /// <summary>
@@ -87,7 +148,10 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         /// </summary>
         public static string NombreDeCuota(string nombreDelArreglo, int numero)
         {
-            throw new NotImplementedException();
+            if (nombreDelArreglo == null) throw new ArgumentNullException(nameof(nombreDelArreglo));
+            if (numero < 1 || numero > GeneradorDeCalendario.PlazoMaximo)
+                throw new ArgumentOutOfRangeException(nameof(numero), numero, "El numero de cuota debe estar entre 1 y " + GeneradorDeCalendario.PlazoMaximo.ToString(CultureInfo.InvariantCulture) + ".");
+            return nombreDelArreglo + "-C" + numero.ToString("D2", CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -100,7 +164,27 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         /// </summary>
         public static PlanDeCalendario PlanificarCalendario(decimal? saldoInicial, decimal? montoAbonado, decimal? cuotaMensual, int? plazo, DateTime? fechaInicio)
         {
-            throw new NotImplementedException();
+            var faltan = new List<string>();
+            if (!saldoInicial.HasValue) faltan.Add(ColSaldoInicial);
+            if (!montoAbonado.HasValue) faltan.Add(ColMontoAbonado);
+            if (!cuotaMensual.HasValue) faltan.Add(ColCuotaMensual);
+            if (!plazo.HasValue) faltan.Add(ColPlazo);
+            if (!fechaInicio.HasValue) faltan.Add(ColFechaInicio);
+            if (faltan.Count > 0) return PlanDeCalendario.Fallo(CodigosDeError.ARR_006.Crear(Lista(faltan)));
+
+            // Un plazo fuera de rango lo escribio SYSTEM (S-19/S-21 no lo dejan pasar): no es una regla de negocio (5c, punto 7).
+            if (plazo.Value < 1 || plazo.Value > GeneradorDeCalendario.PlazoMaximo)
+                throw new ArgumentOutOfRangeException(nameof(plazo), plazo.Value, "El plazo debe estar entre 1 y " + GeneradorDeCalendario.PlazoMaximo.ToString(CultureInfo.InvariantCulture) + ".");
+
+            var montos = ReglasDeMontos.Calcular(saldoInicial.Value, montoAbonado.Value, cuotaMensual.Value, plazo.Value);
+            if (!montos.Ok) return PlanDeCalendario.Fallo(montos.Error);
+
+            var vencimientos = GeneradorDeCalendario.Generar(fechaInicio.Value, plazo.Value, cuotaMensual.Value, montos.MontoUltimaCuota);
+            var montosDeCuotas = montos.MontosDeCuotas();
+            var cuotas = new List<CuotaDeCalendario>();
+            for (int i = 0; i < vencimientos.Count; i++)
+                cuotas.Add(new CuotaDeCalendario(vencimientos[i].Numero, vencimientos[i].FechaVencimiento, montosDeCuotas[i]));
+            return PlanDeCalendario.Exito(cuotas);
         }
 
         /// <summary>
@@ -134,7 +218,77 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         /// </summary>
         public static ResultadoDeEvaluacion EvaluarAlta(PedidoDeAlta pedido, IReadOnlyList<VersionVigente> versionesVigentes)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+            if (versionesVigentes == null) throw new ArgumentNullException(nameof(versionesVigentes));
+            var target = pedido.Target;
+
+            // Paso 0 (DC-03): el sistema no se revalida, ni siquiera lee las versiones.
+            if (pedido.Identidad.EsEscrituraDelSistema) return ResultadoDeEvaluacion.Permitir();
+
+            // Paso 1: el estado efectivo del alta debe ser Borrador (DC-06); un statecode = 1 solo falla cerrado (5c, punto 2).
+            var borrador = Estados.De(EstadoDeArreglo.Borrador);
+            if (!EstadoDestino(target, borrador).Equals(borrador)) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_008.Crear());
+
+            // Paso 2: solo-sistema con valor, en el orden de la lista de 43 (5c, punto 3).
+            var tabla = Columnas.De(Columnas.TablaArreglo);
+            var soloSistema = new List<string>();
+            foreach (var columna in PreImagenDeActualizacion)
+            {
+                if (tabla.CategoriaDe(columna) != CategoriaDeColumna.SoloSistema) continue;
+                object valor;
+                if (!target.TryGetValue(columna, out valor) || valor == null) continue;
+                var texto = valor as string;
+                if (texto != null && texto.Length == 0) continue;
+                // sanic_nombre lo completa la plataforma (V-8): solo cuenta si NO tiene el formato del autonumerico.
+                if (string.Equals(columna, ColNombre, StringComparison.Ordinal) && texto != null && NombreTieneFormatoDeAutonumerico(texto)) continue;
+                soloSistema.Add(columna);
+            }
+            if (soloSistema.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_009.Crear(Lista(soloSistema)));
+
+            // Paso 3: obligatorias para poder calcular.
+            var numeroDeProducto = NormalizadorDeTexto.NumeroDeProducto(Valor(target, ColNumeroProducto) as string);
+            var saldoInicial = Monto(Valor(target, ColSaldoInicial));
+            var montoAbonado = Monto(Valor(target, ColMontoAbonado));
+            var cuotaMensual = Monto(Valor(target, ColCuotaMensual));
+            var plazo = EnteroPlano(Valor(target, ColPlazo));
+            var fechaInicio = Fecha(Valor(target, ColFechaInicio));
+            var faltan = new List<string>();
+            if (numeroDeProducto == null) faltan.Add(ColNumeroProducto);
+            if (!saldoInicial.HasValue) faltan.Add(ColSaldoInicial);
+            if (!montoAbonado.HasValue) faltan.Add(ColMontoAbonado);
+            if (!cuotaMensual.HasValue) faltan.Add(ColCuotaMensual);
+            if (!plazo.HasValue) faltan.Add(ColPlazo);
+            if (!fechaInicio.HasValue) faltan.Add(ColFechaInicio);
+            if (faltan.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_006.Crear(Lista(faltan)));
+
+            // Pasos 4 y 5: la version vigente (exactamente una).
+            if (versionesVigentes.Count == 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_001.Crear());
+            if (versionesVigentes.Count > 1) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_002.Crear());
+            var version = versionesVigentes[0];
+
+            // Paso 6: el plazo, entre 1 y 60 y sin pasar de la capacidad (5c, punto 4).
+            if (plazo.Value < 1 || plazo.Value > GeneradorDeCalendario.PlazoMaximo || plazo.Value > version.Capacidad)
+                return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_003.Crear(Math.Min(GeneradorDeCalendario.PlazoMaximo, version.Capacidad), version.Capacidad));
+
+            // Paso 8: montos (el paso 7, el canal, solo escribe).
+            var montos = ReglasDeMontos.Calcular(saldoInicial.Value, montoAbonado.Value, cuotaMensual.Value, plazo.Value);
+            if (!montos.Ok) return ResultadoDeEvaluacion.Rechazar(montos.Error);
+
+            var escribir = new Dictionary<string, object>(StringComparer.Ordinal)
+            {
+                { ColNumeroProducto, numeroDeProducto },
+                { ColVersion, new ReferenciaDeEntidad(Columnas.TablaVersionDePlantilla, version.Id) },
+                { ColSaldoRemanente, montos.SaldoRemanente },
+                { ColTotalPagar, montos.TotalPagar },
+                { ColFechaFin, GeneradorDeCalendario.FechaFin(fechaInicio.Value, plazo.Value) },   // OA-5: sobrescribe la del Target
+                { ColCantidadReaperturas, 0 }
+            };
+
+            // Paso 7: con conversacion y sin canal, el canal es Correo (DD-13).
+            if (Valor(target, ColConversacion) != null && Valor(target, ColCanalDeOrigen) == null)
+                escribir[ColCanalDeOrigen] = new ValorDeOpcion((int)CanalDeOrigen.Correo);
+
+            return ResultadoDeEvaluacion.Permitir(escribir);
         }
 
         /// <summary>
@@ -210,7 +364,356 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         /// </summary>
         public static ResultadoDeEvaluacion EvaluarActualizacion(PedidoDeActualizacion pedido, IConsecutivos consecutivos, IJefatura jefatura)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+            if (consecutivos == null) throw new ArgumentNullException(nameof(consecutivos));
+            if (jefatura == null) throw new ArgumentNullException(nameof(jefatura));
+            var target = pedido.Target;
+
+            var origen = EstadoDeLaPreImagen(pedido.PreImagen);
+            var actual = Estados.De(origen);
+            var destino = EstadoDestino(target, actual);
+            var estadoCambio = !destino.Equals(actual);
+            var cerrado = origen == EstadoDeArreglo.Terminado || origen == EstadoDeArreglo.Anulado || origen == EstadoDeArreglo.Descartado;
+
+            // Paso 0: las columnas contadas que cambiaron, en el orden de la lista de 43. sanic_conversacionid (la unica libre) cuenta solo en un arreglo cerrado (V-2).
+            var cambiadas = new List<string>();
+            foreach (var columna in PreImagenDeActualizacion)
+            {
+                if (string.Equals(columna, ColEstado, StringComparison.Ordinal) || string.Equals(columna, ColMotivoDeEstado, StringComparison.Ordinal)) continue;
+                if (string.Equals(columna, ColConversacion, StringComparison.Ordinal) && !cerrado) continue;
+                if (Cambio(pedido, columna)) cambiadas.Add(columna);
+            }
+
+            // Los gestos Desbloquear y Reabrir se reconocen por lo que el Target TRAE, no por "cambio" (5c, punto 4): su disparador cuenta como algo que decidir.
+            object valorPresente;
+            var desbloquear = target.TryGetValue(ColCongelamiento, out valorPresente) && valorPresente == null;
+            var reabrirVigente = origen == EstadoDeArreglo.Vigente && !estadoCambio && target.ContainsKey(ColMotivoReapertura);
+
+            if (!estadoCambio && cambiadas.Count == 0 && !desbloquear && !reabrirVigente) return Cerrar(pedido, new Dictionary<string, object>(StringComparer.Ordinal));
+
+            // DC-03: el sistema no se revalida (tambien para el estado que la plataforma reescribiria, DC-29).
+            if (pedido.Identidad.EsEscrituraDelSistema) return ResultadoDeEvaluacion.Permitir();
+
+            // Paso 1: estados inactivos. Un Terminado solo admite el gesto Reabrir (destino Vigente).
+            if (origen == EstadoDeArreglo.Anulado || origen == EstadoDeArreglo.Descartado) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_022.Crear());
+            if (origen == EstadoDeArreglo.Terminado && !destino.Equals(Estados.De(EstadoDeArreglo.Vigente))) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_022.Crear());
+
+            // Paso 2: el gesto. Un cambio de estado que no es gesto da -010 y gana a todo lo demas, tambien a -012.
+            var gestos = new List<Gesto>();
+            if (estadoCambio)
+            {
+                switch (origen)
+                {
+                    case EstadoDeArreglo.Borrador:
+                        if (destino.Equals(Estados.De(EstadoDeArreglo.Vigente))) gestos.Add(Gesto.Formalizar);
+                        else if (destino.Equals(Estados.De(EstadoDeArreglo.Descartado))) gestos.Add(Gesto.Descartar);
+                        else return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_010.Crear());
+                        break;
+                    case EstadoDeArreglo.Vigente:
+                        if (destino.Equals(Estados.De(EstadoDeArreglo.Anulado))) gestos.Add(Gesto.Anular);
+                        else return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_010.Crear());
+                        break;
+                    default:
+                        gestos.Add(Gesto.ReabrirTerminado);
+                        break;
+                }
+            }
+            if (reabrirVigente) gestos.Add(Gesto.ReabrirVigente);
+            if (desbloquear) gestos.Add(Gesto.Desbloquear);
+
+            if (gestos.Count > 1)
+            {
+                var nombradas = new List<string>();
+                foreach (var columna in PreImagenDeActualizacion)
+                {
+                    var esDisparador = (desbloquear && string.Equals(columna, ColCongelamiento, StringComparison.Ordinal))
+                        || (reabrirVigente && string.Equals(columna, ColMotivoReapertura, StringComparison.Ordinal));
+                    if (esDisparador || Cambio(pedido, columna)) nombradas.Add(columna);
+                }
+                return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_012.Crear(Lista(nombradas)));
+            }
+
+            if (gestos.Count == 1) return EvaluarGesto(pedido, gestos[0], consecutivos, jefatura);
+            return EvaluarEdicion(pedido, cambiadas);
+        }
+
+        // ------------------------------------------------------------------ gestos (2.6, paso 3)
+
+        private static ResultadoDeEvaluacion EvaluarGesto(PedidoDeActualizacion pedido, Gesto gesto, IConsecutivos consecutivos, IJefatura jefatura)
+        {
+            // Cada gesto admite SOLO sus columnas; esta comprobacion va PRIMERO (D-40: Reabrir es puro). Incluye sanic_conversacionid.
+            var propia = ColumnaDelGesto(gesto);
+            var otras = new List<string>();
+            foreach (var columna in PreImagenDeActualizacion)
+            {
+                if (string.Equals(columna, ColEstado, StringComparison.Ordinal) || string.Equals(columna, ColMotivoDeEstado, StringComparison.Ordinal)) continue;
+                if (propia != null && string.Equals(columna, propia, StringComparison.Ordinal)) continue;
+                if (Cambio(pedido, columna)) otras.Add(columna);
+            }
+            if (otras.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_012.Crear(Lista(otras)));
+
+            var preImagen = pedido.PreImagen;
+            var ahora = pedido.AhoraUtc;
+            var actor = new ReferenciaDeEntidad(TablaDeUsuarios, pedido.Identidad.ActorId);
+            var escribir = new Dictionary<string, object>(StringComparer.Ordinal);
+
+            switch (gesto)
+            {
+                case Gesto.Formalizar:
+                {
+                    var provisional = EnteroPlano(Valor(preImagen, ColNumeroProvisional));
+                    if (Valor(preImagen, ColCongelamiento) == null || !provisional.HasValue) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_019.Crear());
+
+                    // El consecutivo se recalcula con el producto y el numero de la pre-imagen (2.0.5): otro arreglo del credito pudo formalizarse despues de imprimir.
+                    var producto = (ProductoCrediticio)(Entero(Valor(preImagen, ColProducto)) ?? 0);
+                    var existentes = consecutivos.NumerosDelCredito(producto, Valor(preImagen, ColNumeroProducto) as string);
+                    var siguiente = ConsecutivoDeCredito.Siguiente(existentes.Select(n => (int?)n));
+                    if (!siguiente.Ok) return ResultadoDeEvaluacion.Rechazar(siguiente.Error);
+                    if (siguiente.Numero != provisional.Value) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_020.Crear());
+
+                    // No se toca el provisional ni sanic_fechaformalizacion (P-07).
+                    escribir[ColNumeroArreglo] = provisional.Value;
+                    escribir[ColFormalizadoPor] = actor;
+                    escribir[ColFechaFormalizado] = ahora;
+                    break;
+                }
+                case Gesto.Descartar:
+                    if (string.IsNullOrWhiteSpace(Valor(pedido.Target, ColMotivoDescarte) as string)) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_013.Crear());
+                    escribir[ColDescartadoPor] = actor;
+                    escribir[ColFechaDescarte] = ahora;
+                    escribir[ColFechaTermino] = ahora;
+                    break;
+                case Gesto.Anular:
+                    if (string.IsNullOrWhiteSpace(Valor(pedido.Target, ColMotivoAnulacion) as string)) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_014.Crear());
+                    escribir[ColAnuladoPor] = actor;
+                    escribir[ColFechaAnulacion] = ahora;
+                    escribir[ColFechaTermino] = ahora;
+                    break;
+                case Gesto.ReabrirTerminado:
+                case Gesto.ReabrirVigente:
+                    if (gesto == Gesto.ReabrirVigente && Valor(preImagen, ColCongelamiento) == null) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_017.Crear());
+                    if (string.IsNullOrWhiteSpace(Valor(pedido.Target, ColMotivoReapertura) as string)) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_015.Crear());
+                    if (!jefatura.EsJefatura()) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_016.Crear());
+
+                    // 10 claves; NUNCA statecode ni statuscode: el Vigente lo trae el Target (V-5).
+                    escribir[ColReabiertoPor] = actor;
+                    escribir[ColFechaReapertura] = ahora;
+                    escribir[ColCantidadReaperturas] = (EnteroPlano(Valor(preImagen, ColCantidadReaperturas)) ?? 0) + 1;
+                    escribir[ColFechaTermino] = null;
+                    escribir[ColCongelamiento] = null;
+                    VaciarInstantanea(escribir);
+                    break;
+                default:
+                    // Desbloquear: un Vigente no se desbloquea, este o no congelado; un Borrador sin congelar no tiene nada que desbloquear.
+                    if (EstadoDeLaPreImagen(preImagen) == EstadoDeArreglo.Vigente) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_018.Crear());
+                    if (Valor(preImagen, ColCongelamiento) == null) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_017.Crear());
+                    VaciarInstantanea(escribir);
+                    break;
+            }
+            return Cerrar(pedido, escribir);
+        }
+
+        private static string ColumnaDelGesto(Gesto gesto)
+        {
+            switch (gesto)
+            {
+                case Gesto.Descartar: return ColMotivoDescarte;
+                case Gesto.Anular: return ColMotivoAnulacion;
+                case Gesto.ReabrirTerminado:
+                case Gesto.ReabrirVigente: return ColMotivoReapertura;
+                case Gesto.Desbloquear: return ColCongelamiento;
+                default: return null;
+            }
+        }
+
+        // Las cuatro instantaneas y el provisional vuelven a nulo (2.6, Desbloquear y Reabrir).
+        private static void VaciarInstantanea(Dictionary<string, object> escribir)
+        {
+            escribir[ColInstantaneaNombre] = null;
+            escribir[ColInstantaneaCedula] = null;
+            escribir[ColInstantaneaCorreo] = null;
+            escribir[ColInstantaneaCelular] = null;
+            escribir[ColNumeroProvisional] = null;
+        }
+
+        // ------------------------------------------------------------------ edicion (2.6, paso 4)
+
+        private static ResultadoDeEvaluacion EvaluarEdicion(PedidoDeActualizacion pedido, List<string> cambiadas)
+        {
+            var tabla = Columnas.De(Columnas.TablaArreglo);
+            var target = pedido.Target;
+            var preImagen = pedido.PreImagen;
+
+            // 1. Solo-sistema (incluida sanic_nombre, sea cual sea su formato) y despues los motivos sin su gesto.
+            var soloSistema = cambiadas.Where(c => tabla.CategoriaDe(c) == CategoriaDeColumna.SoloSistema).ToList();
+            if (soloSistema.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_009.Crear(Lista(soloSistema)));
+            if (cambiadas.Any(c => string.Equals(c, ColMotivoDescarte, StringComparison.Ordinal) || string.Equals(c, ColMotivoAnulacion, StringComparison.Ordinal)
+                || string.Equals(c, ColMotivoReapertura, StringComparison.Ordinal)))
+                return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_024.Crear());
+
+            // 2. Congelado: ninguna columna de datos del acuerdo (se nombran todas las que cambiaron).
+            if (Valor(preImagen, ColCongelamiento) != null)
+            {
+                var datos = cambiadas.Where(c => tabla.CategoriaDe(c) == CategoriaDeColumna.DatosDelAcuerdo).ToList();
+                if (datos.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_011.Crear(Lista(datos)));
+            }
+
+            var escribir = new Dictionary<string, object>(StringComparer.Ordinal);
+
+            // 3. El numero de producto, normalizado; sin contenido no sirve para calcular.
+            if (target.ContainsKey(ColNumeroProducto) && NormalizadorDeTexto.NumeroDeProducto(Valor(target, ColNumeroProducto) as string) == null)
+                return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_006.Crear(ColNumeroProducto));
+
+            // 4. Montos con los valores EFECTIVOS (el del Target si viene, si no el de la pre-imagen).
+            var cambioMontos = Cambio(pedido, ColSaldoInicial) || Cambio(pedido, ColMontoAbonado) || Cambio(pedido, ColCuotaMensual) || Cambio(pedido, ColPlazo);
+            if (cambioMontos)
+            {
+                var saldoInicial = Monto(Efectivo(pedido, ColSaldoInicial));
+                var montoAbonado = Monto(Efectivo(pedido, ColMontoAbonado));
+                var cuotaMensual = Monto(Efectivo(pedido, ColCuotaMensual));
+                var plazo = EnteroPlano(Efectivo(pedido, ColPlazo));
+                var faltan = new List<string>();
+                if (!saldoInicial.HasValue) faltan.Add(ColSaldoInicial);
+                if (!montoAbonado.HasValue) faltan.Add(ColMontoAbonado);
+                if (!cuotaMensual.HasValue) faltan.Add(ColCuotaMensual);
+                if (!plazo.HasValue) faltan.Add(ColPlazo);
+                if (faltan.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_006.Crear(Lista(faltan)));
+
+                // Capacidad ilegible (version inexistente o sin referencia): solo rige el rango de 1 a 60.
+                var capacidad = CapacidadDeLaVersion(pedido);
+                var tope = capacidad ?? GeneradorDeCalendario.PlazoMaximo;
+                if (plazo.Value < 1 || plazo.Value > GeneradorDeCalendario.PlazoMaximo || plazo.Value > tope)
+                    return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_003.Crear(Math.Min(GeneradorDeCalendario.PlazoMaximo, tope), tope));
+
+                var montos = ReglasDeMontos.Calcular(saldoInicial.Value, montoAbonado.Value, cuotaMensual.Value, plazo.Value);
+                if (!montos.Ok) return ResultadoDeEvaluacion.Rechazar(montos.Error);
+                escribir[ColSaldoRemanente] = montos.SaldoRemanente;
+                escribir[ColTotalPagar] = montos.TotalPagar;
+            }
+
+            // 5. sanic_fechafin se recalcula y SOBRESCRIBE la del Target (OA-5; union de columnas del 5c, punto 6).
+            if (cambioMontos || Cambio(pedido, ColFechaInicio) || Cambio(pedido, ColFechaFin))
+            {
+                var fechaInicio = Fecha(Efectivo(pedido, ColFechaInicio));
+                var plazo = EnteroPlano(Efectivo(pedido, ColPlazo));
+                var faltan = new List<string>();
+                if (!plazo.HasValue) faltan.Add(ColPlazo);
+                if (!fechaInicio.HasValue) faltan.Add(ColFechaInicio);
+                if (faltan.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_006.Crear(Lista(faltan)));
+                escribir[ColFechaFin] = GeneradorDeCalendario.FechaFin(fechaInicio.Value, plazo.Value);
+            }
+
+            // 6. Un cambio del calendario con pagos registrados (DC-21), despues de los errores de montos.
+            if ((cambioMontos || Cambio(pedido, ColFechaInicio)) && pedido.Lecturas.TienePagos(pedido.ArregloId))
+                return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_021.Crear());
+
+            return Cerrar(pedido, escribir);
+        }
+
+        // ------------------------------------------------------------------ apoyos
+
+        private static object Valor(IReadOnlyDictionary<string, object> valores, string columna)
+        {
+            object valor;
+            return valores.TryGetValue(columna, out valor) ? valor : null;
+        }
+
+        // El valor efectivo: el del Target si la clave viene (aunque sea null), si no el de la pre-imagen.
+        private static object Efectivo(PedidoDeActualizacion pedido, string columna)
+        {
+            object valor;
+            return pedido.Target.TryGetValue(columna, out valor) ? valor : Valor(pedido.PreImagen, columna);
+        }
+
+        // DC-01 puro (Cambios.Distinto): una clave AUSENTE de la pre-imagen es "desconocida" y cuenta como cambio. El numero de producto se compara NORMALIZADO (convencion e).
+        private static bool Cambio(PedidoDeActualizacion pedido, string columna)
+        {
+            if (!string.Equals(columna, ColNumeroProducto, StringComparison.Ordinal)) return Cambios.Distinto(pedido.Target, pedido.PreImagen, columna);
+
+            object nuevo;
+            if (!pedido.Target.TryGetValue(columna, out nuevo)) return false;
+            var texto = nuevo as string;
+            if (texto != null) nuevo = NormalizadorDeTexto.NumeroDeProducto(texto);
+            object anterior;
+            if (!pedido.PreImagen.TryGetValue(columna, out anterior)) return true;
+            return Cambios.ValoresDistintos(nuevo, anterior);
+        }
+
+        private static string Lista(IEnumerable<string> columnas)
+        {
+            return string.Join(", ", columnas);
+        }
+
+        private static int? Entero(object valor)
+        {
+            var opcion = valor as ValorDeOpcion;
+            if (opcion != null) return opcion.Valor;
+            if (valor is int) return (int)valor;
+            return null;
+        }
+
+        private static int? EnteroPlano(object valor)
+        {
+            if (valor is int) return (int)valor;
+            return null;
+        }
+
+        private static decimal? Monto(object valor)
+        {
+            var dinero = valor as ValorDeDinero;
+            if (dinero != null) return dinero.Valor;
+            if (valor is decimal) return (decimal)valor;
+            return null;
+        }
+
+        private static DateTime? Fecha(object valor)
+        {
+            if (valor is DateTime) return (DateTime)valor;
+            return null;
+        }
+
+        private static EstadoDeArreglo EstadoDeLaPreImagen(IReadOnlyDictionary<string, object> preImagen)
+        {
+            var estado = Entero(Valor(preImagen, ColEstado));
+            var motivo = Entero(Valor(preImagen, ColMotivoDeEstado));
+            if (!estado.HasValue || !motivo.HasValue)
+                throw new ArgumentException("La pre-imagen de una actualizacion debe traer statecode y statuscode.", nameof(preImagen));
+            var conocido = Estados.DeArreglo(new EstadoEfectivo(estado.Value, motivo.Value));
+            if (!conocido.HasValue)
+                throw new ArgumentException("La pre-imagen trae un par statecode/statuscode que no existe (diseno/03 0.7).", nameof(preImagen));
+            return conocido.Value;
+        }
+
+        // DC-06 y DC-29: el estado que la plataforma dejaria, no solo el que el Target dice. `actual` es el de la pre-imagen (o Borrador en un alta).
+        private static EstadoEfectivo EstadoDestino(IReadOnlyDictionary<string, object> target, EstadoEfectivo actual)
+        {
+            var estado = Entero(Valor(target, ColEstado));
+            var motivo = Entero(Valor(target, ColMotivoDeEstado));
+            if (motivo.HasValue) return new EstadoEfectivo(estado ?? actual.StateCode, motivo.Value);
+            if (!estado.HasValue) return actual;
+            // Un statecode que no es 0 ni 1 no tiene motivo por defecto: queda como un par que no existe (-1).
+            var porDefecto = estado.Value == Estados.Activo || estado.Value == Estados.Inactivo ? Estados.StatusPorDefecto(estado.Value) : -1;
+            return new EstadoEfectivo(estado.Value, porDefecto);
+        }
+
+        // sanic_capacidad de la version del arreglo (la de la pre-imagen); null si no hay referencia o la version no existe.
+        private static int? CapacidadDeLaVersion(PedidoDeActualizacion pedido)
+        {
+            var version = Valor(pedido.PreImagen, ColVersion) as ReferenciaDeEntidad;
+            if (version == null || version.Id == Guid.Empty) return null;
+            return pedido.Lecturas.CapacidadDeLaVersion(version.Id);
+        }
+
+        // Todo resultado permitido de una persona lleva el numero de producto normalizado si el Target lo trae crudo (convencion h): la plataforma no debe guardar el crudo.
+        private static ResultadoDeEvaluacion Cerrar(PedidoDeActualizacion pedido, Dictionary<string, object> escribir)
+        {
+            var crudo = Valor(pedido.Target, ColNumeroProducto) as string;
+            if (crudo != null && !escribir.ContainsKey(ColNumeroProducto))
+            {
+                var normalizado = NormalizadorDeTexto.NumeroDeProducto(crudo);
+                if (normalizado != null && !string.Equals(normalizado, crudo, StringComparison.Ordinal)) escribir[ColNumeroProducto] = normalizado;
+            }
+            return ResultadoDeEvaluacion.Permitir(escribir);
         }
     }
 }

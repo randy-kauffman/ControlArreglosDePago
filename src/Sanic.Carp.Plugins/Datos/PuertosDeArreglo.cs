@@ -12,16 +12,19 @@ namespace Sanic.Carp.Plugins.Datos
     /// </summary>
     internal sealed class ConsecutivosDataverse : IConsecutivos
     {
-        // El constructor guarda el servicio en un campo de solo lectura; hoy solo valida que no sea nulo.
+        private readonly IOrganizationService _s;
+
         public ConsecutivosDataverse(IOrganizationService servicio)
         {
             if (servicio == null) throw new ArgumentNullException(nameof(servicio));
+            _s = servicio;
         }
 
         /// <inheritdoc />
         public IReadOnlyList<int> NumerosDelCredito(ProductoCrediticio producto, string numeroProducto)
         {
-            throw new NotImplementedException();
+            // Sin filtro de estado: el consecutivo no se reutiliza (2.0.5). La paginacion la hace el repositorio.
+            return new ArreglosDataverse(_s).NumerosDelCredito(producto, numeroProducto);
         }
     }
 
@@ -31,21 +34,29 @@ namespace Sanic.Carp.Plugins.Datos
     /// </summary>
     internal sealed class LecturasDelArregloDataverse : ILecturasDelArreglo
     {
+        private const string ColumnaDeCapacidad = "sanic_capacidad";
+
+        private readonly IOrganizationService _s;
+
         public LecturasDelArregloDataverse(IOrganizationService servicio)
         {
             if (servicio == null) throw new ArgumentNullException(nameof(servicio));
+            _s = servicio;
         }
 
         /// <inheritdoc />
         public int? CapacidadDeLaVersion(Guid versionId)
         {
-            throw new NotImplementedException();
+            var version = new VersionesDataverse(_s).Leer(versionId, new[] { ColumnaDeCapacidad });
+            if (version == null) return null;
+            object capacidad;
+            return version.Valores.TryGetValue(ColumnaDeCapacidad, out capacidad) && capacidad is int ? (int?)(int)capacidad : null;
         }
 
         /// <inheritdoc />
         public bool TienePagos(Guid arregloId)
         {
-            throw new NotImplementedException();
+            return new CuotasDataverse(_s).HayPagos(arregloId);
         }
     }
 }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
+using Sanic.Carp.Plugins.Dominio.Arreglo;
 using Sanic.Carp.Plugins.Infraestructura;
 
 namespace Sanic.Carp.Plugins.Steps
@@ -26,13 +28,34 @@ namespace Sanic.Carp.Plugins.Steps
             new RegistroEsperado("Create", EtapaDelPipeline.PreOperation, false, 10, new[] { TablasDelArea.Arreglo }, null, null)
         });
 
+        private const string ColumnaDeCapacidad = "sanic_capacidad";
+
         internal override string Area { get { return "ARR"; } }
 
         internal override IReadOnlyList<RegistroEsperado> RegistrosEsperados { get { return Registros; } }
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            // DC-03: el sistema no se revalida y no se leen las versiones (5c, punto 1). La identidad la memoiza el contexto.
+            if (contexto.Identidad.EsEscrituraDelSistema) return;
+
+            // UNA consulta con SYSTEM y solo la capacidad: la persona no tiene acceso a las versiones.
+            var versiones = new List<VersionVigente>();
+            foreach (var fila in new VersionesDataverse(contexto.ServicioComoSistema).Vigentes(new[] { ColumnaDeCapacidad }))
+            {
+                object capacidad;
+                fila.Valores.TryGetValue(ColumnaDeCapacidad, out capacidad);
+                versiones.Add(new VersionVigente(fila.Id, capacidad is int ? (int)capacidad : 0));
+            }
+
+            var resultado = ReglasDeArreglo.EvaluarAlta(new PedidoDeAlta(contexto.TargetNeutro(), contexto.Identidad), versiones);
+            if (!resultado.Permitida) throw resultado.Error;
+
+            // Solo lo que la regla escribe; nunca sanic_nombre (V-8, caso B2: quitarlo o reemplazarlo dejaria la primaria vacia).
+            var target = contexto.Target;
+            foreach (var par in resultado.Escribir)
+                target[par.Key] = ConversorDeEntidades.AValorDelSdk(par.Value);
+            if (resultado.Escribir.Count > 0) contexto.Trazar("columnas escritas: " + string.Join(", ", resultado.Escribir.Keys));
         }
     }
 }

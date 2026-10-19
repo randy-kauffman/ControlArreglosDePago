@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Arreglo;
 using Sanic.Carp.Plugins.Infraestructura;
@@ -37,13 +38,67 @@ namespace Sanic.Carp.Plugins.Steps
                 ReglasDeArreglo.ColumnasDeLaPreImagenDeActualizacion)
         });
 
+        private const string ColEstado = "statecode";
+        private const string ColMotivoDeEstado = "statuscode";
+
         internal override string Area { get { return "ARR"; } }
 
         internal override IReadOnlyList<RegistroEsperado> RegistrosEsperados { get { return Registros; } }
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var target = contexto.TargetNeutro();
+            var preImagen = Completar(contexto, target);
+            var lecturas = new LecturasDelArregloDataverse(contexto.ServicioComoSistema);
+            var pedido = new PedidoDeActualizacion(contexto.IdPrimario, target, preImagen, contexto.Identidad, contexto.Reloj.AhoraUtc, lecturas);
+
+            var resultado = ReglasDeArreglo.EvaluarActualizacion(pedido, new ConsecutivosDataverse(contexto.ServicioComoSistema), new JefaturaDeLaIdentidad(contexto.Identidad));
+            if (!resultado.Permitida) throw resultado.Error;
+
+            // Solo lo que la regla escribe (un null deja la columna vacia); nunca statuscode ni columnas fuera de Escribir.
+            var entidad = contexto.Target;
+            foreach (var par in resultado.Escribir)
+                entidad[par.Key] = ConversorDeEntidades.AValorDelSdk(par.Value);
+            if (resultado.Escribir.Count > 0) contexto.Trazar("columnas escritas: " + string.Join(", ", resultado.Escribir.Keys));
+        }
+
+        // 2.6, decision 2 del 5c: Dev omite las columnas nulas, asi que lo que falta de las 43 vale nulo; las protegidas (DC-28) se leen con SYSTEM si el Target las trae.
+        private static IReadOnlyDictionary<string, object> Completar(ContextoDeStep contexto, IReadOnlyDictionary<string, object> target)
+        {
+            var original = contexto.PreImagenNeutra();
+            var completada = new Dictionary<string, object>(StringComparer.Ordinal);
+            foreach (var par in original) completada[par.Key] = par.Value;
+
+            var protegidas = ReglasDeArreglo.ColumnasConSeguridadPorColumna;
+            foreach (var columna in ReglasDeArreglo.ColumnasDeLaPreImagenDeActualizacion)
+            {
+                // statecode y statuscode no se completan nunca: si faltan, la regla lanza ArgumentException.
+                if (string.Equals(columna, ColEstado, StringComparison.Ordinal) || string.Equals(columna, ColMotivoDeEstado, StringComparison.Ordinal)) continue;
+                if (Contiene(protegidas, columna) || completada.ContainsKey(columna)) continue;
+                completada[columna] = null;
+            }
+
+            // Una protegida que el Target trae y la pre-imagen omitio (llamador sin el perfil): UNA lectura con SYSTEM y solo esas columnas.
+            var faltantes = new List<string>();
+            foreach (var columna in protegidas)
+                if (target.ContainsKey(columna) && !completada.ContainsKey(columna)) faltantes.Add(columna);
+            if (faltantes.Count == 0) return completada;
+
+            var fila = new ArreglosDataverse(contexto.ServicioComoSistema).Leer(contexto.IdPrimario, faltantes);
+            if (fila == null) return completada;      // sin lectura queda ausente y cuenta como cambio (falla cerrado)
+            foreach (var columna in faltantes)
+            {
+                object valor;
+                completada[columna] = fila.Valores.TryGetValue(columna, out valor) ? valor : null;
+            }
+            return completada;
+        }
+
+        private static bool Contiene(IReadOnlyList<string> columnas, string buscada)
+        {
+            foreach (var columna in columnas)
+                if (string.Equals(columna, buscada, StringComparison.Ordinal)) return true;
+            return false;
         }
     }
 }
