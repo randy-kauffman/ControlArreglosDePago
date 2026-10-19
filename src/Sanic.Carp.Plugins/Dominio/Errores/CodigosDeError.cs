@@ -125,7 +125,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
         public static readonly DefinicionDeError ENT_003 = new DefinicionDeError("CARP-ENT-003", "La cadena de conversaciones unidas no termina en una conversación activa.");
         public static readonly DefinicionDeError CFG_001 = new DefinicionDeError("CARP-CFG-001", "No se encontró la unidad de negocio del área, o hay más de una con ese nombre. Revise la variable de entorno sanic_carp_ev_nombrebu.");
         public static readonly DefinicionDeError CFG_002 = new DefinicionDeError("CARP-CFG-002", "No se encontró un único equipo propietario predeterminado en la unidad de negocio del área.");
-        public static readonly DefinicionDeError CFG_003 = new DefinicionDeError("CARP-CFG-003", "No se encontró el equipo de jefatura en la unidad de negocio del área. Revise la variable de entorno sanic_carp_ev_nombreteamjefatura.");
+        public static readonly DefinicionDeError CFG_003 = new DefinicionDeError("CARP-CFG-003", "No se encontró el equipo de jefatura en la unidad de negocio del área, o hay más de uno con ese nombre. Revise la variable de entorno sanic_carp_ev_nombreteamjefatura.");
         public static readonly DefinicionDeError CFG_004 = new DefinicionDeError("CARP-CFG-004", "No se encontró la cola del buzón del área. Revise la variable de entorno sanic_carp_ev_buzonarea.");
         public static readonly DefinicionDeError CFG_005 = new DefinicionDeError("CARP-CFG-005", "Hay más de una cola con la dirección del buzón del área. Revise la variable de entorno sanic_carp_ev_buzonarea y las colas del entorno.");
         public static readonly DefinicionDeError CFG_006 = new DefinicionDeError("CARP-CFG-006", "La variable de entorno {variable} no tiene valor.");

@@ -43,6 +43,9 @@ namespace Sanic.Carp.Plugins.Datos
 
         public void Actualizar(Guid id, IReadOnlyDictionary<string, object> cambios, string versionDeFila)
         {
+            // null = sin version; "" o solo espacios no es una version y no debe degradarse a un Update comun (diseno/03 4.2 punto 5, cierre del lote 4).
+            if (versionDeFila != null && string.IsNullOrWhiteSpace(versionDeFila))
+                throw new ArgumentException("La versión de fila no puede ser vacía ni solo espacios; use null para actualizar sin versión.", nameof(versionDeFila));
             if (versionDeFila == null) AyudaDeEscrituras.Actualizar(_servicio, Tabla, id, cambios);
             else AyudaDeEscrituras.ActualizarSiLaVersionCoincide(_servicio, Tabla, id, cambios, versionDeFila);
         }

@@ -56,6 +56,8 @@ namespace Sanic.Carp.Plugins.Dominio.Puertos
         /// <c>ConcurrencyBehavior.IfRowVersionMatches</c> y ese <c>RowVersion</c> en el <c>Target</c> (DC-15, 1.3 paso 6, 1.4 paso 6d). La
         /// versión que no coincide (<c>0x80060882</c>) se deja escapar: la Custom API la traduce a <c>-900</c>. <paramref name="cambios"/>
         /// nulo ⇒ <see cref="ArgumentNullException"/>; vacío ⇒ <see cref="ArgumentException"/> (no se envía un <c>Update</c> sin columnas).
+        /// Una <paramref name="versionDeFila"/> <c>""</c> o de solo espacios ⇒ <see cref="ArgumentException"/> (parámetro <c>versionDeFila</c>) sin escribir
+        /// nada: <c>null</c> es "sin versión" y lo demás no es una versión (diseno/03 4.2 punto 5, cierre del lote 4).
         /// </summary>
         void Actualizar(Guid id, IReadOnlyDictionary<string, object> cambios, string versionDeFila);
 

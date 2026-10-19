@@ -17,7 +17,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
     /// <c>value</c>). Vale el <c>value</c> si no es nulo ni vacío; si no, el <c>defaultvalue</c>; si tampoco, <c>CARP-CFG-006</c> con el nombre de la variable.</item>
     /// <item><b>BuId</b>: variable <c>sanic_carp_ev_nombrebu</c>; <c>businessunit</c> con <c>name</c> igual e <c>isdisabled</c> falso; exactamente una o <c>CARP-CFG-001</c>.</item>
     /// <item><b>TeamPropietarioId</b>: <c>BuId</c>; <c>team</c> con <c>businessunitid</c> = BU e <c>isdefault</c> verdadero; exactamente uno o <c>CARP-CFG-002</c>. Sin buscar por nombre.</item>
-    /// <item><b>TeamJefaturaId</b>: <c>BuId</c> y variable <c>sanic_carp_ev_nombreteamjefatura</c>; <c>team</c> con <c>name</c> igual y <c>businessunitid</c> = BU; ninguno ⇒ <c>CARP-CFG-003</c>.</item>
+    /// <item><b>TeamJefaturaId</b>: <c>BuId</c> y variable <c>sanic_carp_ev_nombreteamjefatura</c>; <c>team</c> con <c>name</c> igual y <c>businessunitid</c> = BU; exactamente uno (<c>TopCount</c> 2); cero o más de uno ⇒ <c>CARP-CFG-003</c> (diseno/03 0.4 punto 4).</item>
     /// <item><b>QueueRemitenteId</b>: variable <c>sanic_carp_ev_buzonarea</c>; <c>queue</c> con <c>emailaddress</c> igual (sin distinguir mayúsculas) y <c>statecode</c> 0; cero ⇒ <c>CARP-CFG-004</c>, más de una ⇒ <c>CARP-CFG-005</c>.</item>
     /// </list>
     /// Los mensajes son los de <c>CodigosDeError.CFG_00x</c>: nombran la variable o el elemento, nunca un valor.
@@ -88,8 +88,9 @@ namespace Sanic.Carp.Plugins.Infraestructura
                     var consulta = AyudaDeConsultas.SoloId("team");
                     consulta.Criteria.AddCondition("name", ConditionOperator.Equal, Valor(VariableNombreTeamJefatura));
                     consulta.Criteria.AddCondition("businessunitid", ConditionOperator.Equal, bu);
-                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 1);
-                    if (filas.Count == 0) throw CodigosDeError.CFG_003.Crear();
+                    // TopCount 2: distingue "uno" de "mas de uno"; con varios la jefatura quedaria librada al azar (cierre del lote 4, 2026-10-19).
+                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 2);
+                    if (filas.Count != 1) throw CodigosDeError.CFG_003.Crear();
                     _teamJefaturaId = filas[0].Id;
                 }
                 return _teamJefaturaId.Value;

@@ -48,7 +48,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         /// <c>null</c> explícito y el atributo del id primario solo si el llamador lo puso. <c>Create</c> y <c>Update</c> (también por <c>UpdateRequest</c>): las claves de
         /// <c>entity.Attributes</c>; <c>Delete</c>: vacía; <c>Assign</c>: <c>ownerid</c>. <see cref="Columnas"/> y <see cref="Valores"/> no cambian.
         /// </summary>
-        public IReadOnlyList<string> ColumnasEnviadas { get { throw new NotImplementedException("ColumnasEnviadas: pendiente del constructor (cierre del lote 4)."); } }
+        public IReadOnlyList<string> ColumnasEnviadas { get; }
 
         /// <summary>Identidad del servicio que escribió. SYSTEM figura con <see cref="OrganizationServiceEnMemoria.IdDeSystem"/>.</summary>
         public Guid Identidad { get; }
@@ -57,8 +57,9 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         public DateTime Instante { get; }
 
         public EscrituraRegistrada(OperacionDeDatos operacion, string tabla, Guid id, IReadOnlyDictionary<string, object> valores,
-            IReadOnlyList<string> columnas, Guid identidad, DateTime instante)
+            IReadOnlyList<string> columnas, Guid identidad, DateTime instante, IReadOnlyList<string> columnasEnviadas)
         {
+            ColumnasEnviadas = columnasEnviadas;
             Operacion = operacion;
             Tabla = tabla;
             Id = id;

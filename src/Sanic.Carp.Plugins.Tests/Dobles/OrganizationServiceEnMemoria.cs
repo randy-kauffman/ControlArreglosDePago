@@ -539,7 +539,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             ComprobarEscrituraDeColumnas(entity, true);
             // La plataforma valida la petición antes de los plugins: una escritura mal formada no cuenta como llamada ni corre ningún step.
             ValidarNombres(entity);
-            var enviadas = new HashSet<string>(entity.Attributes.Keys, StringComparer.Ordinal);
+            var enviadas = entity.Attributes.Keys.ToList();
             var objetivo = Copias.Entidad(entity);
             // El Target y el PrimaryEntityId de un Create nunca están vacíos, en ninguna etapa (medido, 41-sonda-resumen.json f_ids): la fila ya tiene su id desde PreValidation.
             if (objetivo.Id == Guid.Empty) objetivo.Id = Guid.NewGuid();
@@ -832,7 +832,8 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             else pipeline.Escribir(this, mensaje, tabla, entradas, aplicar);
         }
 
-        private void RegistrarEscritura(OperacionDeDatos operacion, string tabla, Guid id, IEnumerable<KeyValuePair<string, object>> valores)
+        /// <param name="enviadas">Las claves que pasó el llamador, tomadas al recibir la llamada (antes del autonumérico y de los steps); cada escritura, también la anidada de un step, lleva las suyas (4.5, cierre del lote 4).</param>
+        private void RegistrarEscritura(OperacionDeDatos operacion, string tabla, Guid id, IEnumerable<KeyValuePair<string, object>> valores, IReadOnlyList<string> enviadas)
         {
             var copias = new Dictionary<string, object>(StringComparer.Ordinal);
             var columnas = new List<string>();
@@ -841,7 +842,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 copias[par.Key] = Copias.Valor(par.Value);
                 columnas.Add(par.Key);
             }
-            _estado.Escrituras.Add(new EscrituraRegistrada(operacion, tabla, id, copias, columnas, _identidad, Ahora));
+            _estado.Escrituras.Add(new EscrituraRegistrada(operacion, tabla, id, copias, columnas, _identidad, Ahora, enviadas));
         }
 
         /// <summary>
@@ -904,7 +905,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             if (!objetivo.Attributes.Contains(columnaDeId)) objetivo.Attributes[columnaDeId] = objetivo.Id;
         }
 
-        private Guid AplicarCreate(Entity destino, int? codigoDeFalla, ISet<string> enviadas)
+        private Guid AplicarCreate(Entity destino, int? codigoDeFalla, IReadOnlyList<string> enviadas)
         {
             var tabla = destino.LogicalName;
             ValidarNombres(destino);
@@ -920,7 +921,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             _estado.TablaDe(tabla, true).Agregar(fila);
             // Lo que el código escribió: el atributo del id primario que inyecta la plataforma no figura (4.5, punto 9 del lote 3b), salvo que el llamador lo haya traído.
             var columnaDeId = FormaDeLaPlataforma.ColumnaDeId(tabla);
-            RegistrarEscritura(OperacionDeDatos.Create, tabla, id, destino.Attributes.Where(p => !string.Equals(p.Key, columnaDeId, StringComparison.Ordinal) || enviadas.Contains(p.Key)));
+            RegistrarEscritura(OperacionDeDatos.Create, tabla, id, destino.Attributes.Where(p => !string.Equals(p.Key, columnaDeId, StringComparison.Ordinal) || enviadas.Contains(p.Key, StringComparer.Ordinal)), enviadas);
             return id;
         }
 
@@ -942,16 +943,17 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 NormalizarFechasDelTarget(objetivo);
                 var entradas = new ParameterCollection { { "Target", objetivo } };
                 var id = entity.Id;
+                var enviadas = entity.Attributes.Keys.ToList();
                 Escribir("Update", entity.LogicalName, entradas, () =>
                 {
-                    AplicarUpdate((Entity)entradas["Target"], comportamiento, codigoDeFalla);
+                    AplicarUpdate((Entity)entradas["Target"], comportamiento, codigoDeFalla, enviadas);
                     return id;
                 });
                 return null;
             });
         }
 
-        private void AplicarUpdate(Entity destino, ConcurrencyBehavior comportamiento, int? codigoDeFalla)
+        private void AplicarUpdate(Entity destino, ConcurrencyBehavior comportamiento, int? codigoDeFalla, IReadOnlyList<string> enviadas)
         {
             var tabla = destino.LogicalName;
             ValidarNombres(destino);
@@ -989,7 +991,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             ComprobarClaves(fila, destino.Id, destino.Attributes.Keys.ToList());
             fila.RowVersion = _estado.SiguienteVersion();
             _estado.TablaDe(tabla, true).Reemplazar(fila);
-            RegistrarEscritura(OperacionDeDatos.Update, tabla, destino.Id, destino.Attributes);
+            RegistrarEscritura(OperacionDeDatos.Update, tabla, destino.Id, destino.Attributes, enviadas);
         }
 
         /// <summary>
@@ -1138,7 +1140,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
                 _estado.TablaDe(vinculo.Tabla, true).Reemplazar(sinVinculo);
             }
             QuitarFila(tabla, id);
-            RegistrarEscritura(OperacionDeDatos.Delete, tabla, id, new KeyValuePair<string, object>[0]);
+            RegistrarEscritura(OperacionDeDatos.Delete, tabla, id, new KeyValuePair<string, object>[0], new string[0]);
         }
 
         /// <summary>Borra la fila y sus archivos (diseno/03 4.5, reglas de la clase).</summary>
@@ -1244,7 +1246,7 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
             fila.RowVersion = _estado.SiguienteVersion();
             _estado.TablaDe(objetivo.LogicalName, true).Reemplazar(fila);
             RegistrarEscritura(OperacionDeDatos.Assign, objetivo.LogicalName, objetivo.Id,
-                new[] { new KeyValuePair<string, object>("ownerid", new EntityReference(asignado.LogicalName, asignado.Id)) });
+                new[] { new KeyValuePair<string, object>("ownerid", new EntityReference(asignado.LogicalName, asignado.Id)) }, new[] { "ownerid" });
         }
 
         // ---- Mensajes de Execute ----
