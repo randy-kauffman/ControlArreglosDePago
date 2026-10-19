@@ -374,7 +374,7 @@ Idempotente (BP-PP-055): un correo que ya tiene conversación no es candidato; d
 | PA-REC-06 | Tres candidatos | `maximo = 1` | Procesa el más antiguo; `registrados = 1`, `haymas = true` |
 | PA-REC-07 | — | `maximo = -1` y, en otra llamada, `minutosminimos = -5` | `CARP-REC-001` y `CARP-REC-002`, sin escrituras |
 | PA-REC-08 | `maximo = 500` y 150 candidatos | Se llama | Procesa 100 (tope), `haymas = true` |
-| PA-REC-09 | `emailid` de un correo que ya tiene conversación | Se llama | `resultado = yatenia`, sin escrituras |
+| PA-REC-09 | `emailid` de un correo que ya tiene conversación | Se llama | `resultado = yatenia`, sin escrituras. **Orquestador, 2026-10-19 (sublote 5f):** la Custom API corta ANTES de llamar a `RegistradorDeCorreo` cuando el Regarding del correo ya es una conversación; así no choca con PA-ENT-04 (el registrador completa `sinrespuestadesde` si está vacío), que vale solo para S-34, y una reconciliación con `emailid` de un correo ya contestado no vuelve a dejar la conversación pendiente. Se implementa en el lote 6 |
 | PA-REC-10 | `emailid` inexistente, y otro de un correo saliente | Se llama | `CARP-REC-003` en ambos |
 | PA-REC-11 | Dos correos con el mismo Message-ID | Se llama dos veces seguidas | Una sola conversación; la segunda llamada encuentra 0 |
 | PA-REC-12 | Un correo con `inreplyto` igual al `messageid` de un Email ya registrado en la conversación C | Se llama | `resultado = unida`; el correo queda con Regarding C; no se crea conversación (DC-08) |
