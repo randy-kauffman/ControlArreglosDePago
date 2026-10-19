@@ -151,7 +151,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
         {
             get
             {
-                if (_identidad == null) _identidad = new IdentidadDeEjecucion(_contexto, _fabrica, Configuracion);
+                if (_identidad == null) _identidad = new IdentidadDeEjecucion(_contexto, () => ServicioComoSistema, Configuracion);
                 return _identidad;
             }
         }

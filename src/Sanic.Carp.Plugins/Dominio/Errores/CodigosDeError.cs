@@ -130,7 +130,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
         public static readonly DefinicionDeError CFG_005 = new DefinicionDeError("CARP-CFG-005", "Hay más de una cola con la dirección del buzón del área. Revise la variable de entorno sanic_carp_ev_buzonarea y las colas del entorno.");
         public static readonly DefinicionDeError CFG_006 = new DefinicionDeError("CARP-CFG-006", "La variable de entorno {variable} no tiene valor.");
 
-        public static IReadOnlyList<DefinicionDeError> Todos { get; } = new DefinicionDeError[]
+        public static IReadOnlyList<DefinicionDeError> Todos { get; } = Array.AsReadOnly(new DefinicionDeError[]
         {
             GEN_001,
             GEN_002,
@@ -245,7 +245,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
             CFG_004,
             CFG_005,
             CFG_006,
-        };
+        });
 
         /// <summary>La definicion de un codigo, o <c>null</c> si el documento no lo tiene.</summary>
         public static DefinicionDeError Buscar(string codigo)

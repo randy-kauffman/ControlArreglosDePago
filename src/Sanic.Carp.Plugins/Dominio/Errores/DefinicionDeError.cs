@@ -37,7 +37,8 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
                 if (!marcadores.Contains(nombre)) marcadores.Add(nombre);
                 i = cierra + 1;
             }
-            Marcadores = marcadores;
+            // Cierre del 5a (diseno/03 4.1): ReadOnlyCollection, no la List: con un cast se podia mutar el estado compartido.
+            Marcadores = marcadores.AsReadOnly();
         }
 
         /// <summary>Arma el error reemplazando cada marcador, en orden, por el valor correspondiente (formato invariante).</summary>

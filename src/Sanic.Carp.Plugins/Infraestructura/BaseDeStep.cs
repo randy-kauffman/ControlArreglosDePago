@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
 using Sanic.Carp.Plugins.Dominio.Errores;
 
@@ -13,7 +14,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
     /// <see cref="Ejecutar"/>; no tiene campos de instancia (Dataverse reutiliza la instancia entre hilos), ni constructor con configuración (no hay
     /// <c>unsecure</c> ni <c>secure</c>: la configuración sale de las variables de entorno por <see cref="ContextoDeStep.Configuracion"/>).
     /// <para>
-    /// <b>Qué hace <see cref="Execute"/> (contrato; el constructor lo implementa, hoy lanza <see cref="NotImplementedException"/>):</b>
+    /// <b>Qué hace <see cref="Execute"/> (contrato):</b>
     /// <list type="number">
     /// <item><c>serviceProvider</c> nulo ⇒ <see cref="ArgumentNullException"/> (parámetro <c>serviceProvider</c>). Obtiene <c>IPluginExecutionContext</c>,
     /// <c>IOrganizationServiceFactory</c> e <c>ITracingService</c> del proveedor.</item>
@@ -85,6 +86,16 @@ namespace Sanic.Carp.Plugins.Infraestructura
             }
             catch (Exception error)
             {
+                var falla = (error as FaultException<OrganizationServiceFault>)?.Detail;
+                if (falla != null)
+                {
+                    // El ErrorCode es un numero, no un dato del cliente: va a la traza en hexadecimal (4.1, cierre del 5a).
+                    contexto.Trazar("falla de la plataforma " + error.GetType().Name + " codigo 0x" + falla.ErrorCode.ToString("X8", CultureInfo.InvariantCulture));
+                    // 0.5 y 4.1 (cierre del 5a): un step anidado rechazo y la plataforma lo devuelve como 0x80040265 con el texto del plugin. Es un rechazo de
+                    // negocio: sale tal cual, sin -900 ni recorte. Sin texto no es utilizable y cae en el -900.
+                    if (falla.ErrorCode == CodigoDePluginRechazado && !string.IsNullOrEmpty(falla.Message))
+                        throw new InvalidPluginExecutionException(falla.Message);
+                }
                 // Solo el TIPO y la pila: el mensaje de la plataforma puede repetir valores del cliente (0.5).
                 contexto.Trazar("falla inesperada " + error.GetType().Name);
                 contexto.Trazar(error.StackTrace);
@@ -93,6 +104,9 @@ namespace Sanic.Carp.Plugins.Infraestructura
         }
 
         private const int LargoMaximoDelMensaje = 300;
+
+        // ErrorCode con que la plataforma devuelve la InvalidPluginExecutionException de un plugin anidado (RESULTADO.md seccion 4; 0.5).
+        private const int CodigoDePluginRechazado = unchecked((int)0x80040265);
 
         // 0.5: el mensaje de la plataforma se recorta a 300 unidades UTF-16. Si el corte partiera un par de sustitutos se corta un caracter antes: un
         // sustituto suelto no se puede serializar en la respuesta de error.

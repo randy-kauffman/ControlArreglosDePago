@@ -22,6 +22,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
     {
         private readonly IPluginExecutionContext _contexto;
         private readonly IOrganizationServiceFactory _fabrica;
+        private readonly Func<IOrganizationService> _proveedorDeSistema;
         private readonly IConfiguracionDelArea _configuracion;
 
         private IOrganizationService _servicioDeSistema;
@@ -35,6 +36,20 @@ namespace Sanic.Carp.Plugins.Infraestructura
             if (configuracion == null) throw new ArgumentNullException(nameof(configuracion));
             _contexto = contexto;
             _fabrica = fabrica;
+            _configuracion = configuracion;
+        }
+
+        /// <summary>
+        /// Cierre del 5a (diseno/03 4.1, punto 3): el servicio de SYSTEM lo da quien ya lo memoiza (<c>ContextoDeStep.ServicioComoSistema</c>) y se pide solo cuando
+        /// hace falta, para que una ejecución cree uno solo.
+        /// </summary>
+        public IdentidadDeEjecucion(IPluginExecutionContext contexto, Func<IOrganizationService> servicioDeSistema, IConfiguracionDelArea configuracion)
+        {
+            if (contexto == null) throw new ArgumentNullException(nameof(contexto));
+            if (servicioDeSistema == null) throw new ArgumentNullException(nameof(servicioDeSistema));
+            if (configuracion == null) throw new ArgumentNullException(nameof(configuracion));
+            _contexto = contexto;
+            _proveedorDeSistema = servicioDeSistema;
             _configuracion = configuracion;
         }
 
@@ -72,7 +87,8 @@ namespace Sanic.Carp.Plugins.Infraestructura
 
         private IOrganizationService Sistema()
         {
-            if (_servicioDeSistema == null) _servicioDeSistema = _fabrica.CreateOrganizationService(null);
+            if (_servicioDeSistema == null)
+                _servicioDeSistema = _proveedorDeSistema != null ? _proveedorDeSistema() : _fabrica.CreateOrganizationService(null);
             return _servicioDeSistema;
         }
     }
