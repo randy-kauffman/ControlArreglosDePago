@@ -12,7 +12,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioMapeo
 {
     /// <summary>
     /// Paridad entre <c>ReglasDeMapeo</c> y <c>ValidadorDePublicacion</c> (diseno/03 2.8, decisión 16 del 5e y decisión del orquestador de no copiar la lógica). La celda A1, la lista blanca de tipo y
-    /// campo y las etiquetas de campo deben ser LAS MISMAS en las dos reglas, sea porque <c>ReglasDeMapeo</c> usa los miembros del validador o porque los copia. Estas guardias comparan lo que cada una
+    /// campo y las etiquetas de campo deben ser LAS MISMAS en las dos reglas, porque <c>ReglasDeMapeo</c> usa los miembros <c>internal</c> del validador, sin copias. Estas guardias solo protegen contra una copia futura: comparan lo que cada una
     /// responde ante la misma entrada; no repiten la tabla de compatibilidad (eso es de <c>ValidadorDePublicacionAceptacion</c>). IDs: <c>PA5E_PAR_*</c>.
     /// </summary>
     public class ParidadDeMapeoAceptacion

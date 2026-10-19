@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Sanic.Carp.Plugins.Formato
@@ -18,12 +19,13 @@ namespace Sanic.Carp.Plugins.Formato
         public const string TotalMontoPagado = "total.montoPagado";
 
         /// <summary>Un bloque está completo solo si trae las cinco columnas del calendario.</summary>
-        public static readonly IReadOnlyList<string> BloqueCompleto = new[]
+        // Array.AsReadOnly: un arreglo expuesto como IReadOnlyList se puede mutar con un cast (guardia PA5E_GRD_01, cierre del 5e).
+        public static readonly IReadOnlyList<string> BloqueCompleto = Array.AsReadOnly(new[]
         {
             CuotaNumero, CuotaFecha, CuotaMonto, CuotaFechaPago, CuotaMontoPagado
-        };
+        });
 
-        public static readonly IReadOnlyList<string> Totales = new[] { TotalMontoCuotas, TotalMontoPagado };
+        public static readonly IReadOnlyList<string> Totales = Array.AsReadOnly(new[] { TotalMontoCuotas, TotalMontoPagado });
 
         /// <summary>
         /// Capacidad máxima de cualquier versión de plantilla (RF-06, D-16). Mismo valor que <c>GeneradorDeCalendario.PlazoMaximo</c> del

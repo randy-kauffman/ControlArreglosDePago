@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using Sanic.Carp.Plugins.Dominio.Calendario;
@@ -242,30 +243,30 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         // ---- Tabla de compatibilidad (dicc. §3.1, columna 4) ----
 
         // Lista blanca (BP-PP-062, dicc. §3.1 columna 4): lo que no está en una de las tres listas no es compatible con ningún tipo.
-        private static readonly CampoMapeable[] CamposDelBloque =
+        private static readonly IReadOnlyList<CampoMapeable> CamposDelBloque = new ReadOnlyCollection<CampoMapeable>(new[]
         {
             CampoMapeable.CuotaNumero, CampoMapeable.CuotaFechaDeVencimiento, CampoMapeable.CuotaMonto,
             CampoMapeable.CuotaFechaDePago, CampoMapeable.CuotaMontoPagado
-        };
+        });
 
-        private static readonly CampoMapeable[] CamposDeTotal = { CampoMapeable.TotalMontosDeCuota, CampoMapeable.TotalMontosPagados };
+        private static readonly IReadOnlyList<CampoMapeable> CamposDeTotal = new ReadOnlyCollection<CampoMapeable>(new[] { CampoMapeable.TotalMontosDeCuota, CampoMapeable.TotalMontosPagados });
 
-        private static readonly CampoMapeable[] CamposSimples =
+        private static readonly IReadOnlyList<CampoMapeable> CamposSimples = new ReadOnlyCollection<CampoMapeable>(new[]
         {
             CampoMapeable.FechaDeFormalizacion, CampoMapeable.OficialDeArreglo, CampoMapeable.NombreDelCliente, CampoMapeable.CedulaDelCliente,
             CampoMapeable.CorreoDelCliente, CampoMapeable.CelularDelCliente, CampoMapeable.NumeroDePrestamoOTarjeta, CampoMapeable.TipoDeArreglo,
             CampoMapeable.NumeroDeArreglo, CampoMapeable.SaldoInicial, CampoMapeable.MontoAbonado, CampoMapeable.SaldoRemanente,
             CampoMapeable.PlazoEnCuotas, CampoMapeable.CuotaMensual, CampoMapeable.TotalAPagar, CampoMapeable.FechaDeInicio,
             CampoMapeable.FechaDeFinalizacion, CampoMapeable.CuentaADebitar, CampoMapeable.Comentarios, CampoMapeable.Moneda
-        };
+        });
 
         internal static bool EsCompatible(CampoMapeable campo, TipoDeMapeo tipo)
         {
             switch (tipo)
             {
-                case TipoDeMapeo.ValorSimple: return Array.IndexOf(CamposSimples, campo) >= 0;
-                case TipoDeMapeo.ColumnaDeBloqueDeCuotas: return Array.IndexOf(CamposDelBloque, campo) >= 0;
-                case TipoDeMapeo.TotalCalculado: return Array.IndexOf(CamposDeTotal, campo) >= 0;
+                case TipoDeMapeo.ValorSimple: return CamposSimples.Contains(campo);
+                case TipoDeMapeo.ColumnaDeBloqueDeCuotas: return CamposDelBloque.Contains(campo);
+                case TipoDeMapeo.TotalCalculado: return CamposDeTotal.Contains(campo);
                 default: return false;
             }
         }
@@ -339,7 +340,7 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
             return EtiquetasDeCampo.TryGetValue(campo, out etiqueta) ? "'" + etiqueta + "'" : "'" + campo.ToString() + "'";
         }
 
-        internal static readonly Dictionary<CampoMapeable, string> EtiquetasDeCampo = new Dictionary<CampoMapeable, string>
+        internal static readonly IReadOnlyDictionary<CampoMapeable, string> EtiquetasDeCampo = new ReadOnlyDictionary<CampoMapeable, string>(new Dictionary<CampoMapeable, string>
         {
             { CampoMapeable.FechaDeFormalizacion, "Fecha de formalización" },
             { CampoMapeable.OficialDeArreglo, "Oficial de arreglo" },
@@ -368,6 +369,6 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
             { CampoMapeable.TotalMontosDeCuota, "Total: montos de cuota" },
             { CampoMapeable.TotalMontosPagados, "Total: montos pagados" },
             { CampoMapeable.Moneda, "Moneda" }
-        };
+        });
     }
 }

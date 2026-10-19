@@ -130,9 +130,35 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         {
             if (tipo == typeof(string) || tipo == typeof(Guid) || tipo == typeof(decimal) || tipo.IsPrimitive || tipo.IsEnum) return true;
             if (tipo == typeof(RegistroEsperado)) return true;
-            if (!tipo.IsGenericType) return false;
+            if (!tipo.IsGenericType) return EsInmutable(tipo, new HashSet<Type>());
             var definicion = tipo.GetGenericTypeDefinition();
-            return definicion == typeof(IReadOnlyList<>) || definicion == typeof(IReadOnlyCollection<>) || definicion == typeof(ReadOnlyCollection<>);
+            // sublote 5e, cierre: también los diccionarios de solo lectura (EtiquetasDeCampo era un Dictionary estático).
+            return definicion == typeof(IReadOnlyList<>) || definicion == typeof(IReadOnlyCollection<>) || definicion == typeof(ReadOnlyCollection<>)
+                || definicion == typeof(IReadOnlyDictionary<,>) || definicion == typeof(ReadOnlyDictionary<,>);
+        }
+
+        // sublote 5e, cierre: un objeto de valor (DefinicionDeError, EstadoEfectivo, DateTime) no es estado mutable: todos sus campos de instancia son readonly y de tipos inmutables.
+        // Un arreglo, una List<> o un Dictionary<> no pasan: son genéricos o arreglos, o tienen campos que no son readonly.
+        private static bool EsInmutable(Type tipo, HashSet<Type> visitados)
+        {
+            if (tipo == typeof(string) || tipo.IsPrimitive || tipo.IsEnum) return true;
+            if (tipo.IsGenericType) return EsDeSoloLectura(tipo);
+            if (tipo.IsArray || tipo.IsInterface || tipo.IsAbstract) return false;
+            if (!visitados.Add(tipo)) return true;
+            foreach (var campo in tipo.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            {
+                if (!campo.IsInitOnly) return false;
+                if (!EsInmutable(campo.FieldType, visitados)) return false;
+            }
+            return true;
+        }
+
+        // sublote 5e, cierre: Dominio/ y Formato/ son estáticos y de valores; ahí lo que importa es el estado ESTÁTICO (los objetos de valor sí tienen campos de instancia).
+        private static IEnumerable<Type> TiposDeDominioYFormato()
+        {
+            return typeof(BaseDeStep).Assembly.GetTypes().Where(t => t.Namespace != null
+                && (t.Namespace == "Sanic.Carp.Plugins.Dominio" || t.Namespace.StartsWith("Sanic.Carp.Plugins.Dominio.", StringComparison.Ordinal)
+                    || t.Namespace == "Sanic.Carp.Plugins.Formato" || t.Namespace.StartsWith("Sanic.Carp.Plugins.Formato.", StringComparison.Ordinal)));
         }
 
         /// <summary>
@@ -140,13 +166,14 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         /// automática), y todo campo estático que no sea <c>const</c> o <c>readonly</c> de un tipo de solo lectura (un arreglo, una lista o un diccionario son mutables aunque el campo sea
         /// <c>readonly</c>). Se ignoran solo los tipos generados por el compilador (el caché de lambdas).
         /// </summary>
-        internal static IReadOnlyList<string> ViolacionesDeEstado(Type tipo)
+        internal static IReadOnlyList<string> ViolacionesDeEstado(Type tipo, bool soloEstaticos = false)
         {
             var violaciones = new List<string>();
             if (tipo.IsDefined(typeof(CompilerGeneratedAttribute), false)) return violaciones;
             foreach (var campo in tipo.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
             {
                 if (campo.IsLiteral) continue;
+                if (!campo.IsStatic && soloEstaticos) continue;
                 if (!campo.IsStatic) violaciones.Add(tipo.Name + "." + campo.Name + ": campo de instancia (el step se reutiliza entre hilos)");
                 else if (!campo.IsInitOnly) violaciones.Add(tipo.Name + "." + campo.Name + ": campo estático que no es readonly");
                 else if (!EsDeSoloLectura(campo)) violaciones.Add(tipo.Name + "." + campo.Name + ": campo estático de un tipo mutable (" + campo.FieldType.Name + ")");
@@ -160,10 +187,36 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             // VERDE A PROPÓSITO: 4.1, "Sin estado mutable en campos de instancia ni estáticos. Todo lo de la ejecución vive en el ContextoDeStep de esa llamada".
             var tipos = new[] { typeof(BaseDeStep) }.Concat(TiposDeSteps()).ToList();
 
-            var violaciones = tipos.SelectMany(ViolacionesDeEstado).ToList();
+            var violaciones = tipos.SelectMany(t => ViolacionesDeEstado(t)).ToList();
 
             Assert.True(violaciones.Count == 0, string.Join("; ", violaciones));
             Assert.True(tipos.Count >= 4, "La guardia no vio los tres steps y la base.");
+        }
+
+        [Fact]
+        public void PA5E_GRD_01_NingunTipoDeDominioNiDeFormatoTieneEstadoEstaticoMutable()
+        {
+            // sublote 5e, cierre: el revisor halló un Dictionary estático en ValidadorDePublicacion que ninguna guardia cubría (PA5A_GRD_01 miraba solo Steps y la base).
+            var tipos = TiposDeDominioYFormato().ToList();
+
+            // PENDIENTES DE OTROS LOTES CERRADOS (fuera del alcance del parche de cierre del 5e, que solo toca el validador): la guardia los vio, se arreglan con un
+            // envoltorio de solo lectura y los decide el orquestador. Todo lo que no esté en esta lista hace fallar la guardia.
+            // Orquestador, cierre del 5e: los cuatro pendientes de otros lotes (Campos, ClavesDelGenerador, Columnas) ya son de solo lectura.
+            var violaciones = tipos.SelectMany(t => ViolacionesDeEstado(t, true)).ToList();
+
+            Assert.True(violaciones.Count == 0, string.Join("; ", violaciones));
+            Assert.True(tipos.Count >= 20, "La guardia no vio Dominio ni Formato.");
+        }
+
+        public sealed class ConDiccionarioDeSoloLectura { public static readonly IReadOnlyDictionary<string, string> Mapa = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>()); }
+        public sealed class ConDiccionarioDeSoloLecturaQueEsUnDictionary { public static readonly IReadOnlyDictionary<string, string> Mapa = new Dictionary<string, string>(); }
+
+        [Fact]
+        public void PA5E_GRD_02_ElDetectorAceptaElDiccionarioEnvuelto_YRechazaUnDictionaryDisfrazado()
+        {
+            Assert.Empty(ViolacionesDeEstado(typeof(ConDiccionarioDeSoloLectura)));
+            Assert.NotEmpty(ViolacionesDeEstado(typeof(ConDiccionarioDeSoloLecturaQueEsUnDictionary)));
+            Assert.Empty(ViolacionesDeEstado(typeof(ConEstadoDeInstancia), true));
         }
 
         // Públicas a propósito: un campo sin asignar de una clase privada es la advertencia CS0649 (y aquí las advertencias son errores).

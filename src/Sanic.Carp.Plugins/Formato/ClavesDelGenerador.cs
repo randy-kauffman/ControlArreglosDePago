@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Plantilla;
@@ -25,7 +26,8 @@ namespace Sanic.Carp.Plugins.Formato
     {
         // Tabla literal de diseno/03 1.1. Las cinco columnas de cuota y los dos totales usan las constantes de Campos, de modo que
         // el generador y esta tabla no pueden separarse en un renombre (la prueba de cobertura compara contra la tabla del diseño).
-        private static readonly Dictionary<CampoMapeable, string> Claves = new Dictionary<CampoMapeable, string>
+        // De solo lectura: estado estático sin mutación posible (guardia PA5E_GRD_01, cierre del 5e).
+        private static readonly IReadOnlyDictionary<CampoMapeable, string> Claves = new ReadOnlyDictionary<CampoMapeable, string>(new Dictionary<CampoMapeable, string>
         {
             { CampoMapeable.FechaDeFormalizacion, "fechaFormalizacion" },
             { CampoMapeable.OficialDeArreglo, "oficial" },
@@ -54,7 +56,7 @@ namespace Sanic.Carp.Plugins.Formato
             { CampoMapeable.TotalMontosDeCuota, Campos.TotalMontoCuotas },
             { CampoMapeable.TotalMontosPagados, Campos.TotalMontoPagado },
             { CampoMapeable.Moneda, "moneda" }
-        };
+        });
 
         /// <summary>Clave del generador de una opción definida del choice; <see cref="ArgumentOutOfRangeException"/> si la opción no está definida.</summary>
         public static string Clave(CampoMapeable campo)

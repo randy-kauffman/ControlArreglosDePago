@@ -113,7 +113,8 @@ namespace Sanic.Carp.Plugins.Dominio
         }
 
         // La tabla de diseno/03 2.0.8, columna por columna. Una prueba la contrasta con el diccionario de datos (PA-COL-01 y PA-COL-02).
-        private static readonly Dictionary<string, ColumnasDeTabla> _porTabla = new Dictionary<string, ColumnasDeTabla>(StringComparer.Ordinal)
+        // De solo lectura: estado estático sin mutación posible (guardia PA5E_GRD_01, cierre del 5e).
+        private static readonly IReadOnlyDictionary<string, ColumnasDeTabla> _porTabla = new ReadOnlyDictionary<string, ColumnasDeTabla>(new Dictionary<string, ColumnasDeTabla>(StringComparer.Ordinal)
         {
             {
                 TablaConversacion, new ColumnasDeTabla(TablaConversacion,
@@ -171,6 +172,6 @@ namespace Sanic.Carp.Plugins.Dominio
                     libres: Lista(),
                     aparte: Lista())
             }
-        };
+        });
     }
 }

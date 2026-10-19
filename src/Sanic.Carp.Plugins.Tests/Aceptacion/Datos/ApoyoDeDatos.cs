@@ -106,8 +106,80 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Datos
 
         // ---- Lectura del código fuente para las guardias ----
 
-        private static readonly Regex ComentarioDeLinea = new Regex("//[^\\r\\n]*", RegexOptions.Compiled);
-        private static readonly Regex ComentarioDeBloque = new Regex("/\\*.*?\\*/", RegexOptions.Compiled | RegexOptions.Singleline);
+        /// <summary>
+        /// Quita los comentarios (cada uno se reemplaza por un espacio) respetando los literales: <c>"..."</c> con escapes, <c>@"..."</c> con <c>""</c>, <c>$"..."</c> y <c>$@"..."</c>
+        /// (sin anidar: se lee como un texto común) y <c>'x'</c>. Un <c>//</c> o un <c>/*</c> dentro de un literal es texto, no un comentario.
+        /// </summary>
+        internal static string SinComentarios(string texto)
+        {
+            var salida = new System.Text.StringBuilder(texto.Length);
+            int i = 0;
+            int n = texto.Length;
+            while (i < n)
+            {
+                char c = texto[i];
+                if (c == '/' && i + 1 < n && texto[i + 1] == '/')
+                {
+                    while (i < n && texto[i] != '\r' && texto[i] != '\n') i++;
+                    salida.Append(' ');
+                }
+                else if (c == '/' && i + 1 < n && texto[i + 1] == '*')
+                {
+                    i += 2;
+                    while (i < n && !(texto[i] == '*' && i + 1 < n && texto[i + 1] == '/')) i++;
+                    i = Math.Min(i + 2, n);
+                    salida.Append(' ');
+                }
+                else if (c == '"')
+                {
+                    // Prefijo ya emitido: @" , $" , $@" o @$" . Solo @ hace el texto verbatim.
+                    bool verbatim = false;
+                    for (int k = salida.Length - 1; k >= 0 && salida.Length - k <= 2; k--)
+                    {
+                        if (salida[k] == '@') { verbatim = true; break; }
+                        if (salida[k] != '$') break;
+                    }
+                    salida.Append(c);
+                    i++;
+                    while (i < n)
+                    {
+                        char d = texto[i];
+                        if (verbatim)
+                        {
+                            if (d == '"' && i + 1 < n && texto[i + 1] == '"') { salida.Append("\"\""); i += 2; continue; }
+                            if (d == '"') break;
+                        }
+                        else
+                        {
+                            if (d == '\\' && i + 1 < n) { salida.Append(d).Append(texto[i + 1]); i += 2; continue; }
+                            if (d == '"') break;
+                        }
+                        salida.Append(d);
+                        i++;
+                    }
+                    if (i < n) { salida.Append('"'); i++; }
+                }
+                else if (c == '\'')
+                {
+                    salida.Append(c);
+                    i++;
+                    while (i < n && texto[i] != '\r' && texto[i] != '\n')
+                    {
+                        char d = texto[i];
+                        if (d == '\\' && i + 1 < n) { salida.Append(d).Append(texto[i + 1]); i += 2; continue; }
+                        salida.Append(d);
+                        i++;
+                        if (d == '\'') break;
+                    }
+                }
+                else
+                {
+                    salida.Append(c);
+                    i++;
+                }
+            }
+            return salida.ToString();
+        }
 
         /// <summary>Los <c>.cs</c> de una carpeta del ensamblado (por ejemplo <c>Datos</c>), sin <c>bin</c> ni <c>obj</c> y SIN comentarios. Falla si la carpeta no existe o está vacía.</summary>
         public static IReadOnlyList<KeyValuePair<string, string>> FuentesDe(string carpetaRelativa)
@@ -124,8 +196,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Datos
                 var relativa = Path.GetRelativePath(raiz, archivo).Replace(Path.DirectorySeparatorChar, '/');
                 if (relativa.StartsWith("bin/", StringComparison.Ordinal) || relativa.StartsWith("obj/", StringComparison.Ordinal)) continue;
                 var texto = File.ReadAllText(archivo, System.Text.Encoding.UTF8);
-                texto = ComentarioDeBloque.Replace(texto, " ");
-                texto = ComentarioDeLinea.Replace(texto, " ");
+                texto = SinComentarios(texto);
                 resultado.Add(new KeyValuePair<string, string>(relativa, texto));
             }
             Assert.NotEmpty(resultado);
