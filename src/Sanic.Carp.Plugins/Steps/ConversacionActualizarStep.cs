@@ -11,7 +11,7 @@ namespace Sanic.Carp.Plugins.Steps
     /// S-17 (diseno/03 2.3 y 5): Update · PreOperation · síncrono · orden 10 · SIN filtro (a propósito) · pre-imagen <c>PreImagen</c> con las 21 columnas de
     /// <see cref="ReglasDeConversacion.ColumnasDeLaPreImagenDeActualizacion"/>, sobre <c>sanic_carp_tbl_conversacion</c>. El nombre de la clase y el namespace son definitivos.
     /// <para>
-    /// <b>STUB DEL ARQUITECTO.</b> <see cref="Ejecutar"/> lanza <see cref="NotImplementedException"/>. Contrato (la regla entera vive en
+    /// <b>Contrato</b> (la regla entera vive en
     /// <see cref="ReglasDeConversacion.Evaluar"/>, 2.3 y "Decisiones del arquitecto, 2026-10-19 (sublote 5b)"; el step solo conecta):
     /// </para>
     /// <list type="number">

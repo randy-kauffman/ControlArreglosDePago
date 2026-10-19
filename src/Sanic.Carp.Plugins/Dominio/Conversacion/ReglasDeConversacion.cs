@@ -9,7 +9,8 @@ namespace Sanic.Carp.Plugins.Dominio.Conversacion
     /// <summary>
     /// Las reglas de la Conversación (diseno/03 2.3 y 2.4, firma de 4.4; "Decisiones del arquitecto, 2026-10-19 (sublote 5b)"). Dominio puro: sin <c>Entity</c> ni SDK, sin estado
     /// (ningún campo mutable, ni estático: las listas son <see cref="ReadOnlyCollection{T}"/>), sin leer el reloj (entra en el pedido) y con la identidad perezosa (se consulta
-    /// solo cuando la regla ya vio que hay algo que decidir).    /// </summary>
+    /// solo cuando la regla ya vio que hay algo que decidir).
+    /// </summary>
     public static class ReglasDeConversacion
     {
         private static readonly IReadOnlyList<string> PreImagenDeActualizacion = new ReadOnlyCollection<string>(new[]

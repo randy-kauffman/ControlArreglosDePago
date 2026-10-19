@@ -135,20 +135,19 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         {
             // V-8, caso B2: quitar o reemplazar sanic_nombre en PreOperation dejaría la primaria vacía. Ejecución directa: el Target sale como entró.
             var e = UnEscenario();
-            foreach (var numero in new[] { "ZZV-NOMBRE", "CONV-001002" })
+            // Orquestador, 2026-10-19 (cierre del 5b): cada caso afirma su resultado (el revisor vio que el try/catch tragaba cualquier rechazo y la
+            // prueba seguía verde si el step rechazaba de más o dejaba de rechazar). Sin formato ⇒ CARP-CNV-001; con formato ⇒ pasa.
+            foreach (var (numero, rechaza) in new[] { ("ZZV-NOMBRE", true), ("CONV-001002", false) })
             {
                 var target = UnAlta("sanic_nombre", numero);
                 var antes = target.Attributes.Keys.OrderBy(k => k, StringComparer.Ordinal).ToArray();
                 var contexto = Contexto("Create", 20, Conv, e.Oficial, target);
 
-                try
-                {
-                    Ejecutar(new ConversacionCrearStep(), e.Fabrica, contexto);
-                }
-                catch (InvalidPluginExecutionException)
-                {
-                    // el rechazo es lo esperado para el número sin formato
-                }
+                var error = Record.Exception(() => Ejecutar(new ConversacionCrearStep(), e.Fabrica, contexto));
+                if (rechaza)
+                    Assert.StartsWith("CARP-CNV-001", Assert.IsType<InvalidPluginExecutionException>(error).Message, StringComparison.Ordinal);
+                else
+                    Assert.Null(error);
 
                 Assert.Equal(antes, target.Attributes.Keys.OrderBy(k => k, StringComparer.Ordinal).ToArray());
                 Assert.Equal(numero, target["sanic_nombre"]);
