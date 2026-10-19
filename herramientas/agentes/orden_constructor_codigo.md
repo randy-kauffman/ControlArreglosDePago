@@ -13,7 +13,7 @@ El arquitecto escribe las **pruebas de aceptación** (`src/Sanic.Carp.Plugins.Te
 ## Tu trabajo (TDD estricto)
 1. Corre las pruebas y míralas en rojo: `/home/gmaker/.dotnet/dotnet test src/Sanic.Carp.Plugins.Tests` (restaura, compila y corre; tarda menos de un minuto).
 2. Implementa de a poco, corriendo las pruebas seguido, hasta que TODAS pasen.
-3. Si necesitas fijar un comportamiento interno que las pruebas de aceptación no cubren, agrega TUS pruebas unitarias en `src/Sanic.Carp.Plugins.Tests/Unitarias/<Pieza>/` (prueba primero, después el código).
+3. Si necesitas fijar un comportamiento interno que las pruebas de aceptación no cubren, agrega TUS pruebas unitarias en `src/Sanic.Carp.Plugins.Tests/Unitarias/<Pieza>/` (prueba primero, después el código). **Evidencia obligatoria del rojo:** antes de escribir el código que las pone en verde, corre `dotnet test src/Sanic.Carp.Plugins.Tests --filter <tus pruebas>` y copia esa última línea real (en rojo) en tu informe, junto con la línea en verde del mismo filtro. Una prueba unitaria sin línea en rojo previa se trata como escrita después del código (tropiezo del 2026-10-19, `dataverse/pruebas.md`).
 4. Al final corre todo otra vez y anota la última línea real (`Passed! - Failed: 0, Passed: N…`).
 
 ## Reglas duras
@@ -29,4 +29,4 @@ El arquitecto escribe las **pruebas de aceptación** (`src/Sanic.Carp.Plugins.Te
 - No toques el entorno de Dataverse, no leas ni imprimas el archivo de secretos del puesto (`~/projects/pp_secrets.env`, o el que indique `PP_SECRETS_FILE`; ver `herramientas/credenciales.py`), no uses `pac`, no hagas commits. No uses cat/grep/find/sed/ls: usa Read/Grep/Glob o `rg`, `bat`, `eza`.
 
 ## Qué devuelves (en español, conciso)
-Archivos que escribiste o cambiaste (ruta y una línea de qué tiene) · última línea real de `dotnet test` · decisiones de implementación que tomaste y el diseño no fijaba (si las hay) · `Desvíos y preguntas` · `Tropiezos candidatos` (PRUEBAS DE ACEPTACIÓN / FIRMAS / DISEÑO / ORDEN; o "Ninguno") · `skill_resolution: injected`.
+Archivos que escribiste o cambiaste (ruta y una línea de qué tiene) · última línea real de `dotnet test` · por cada grupo de pruebas unitarias, su línea en rojo y su línea en verde con el mismo `--filter` · decisiones de implementación que tomaste y el diseño no fijaba (si las hay) · `Desvíos y preguntas` · `Tropiezos candidatos` (PRUEBAS DE ACEPTACIÓN / FIRMAS / DISEÑO / ORDEN; o "Ninguno") · `skill_resolution: injected`.
