@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Microsoft.Xrm.Sdk;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Infraestructura;
 
@@ -10,7 +11,7 @@ namespace Sanic.Carp.Plugins.Steps
     /// S-01 a S-07 (diseno/03 2.1 y 5): Create · PreOperation · síncrono · orden 5 · sin filtro · sin imagen, en cada una de las siete tablas propias. Fija el team del
     /// área como propietario. El nombre de la clase y el namespace son definitivos: Dataverse registra por nombre completo.
     /// <para>
-    /// Contrato (el constructor lo implementa; hoy <c>Ejecutar</c> lanza <see cref="NotImplementedException"/>). Sobre <c>contexto.Target</c>:
+    /// Contrato. Sobre <c>contexto.Target</c>:
     /// </para>
     /// <list type="number">
     /// <item>Si el <c>Target</c> ya trae <c>ownerid</c> de tipo <c>team</c> (<c>LogicalName</c> ordinal) Y <c>Identidad.EsEscrituraDelSistema</c>: terminar sin tocar nada y sin consultar BU, team ni
@@ -32,9 +33,20 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override IReadOnlyList<RegistroEsperado> RegistrosEsperados { get { return Registros; } }
 
+        private const string ColPropietario = "ownerid";
+        private const string TablaDeEquipos = "team";
+
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var target = contexto.Target;
+            var actual = target.Contains(ColPropietario) ? target[ColPropietario] as EntityReference : null;
+
+            // Atajo (2.1 paso 1, DC-20). Se mira PRIMERO en memoria si el Target trae un team: sin ese dato no hace falta saber quien escribe (0.3, camino barato).
+            var traeUnTeam = actual != null && string.Equals(actual.LogicalName, TablaDeEquipos, StringComparison.Ordinal);
+            if (traeUnTeam && contexto.Identidad.EsEscrituraDelSistema) return;
+
+            // Reemplaza lo que haya: el creador, otro team o un usuario (paso 2). Una configuracion rota (CARP-CFG-001 o -002) sube sin atraparse.
+            target[ColPropietario] = new EntityReference(TablaDeEquipos, contexto.Configuracion.TeamPropietarioId);
         }
     }
 }

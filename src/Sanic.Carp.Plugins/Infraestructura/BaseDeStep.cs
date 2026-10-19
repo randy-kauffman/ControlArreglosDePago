@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.Xrm.Sdk;
+using Sanic.Carp.Plugins.Dominio.Errores;
 
 namespace Sanic.Carp.Plugins.Infraestructura
 {
@@ -51,7 +53,104 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// <summary>Punto de entrada de la plataforma. No se sobrescribe. Contrato en la descripción de la clase.</summary>
         public void Execute(IServiceProvider serviceProvider)
         {
-            throw new NotImplementedException();
+            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
+
+            var contextoDeLaPlataforma = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
+            var fabrica = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
+            var traza = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+            var contexto = new ContextoDeStep(GetType().Name, contextoDeLaPlataforma, fabrica, traza);
+
+            // Primero el registro: un step mal registrado no debe ni tocar la identidad ni la configuracion (4.1, punto 5).
+            VerificarElRegistro(contexto);
+
+            contexto.Trazar("entrada mensaje=" + contexto.Mensaje + " tabla=" + contexto.Tabla + " id=" + contexto.IdPrimario.ToString("D")
+                + " etapa=" + contexto.Etapa + " modo=" + (contexto.EsAsincrono ? "asincrono" : "sincrono")
+                + " profundidad=" + contexto.Profundidad.ToString(CultureInfo.InvariantCulture));
+            try
+            {
+                Ejecutar(contexto);
+                contexto.Trazar("salida correcta");
+            }
+            // La conversion SIEMPRE relanza: una falla de escritura atrapada para "seguir" aborta la transaccion (0x8009000C, 0.5).
+            catch (ErrorDeNegocio error)
+            {
+                contexto.Trazar("rechazo " + error.Codigo);
+                throw new InvalidPluginExecutionException(error.ToString());
+            }
+            catch (InvalidPluginExecutionException)
+            {
+                // La lanzo el step o un step anidado: ya trae su texto. Su mensaje podria repetir un valor del cliente, asi que no se traza.
+                contexto.Trazar("rechazo propagado de un step anidado");
+                throw;
+            }
+            catch (Exception error)
+            {
+                // Solo el TIPO y la pila: el mensaje de la plataforma puede repetir valores del cliente (0.5).
+                contexto.Trazar("falla inesperada " + error.GetType().Name);
+                contexto.Trazar(error.StackTrace);
+                throw new InvalidPluginExecutionException("CARP-" + Area + "-900: " + Recortar(error.Message));
+            }
+        }
+
+        private const int LargoMaximoDelMensaje = 300;
+
+        // 0.5: el mensaje de la plataforma se recorta a 300 unidades UTF-16. Si el corte partiera un par de sustitutos se corta un caracter antes: un
+        // sustituto suelto no se puede serializar en la respuesta de error.
+        private static string Recortar(string mensaje)
+        {
+            if (mensaje == null) return string.Empty;
+            if (mensaje.Length <= LargoMaximoDelMensaje) return mensaje;
+            var largo = LargoMaximoDelMensaje;
+            if (char.IsHighSurrogate(mensaje[largo - 1]) && char.IsLowSurrogate(mensaje[largo])) largo--;
+            return mensaje.Substring(0, largo);
+        }
+
+        private void VerificarElRegistro(ContextoDeStep contexto)
+        {
+            var esperados = RegistrosEsperados;
+            var coincidentes = new List<RegistroEsperado>();
+            foreach (var registro in esperados)
+            {
+                if (!string.Equals(registro.Mensaje, contexto.Mensaje, StringComparison.Ordinal)) continue;
+                if (registro.Etapa != contexto.Etapa || registro.Asincrono != contexto.EsAsincrono) continue;
+                if (!ContieneOrdinal(registro.Tablas, contexto.Tabla)) continue;
+                coincidentes.Add(registro);
+            }
+
+            var nombre = contexto.NombreDelStep;
+            var llego = "llegó " + contexto.Mensaje + " sobre " + contexto.Tabla + " en la etapa " + contexto.Etapa + " en modo "
+                + (contexto.EsAsincrono ? "asíncrono" : "síncrono");
+
+            if (coincidentes.Count == 0)
+            {
+                throw new InvalidPluginExecutionException("El step " + nombre + " está mal registrado en la plataforma: " + llego
+                    + ". Se esperaba " + Describir(esperados) + ".");
+            }
+
+            if (contexto.PreImagen != null) return;
+            foreach (var registro in coincidentes)
+                if (!registro.LlevaPreImagen) return;
+
+            throw new InvalidPluginExecutionException("El step " + nombre + " está mal registrado en la plataforma: " + llego
+                + ", pero falta la pre-imagen " + ContextoDeStep.NombreDeLaPreImagen + " que su registro exige.");
+        }
+
+        private static bool ContieneOrdinal(IReadOnlyList<string> nombres, string buscado)
+        {
+            foreach (var nombre in nombres)
+                if (string.Equals(nombre, buscado, StringComparison.Ordinal)) return true;
+            return false;
+        }
+
+        private static string Describir(IReadOnlyList<RegistroEsperado> registros)
+        {
+            var partes = new List<string>();
+            foreach (var registro in registros)
+            {
+                partes.Add(registro.Mensaje + " en " + string.Join(", ", registro.Tablas) + " (" + registro.Etapa + ", "
+                    + (registro.Asincrono ? "asíncrono" : "síncrono") + (registro.LlevaPreImagen ? ", con pre-imagen " + ContextoDeStep.NombreDeLaPreImagen : string.Empty) + ")");
+            }
+            return string.Join("; ", partes);
         }
     }
 }
