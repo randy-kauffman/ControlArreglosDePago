@@ -80,6 +80,7 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         private const string ColFechaInicio = "sanic_fechainicio";
         private const string ColFechaFin = "sanic_fechafin";
         private const string ColCongelamiento = "sanic_fechacongelamiento";
+        private const string ColFechaFormalizacion = "sanic_fechaformalizacion";
         private const string ColInstantaneaNombre = "sanic_instantaneanombre";
         private const string ColInstantaneaCedula = "sanic_instantaneacedula";
         private const string ColInstantaneaCorreo = "sanic_instantaneacorreo";
@@ -267,8 +268,10 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
             var version = versionesVigentes[0];
 
             // Paso 6: el plazo, entre 1 y 60 y sin pasar de la capacidad (5c, punto 4).
-            if (plazo.Value < 1 || plazo.Value > GeneradorDeCalendario.PlazoMaximo || plazo.Value > version.Capacidad)
-                return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_003.Crear(Math.Min(GeneradorDeCalendario.PlazoMaximo, version.Capacidad), version.Capacidad));
+            // 2.5 punto 9 (cierre 5c): el diccionario fija la capacidad en [1..60], asi que un valor menor que 1 es "sin capacidad" y solo rige el rango de 1 a 60, como en la edicion.
+            var tope = version.Capacidad < 1 ? GeneradorDeCalendario.PlazoMaximo : version.Capacidad;
+            if (plazo.Value < 1 || plazo.Value > GeneradorDeCalendario.PlazoMaximo || plazo.Value > tope)
+                return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_003.Crear(Math.Min(GeneradorDeCalendario.PlazoMaximo, tope), tope));
 
             // Paso 8: montos (el paso 7, el canal, solo escribe).
             var montos = ReglasDeMontos.Calcular(saldoInicial.Value, montoAbonado.Value, cuotaMensual.Value, plazo.Value);
@@ -386,7 +389,8 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
 
             // Los gestos Desbloquear y Reabrir se reconocen por lo que el Target TRAE, no por "cambio" (5c, punto 4): su disparador cuenta como algo que decidir.
             object valorPresente;
-            var desbloquear = target.TryGetValue(ColCongelamiento, out valorPresente) && valorPresente == null;
+            // Cierre 5c, punto 2: el disparador solo existe en Borrador y Vigente; en un estado cerrado, reenviar el nulo sobre un nulo es un no-cambio (DC-01).
+            var desbloquear = (origen == EstadoDeArreglo.Borrador || origen == EstadoDeArreglo.Vigente) && target.TryGetValue(ColCongelamiento, out valorPresente) && valorPresente == null;
             var reabrirVigente = origen == EstadoDeArreglo.Vigente && !estadoCambio && target.ContainsKey(ColMotivoReapertura);
 
             if (!estadoCambio && cambiadas.Count == 0 && !desbloquear && !reabrirVigente) return Cerrar(pedido, new Dictionary<string, object>(StringComparer.Ordinal));
@@ -464,9 +468,17 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
                     var provisional = EnteroPlano(Valor(preImagen, ColNumeroProvisional));
                     if (Valor(preImagen, ColCongelamiento) == null || !provisional.HasValue) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_019.Crear());
 
+                    // Cierre 5c (2.0.5): sin los datos del credito no hay consecutivo que calcular; -006 va despues de -012 y -019 y ANTES de consultar IConsecutivos.
+                    var productoPrevio = Entero(Valor(preImagen, ColProducto));
+                    var numeroPrevio = NormalizadorDeTexto.NumeroDeProducto(Valor(preImagen, ColNumeroProducto) as string);
+                    var sinCredito = new List<string>();
+                    if (!productoPrevio.HasValue) sinCredito.Add(ColProducto);
+                    if (numeroPrevio == null) sinCredito.Add(ColNumeroProducto);
+                    if (sinCredito.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_006.Crear(Lista(sinCredito)));
+
                     // El consecutivo se recalcula con el producto y el numero de la pre-imagen (2.0.5): otro arreglo del credito pudo formalizarse despues de imprimir.
-                    var producto = (ProductoCrediticio)(Entero(Valor(preImagen, ColProducto)) ?? 0);
-                    var existentes = consecutivos.NumerosDelCredito(producto, Valor(preImagen, ColNumeroProducto) as string);
+                    var producto = (ProductoCrediticio)productoPrevio.Value;
+                    var existentes = consecutivos.NumerosDelCredito(producto, numeroPrevio);
                     var siguiente = ConsecutivoDeCredito.Siguiente(existentes.Select(n => (int?)n));
                     if (!siguiente.Ok) return ResultadoDeEvaluacion.Rechazar(siguiente.Error);
                     if (siguiente.Numero != provisional.Value) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_020.Crear());
@@ -628,6 +640,14 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         // DC-01 puro (Cambios.Distinto): una clave AUSENTE de la pre-imagen es "desconocida" y cuenta como cambio. El numero de producto se compara NORMALIZADO (convencion e).
         private static bool Cambio(PedidoDeActualizacion pedido, string columna)
         {
+            if (EsFechaDO(columna))
+            {
+                // Cierre 5c, punto 3: Dev trunca la fecha DO a la fecha, asi que se compara por .Date; si alguno no es DateTime vale DC-01.
+                object nueva, previa;
+                if (pedido.Target.TryGetValue(columna, out nueva) && pedido.PreImagen.TryGetValue(columna, out previa) && nueva is DateTime && previa is DateTime)
+                    return ((DateTime)nueva).Date != ((DateTime)previa).Date;
+            }
+
             if (!string.Equals(columna, ColNumeroProducto, StringComparison.Ordinal)) return Cambios.Distinto(pedido.Target, pedido.PreImagen, columna);
 
             object nuevo;
@@ -637,6 +657,12 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
             object anterior;
             if (!pedido.PreImagen.TryGetValue(columna, out anterior)) return true;
             return Cambios.ValoresDistintos(nuevo, anterior);
+        }
+
+        private static bool EsFechaDO(string columna)
+        {
+            return string.Equals(columna, ColFechaInicio, StringComparison.Ordinal) || string.Equals(columna, ColFechaFin, StringComparison.Ordinal)
+                || string.Equals(columna, ColFechaFormalizacion, StringComparison.Ordinal);
         }
 
         private static string Lista(IEnumerable<string> columnas)
