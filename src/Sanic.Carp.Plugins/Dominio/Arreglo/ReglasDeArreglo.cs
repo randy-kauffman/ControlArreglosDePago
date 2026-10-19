@@ -254,6 +254,8 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
             var plazo = EnteroPlano(Valor(target, ColPlazo));
             var fechaInicio = Fecha(Valor(target, ColFechaInicio));
             var faltan = new List<string>();
+            // 2.5 paso 3: el producto es obligatorio desde el alta (decisión del usuario del 2026-10-19): es parte de K-02 y del consecutivo.
+            if (!Entero(Valor(target, ColProducto)).HasValue) faltan.Add(ColProducto);
             if (numeroDeProducto == null) faltan.Add(ColNumeroProducto);
             if (!saldoInicial.HasValue) faltan.Add(ColSaldoInicial);
             if (!montoAbonado.HasValue) faltan.Add(ColMontoAbonado);
