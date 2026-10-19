@@ -118,6 +118,14 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
         // ---------------------------------------------------------------- sin estado mutable (reflexión)
 
+        // sublote 5a, cierre: mira también el tipo en ejecución del valor del campo. Un IReadOnlyList<> que guarda un arreglo o una List<> se deja mutar con un cast.
+        private static bool EsDeSoloLectura(FieldInfo campo)
+        {
+            if (!EsDeSoloLectura(campo.FieldType)) return false;
+            var valor = campo.GetValue(null);
+            return valor == null || EsDeSoloLectura(valor.GetType());
+        }
+
         private static bool EsDeSoloLectura(Type tipo)
         {
             if (tipo == typeof(string) || tipo == typeof(Guid) || tipo == typeof(decimal) || tipo.IsPrimitive || tipo.IsEnum) return true;
@@ -141,7 +149,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
                 if (campo.IsLiteral) continue;
                 if (!campo.IsStatic) violaciones.Add(tipo.Name + "." + campo.Name + ": campo de instancia (el step se reutiliza entre hilos)");
                 else if (!campo.IsInitOnly) violaciones.Add(tipo.Name + "." + campo.Name + ": campo estático que no es readonly");
-                else if (!EsDeSoloLectura(campo.FieldType)) violaciones.Add(tipo.Name + "." + campo.Name + ": campo estático de un tipo mutable (" + campo.FieldType.Name + ")");
+                else if (!EsDeSoloLectura(campo)) violaciones.Add(tipo.Name + "." + campo.Name + ": campo estático de un tipo mutable (" + campo.FieldType.Name + ")");
             }
             return violaciones;
         }

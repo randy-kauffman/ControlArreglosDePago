@@ -176,7 +176,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Infraestructura
             var e = new Escenario();
 
             Assert.Throws<ArgumentNullException>(() => new IdentidadDeEjecucion(null, e.Fabrica, e.Configuracion));
-            Assert.Throws<ArgumentNullException>(() => new IdentidadDeEjecucion(e.Contexto, null, e.Configuracion));
+            // sublote 5a, cierre: un solo servicio SYSTEM (la clase gana un segundo constructor con Func<IOrganizationService>; el cast evita la ambigüedad de null)
+            Assert.Throws<ArgumentNullException>(() => new IdentidadDeEjecucion(e.Contexto, (Microsoft.Xrm.Sdk.IOrganizationServiceFactory)null, e.Configuracion));
             Assert.Throws<ArgumentNullException>(() => new IdentidadDeEjecucion(e.Contexto, e.Fabrica, null));
         }
     }
