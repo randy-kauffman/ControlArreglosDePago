@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Dominio.Errores;
 
 namespace Sanic.Carp.Plugins.Dominio.Cuota
 {
@@ -42,7 +43,96 @@ namespace Sanic.Carp.Plugins.Dominio.Cuota
         /// </summary>
         public static ResultadoDeEvaluacion Evaluar(PedidoDeCuota pedido)
         {
-            throw new NotImplementedException("Sublote 5d: lo implementa el constructor.");
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            // Paso 1 (2.7): columnas cambiadas entre las 9, sin consultar identidad ni arreglo.
+            var cambiadas = new List<string>();
+            foreach (var columna in PreImagen)
+                if (Cambio(pedido, columna)) cambiadas.Add(columna);
+            if (cambiadas.Count == 0) return ResultadoDeEvaluacion.Permitir();
+
+            // Paso 2: DC-03, una sola pregunta.
+            if (pedido.Identidad.EsEscrituraDelSistema) return ResultadoDeEvaluacion.Permitir();
+
+            // Paso 3: el oficial solo registra pagos (CARP-CUO-001), sin leer el arreglo.
+            var noPermitidas = new List<string>();
+            foreach (var columna in cambiadas)
+                if (!EsColumnaDePago(columna)) noPermitidas.Add(columna);
+            if (noPermitidas.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CUO_001.Crear(string.Join(", ", noPermitidas)));
+
+            // Paso 4: decision 7 del 5d, el arreglo ilegible o sin referencia falla cerrado.
+            var arregloId = ArregloDe(pedido.PreImagen);
+            if (!arregloId.HasValue) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CUO_002.Crear());
+            var estado = pedido.Lecturas.EstadoDelArreglo(arregloId.Value);
+            if (!estado.HasValue || estado.Value != EstadoDeArreglo.Vigente) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CUO_002.Crear());
+
+            // Paso 5: DC-21, valores efectivos; ambos o ninguno, monto mayor que cero, sin tope.
+            var fecha = Efectivo(pedido, ColFechaPago);
+            var monto = Efectivo(pedido, ColMontoPagado);
+            var hayFecha = fecha != null;
+            var hayMonto = monto != null;
+            if (hayFecha != hayMonto) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CUO_003.Crear());
+            if (hayMonto)
+            {
+                var valor = Monto(monto);
+                if (!valor.HasValue || valor.Value <= 0m) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.CUO_003.Crear());
+            }
+            return ResultadoDeEvaluacion.Permitir();
+        }
+
+        private const string ColFechaVencimiento = "sanic_fechavencimiento";
+        private const string ColFechaPago = "sanic_fechapago";
+        private const string ColMontoPagado = "sanic_montopagado";
+        private const string ColArreglo = "sanic_arregloid";
+        private const string ColEstado = "statecode";
+        private const string ColMotivoDeEstado = "statuscode";
+        private const string ColFechaTermino = "sanic_fechatermino";
+
+        private static bool EsColumnaDePago(string columna)
+        {
+            return string.Equals(columna, ColFechaPago, StringComparison.Ordinal) || string.Equals(columna, ColMontoPagado, StringComparison.Ordinal);
+        }
+
+        // DC-01 puro (Cambios.Distinto), salvo las fecha DO, que se comparan por dia (cierre 5c, 2.7 decision 4 del 5d).
+        private static bool Cambio(PedidoDeCuota pedido, string columna)
+        {
+            if (string.Equals(columna, ColFechaVencimiento, StringComparison.Ordinal) || string.Equals(columna, ColFechaPago, StringComparison.Ordinal))
+            {
+                object nueva, previa;
+                if (pedido.Target.TryGetValue(columna, out nueva) && pedido.PreImagen.TryGetValue(columna, out previa) && nueva is DateTime && previa is DateTime)
+                    return ((DateTime)nueva).Date != ((DateTime)previa).Date;
+            }
+            return Cambios.Distinto(pedido.Target, pedido.PreImagen, columna);
+        }
+
+        // El valor efectivo: el del Target si la clave viene (aunque sea null); si no, el de la pre-imagen; ausente cuenta como nulo.
+        private static object Efectivo(PedidoDeCuota pedido, string columna)
+        {
+            object valor;
+            if (pedido.Target.TryGetValue(columna, out valor)) return Vacio(valor);
+            return pedido.PreImagen.TryGetValue(columna, out valor) ? Vacio(valor) : null;
+        }
+
+        private static object Vacio(object valor)
+        {
+            var texto = valor as string;
+            return texto != null && texto.Length == 0 ? null : valor;
+        }
+
+        private static decimal? Monto(object valor)
+        {
+            if (valor is decimal) return (decimal)valor;
+            var dinero = valor as ValorDeDinero;
+            return dinero != null ? (decimal?)dinero.Valor : null;
+        }
+
+        private static Guid? ArregloDe(IReadOnlyDictionary<string, object> preImagen)
+        {
+            object valor;
+            if (!preImagen.TryGetValue(ColArreglo, out valor)) return null;
+            var referencia = valor as ReferenciaDeEntidad;
+            if (referencia != null) return referencia.Id;
+            return valor is Guid ? (Guid?)(Guid)valor : null;
         }
 
         /// <summary>
@@ -52,7 +142,15 @@ namespace Sanic.Carp.Plugins.Dominio.Cuota
         /// </summary>
         public static IReadOnlyDictionary<string, object> ColumnasAlTerminarElArreglo(DateTime ahoraUtc)
         {
-            throw new NotImplementedException("Sublote 5d: lo implementa el constructor.");
+            if (ahoraUtc.Kind != DateTimeKind.Utc) throw new ArgumentException("La hora debe ser UTC (contrato de IReloj.AhoraUtc).", nameof(ahoraUtc));
+            var terminado = Estados.De(EstadoDeArreglo.Terminado);
+            var columnas = new Dictionary<string, object>(StringComparer.Ordinal)
+            {
+                { ColEstado, new ValorDeOpcion(terminado.StateCode) },
+                { ColMotivoDeEstado, new ValorDeOpcion(terminado.StatusCode) },
+                { ColFechaTermino, ahoraUtc }
+            };
+            return new ReadOnlyDictionary<string, object>(columnas);
         }
     }
 }

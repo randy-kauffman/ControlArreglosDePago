@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Cuota;
 using Sanic.Carp.Plugins.Infraestructura;
@@ -35,7 +36,22 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException("Sublote 5d: lo implementa el constructor.");
+            var completada = new Dictionary<string, object>(StringComparer.Ordinal);
+            foreach (var par in contexto.PreImagenNeutra()) completada[par.Key] = par.Value;
+
+            // 2.7, decision 4 del 5d: Dev omite las columnas nulas. statecode y statuscode no se completan nunca (falla cerrado).
+            foreach (var columna in ReglasDeCuota.ColumnasDeLaPreImagen)
+            {
+                if (string.Equals(columna, ColEstado, StringComparison.Ordinal) || string.Equals(columna, ColMotivoDeEstado, StringComparison.Ordinal)) continue;
+                if (!completada.ContainsKey(columna)) completada[columna] = null;
+            }
+
+            var pedido = new PedidoDeCuota(contexto.TargetNeutro(), completada, contexto.Identidad, new LecturasDeCuotaDataverse(contexto.ServicioComoSistema));
+            var resultado = ReglasDeCuota.Evaluar(pedido);
+            if (!resultado.Permitida) throw resultado.Error;
         }
+
+        private const string ColEstado = "statecode";
+        private const string ColMotivoDeEstado = "statuscode";
     }
 }

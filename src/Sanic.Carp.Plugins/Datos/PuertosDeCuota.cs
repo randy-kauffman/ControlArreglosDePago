@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xrm.Sdk;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Cuota;
+using Sanic.Carp.Plugins.Infraestructura;
 
 namespace Sanic.Carp.Plugins.Datos
 {
@@ -25,12 +26,31 @@ namespace Sanic.Carp.Plugins.Datos
 
         public EstadoDeArreglo? EstadoDelArreglo(Guid arregloId)
         {
-            throw new NotImplementedException("Sublote 5d: lo implementa el constructor.");
+            var fila = new ArreglosDataverse(_servicio).Leer(arregloId, new[] { "statecode", "statuscode" });
+            if (fila == null) return null;
+            var estado = Entero(fila, "statecode");
+            var motivo = Entero(fila, "statuscode");
+            if (!estado.HasValue || !motivo.HasValue) return null;
+            return Estados.DeArreglo(new EstadoEfectivo(estado.Value, motivo.Value));
         }
 
         public Guid? ArregloDeLaCuota(Guid cuotaId)
         {
-            throw new NotImplementedException("Sublote 5d: lo implementa el constructor.");
+            var fila = AyudaDeConsultas.LeerFila(_servicio, "sanic_carp_tbl_cuota", cuotaId, new[] { "sanic_arregloid" });
+            if (fila == null) return null;
+            object valor;
+            var referencia = fila.Valores.TryGetValue("sanic_arregloid", out valor) ? valor as ReferenciaDeEntidad : null;
+            return referencia == null ? null : (Guid?)referencia.Id;
+        }
+
+        // El par de estado llega como ValorDeOpcion (conversor neutro); un int plano tambien se acepta.
+        private static int? Entero(FilaDeDatos fila, string columna)
+        {
+            object valor;
+            if (!fila.Valores.TryGetValue(columna, out valor)) return null;
+            var opcion = valor as ValorDeOpcion;
+            if (opcion != null) return opcion.Valor;
+            return valor is int ? (int?)(int)valor : null;
         }
     }
 }

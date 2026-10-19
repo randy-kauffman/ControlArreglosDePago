@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
+using Sanic.Carp.Plugins.Dominio.Cuota;
 using Sanic.Carp.Plugins.Infraestructura;
 
 namespace Sanic.Carp.Plugins.Steps
@@ -34,7 +37,21 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException("Sublote 5d: lo implementa el constructor.");
+            var servicio = contexto.ServicioComoSistema;
+            var lecturas = new LecturasDeCuotaDataverse(servicio);
+
+            var arregloId = lecturas.ArregloDeLaCuota(contexto.IdPrimario);
+            if (!arregloId.HasValue) return;
+
+            var estado = lecturas.EstadoDelArreglo(arregloId.Value);
+            if (!estado.HasValue || estado.Value != EstadoDeArreglo.Vigente) return;
+
+            // DC-21: una consulta, TopCount 1, sin columnas.
+            if (new CuotasDataverse(servicio).QuedaAlgunaSinPago(arregloId.Value)) return;
+
+            // Pasa por S-21 como escritura del sistema (DC-03); si falla, la transaccion entera se revierte y nada se atrapa (0.5).
+            new ArreglosDataverse(servicio).Actualizar(arregloId.Value, ReglasDeCuota.ColumnasAlTerminarElArreglo(contexto.Reloj.AhoraUtc));
+            contexto.Trazar("arreglo terminado: " + arregloId.Value.ToString("D", CultureInfo.InvariantCulture));
         }
     }
 }
