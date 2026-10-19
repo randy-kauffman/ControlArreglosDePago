@@ -415,7 +415,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
 
         private static Dictionary<string, object> AltaValida(params object[] mas)
         {
-            var d = D("sanic_numeroproducto", " 5412 7500 ", "sanic_saldoinicial", 1000m, "sanic_montoabonado", 0m, "sanic_cuotamensual", 300m, "sanic_plazo", 4,
+            // 5c, decisión del usuario del 2026-10-19: producto obligatorio en el alta
+            var d = D("sanic_producto", new ValorDeOpcion((int)ProductoCrediticio.Prestamo), "sanic_numeroproducto", " 5412 7500 ", "sanic_saldoinicial", 1000m, "sanic_montoabonado", 0m, "sanic_cuotamensual", 300m, "sanic_plazo", 4,
                 "sanic_fechainicio", Fecha(2026, 11, 5), "statecode", St(EstadoDeArreglo.Borrador), "statuscode", Sc(EstadoDeArreglo.Borrador), "sanic_nombre", "ARR-001002");
             for (int i = 0; i < mas.Length; i += 2) d[(string)mas[i]] = mas[i + 1];
             return d;
@@ -506,6 +507,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
         }
 
         [Theory]
+        [InlineData("sanic_producto")]      // 5c, decisión del usuario del 2026-10-19: producto obligatorio en el alta (2.5, paso 3)
         [InlineData("sanic_numeroproducto")]
         [InlineData("sanic_saldoinicial")]
         [InlineData("sanic_montoabonado")]
@@ -534,7 +536,32 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
         {
             var vacio = D();
             AssertRechaza(Alta(vacio, new VersionVigente[0], Persona()), CodigosDeError.ARR_006,
-                "sanic_numeroproducto, sanic_saldoinicial, sanic_montoabonado, sanic_cuotamensual, sanic_plazo, sanic_fechainicio");
+                "sanic_producto, sanic_numeroproducto, sanic_saldoinicial, sanic_montoabonado, sanic_cuotamensual, sanic_plazo, sanic_fechainicio");   // 5c, decisión del usuario del 2026-10-19: producto obligatorio en el alta
+        }
+
+        [Fact]
+        public void PA5C_PRO_01_Alta_SinProductoYSinOtraObligatoria_LasNombraEnElOrdenDe25()
+        {
+            var d = AltaValida();
+            d.Remove("sanic_producto");
+            d.Remove("sanic_saldoinicial");
+            d.Remove("sanic_fechainicio");
+            AssertRechaza(Alta(d, UnaVersion(), Persona()), CodigosDeError.ARR_006, "sanic_producto, sanic_saldoinicial, sanic_fechainicio");
+
+            var conNumeroVacio = AltaValida("sanic_numeroproducto", "   ");
+            conNumeroVacio.Remove("sanic_producto");
+            AssertRechaza(Alta(conNumeroVacio, UnaVersion(), Persona()), CodigosDeError.ARR_006, "sanic_producto, sanic_numeroproducto");
+        }
+
+        [Fact]
+        public void PA5C_PRO_02_Alta_SinProducto_GanaALaVersion_YElSistemaPasaSinValidarObligatorias()
+        {
+            var sinProducto = AltaValida();
+            sinProducto.Remove("sanic_producto");
+            AssertRechaza(Alta(sinProducto, new VersionVigente[0], Persona()), CodigosDeError.ARR_006, "sanic_producto");
+
+            // DC-03: el sistema no se revalida (ni versiones ni obligatorias); 2.5 no dice otra cosa sobre el sistema.
+            AssertPermite(Alta(sinProducto, new VersionVigente[0], Sistema()));
         }
 
         [Theory]

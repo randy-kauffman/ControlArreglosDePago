@@ -145,6 +145,31 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         }
 
         [Fact]
+        public void PA5C_PRO_S01_SinProducto_CARP_ARR_006_NombrandoloEnElOrdenDe25_YNoQuedaLaFila()
+        {
+            // 5c, decisión del usuario del 2026-10-19: producto obligatorio en el alta (2.5, paso 3)
+            var e = UnEscenario();
+            UnaVersionVigente(e);
+
+            Rechaza(() => e.ComoOficial.Create(SinColumna(UnAlta(), "sanic_producto")), CodigosDeError.ARR_006, "sanic_producto");
+            Rechaza(() => e.ComoOficial.Create(SinColumna(UnAlta(), "sanic_producto", "sanic_saldoinicial", "sanic_fechainicio")), CodigosDeError.ARR_006, "sanic_producto, sanic_saldoinicial, sanic_fechainicio");
+            Rechaza(() => e.ComoOficial.Create(SinColumna(UnAlta("sanic_numeroproducto", "   "), "sanic_producto")), CodigosDeError.ARR_006, "sanic_producto, sanic_numeroproducto");
+            Rechaza(() => e.ComoOficial.Create(UnAlta("sanic_producto", null)), CodigosDeError.ARR_006, "sanic_producto");
+
+            Assert.Empty(e.Almacen.Todas(Arr));
+        }
+
+        [Fact]
+        public void PA5C_PRO_S02_ElSistema_SinProducto_PasaSinValidarObligatorias()
+        {
+            var e = UnEscenario(conPropietario: false);
+
+            var id = e.ComoSistema.Create(SinColumna(UnAlta(), "sanic_producto"));
+
+            Assert.Null(Valor(e, id, "sanic_producto"));
+        }
+
+        [Fact]
         public void PA_ARR_08_ElEstado_Vigente_008_Borrador_Pasa_SinEstado_Pasa()
         {
             var e = UnEscenario();
