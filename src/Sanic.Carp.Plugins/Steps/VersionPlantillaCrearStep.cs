@@ -33,7 +33,11 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var resultado = ReglasDeVersion.EvaluarAlta(new PedidoDeAltaDeVersion(contexto.TargetNeutro(), contexto.Identidad));
+            if (!resultado.Permitida) throw resultado.Error;
+
+            var target = contexto.Target;
+            foreach (var par in resultado.Escribir) target[par.Key] = ConversorDeEntidades.AValorDelSdk(par.Value);
         }
     }
 }

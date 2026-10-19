@@ -28,12 +28,38 @@ namespace Sanic.Carp.Plugins.Formato
 
         public string CalcularHuella(byte[] contenido)
         {
-            throw new NotImplementedException();
+            if (contenido == null) throw new ArgumentNullException(nameof(contenido));
+            return GeneradorFormato.CalcularHuella(contenido);
         }
 
         public ResultadoDePruebaDeGeneracion Probar(byte[] archivo, string huella, IReadOnlyList<FilaDeMapeo> mapeo, int capacidad)
         {
-            throw new NotImplementedException();
+            if (archivo == null) throw new ArgumentNullException(nameof(archivo));
+            if (huella == null) throw new ArgumentNullException(nameof(huella));
+            if (mapeo == null) throw new ArgumentNullException(nameof(mapeo));
+
+            // El adaptador es el unico que nombra las excepciones del generador: el dominio recibe un resultado neutro (2.8, Publicar, paso 3).
+            // HuellaNoCoincide y las demas escapan: con la huella recien calculada serian un defecto.
+            try
+            {
+                var filas = new List<MapeoCelda>(mapeo.Count);
+                foreach (var fila in mapeo) filas.Add(ClavesDelGenerador.DeFila(fila));
+                var datos = DatosDePrueba.Crear(capacidad);
+                new GeneradorOpenXml(_trazar).Generar(archivo, huella, filas, datos);
+                return ResultadoDePruebaDeGeneracion.Exito();
+            }
+            catch (PlantillaInvalidaException ex)
+            {
+                return ResultadoDePruebaDeGeneracion.DePlantillaInvalida(ex.Message);
+            }
+            catch (MapeoInvalidoException ex)
+            {
+                return ResultadoDePruebaDeGeneracion.DeFormatoInvalido(ex.Message);
+            }
+            catch (DatosInvalidosException ex)
+            {
+                return ResultadoDePruebaDeGeneracion.DeFormatoInvalido(ex.Message);
+            }
         }
     }
 }

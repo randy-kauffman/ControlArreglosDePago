@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Plantilla;
+using Sanic.Carp.Plugins.Formato;
 using Sanic.Carp.Plugins.Infraestructura;
 
 namespace Sanic.Carp.Plugins.Steps
@@ -42,7 +44,43 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            // Paso 1 (2.8, decision 2 del 5e): Dev omite las columnas nulas; statecode y statuscode no se completan nunca (falla cerrado).
+            var completada = new Dictionary<string, object>(StringComparer.Ordinal);
+            foreach (var par in contexto.PreImagenNeutra()) completada[par.Key] = par.Value;
+            foreach (var columna in ReglasDeVersion.ColumnasDeLaPreImagen)
+            {
+                if (string.Equals(columna, ColEstadoNativo, StringComparison.Ordinal) || string.Equals(columna, ColMotivoNativo, StringComparison.Ordinal)) continue;
+                if (!completada.ContainsKey(columna)) completada[columna] = null;
+            }
+
+            // Paso 2: la regla decide; un rechazo sale sin catch.
+            var decision = ReglasDeVersion.EvaluarActualizacion(new PedidoDeVersion(contexto.TargetNeutro(), completada, contexto.Identidad));
+            if (!decision.Resultado.Permitida) throw decision.Resultado.Error;
+            if (!decision.Publica) return;
+
+            // Paso 3: Publicar, con las lecturas de SYSTEM (la regla decide por el estado, no por lo que la persona vea).
+            var sistema = contexto.ServicioComoSistema;
+            object valorCapacidad;
+            var capacidad = completada.TryGetValue(ColCapacidad, out valorCapacidad) && valorCapacidad is int ? (int)valorCapacidad : 0;
+            var resultado = PublicacionDeVersion.Publicar(new PedidoDePublicacion(contexto.IdPrimario, capacidad, contexto.Identidad.ActorId, contexto.Reloj.AhoraUtc,
+                new LecturasDeVersionDataverse(sistema), new PruebaDeGeneracionOpenXml(contexto.Trazar)));
+            if (!resultado.Permitida) throw resultado.Error;
+
+            // Paso 4: la anterior pasa a Historica con SYSTEM; esa escritura dispara este mismo step a profundidad 2 y pasa porque quien escribe es SYSTEM (DC-03).
+            var versiones = new VersionesDataverse(sistema);
+            foreach (var otra in versiones.OtrasVigentes(contexto.IdPrimario, new string[0]))
+                versiones.Actualizar(otra.Id, ReglasDeVersion.ColumnasAlPasarAHistorica());
+            var quedan = versiones.OtrasVigentes(contexto.IdPrimario, new string[0]).Count;
+            var error = ReglasDeVersion.ErrorSiQuedaOtraVigente(quedan);
+            if (error != null) throw error;
+
+            // Ultimo: el Target se escribe al final para que un rechazo anterior no lo deje a medio escribir.
+            var target = contexto.Target;
+            foreach (var par in resultado.Escribir) target[par.Key] = ConversorDeEntidades.AValorDelSdk(par.Value);
         }
+
+        private const string ColEstadoNativo = "statecode";
+        private const string ColMotivoNativo = "statuscode";
+        private const string ColCapacidad = "sanic_capacidad";
     }
 }

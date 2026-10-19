@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Sanic.Carp.Plugins.Dominio.Errores;
 
 namespace Sanic.Carp.Plugins.Dominio.Plantilla
 {
@@ -24,7 +26,34 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static ResultadoDeEvaluacion Publicar(PedidoDePublicacion pedido)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            // Paso 1: sin archivo. Cero bytes no es "sin archivo": falla en el paso 3 (VER-006).
+            var archivo = pedido.Lecturas.ArchivoDeLaVersion(pedido.VersionId);
+            if (archivo == null) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.VER_005.Crear());
+
+            // Paso 2: el mapeo se valida ANTES de abrir el archivo; un mapeo mal armado no llega al generador.
+            var filas = pedido.Lecturas.FilasDeMapeoActivas(pedido.VersionId);
+            var errores = ValidadorDePublicacion.Validar(pedido.Capacidad, filas);
+            if (errores.Count > 0) return ResultadoDeEvaluacion.Rechazar(ReglasDeVersion.ErrorDeLaPublicacion(errores));
+
+            // Paso 3: la huella se calcula una vez y es la que se guarda (D-15).
+            var huella = pedido.Prueba.CalcularHuella(archivo);
+            var prueba = pedido.Prueba.Probar(archivo, huella, filas, pedido.Capacidad);
+            if (!prueba.Exitosa)
+            {
+                return prueba.Falla == FallaDeLaGeneracionDePrueba.PlantillaInvalida
+                    ? ResultadoDeEvaluacion.Rechazar(CodigosDeError.VER_006.Crear())
+                    : ResultadoDeEvaluacion.Rechazar(CodigosDeError.VER_009.Crear(prueba.Detalle));
+            }
+
+            // Paso 4: sanic_estado no se escribe, ya viene del gesto.
+            return ResultadoDeEvaluacion.Permitir(new[]
+            {
+                new KeyValuePair<string, object>("sanic_huella", huella),
+                new KeyValuePair<string, object>("sanic_fechaaprobacion", pedido.AhoraUtc),
+                new KeyValuePair<string, object>("sanic_aprobadoporid", new ReferenciaDeEntidad("systemuser", pedido.ActorId))
+            });
         }
     }
 }

@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using Sanic.Carp.Plugins.Dominio.Calendario;
+using Sanic.Carp.Plugins.Dominio.Errores;
+using Sanic.Carp.Plugins.Dominio.Puertos;
 
 namespace Sanic.Carp.Plugins.Dominio.Plantilla
 {
@@ -38,7 +42,7 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static string NombreCalculado(string hoja, string celda)
         {
-            throw new NotImplementedException();
+            return (hoja ?? string.Empty) + "!" + (celda ?? string.Empty);
         }
 
         /// <summary>
@@ -55,7 +59,14 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static ResultadoDeEvaluacion EvaluarAlta(PedidoDeAltaDeMapeo pedido)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            var target = pedido.Target;
+            ErrorDeNegocio violacion = ErrorDelPadre(Valor(target, ColVersion), pedido.Lecturas)
+                ?? ErrorDeLosValores(Valor(target, ColHoja), Valor(target, ColCelda), Valor(target, ColTipo), Valor(target, ColCampo), Valor(target, ColFilasMaximas));
+            if (violacion != null) return ResolverViolacion(violacion, pedido.Identidad);
+
+            return Escribiendo(Valor(target, ColHoja), Valor(target, ColCelda));
         }
 
         /// <summary>
@@ -75,7 +86,25 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static ResultadoDeEvaluacion EvaluarActualizacion(PedidoDeMapeo pedido)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            var cambiadas = Cambios.Cambiadas(pedido.Target, pedido.PreImagen, PreImagenDeActualizacion);
+            if (cambiadas.Count == 0) return ResultadoDeEvaluacion.Permitir();
+
+            // El orden lo fija 2.8 (y la decisión del arquitecto sobre -006): padre de la pre-imagen, estado, nombre, versión y luego los valores efectivos.
+            ErrorDeNegocio violacion = ErrorDelPadre(Valor(pedido.PreImagen, ColVersion), pedido.Lecturas);
+            if (violacion == null && (Contiene(cambiadas, ColEstado) || Contiene(cambiadas, ColMotivoDeEstado))) violacion = CodigosDeError.MAP_007.Crear();
+            if (violacion == null && Contiene(cambiadas, ColNombre)) violacion = CodigosDeError.MAP_008.Crear();
+            if (violacion == null && Contiene(cambiadas, ColVersion)) violacion = CodigosDeError.MAP_006.Crear();
+
+            object hoja = Efectivo(pedido, ColHoja);
+            object celda = Efectivo(pedido, ColCelda);
+            if (violacion == null) violacion = ErrorDeLosValores(hoja, celda, Efectivo(pedido, ColTipo), Efectivo(pedido, ColCampo), Efectivo(pedido, ColFilasMaximas));
+            if (violacion != null) return ResolverViolacion(violacion, pedido.Identidad);
+
+            // El nombre se recalcula solo si cambió la hoja o la celda; si no, no se escribe nada (no se recalcula).
+            if (!Contiene(cambiadas, ColHoja) && !Contiene(cambiadas, ColCelda)) return ResultadoDeEvaluacion.Permitir();
+            return Escribiendo(hoja, celda);
         }
 
         /// <summary>
@@ -84,7 +113,112 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static ResultadoDeEvaluacion EvaluarBaja(PedidoDeBajaDeMapeo pedido)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            ErrorDeNegocio violacion = ErrorDelPadre(Valor(pedido.PreImagen, ColVersion), pedido.Lecturas);
+            return violacion == null ? ResultadoDeEvaluacion.Permitir() : ResolverViolacion(violacion, pedido.Identidad);
+        }
+
+        private const string ColVersion = "sanic_versionplantillaid";
+        private const string ColHoja = "sanic_hoja";
+        private const string ColCelda = "sanic_celda";
+        private const string ColTipo = "sanic_tipo";
+        private const string ColCampo = "sanic_campo";
+        private const string ColFilasMaximas = "sanic_filasmaximas";
+        private const string ColEstado = "statecode";
+        private const string ColMotivoDeEstado = "statuscode";
+        private const string ColNombre = "sanic_nombre";
+
+        private static object Valor(IReadOnlyDictionary<string, object> valores, string columna)
+        {
+            object valor;
+            return valores.TryGetValue(columna, out valor) ? valor : null;
+        }
+
+        // El valor efectivo: el del Target si la clave viene (aunque sea null); si no, el de la pre-imagen; ausente cuenta como nulo.
+        private static object Efectivo(PedidoDeMapeo pedido, string columna)
+        {
+            object valor;
+            if (pedido.Target.TryGetValue(columna, out valor)) return valor;
+            return pedido.PreImagen.TryGetValue(columna, out valor) ? valor : null;
+        }
+
+        private static bool Contiene(IReadOnlyList<string> columnas, string columna)
+        {
+            for (int i = 0; i < columnas.Count; i++)
+                if (string.Equals(columnas[i], columna, StringComparison.Ordinal)) return true;
+            return false;
+        }
+
+        // Falla cerrado: sin padre, o con un padre que no se lee o no es Borrador, es CARP-MAP-001. Sin padre no se lee nada.
+        private static ErrorDeNegocio ErrorDelPadre(object padre, ILecturasDeVersion lecturas)
+        {
+            Guid? id = null;
+            var referencia = padre as ReferenciaDeEntidad;
+            if (referencia != null) id = referencia.Id;
+            else if (padre is Guid) id = (Guid)padre;
+            if (!id.HasValue) return CodigosDeError.MAP_001.Crear();
+
+            EstadoDeVersionDePlantilla? estado = lecturas.EstadoDeLaVersion(id.Value);
+            return estado.HasValue && estado.Value == EstadoDeVersionDePlantilla.Borrador ? null : CodigosDeError.MAP_001.Crear();
+        }
+
+        // Pasos 2 a 5 de EvaluarAlta, con los valores que se le den (los del Target en el alta, los efectivos en la actualización).
+        private static ErrorDeNegocio ErrorDeLosValores(object hoja, object celda, object tipo, object campo, object filasMaximas)
+        {
+            string textoDeCelda = celda as string;
+            int columnaA1, filaA1;
+            if (!ValidadorDePublicacion.TryParsearCeldaA1(textoDeCelda, out columnaA1, out filaA1)) return CodigosDeError.MAP_002.Crear(textoDeCelda ?? string.Empty);
+
+            int? valorDeCampo = Entero(campo);
+            int? valorDeTipo = Entero(tipo);
+            // EsCompatible no comprueba que el campo esté definido: se repite aquí (Enum.IsDefined) antes de llamarla.
+            bool campoDefinido = valorDeCampo.HasValue && Enum.IsDefined(typeof(CampoMapeable), valorDeCampo.Value);
+            bool tipoDefinido = valorDeTipo.HasValue && Enum.IsDefined(typeof(TipoDeMapeo), valorDeTipo.Value);
+            if (!campoDefinido || !tipoDefinido || !ValidadorDePublicacion.EsCompatible((CampoMapeable)valorDeCampo.Value, (TipoDeMapeo)valorDeTipo.Value))
+                return CodigosDeError.MAP_003.Crear(EtiquetaParaElMensaje(valorDeCampo, campoDefinido));
+
+            if ((TipoDeMapeo)valorDeTipo.Value == TipoDeMapeo.ColumnaDeBloqueDeCuotas)
+            {
+                int? filas = filasMaximas is int ? (int?)(int)filasMaximas : null;
+                if (!filas.HasValue || filas.Value < 1 || filas.Value > GeneradorDeCalendario.PlazoMaximo) return CodigosDeError.MAP_004.Crear();
+            }
+
+            // La hoja NO se recorta: " X" es válida (spike 1, hallazgo 1).
+            if (string.IsNullOrWhiteSpace(hoja as string)) return CodigosDeError.MAP_005.Crear();
+            return null;
+        }
+
+        private static int? Entero(object valor)
+        {
+            var opcion = valor as ValorDeOpcion;
+            if (opcion != null) return opcion.Valor;
+            return valor is int ? (int?)(int)valor : null;
+        }
+
+        // La etiqueta con tildes y SIN comillas (EtiquetaDelCampo del validador las agrega y no sirve aquí), el número si no está definido o (vacío) si falta.
+        private static string EtiquetaParaElMensaje(int? campo, bool definido)
+        {
+            if (!campo.HasValue) return "(vacío)";
+            if (!definido) return campo.Value.ToString(CultureInfo.InvariantCulture);
+            string etiqueta;
+            return ValidadorDePublicacion.EtiquetasDeCampo.TryGetValue((CampoMapeable)campo.Value, out etiqueta) ? etiqueta : ((CampoMapeable)campo.Value).ToString();
+        }
+
+        // Identidad perezosa (0.3): se pregunta una sola vez y solo con una violación en la mano. El sistema pasa sin escribir (DC-03).
+        private static ResultadoDeEvaluacion ResolverViolacion(ErrorDeNegocio violacion, IIdentidadDeEjecucion identidad)
+        {
+            return identidad.EsEscrituraDelSistema ? ResultadoDeEvaluacion.Permitir() : ResultadoDeEvaluacion.Rechazar(violacion);
+        }
+
+        private static ResultadoDeEvaluacion Escribiendo(object hoja, object celda)
+        {
+            string celdaEnMayuscula = ((string)celda).ToUpperInvariant();
+            return ResultadoDeEvaluacion.Permitir(new[]
+            {
+                new KeyValuePair<string, object>(ColCelda, celdaEnMayuscula),
+                new KeyValuePair<string, object>(ColNombre, NombreCalculado((string)hoja, celdaEnMayuscula))
+            });
         }
     }
 }

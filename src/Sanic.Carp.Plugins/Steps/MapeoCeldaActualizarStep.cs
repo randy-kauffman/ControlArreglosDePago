@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Plantilla;
 using Sanic.Carp.Plugins.Infraestructura;
@@ -33,7 +34,27 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            // 2.8, decisión 2 del 5e: Dev omite las columnas nulas, así que lo que falta de las 9 vale nulo; statecode y statuscode no se completan nunca (falla cerrado).
+            var completada = new Dictionary<string, object>(StringComparer.Ordinal);
+            foreach (var par in contexto.PreImagenNeutra()) completada[par.Key] = par.Value;
+            foreach (var columna in ReglasDeMapeo.ColumnasDeLaPreImagen)
+            {
+                if (string.Equals(columna, ColEstado, StringComparison.Ordinal) || string.Equals(columna, ColMotivoDeEstado, StringComparison.Ordinal)) continue;
+                if (!completada.ContainsKey(columna)) completada[columna] = null;
+            }
+
+            var pedido = new PedidoDeMapeo(contexto.TargetNeutro(), completada, contexto.Identidad, new LecturasDeVersionDataverse(contexto.ServicioComoSistema));
+            var resultado = ReglasDeMapeo.EvaluarActualizacion(pedido);
+            if (!resultado.Permitida) throw resultado.Error;
+
+            // Solo lo que la regla escribe; vacío si no cambió la hoja ni la celda.
+            var entidad = contexto.Target;
+            foreach (var par in resultado.Escribir)
+                entidad[par.Key] = ConversorDeEntidades.AValorDelSdk(par.Value);
+            if (resultado.Escribir.Count > 0) contexto.Trazar("columnas escritas: " + string.Join(", ", resultado.Escribir.Keys));
         }
+
+        private const string ColEstado = "statecode";
+        private const string ColMotivoDeEstado = "statuscode";
     }
 }

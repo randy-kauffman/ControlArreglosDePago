@@ -30,17 +30,43 @@ namespace Sanic.Carp.Plugins.Datos
 
         public EstadoDeVersionDePlantilla? EstadoDeLaVersion(Guid versionId)
         {
-            throw new NotImplementedException();
+            var fila = new VersionesDataverse(_servicio).Leer(versionId, new[] { "sanic_estado" });
+            if (fila == null) return null;
+            object valor;
+            var opcion = fila.Valores.TryGetValue("sanic_estado", out valor) ? valor as ValorDeOpcion : null;
+            // Un valor que el choice no define es "no Borrador" para las reglas (falla cerrado): se devuelve null.
+            if (opcion == null || !Enum.IsDefined(typeof(EstadoDeVersionDePlantilla), opcion.Valor)) return null;
+            return (EstadoDeVersionDePlantilla)opcion.Valor;
         }
 
         public byte[] ArchivoDeLaVersion(Guid versionId)
         {
-            throw new NotImplementedException();
+            return new VersionesDataverse(_servicio).DescargarArchivo(versionId);
         }
 
         public IReadOnlyList<FilaDeMapeo> FilasDeMapeoActivas(Guid versionId)
         {
-            throw new NotImplementedException();
+            var filas = new VersionesDataverse(_servicio).FilasDeMapeo(versionId, new[] { "sanic_hoja", "sanic_celda", "sanic_tipo", "sanic_campo", "sanic_filasmaximas" });
+            var resultado = new List<FilaDeMapeo>(filas.Count);
+            foreach (var fila in filas)
+            {
+                var v = fila.Valores;
+                // Dev omite las columnas nulas: una ausente llega como null, o como 0 (opcion no definida) para que el validador la rechace.
+                resultado.Add(new FilaDeMapeo(
+                    v.ContainsKey("sanic_hoja") ? v["sanic_hoja"] as string : null,
+                    v.ContainsKey("sanic_celda") ? v["sanic_celda"] as string : null,
+                    (TipoDeMapeo)EnteroDeOpcion(v, "sanic_tipo"),
+                    (CampoMapeable)EnteroDeOpcion(v, "sanic_campo"),
+                    v.ContainsKey("sanic_filasmaximas") && v["sanic_filasmaximas"] is int ? (int?)(int)v["sanic_filasmaximas"] : null));
+            }
+            return resultado;
+        }
+
+        private static int EnteroDeOpcion(IReadOnlyDictionary<string, object> valores, string columna)
+        {
+            object valor;
+            var opcion = valores.TryGetValue(columna, out valor) ? valor as ValorDeOpcion : null;
+            return opcion == null ? 0 : opcion.Valor;
         }
     }
 }

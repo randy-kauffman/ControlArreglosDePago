@@ -30,7 +30,55 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static bool NombreTieneFormatoDeVersion(string nombre)
         {
-            throw new NotImplementedException();
+            // Sin Regex: el $ de .NET acepta un salto de linea final y char.IsDigit acepta otros alfabetos (diseno/03 2.8, CARP-VER-012).
+            if (nombre == null || nombre.Length < 3 || nombre.Length > 4 || nombre[0] != 'v') return false;
+            for (var i = 1; i < nombre.Length; i++)
+                if (nombre[i] < '0' || nombre[i] > '9') return false;
+            return true;
+        }
+
+        private const string ColEstadoNativo = "statecode";
+        private const string ColMotivoNativo = "statuscode";
+        private const string ColNombre = "sanic_nombre";
+        private const string ColEstado = "sanic_estado";
+        private const string ColCapacidad = "sanic_capacidad";
+        private const string ColHuella = "sanic_huella";
+        private const string ColFechaAprobacion = "sanic_fechaaprobacion";
+        private const string ColAprobadoPor = "sanic_aprobadoporid";
+        private const string ColArchivo = "sanic_archivo";
+
+        // El choice llega como ValorDeOpcion (Target neutro) o como int; cualquier otra cosa (null incluido) no es una opcion.
+        private static int? Opcion(object valor)
+        {
+            var opcion = valor as ValorDeOpcion;
+            if (opcion != null) return opcion.Valor;
+            return valor is int ? (int?)(int)valor : null;
+        }
+
+        private static int Borrador { get { return (int)EstadoDeVersionDePlantilla.Borrador; } }
+
+        // Presente = la clave viene con valor no nulo (en un Create, null es "sin valor"). La huella vacia tampoco cuenta.
+        private static bool Presente(IReadOnlyDictionary<string, object> target, string columna)
+        {
+            object valor;
+            if (!target.TryGetValue(columna, out valor) || valor == null) return false;
+            var texto = valor as string;
+            return texto == null || texto.Length > 0;
+        }
+
+        private static ErrorDeNegocio ErrorDelAlta(PedidoDeAltaDeVersion pedido)
+        {
+            object estado;
+            if (pedido.Target.TryGetValue(ColEstado, out estado) && estado != null)
+            {
+                var opcion = Opcion(estado);
+                if (!opcion.HasValue || opcion.Value != Borrador) return CodigosDeError.VER_001.Crear();
+            }
+            if (Presente(pedido.Target, ColHuella) || Presente(pedido.Target, ColFechaAprobacion) || Presente(pedido.Target, ColAprobadoPor)) return CodigosDeError.VER_002.Crear();
+            object nombre;
+            pedido.Target.TryGetValue(ColNombre, out nombre);
+            if (!NombreTieneFormatoDeVersion(nombre as string)) return CodigosDeError.VER_012.Crear();
+            return null;
         }
 
         /// <summary>
@@ -46,7 +94,16 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static ResultadoDeEvaluacion EvaluarAlta(PedidoDeAltaDeVersion pedido)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            var error = ErrorDelAlta(pedido);
+            if (error != null)
+                return pedido.Identidad.EsEscrituraDelSistema ? ResultadoDeEvaluacion.Permitir() : ResultadoDeEvaluacion.Rechazar(error);
+
+            // DC-19: una version nace siempre en Borrador, sin depender del valor por defecto de la columna.
+            object estado;
+            if (pedido.Target.TryGetValue(ColEstado, out estado) && estado != null) return ResultadoDeEvaluacion.Permitir();
+            return ResultadoDeEvaluacion.Permitir(new[] { new KeyValuePair<string, object>(ColEstado, new ValorDeOpcion(Borrador)) });
         }
 
         /// <summary>
@@ -67,7 +124,56 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static DecisionDeVersion EvaluarActualizacion(PedidoDeVersion pedido)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            // Paso 1: columnas cambiadas entre las 8. Ninguna => permite sin preguntar la identidad.
+            var cambiadas = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var columna in PreImagen)
+                if (CambioLaColumna(pedido, columna)) cambiadas.Add(columna);
+            if (cambiadas.Count == 0) return DecisionDeVersion.Permitir();
+
+            // Paso 2: DC-03, una sola pregunta.
+            if (pedido.Identidad.EsEscrituraDelSistema) return DecisionDeVersion.Permitir();
+
+            // Paso 3: el estado anterior; nulo, ausente o no definido es "no Borrador" (falla cerrado).
+            object previo;
+            pedido.PreImagen.TryGetValue(ColEstado, out previo);
+            var anterior = Opcion(previo);
+            if (!anterior.HasValue || anterior.Value != Borrador) return Rechazo(CodigosDeError.VER_003);
+
+            // Paso 4: Borrador.
+            if (cambiadas.Contains(ColEstadoNativo) || cambiadas.Contains(ColMotivoNativo)) return Rechazo(CodigosDeError.VER_014);
+            if (cambiadas.Contains(ColHuella) || cambiadas.Contains(ColFechaAprobacion) || cambiadas.Contains(ColAprobadoPor)) return Rechazo(CodigosDeError.VER_002);
+
+            if (cambiadas.Contains(ColEstado))
+            {
+                object nuevo;
+                pedido.Target.TryGetValue(ColEstado, out nuevo);
+                var destino = Opcion(nuevo);
+                if (!destino.HasValue || destino.Value != (int)EstadoDeVersionDePlantilla.Vigente) return Rechazo(CodigosDeError.VER_004);
+                // Publicar no admite otros cambios; un archivo en el mismo guardado esquivaria la huella (2.8, CARP-VER-013).
+                if (cambiadas.Contains(ColNombre) || cambiadas.Contains(ColCapacidad) || pedido.Target.ContainsKey(ColArchivo)) return Rechazo(CodigosDeError.VER_013);
+                return DecisionDeVersion.Publicar();
+            }
+
+            if (cambiadas.Contains(ColNombre))
+            {
+                object nombre;
+                pedido.Target.TryGetValue(ColNombre, out nombre);
+                if (!NombreTieneFormatoDeVersion(nombre as string)) return Rechazo(CodigosDeError.VER_012);
+            }
+            return DecisionDeVersion.Permitir();
+        }
+
+        private static DecisionDeVersion Rechazo(DefinicionDeError definicion)
+        {
+            return DecisionDeVersion.Rechazar(ResultadoDeEvaluacion.Rechazar(definicion.Crear()));
+        }
+
+        // DC-01 puro (Cambios.Distinto); la fecha de aprobacion es fecha y hora y Cambios la compara por ticks, sin .Date.
+        private static bool CambioLaColumna(PedidoDeVersion pedido, string columna)
+        {
+            return Cambios.Distinto(pedido.Target, pedido.PreImagen, columna);
         }
 
         /// <summary>
@@ -80,7 +186,12 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static ResultadoDeEvaluacion EvaluarArchivo(PedidoDeArchivo pedido)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            if (pedido.Identidad.EsEscrituraDelSistema) return ResultadoDeEvaluacion.Permitir();
+            var estado = pedido.Lecturas.EstadoDeLaVersion(pedido.VersionId);
+            if (!estado.HasValue || estado.Value != EstadoDeVersionDePlantilla.Borrador) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.VER_003.Crear());
+            return ResultadoDeEvaluacion.Permitir();
         }
 
         /// <summary>
@@ -90,7 +201,14 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static ErrorDeNegocio ErrorDeLaPublicacion(IReadOnlyList<ErrorDeNegocio> errores)
         {
-            throw new NotImplementedException();
+            if (errores == null || errores.Count == 0) throw new ArgumentException("Debe haber al menos un error.", nameof(errores));
+            foreach (var error in errores)
+                if (error == null) throw new ArgumentException("Hay un error nulo en la lista.", nameof(errores));
+            if (errores.Count == 1) return errores[0];
+
+            var mensajes = new List<string>(errores.Count);
+            foreach (var error in errores) mensajes.Add(error.Mensaje);
+            return new ErrorDeNegocio(errores[0].Codigo, string.Join("\n", mensajes));
         }
 
         /// <summary>
@@ -99,7 +217,11 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static IReadOnlyDictionary<string, object> ColumnasAlPasarAHistorica()
         {
-            throw new NotImplementedException();
+            var columnas = new Dictionary<string, object>(StringComparer.Ordinal)
+            {
+                { ColEstado, new ValorDeOpcion((int)EstadoDeVersionDePlantilla.Historica) }
+            };
+            return new ReadOnlyDictionary<string, object>(columnas);
         }
 
         /// <summary>
@@ -108,7 +230,8 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
         /// </summary>
         public static ErrorDeNegocio ErrorSiQuedaOtraVigente(int otrasVigentes)
         {
-            throw new NotImplementedException();
+            if (otrasVigentes < 0) throw new ArgumentOutOfRangeException(nameof(otrasVigentes), otrasVigentes, "Un conteo no puede ser negativo.");
+            return otrasVigentes == 0 ? null : CodigosDeError.VER_010.Crear();
         }
     }
 }

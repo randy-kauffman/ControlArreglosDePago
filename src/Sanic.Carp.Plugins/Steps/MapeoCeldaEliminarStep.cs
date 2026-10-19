@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Plantilla;
 using Sanic.Carp.Plugins.Infraestructura;
@@ -34,7 +35,10 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            // En Delete el Target es una EntityReference: solo se usa la pre-imagen, sin completar (ausente y nulo dan lo mismo).
+            var pedido = new PedidoDeBajaDeMapeo(contexto.PreImagenNeutra(), contexto.Identidad, new LecturasDeVersionDataverse(contexto.ServicioComoSistema));
+            var resultado = ReglasDeMapeo.EvaluarBaja(pedido);
+            if (!resultado.Permitida) throw resultado.Error;
         }
     }
 }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
+using Sanic.Carp.Plugins.Dominio.Plantilla;
 using Sanic.Carp.Plugins.Infraestructura;
 
 namespace Sanic.Carp.Plugins.Steps
@@ -33,7 +35,8 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var resultado = ReglasDeVersion.EvaluarArchivo(new PedidoDeArchivo(contexto.IdPrimario, contexto.Identidad, new LecturasDeVersionDataverse(contexto.ServicioComoSistema)));
+            if (!resultado.Permitida) throw resultado.Error;
         }
     }
 }

@@ -259,7 +259,7 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
             CampoMapeable.FechaDeFinalizacion, CampoMapeable.CuentaADebitar, CampoMapeable.Comentarios, CampoMapeable.Moneda
         };
 
-        private static bool EsCompatible(CampoMapeable campo, TipoDeMapeo tipo)
+        internal static bool EsCompatible(CampoMapeable campo, TipoDeMapeo tipo)
         {
             switch (tipo)
             {
@@ -277,7 +277,7 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
 
         // Solo LETRAS ASCII + NÚMERO canónicos: sin espacios, sin $, sin rangos, sin ceros a la izquierda (portado de ReferenciaCelda.TryParse
         // del spike 1). La celda viene de una fila editable por personas: se interpreta, nunca se asume.
-        private static bool TryParsearCeldaA1(string texto, out int columna, out int fila)
+        internal static bool TryParsearCeldaA1(string texto, out int columna, out int fila)
         {
             columna = 0;
             fila = 0;
@@ -339,7 +339,7 @@ namespace Sanic.Carp.Plugins.Dominio.Plantilla
             return EtiquetasDeCampo.TryGetValue(campo, out etiqueta) ? "'" + etiqueta + "'" : "'" + campo.ToString() + "'";
         }
 
-        private static readonly Dictionary<CampoMapeable, string> EtiquetasDeCampo = new Dictionary<CampoMapeable, string>
+        internal static readonly Dictionary<CampoMapeable, string> EtiquetasDeCampo = new Dictionary<CampoMapeable, string>
         {
             { CampoMapeable.FechaDeFormalizacion, "Fecha de formalización" },
             { CampoMapeable.OficialDeArreglo, "Oficial de arreglo" },

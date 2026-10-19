@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
+using Sanic.Carp.Plugins.Dominio.Plantilla;
 using Sanic.Carp.Plugins.Infraestructura;
 
 namespace Sanic.Carp.Plugins.Steps
@@ -32,7 +34,15 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var pedido = new PedidoDeAltaDeMapeo(contexto.TargetNeutro(), contexto.Identidad, new LecturasDeVersionDataverse(contexto.ServicioComoSistema));
+            var resultado = ReglasDeMapeo.EvaluarAlta(pedido);
+            if (!resultado.Permitida) throw resultado.Error;
+
+            // Solo lo que la regla escribe (la celda en mayúscula y el nombre calculado); nada más.
+            var entidad = contexto.Target;
+            foreach (var par in resultado.Escribir)
+                entidad[par.Key] = ConversorDeEntidades.AValorDelSdk(par.Value);
+            if (resultado.Escribir.Count > 0) contexto.Trazar("columnas escritas: " + string.Join(", ", resultado.Escribir.Keys));
         }
     }
 }
