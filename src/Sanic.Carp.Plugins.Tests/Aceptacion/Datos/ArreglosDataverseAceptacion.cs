@@ -188,11 +188,14 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Datos
 
             var id = new ArreglosDataverse(almacen).RegistrarGeneracion(arreglo, version, actor, ahora, team);
 
-            // Orquestador, 2026-10-19 (lote 4): las cinco columnas del código más sanic_nombre, que el doble completa antes de
-            // PreValidation como la plataforma (4.5 vuelta 2, "Autonumérico", V-8; solo el id primario queda fuera de Escrituras, lote 3b
-            // punto 9). Que el código no lo envió lo prueba el prefijo GEN- de abajo.
-            AssertEscribio(Assert.Single(almacen.Escrituras), OperacionDeDatos.Create, Generacion,
+            // lote 4, cierre (diseno/03 4.5 "Cierre del lote 4"): lo ESCRITO trae sanic_nombre (el doble lo completa antes de PreValidation, V-8);
+            // lo ENVIADO por el código son exactamente las cinco columnas, sin sanic_nombre. El prefijo GEN- de abajo ya no es la prueba de eso.
+            var escritura = Assert.Single(almacen.Escrituras);
+            AssertEscribio(escritura, OperacionDeDatos.Create, Generacion,
                 "sanic_arregloid", "sanic_versionplantillaid", "sanic_generadoporid", "sanic_fechageneracion", "ownerid", "sanic_nombre");
+            Assert.Equal(new[] { "ownerid", "sanic_arregloid", "sanic_fechageneracion", "sanic_generadoporid", "sanic_versionplantillaid" },
+                escritura.ColumnasEnviadas.OrderBy(x => x, StringComparer.Ordinal).ToArray());
+            Assert.DoesNotContain("sanic_nombre", escritura.ColumnasEnviadas);
             var fila = almacen.Leer(Generacion, id);
             Assert.Equal(arreglo, fila.GetAttributeValue<EntityReference>("sanic_arregloid").Id);
             Assert.Equal(version, fila.GetAttributeValue<EntityReference>("sanic_versionplantillaid").Id);

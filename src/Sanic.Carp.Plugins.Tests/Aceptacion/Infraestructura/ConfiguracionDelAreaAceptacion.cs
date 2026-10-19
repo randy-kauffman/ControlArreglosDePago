@@ -253,6 +253,30 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Infraestructura
         }
 
         [Fact]
+        public void PA_CFG_16_Cfg003_DosTeamsDeJefaturaEnLaMismaBuFallan_UnoEnLaBuYOtroEnOtraBuNo()
+        {
+            // lote 4, cierre: decisión del usuario del 2026-10-19 (0.4 punto 4: exactamente uno; "o hay más de uno con ese nombre").
+            var dos = Completo();
+            Sembrar(dos.Almacen, ConstructorDeDatos.UnTeam(NombreJefatura, dos.Bu, false));
+            var tres = Completo();
+            Sembrar(tres.Almacen, ConstructorDeDatos.UnTeam(NombreJefatura, tres.Bu, false));
+            Sembrar(tres.Almacen, ConstructorDeDatos.UnTeam(NombreJefatura, tres.Bu, false));
+
+            foreach (var e in new[] { dos, tres })
+            {
+                var error = Error(() => new ConfiguracionDelArea(e.Almacen).TeamJefaturaId);
+                AssertError(CodigosDeError.CFG_003, error);
+                Assert.Equal("CARP-CFG-003", error.Codigo);
+                Assert.DoesNotContain(NombreJefatura, error.Mensaje, StringComparison.OrdinalIgnoreCase);
+            }
+
+            // Uno en la BU y otro igual en otra BU: no hay duplicado, gana el de la BU.
+            var enOtraBu = Completo();
+            Sembrar(enOtraBu.Almacen, ConstructorDeDatos.UnTeam(NombreJefatura, Guid.NewGuid(), false));
+            Assert.Equal(enOtraBu.TeamJefatura, new ConfiguracionDelArea(enOtraBu.Almacen).TeamJefaturaId);
+        }
+
+        [Fact]
         public void PA_CFG_12_Cfg004YCfg005_LaQueueSeBuscaPorCorreoSinMayusculasYSinInactivas()
         {
             // 0.4 punto 5: cero ⇒ -004; más de una ⇒ -005.

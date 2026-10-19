@@ -42,6 +42,14 @@ namespace Sanic.Carp.Plugins.Tests.Dobles
         /// <summary>Los nombres de <see cref="Valores"/>, en el orden en que se escribieron. Es lo que afirma "el Update trae solo sanic_conversacionid".</summary>
         public IReadOnlyList<string> Columnas { get; }
 
+        /// <summary>
+        /// STUB DEL ARQUITECTO (cierre del lote 4, diseno/03 4.5): el constructor lo implementa. Los nombres de las columnas de la entidad TAL COMO LA PASÓ EL
+        /// LLAMADOR al servicio, en su orden, tomados al recibir la llamada (antes de que el doble complete el autonumérico y de que corra un step): incluye un
+        /// <c>null</c> explícito y el atributo del id primario solo si el llamador lo puso. <c>Create</c> y <c>Update</c> (también por <c>UpdateRequest</c>): las claves de
+        /// <c>entity.Attributes</c>; <c>Delete</c>: vacía; <c>Assign</c>: <c>ownerid</c>. <see cref="Columnas"/> y <see cref="Valores"/> no cambian.
+        /// </summary>
+        public IReadOnlyList<string> ColumnasEnviadas { get { throw new NotImplementedException("ColumnasEnviadas: pendiente del constructor (cierre del lote 4)."); } }
+
         /// <summary>Identidad del servicio que escribió. SYSTEM figura con <see cref="OrganizationServiceEnMemoria.IdDeSystem"/>.</summary>
         public Guid Identidad { get; }
 

@@ -23,6 +23,13 @@ namespace Sanic.Carp.Plugins.Dominio.Puertos
         /// <paramref name="instante"/>, donde llegada = <c>actualend</c> y, si es nula, <c>createdon</c> (DC-13; 1.5 paso 3). Hasta
         /// <paramref name="tope"/>, ordenados por llegada ascendente. Pide las <paramref name="columnas"/> MÁS <c>actualend</c> y
         /// <c>createdon</c> (necesarias para ordenar), sin repetir.
+        /// <para>
+        /// <b>ADVERTENCIA (cierre del lote 4):</b> el orden por llegada se hace en memoria sobre lo que trae la plataforma (la llegada es un
+        /// COALESCE que no se puede ordenar en la consulta), así que vale SOLO si la conversación tiene a lo sumo <paramref name="tope"/>
+        /// correos posteriores. Con más, el subconjunto devuelto no es necesariamente el de los más tempranos ni el de los más tardíos: el
+        /// llamador solo puede usar la CANTIDAD de filas (para detectar "más de <paramref name="tope"/> menos 1", como en 1.5 paso 3) y no
+        /// debe depender del orden ni de qué correos son.
+        /// </para>
         /// </summary>
         IReadOnlyList<FilaDeDatos> EntrantesPosterioresA(Guid conversacionId, DateTime instante, IReadOnlyCollection<string> columnas, int tope);
 

@@ -165,10 +165,12 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Datos
             var id = new ConversacionesDataverse(almacen).Crear(valores);
 
             var escritura = Assert.Single(almacen.Escrituras);
-            // Orquestador, 2026-10-19 (lote 4): Escrituras registra el Target tal como llega a la escritura, y el doble completa la
-            // primaria autonumérica antes de PreValidation (4.5 vuelta 2, "Autonumérico", V-8); solo el id primario queda fuera (lote 3b
-            // punto 9). Por eso sanic_nombre figura aunque el código no lo envíe; que no lo envió lo prueba el prefijo CONV- de abajo.
+            // lote 4, cierre (diseno/03 4.5 "Cierre del lote 4"): Escrituras.Columnas es lo ESCRITO y trae sanic_nombre porque el doble completa la
+            // primaria autonumérica antes de PreValidation (V-8). Lo que el código ENVIÓ es ColumnasEnviadas: sin sanic_nombre. Así un código que
+            // mande sanic_nombre a mano ya no pasa por cumplir el prefijo CONV-.
             AssertEscribio(escritura, OperacionDeDatos.Create, Conversacion, valores.Keys.Concat(new[] { "sanic_nombre" }).ToArray());
+            Assert.Equal(valores.Keys.OrderBy(x => x, StringComparer.Ordinal).ToArray(), escritura.ColumnasEnviadas.OrderBy(x => x, StringComparer.Ordinal).ToArray());
+            Assert.DoesNotContain("sanic_nombre", escritura.ColumnasEnviadas);
             var guardada = almacen.Leer(Conversacion, id);
             Assert.Equal("huella-nueva", guardada.GetAttributeValue<string>("sanic_huellamessageid"));
             Assert.Equal(team, guardada.GetAttributeValue<EntityReference>("ownerid").Id);
