@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
+using Sanic.Carp.Plugins.Dominio;
+using Sanic.Carp.Plugins.Dominio.Errores;
 using Sanic.Carp.Plugins.Dominio.Puertos;
 
 namespace Sanic.Carp.Plugins.Infraestructura
@@ -20,17 +24,123 @@ namespace Sanic.Carp.Plugins.Infraestructura
     /// </summary>
     internal sealed class ConfiguracionDelArea : IConfiguracionDelArea
     {
+        private const string VariableNombreBu = "sanic_carp_ev_nombrebu";
+        private const string VariableNombreTeamJefatura = "sanic_carp_ev_nombreteamjefatura";
+        private const string VariableBuzonArea = "sanic_carp_ev_buzonarea";
+
+        private readonly IOrganizationService _servicio;
+        private readonly Dictionary<string, string> _valores = new Dictionary<string, string>(StringComparer.Ordinal);
+        private Guid? _buId;
+        private Guid? _teamPropietarioId;
+        private Guid? _teamJefaturaId;
+        private Guid? _queueRemitenteId;
+
         public ConfiguracionDelArea(IOrganizationService servicioDeSistema)
         {
-            throw new NotImplementedException();
+            if (servicioDeSistema == null) throw new ArgumentNullException(nameof(servicioDeSistema));
+            _servicio = servicioDeSistema;
         }
 
-        public Guid BuId { get { throw new NotImplementedException(); } }
+        // Un miembro que falla lanza antes de asignar su campo: el error no se memoiza (diseno/03 4.2, punto 13).
 
-        public Guid TeamPropietarioId { get { throw new NotImplementedException(); } }
+        public Guid BuId
+        {
+            get
+            {
+                if (!_buId.HasValue)
+                {
+                    var consulta = AyudaDeConsultas.SoloId("businessunit");
+                    consulta.Criteria.AddCondition("name", ConditionOperator.Equal, Valor(VariableNombreBu));
+                    consulta.Criteria.AddCondition("isdisabled", ConditionOperator.Equal, false);
+                    // TopCount 2: alcanza para distinguir "una" de "mas de una" sin traer el resto.
+                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 2);
+                    if (filas.Count != 1) throw CodigosDeError.CFG_001.Crear();
+                    _buId = filas[0].Id;
+                }
+                return _buId.Value;
+            }
+        }
 
-        public Guid TeamJefaturaId { get { throw new NotImplementedException(); } }
+        public Guid TeamPropietarioId
+        {
+            get
+            {
+                if (!_teamPropietarioId.HasValue)
+                {
+                    var consulta = AyudaDeConsultas.SoloId("team");
+                    consulta.Criteria.AddCondition("businessunitid", ConditionOperator.Equal, BuId);
+                    consulta.Criteria.AddCondition("isdefault", ConditionOperator.Equal, true);
+                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 2);
+                    if (filas.Count != 1) throw CodigosDeError.CFG_002.Crear();
+                    _teamPropietarioId = filas[0].Id;
+                }
+                return _teamPropietarioId.Value;
+            }
+        }
 
-        public Guid QueueRemitenteId { get { throw new NotImplementedException(); } }
+        public Guid TeamJefaturaId
+        {
+            get
+            {
+                if (!_teamJefaturaId.HasValue)
+                {
+                    var bu = BuId;
+                    var consulta = AyudaDeConsultas.SoloId("team");
+                    consulta.Criteria.AddCondition("name", ConditionOperator.Equal, Valor(VariableNombreTeamJefatura));
+                    consulta.Criteria.AddCondition("businessunitid", ConditionOperator.Equal, bu);
+                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 1);
+                    if (filas.Count == 0) throw CodigosDeError.CFG_003.Crear();
+                    _teamJefaturaId = filas[0].Id;
+                }
+                return _teamJefaturaId.Value;
+            }
+        }
+
+        public Guid QueueRemitenteId
+        {
+            get
+            {
+                if (!_queueRemitenteId.HasValue)
+                {
+                    var consulta = AyudaDeConsultas.SoloId("queue");
+                    consulta.Criteria.AddCondition("emailaddress", ConditionOperator.Equal, Valor(VariableBuzonArea));
+                    consulta.Criteria.AddCondition("statecode", ConditionOperator.Equal, Estados.Activo);
+                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 2);
+                    if (filas.Count == 0) throw CodigosDeError.CFG_004.Crear();
+                    if (filas.Count > 1) throw CodigosDeError.CFG_005.Crear();
+                    _queueRemitenteId = filas[0].Id;
+                }
+                return _queueRemitenteId.Value;
+            }
+        }
+
+        /// <summary>El valor de la variable en dos consultas (0.4 punto 1; 4.1 "Regla de datos": sin <c>link</c>). Solo se memoiza un valor resuelto.</summary>
+        private string Valor(string nombre)
+        {
+            string conocido;
+            if (_valores.TryGetValue(nombre, out conocido)) return conocido;
+
+            var definiciones = new QueryExpression("environmentvariabledefinition") { ColumnSet = new ColumnSet("defaultvalue") };
+            definiciones.Criteria.AddCondition("schemaname", ConditionOperator.Equal, nombre);
+            var definicion = AyudaDeConsultas.Primeras(_servicio, definiciones, 1);
+            if (definicion.Count == 0) throw CodigosDeError.CFG_006.Crear(nombre);
+
+            var valores = new QueryExpression("environmentvariablevalue") { ColumnSet = new ColumnSet("value") };
+            valores.Criteria.AddCondition("environmentvariabledefinitionid", ConditionOperator.Equal, definicion[0].Id);
+            string resuelto = null;
+            foreach (var fila in _servicio.RetrieveMultiple(valores).Entities)
+            {
+                var valor = fila.GetAttributeValue<string>("value");
+                if (!string.IsNullOrEmpty(valor)) { resuelto = valor; break; }
+            }
+            if (resuelto == null)
+            {
+                var porDefecto = definicion[0].GetAttributeValue<string>("defaultvalue");
+                if (string.IsNullOrEmpty(porDefecto)) throw CodigosDeError.CFG_006.Crear(nombre);
+                resuelto = porDefecto;
+            }
+            _valores[nombre] = resuelto;
+            return resuelto;
+        }
     }
 }

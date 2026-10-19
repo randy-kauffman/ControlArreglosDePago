@@ -1,5 +1,7 @@
 using System;
+using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using Sanic.Carp.Plugins.Dominio.Puertos;
 
 namespace Sanic.Carp.Plugins.Infraestructura
@@ -18,20 +20,60 @@ namespace Sanic.Carp.Plugins.Infraestructura
     /// </summary>
     internal sealed class IdentidadDeEjecucion : IIdentidadDeEjecucion
     {
+        private readonly IPluginExecutionContext _contexto;
+        private readonly IOrganizationServiceFactory _fabrica;
+        private readonly IConfiguracionDelArea _configuracion;
+
+        private IOrganizationService _servicioDeSistema;
+        private bool? _esSistema;
+        private bool? _esJefatura;
+
         public IdentidadDeEjecucion(IPluginExecutionContext contexto, IOrganizationServiceFactory fabrica, IConfiguracionDelArea configuracion)
         {
-            throw new NotImplementedException();
+            if (contexto == null) throw new ArgumentNullException(nameof(contexto));
+            if (fabrica == null) throw new ArgumentNullException(nameof(fabrica));
+            if (configuracion == null) throw new ArgumentNullException(nameof(configuracion));
+            _contexto = contexto;
+            _fabrica = fabrica;
+            _configuracion = configuracion;
         }
 
-        public Guid ActorId { get { throw new NotImplementedException(); } }
+        public Guid ActorId { get { return _contexto.InitiatingUserId; } }
 
-        public bool EsSistema { get { throw new NotImplementedException(); } }
+        public bool EsSistema
+        {
+            get
+            {
+                if (!_esSistema.HasValue)
+                {
+                    // Una falla del WhoAmI escapa y no se memoiza: si no se sabe quien es, no se asume "persona" (diseno/03 4.2, punto 14).
+                    var respuesta = (WhoAmIResponse)Sistema().Execute(new WhoAmIRequest());
+                    _esSistema = respuesta.UserId == ActorId;
+                }
+                return _esSistema.Value;
+            }
+        }
 
-        public bool EsEscrituraDelSistema { get { throw new NotImplementedException(); } }
+        public bool EsEscrituraDelSistema { get { return EsSistema; } }
 
         public bool EsJefatura()
         {
-            throw new NotImplementedException();
+            if (!_esJefatura.HasValue)
+            {
+                // El team se lee primero: si la configuracion falla (CARP-CFG-*) no hace falta ni crear el servicio, y el error no se memoiza.
+                var team = _configuracion.TeamJefaturaId;
+                var consulta = new QueryExpression("teammembership") { ColumnSet = new ColumnSet("teammembershipid") };
+                consulta.Criteria.AddCondition("systemuserid", ConditionOperator.Equal, ActorId);
+                consulta.Criteria.AddCondition("teamid", ConditionOperator.Equal, team);
+                _esJefatura = AyudaDeConsultas.Existe(Sistema(), consulta);
+            }
+            return _esJefatura.Value;
+        }
+
+        private IOrganizationService Sistema()
+        {
+            if (_servicioDeSistema == null) _servicioDeSistema = _fabrica.CreateOrganizationService(null);
+            return _servicioDeSistema;
         }
     }
 }

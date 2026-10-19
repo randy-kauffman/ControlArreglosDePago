@@ -165,7 +165,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Datos
             var id = new ConversacionesDataverse(almacen).Crear(valores);
 
             var escritura = Assert.Single(almacen.Escrituras);
-            AssertEscribio(escritura, OperacionDeDatos.Create, Conversacion, valores.Keys.ToArray());
+            // Orquestador, 2026-10-19 (lote 4): Escrituras registra el Target tal como llega a la escritura, y el doble completa la
+            // primaria autonumérica antes de PreValidation (4.5 vuelta 2, "Autonumérico", V-8); solo el id primario queda fuera (lote 3b
+            // punto 9). Por eso sanic_nombre figura aunque el código no lo envíe; que no lo envió lo prueba el prefijo CONV- de abajo.
+            AssertEscribio(escritura, OperacionDeDatos.Create, Conversacion, valores.Keys.Concat(new[] { "sanic_nombre" }).ToArray());
             var guardada = almacen.Leer(Conversacion, id);
             Assert.Equal("huella-nueva", guardada.GetAttributeValue<string>("sanic_huellamessageid"));
             Assert.Equal(team, guardada.GetAttributeValue<EntityReference>("ownerid").Id);

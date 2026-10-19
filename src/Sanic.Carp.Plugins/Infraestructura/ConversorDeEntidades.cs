@@ -16,7 +16,11 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// <summary>Todos los atributos de la entidad, convertidos. Un valor <c>null</c> se conserva. Entidad nula ⇒ <see cref="ArgumentNullException"/>.</summary>
         public static IReadOnlyDictionary<string, object> ADiccionario(Entity entidad)
         {
-            throw new NotImplementedException();
+            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
+            var resultado = new Dictionary<string, object>(StringComparer.Ordinal);
+            foreach (var atributo in entidad.Attributes)
+                resultado[atributo.Key] = AValorNeutro(atributo.Value);
+            return resultado;
         }
 
         /// <summary>
@@ -25,7 +29,16 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// </summary>
         public static FilaDeDatos AFila(Entity entidad)
         {
-            throw new NotImplementedException();
+            if (entidad == null) throw new ArgumentNullException(nameof(entidad));
+            var columnaDeId = AyudaDeConsultas.ColumnaDeId(entidad.LogicalName);
+            var valores = new Dictionary<string, object>(StringComparer.Ordinal);
+            foreach (var atributo in entidad.Attributes)
+            {
+                // El id viaja en FilaDeDatos.Id: dejarlo tambien en Valores obligaria al dominio a decidir cual de los dos creer.
+                if (string.Equals(atributo.Key, columnaDeId, StringComparison.Ordinal)) continue;
+                valores[atributo.Key] = AValorNeutro(atributo.Value);
+            }
+            return new FilaDeDatos(entidad.Id, entidad.RowVersion, valores);
         }
 
         /// <summary>
@@ -35,19 +48,40 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// </summary>
         public static Entity AEntidad(string tabla, Guid id, IReadOnlyDictionary<string, object> valores)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(tabla)) throw new ArgumentException("El nombre de la tabla es obligatorio.", nameof(tabla));
+            if (valores == null) throw new ArgumentNullException(nameof(valores));
+            var entidad = new Entity(tabla);
+            if (id != Guid.Empty) entidad.Id = id;
+            foreach (var valor in valores)
+            {
+                if (string.IsNullOrWhiteSpace(valor.Key)) throw new ArgumentException("Hay un nombre de columna vacio.", nameof(valores));
+                entidad[valor.Key] = AValorDelSdk(valor.Value);
+            }
+            return entidad;
         }
 
         /// <summary>Un valor del SDK a su tipo neutro (los tres de la clase; el resto igual).</summary>
         public static object AValorNeutro(object valor)
         {
-            throw new NotImplementedException();
+            var opcion = valor as OptionSetValue;
+            if (opcion != null) return new ValorDeOpcion(opcion.Value);
+            var referencia = valor as EntityReference;
+            if (referencia != null) return new ReferenciaDeEntidad(referencia.LogicalName, referencia.Id);
+            var dinero = valor as Money;
+            if (dinero != null) return new ValorDeDinero(dinero.Value);
+            return valor;
         }
 
         /// <summary>Un valor neutro a su tipo del SDK (los tres de la clase; el resto igual).</summary>
         public static object AValorDelSdk(object valor)
         {
-            throw new NotImplementedException();
+            var opcion = valor as ValorDeOpcion;
+            if (opcion != null) return new OptionSetValue(opcion.Valor);
+            var referencia = valor as ReferenciaDeEntidad;
+            if (referencia != null) return new EntityReference(referencia.Tabla, referencia.Id);
+            var dinero = valor as ValorDeDinero;
+            if (dinero != null) return new Money(dinero.Valor);
+            return valor;
         }
     }
 }

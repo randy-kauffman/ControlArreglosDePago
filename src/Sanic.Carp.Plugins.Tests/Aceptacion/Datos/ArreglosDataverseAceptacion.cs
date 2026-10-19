@@ -188,8 +188,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Datos
 
             var id = new ArreglosDataverse(almacen).RegistrarGeneracion(arreglo, version, actor, ahora, team);
 
+            // Orquestador, 2026-10-19 (lote 4): las cinco columnas del código más sanic_nombre, que el doble completa antes de
+            // PreValidation como la plataforma (4.5 vuelta 2, "Autonumérico", V-8; solo el id primario queda fuera de Escrituras, lote 3b
+            // punto 9). Que el código no lo envió lo prueba el prefijo GEN- de abajo.
             AssertEscribio(Assert.Single(almacen.Escrituras), OperacionDeDatos.Create, Generacion,
-                "sanic_arregloid", "sanic_versionplantillaid", "sanic_generadoporid", "sanic_fechageneracion", "ownerid");
+                "sanic_arregloid", "sanic_versionplantillaid", "sanic_generadoporid", "sanic_fechageneracion", "ownerid", "sanic_nombre");
             var fila = almacen.Leer(Generacion, id);
             Assert.Equal(arreglo, fila.GetAttributeValue<EntityReference>("sanic_arregloid").Id);
             Assert.Equal(version, fila.GetAttributeValue<EntityReference>("sanic_versionplantillaid").Id);

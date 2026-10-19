@@ -9,6 +9,6 @@ namespace Sanic.Carp.Plugins.Infraestructura
     /// </summary>
     internal sealed class Reloj : IReloj
     {
-        public DateTime AhoraUtc { get { throw new NotImplementedException(); } }
+        public DateTime AhoraUtc { get { return DateTime.UtcNow; } }
     }
 }
