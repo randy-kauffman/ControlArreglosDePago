@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Correo;
 using Sanic.Carp.Plugins.Infraestructura;
@@ -34,7 +35,14 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            // El mismo servicio como llamador y como SYSTEM de ClientesDataverse: en el job asincrono no hay llamador al que respetarle permisos (PA-ENT-23).
+            var servicio = contexto.ServicioComoSistema;
+            var registrador = new RegistradorDeCorreo(new CorreosDataverse(servicio), new ConversacionesDataverse(servicio), new ClientesDataverse(servicio, servicio),
+                contexto.Configuracion, contexto.Trazar);
+
+            // Solo el id del Target (PA-ENT-22). Un Omitido no lanza (2.10 decision 10): el registrador ya trazo el codigo; cualquier otra falla sube sin atraparse.
+            var resultado = registrador.Registrar(contexto.IdPrimario);
+            contexto.Trazar("resultado " + resultado.Tipo + (resultado.Omision == null ? string.Empty : " " + resultado.Omision.Codigo));
         }
     }
 }

@@ -156,12 +156,12 @@ namespace Sanic.Carp.Plugins.Infraestructura
             }
         }
 
-        /// <summary>La <see cref="Infraestructura.ConfiguracionDelArea"/> de producción (0.4) sobre <see cref="ServicioComoSistema"/>. Una por ejecución; leer la propiedad no consulta.</summary>
+        /// <summary>La <see cref="Infraestructura.ConfiguracionDelArea"/> de producción (0.4) sobre <see cref="ServicioComoSistema"/>, que pide la primera vez que consulta. Una por ejecución; leer la propiedad no consulta ni crea el servicio.</summary>
         public IConfiguracionDelArea Configuracion
         {
             get
             {
-                if (_configuracion == null) _configuracion = new ConfiguracionDelArea(ServicioComoSistema);
+                if (_configuracion == null) _configuracion = ConfiguracionDelArea.Perezosa(() => ServicioComoSistema);
                 return _configuracion;
             }
         }

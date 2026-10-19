@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Sanic.Carp.Plugins.Dominio.Correo
 {
@@ -41,7 +42,9 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public static DateTime Llegada(DateTime? actualEnd, DateTime? createdOn)
         {
-            throw new NotImplementedException();
+            if (actualEnd.HasValue) return actualEnd.Value;
+            if (createdOn.HasValue) return createdOn.Value;
+            throw new InvalidOperationException("El correo no trae actualend ni createdon.");
         }
 
         /// <summary>
@@ -51,13 +54,31 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public static IReadOnlyList<string> VariantesDeMessageId(string inReplyTo)
         {
-            throw new NotImplementedException();
+            var vacia = new ReadOnlyCollection<string>(new string[0]);
+            if (inReplyTo == null) return vacia;
+            string tal = inReplyTo.Trim();
+            if (tal.Length == 0) return vacia;
+
+            // UN corchete de cada extremo (2.10 decision 5), igual que la huella (2.0.2).
+            string contenido = tal;
+            if (contenido.StartsWith("<", StringComparison.Ordinal)) contenido = contenido.Substring(1);
+            if (contenido.EndsWith(">", StringComparison.Ordinal)) contenido = contenido.Substring(0, contenido.Length - 1);
+            contenido = contenido.Trim();
+            if (contenido.Length == 0) return vacia;
+
+            var variantes = new List<string> { tal };
+            foreach (string candidata in new[] { "<" + contenido + ">", contenido })
+            {
+                if (!variantes.Contains(candidata, StringComparer.Ordinal)) variantes.Add(candidata);
+            }
+            return new ReadOnlyCollection<string>(variantes);
         }
 
         /// <summary><c>sanic_asunto</c> de la conversación nueva (2.10 paso 5): el <c>subject</c> recortado a <see cref="LargoMaximoDelAsunto"/> (PA-ENT-17); nulo o vacío ⇒ <c>null</c> (la columna no se envía).</summary>
         public static string AsuntoDeLaConversacion(string subject)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(subject)) return null;
+            return subject.Length > LargoMaximoDelAsunto ? subject.Substring(0, LargoMaximoDelAsunto) : subject;
         }
 
         /// <summary>
@@ -66,7 +87,10 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public static string RemitenteDeLaConversacion(string sender)
         {
-            throw new NotImplementedException();
+            // Primero se normaliza y despues se recorta (PA-ENT-17): al reves se perderian caracteres utiles.
+            string correo = NormalizadorDeTexto.Correo(sender);
+            if (correo == null) return null;
+            return correo.Length > LargoMaximoDelRemitente ? correo.Substring(0, LargoMaximoDelRemitente) : correo;
         }
 
         /// <summary>
@@ -78,7 +102,21 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public static IReadOnlyDictionary<string, object> ColumnasDeLaConversacionNueva(string huella, DateTime llegada, string asunto, string remitente, Guid teamId, Guid? clienteId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(huella)) throw new ArgumentException("La huella es obligatoria.", nameof(huella));
+
+            var columnas = new Dictionary<string, object>(StringComparer.Ordinal)
+            {
+                { "sanic_huellamessageid", huella },
+                { "sanic_fechaprimercorreo", llegada },
+                { "sanic_sinrespuestadesde", llegada },
+                { "sanic_cantidadrespuestas", 0 },
+                { "sanic_correonuevoenfinalizada", false },
+                { "ownerid", new ReferenciaDeEntidad("team", teamId) }
+            };
+            if (asunto != null) columnas["sanic_asunto"] = asunto;
+            if (remitente != null) columnas["sanic_remitente"] = remitente;
+            if (clienteId.HasValue) columnas["sanic_clienteid"] = new ReferenciaDeEntidad(TablasDelArea.Cliente, clienteId.Value);
+            return columnas;
         }
 
         /// <summary>
@@ -93,7 +131,23 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public static IReadOnlyDictionary<string, object> AplicarLlegada(EstadoDeConversacion estado, DateTime? sinRespuestaDesde, bool correoNuevoEnFinalizada, DateTime llegada)
         {
-            throw new NotImplementedException();
+            if (estado != EstadoDeConversacion.Abierta && estado != EstadoDeConversacion.Finalizada)
+            {
+                throw new ArgumentException("Una conversacion Unida se redirige antes de aplicar la llegada (DC-09).", nameof(estado));
+            }
+
+            var cambios = new Dictionary<string, object>(StringComparer.Ordinal);
+
+            // El menor entre el actual y la llegada; se escribe solo si cambia, por ticks (sin mirar el Kind).
+            if (!sinRespuestaDesde.HasValue || llegada.Ticks < sinRespuestaDesde.Value.Ticks)
+            {
+                cambios["sanic_sinrespuestadesde"] = llegada;
+            }
+            if (estado == EstadoDeConversacion.Finalizada && !correoNuevoEnFinalizada)
+            {
+                cambios["sanic_correonuevoenfinalizada"] = true;
+            }
+            return cambios;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Microsoft.Xrm.Sdk;
 using Sanic.Carp.Plugins.Dominio.Correo;
 
@@ -26,7 +27,15 @@ namespace Sanic.Carp.Plugins.Datos
 
         public IReadOnlyDictionary<string, object> ColumnasDelSistema(Guid emailId)
         {
-            throw new NotImplementedException();
+            var fila = new CorreosDataverse(_servicio()).Leer(emailId, ReglasDeCorreo.ColumnasSoloSistema);
+            var valores = new Dictionary<string, object>(StringComparer.Ordinal);
+            foreach (var columna in ReglasDeCorreo.ColumnasSoloSistema)
+            {
+                object valor = null;
+                if (fila != null) fila.Valores.TryGetValue(columna, out valor);
+                valores[columna] = valor;
+            }
+            return new ReadOnlyDictionary<string, object>(valores);
         }
     }
 }

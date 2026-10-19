@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using Sanic.Carp.Plugins.Dominio.Errores;
 using Sanic.Carp.Plugins.Dominio.Puertos;
 
@@ -128,7 +131,143 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public ResultadoDeRegistro Registrar(Guid emailId)
         {
-            throw new NotImplementedException();
+            // Paso 1: se relee el Email (PA-ENT-22). Ninguna omision escribe ni consulta la configuracion (2.10 decision 3).
+            var correo = _correos.Leer(emailId, ReglasDeEntradaDeCorreo.ColumnasDelCorreo);
+            if (correo == null) return Omitir(emailId, CodigosDeError.ENT_002);
+            // Entrante es directioncode explicitamente falso: verdadero o ausente falla cerrado (PA-ENT-13).
+            var direccion = Valor(correo, "directioncode") as bool?;
+            if (direccion != false) return Omitir(emailId, CodigosDeError.ENT_001);
+
+            // Paso 2: la configuracion se resuelve antes de cualquier busqueda o escritura (PA-ENT-20, 2.10 decision 4).
+            Guid teamId = _configuracion.TeamPropietarioId;
+
+            DateTime llegada = ReglasDeEntradaDeCorreo.Llegada(Valor(correo, "actualend") as DateTime?, Valor(correo, "createdon") as DateTime?);
+
+            // Paso 4: A, B o C por huella.
+            var regarding = Valor(correo, "regardingobjectid") as ReferenciaDeEntidad;
+            Guid? encontrada = null;
+            string huella = null;
+            if (regarding != null && string.Equals(regarding.Tabla, TablasDelArea.Conversacion, StringComparison.Ordinal))
+            {
+                encontrada = regarding.Id;
+                Trazar("correo " + Texto(emailId) + ": ruta A");
+            }
+            else
+            {
+                // Un Regarding a otra tabla se ignora y solo se traza el nombre de la tabla (PA-ENT-19).
+                if (regarding != null) Trazar("correo " + Texto(emailId) + ": el Regarding apunta a la tabla " + regarding.Tabla + " y se ignora");
+
+                var variantes = ReglasDeEntradaDeCorreo.VariantesDeMessageId(Valor(correo, "inreplyto") as string);
+                if (variantes.Count > 0)
+                {
+                    encontrada = _correos.BuscarPorMessageId(variantes);
+                    if (encontrada.HasValue) Trazar("correo " + Texto(emailId) + ": ruta B");
+                }
+
+                if (!encontrada.HasValue)
+                {
+                    // Ruta C: se pregunta primero y se crea solo si no existe; asi se evita K-01 sin catch (2.10 decision 6).
+                    huella = HuellaDeMessageId.Calcular(Valor(correo, "messageid") as string, emailId);
+                    var existente = _conversaciones.BuscarPorHuella(huella, SinColumnas);
+                    if (existente != null)
+                    {
+                        encontrada = existente.Id;
+                        Trazar("correo " + Texto(emailId) + ": ruta C, huella " + huella + " ya existe");
+                    }
+                }
+            }
+
+            Guid conversacionId;
+            bool creada = false;
+            bool escribio = false;
+
+            if (encontrada.HasValue)
+            {
+                // Paso 5 (DC-09): la Unida se redirige; si la cadena no termina, se omite sin escribir.
+                var destino = _conversaciones.SeguirUnida(encontrada.Value, ReglasDeEntradaDeCorreo.SaltosDeUnion, ReglasDeEntradaDeCorreo.ColumnasDeLaConversacion);
+                if (destino == null) return Omitir(emailId, CodigosDeError.ENT_003);
+                conversacionId = destino.Id;
+
+                // Paso 7: solo se escribe la conversacion si la llegada cambia algo (PA-ENT-05).
+                var cambios = ReglasDeEntradaDeCorreo.AplicarLlegada(EstadoDe(destino), Valor(destino, "sanic_sinrespuestadesde") as DateTime?,
+                    Valor(destino, "sanic_correonuevoenfinalizada") as bool? == true, llegada);
+                if (cambios.Count > 0)
+                {
+                    _conversaciones.Actualizar(conversacionId, cambios, null);
+                    escribio = true;
+                }
+            }
+            else
+            {
+                // Paso 6: el cliente se consulta solo con remitente (PA-ENT-15) y solo cuenta si hay exactamente uno (DC-14).
+                string remitente = ReglasDeEntradaDeCorreo.RemitenteDeLaConversacion(Valor(correo, "sender") as string);
+                Guid? clienteId = null;
+                if (remitente != null)
+                {
+                    var clientes = _clientes.BuscarActivosPorCorreo(remitente, 2);
+                    if (clientes.Count == 1) clienteId = clientes[0];
+                }
+
+                var columnas = ReglasDeEntradaDeCorreo.ColumnasDeLaConversacionNueva(huella, llegada,
+                    ReglasDeEntradaDeCorreo.AsuntoDeLaConversacion(Valor(correo, "subject") as string), remitente, teamId, clienteId);
+                conversacionId = _conversaciones.Crear(columnas);
+                creada = true;
+                Trazar("correo " + Texto(emailId) + ": conversacion " + Texto(conversacionId) + " creada con huella " + huella);
+            }
+
+            // Paso 8: el Email va despues de la conversacion (2.10 decision 9).
+            if (regarding == null || regarding.Id != conversacionId || !string.Equals(regarding.Tabla, TablasDelArea.Conversacion, StringComparison.Ordinal))
+            {
+                _correos.ApuntarA(emailId, conversacionId);
+                escribio = true;
+            }
+            var propietario = Valor(correo, "ownerid") as ReferenciaDeEntidad;
+            if (propietario == null || propietario.Id != teamId)
+            {
+                _correos.AsignarAlTeam(emailId, teamId);
+                escribio = true;
+            }
+
+            ResultadoDeRegistro resultado = creada ? ResultadoDeRegistro.Creada(conversacionId)
+                : (escribio ? ResultadoDeRegistro.Unida(conversacionId) : ResultadoDeRegistro.YaTenia(conversacionId));
+            Trazar("correo " + Texto(emailId) + ": " + resultado.Tipo + " en " + Texto(conversacionId));
+            return resultado;
+        }
+
+        private static readonly IReadOnlyCollection<string> SinColumnas = new ReadOnlyCollection<string>(new string[0]);
+
+        private ResultadoDeRegistro Omitir(Guid emailId, DefinicionDeError definicion)
+        {
+            var motivo = definicion.Crear();
+            Trazar("correo " + Texto(emailId) + ": omitido " + motivo.Codigo);
+            return ResultadoDeRegistro.Omitido(motivo);
+        }
+
+        private void Trazar(string texto)
+        {
+            if (_trazar != null) _trazar(texto);
+        }
+
+        private static string Texto(Guid id)
+        {
+            return id.ToString("D", CultureInfo.InvariantCulture);
+        }
+
+        private static object Valor(FilaDeDatos fila, string columna)
+        {
+            object valor;
+            return fila.Valores.TryGetValue(columna, out valor) ? valor : null;
+        }
+
+        // Un par statecode/statuscode que 0.7 no conoce es un dato corrupto, no un caso de negocio.
+        private static EstadoDeConversacion EstadoDe(FilaDeDatos conversacion)
+        {
+            var estado = Valor(conversacion, "statecode") as ValorDeOpcion;
+            var motivo = Valor(conversacion, "statuscode") as ValorDeOpcion;
+            if (estado == null || motivo == null) throw new InvalidOperationException("La conversacion no trae statecode y statuscode.");
+            var conocido = Estados.DeConversacion(new EstadoEfectivo(estado.Valor, motivo.Valor));
+            if (!conocido.HasValue) throw new InvalidOperationException("La conversacion trae un par statecode/statuscode que no existe (diseno/03 0.7).");
+            return conocido.Value;
         }
     }
 }

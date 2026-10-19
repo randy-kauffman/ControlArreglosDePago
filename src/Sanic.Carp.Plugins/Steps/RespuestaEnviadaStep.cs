@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Correo;
+using Sanic.Carp.Plugins.Dominio.Errores;
+using Sanic.Carp.Plugins.Dominio.Tiempos;
 using Sanic.Carp.Plugins.Infraestructura;
 
 namespace Sanic.Carp.Plugins.Steps
@@ -38,7 +42,70 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var servicio = contexto.ServicioComoSistema;
+            var correos = new CorreosDataverse(servicio);
+            var conversaciones = new ConversacionesDataverse(servicio);
+            Guid emailId = contexto.IdPrimario;
+
+            // Se decide por la fila releida, no por el Target (2.11 decision 1). Todo lo que falta termina sin escribir ni lanzar: un reintento no lo arreglaria (decision 2).
+            var correo = correos.Leer(emailId, ReglasDeRespuestaEnviada.ColumnasDelCorreo);
+            if (correo == null)
+            {
+                contexto.Trazar("correo " + Texto(emailId) + ": no existe, no se procesa");
+                return;
+            }
+            if (!ReglasDeRespuestaEnviada.DebeProcesarse(correo.Valores))
+            {
+                contexto.Trazar("correo " + Texto(emailId) + ": no corresponde procesarlo");
+                return;
+            }
+
+            var instante = ReglasDeRespuestaEnviada.InstanteDelEnvio(Valor(correo.Valores, "senton") as DateTime?, Valor(correo.Valores, "actualend") as DateTime?);
+            var creadoPor = Valor(correo.Valores, "createdby") as ReferenciaDeEntidad;
+            if (!instante.HasValue || creadoPor == null)
+            {
+                contexto.Trazar("correo " + Texto(emailId) + ": falta el instante del envio o createdby, no se procesa");
+                return;
+            }
+
+            var regarding = (ReferenciaDeEntidad)correo.Valores["regardingobjectid"];
+            var destino = conversaciones.SeguirUnida(regarding.Id, ReglasDeEntradaDeCorreo.SaltosDeUnion, ReglasDeRespuestaEnviada.ColumnasDeLaConversacion);
+            if (destino == null)
+            {
+                contexto.Trazar("correo " + Texto(emailId) + ": " + CodigosDeError.ENT_003.Codigo);
+                return;
+            }
+
+            var opcionEstado = Valor(destino.Valores, "statecode") as ValorDeOpcion;
+            var opcionMotivo = Valor(destino.Valores, "statuscode") as ValorDeOpcion;
+            var estado = opcionEstado == null || opcionMotivo == null ? null : Estados.DeConversacion(new EstadoEfectivo(opcionEstado.Valor, opcionMotivo.Valor));
+            if (!estado.HasValue)
+            {
+                contexto.Trazar("conversacion " + Texto(destino.Id) + ": estado desconocido, no se procesa");
+                return;
+            }
+
+            var sinRespuestaDesde = Valor(destino.Valores, "sanic_sinrespuestadesde") as DateTime?;
+            var primeraRespuesta = Valor(destino.Valores, "sanic_tiempoprimerarespuesta") as int?;
+            var resultado = TiemposDeConversacion.AplicarRespuestaEnviada(estado.Value, sinRespuestaDesde, (Valor(destino.Valores, "sanic_cantidadrespuestas") as int?) ?? 0,
+                primeraRespuesta, instante.Value);
+
+            // Orden (decision 4, PA-RES-14): el Email antes que la conversacion. Si la conversacion falla, el Email ya quedo marcado (limite declarado, decision 5).
+            if (destino.Id != regarding.Id) correos.ApuntarA(emailId, destino.Id);
+            correos.EscribirRespuesta(emailId, resultado.TiempoDeEstaRespuesta, creadoPor.Id);
+            conversaciones.Actualizar(destino.Id, ReglasDeRespuestaEnviada.CambiosEnLaConversacion(sinRespuestaDesde, primeraRespuesta, resultado), null);
+            contexto.Trazar("correo " + Texto(emailId) + ": respuesta aplicada a la conversacion " + Texto(destino.Id));
+        }
+
+        private static string Texto(Guid id)
+        {
+            return id.ToString("D", CultureInfo.InvariantCulture);
+        }
+
+        private static object Valor(IReadOnlyDictionary<string, object> valores, string columna)
+        {
+            object valor;
+            return valores.TryGetValue(columna, out valor) ? valor : null;
         }
     }
 }

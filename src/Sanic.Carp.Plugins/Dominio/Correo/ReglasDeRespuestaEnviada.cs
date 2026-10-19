@@ -36,7 +36,24 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public static bool DebeProcesarse(IReadOnlyDictionary<string, object> correo)
         {
-            throw new NotImplementedException();
+            if (correo == null) throw new ArgumentNullException(nameof(correo));
+
+            // Cada condicion falla cerrado: una columna ausente no deja procesar (2.11 decision 1).
+            if (!(Valor(correo, "directioncode") is bool) || !(bool)correo["directioncode"]) return false;
+
+            var estado = Valor(correo, "statuscode") as ValorDeOpcion;
+            if (estado == null || estado.Valor != Estados.StatusCorreoEnviado) return false;
+
+            var regarding = Valor(correo, "regardingobjectid") as ReferenciaDeEntidad;
+            if (regarding == null || !string.Equals(regarding.Tabla, TablasDelArea.Conversacion, StringComparison.Ordinal)) return false;
+
+            return Valor(correo, "sanic_respondidoporid") == null;
+        }
+
+        private static object Valor(IReadOnlyDictionary<string, object> valores, string columna)
+        {
+            object valor;
+            return valores.TryGetValue(columna, out valor) ? valor : null;
         }
 
         /// <summary>
@@ -45,7 +62,7 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public static DateTime? InstanteDelEnvio(DateTime? sentOn, DateTime? actualEnd)
         {
-            throw new NotImplementedException();
+            return sentOn ?? actualEnd;
         }
 
         /// <summary>
@@ -57,7 +74,22 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public static IReadOnlyDictionary<string, object> CambiosEnLaConversacion(DateTime? sinRespuestaDesdeActual, int? primeraRespuestaActual, ResultadoDeRespuesta resultado)
         {
-            throw new NotImplementedException();
+            if (resultado == null) throw new ArgumentNullException(nameof(resultado));
+
+            var cambios = new Dictionary<string, object>(StringComparer.Ordinal)
+            {
+                { "sanic_cantidadrespuestas", resultado.NuevaCantidad }
+            };
+            // Un null explicito vacia la columna (PA-RES-01); Cambios compara fechas por ticks, sin mirar el Kind.
+            if (Cambios.ValoresDistintos(resultado.NuevoSinRespuestaDesde, sinRespuestaDesdeActual))
+            {
+                cambios["sanic_sinrespuestadesde"] = resultado.NuevoSinRespuestaDesde;
+            }
+            if (Cambios.ValoresDistintos(resultado.NuevaPrimeraRespuesta, primeraRespuestaActual))
+            {
+                cambios["sanic_tiempoprimerarespuesta"] = resultado.NuevaPrimeraRespuesta;
+            }
+            return cambios;
         }
     }
 }

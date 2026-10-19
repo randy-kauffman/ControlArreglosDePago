@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Correo;
 using Sanic.Carp.Plugins.Infraestructura;
@@ -35,7 +36,10 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var pedido = new PedidoDeColumnasDelSistema(contexto.TargetNeutro(), string.Equals(contexto.Mensaje, "Create", StringComparison.Ordinal), contexto.IdPrimario,
+                contexto.Identidad, new LecturasDeCorreoDataverse(() => contexto.ServicioComoSistema));
+            var resultado = ReglasDeCorreo.EvaluarColumnasDelSistema(pedido);
+            if (!resultado.Permitida) throw resultado.Error;
         }
     }
 }

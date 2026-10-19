@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Microsoft.Xrm.Sdk;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Correo;
 using Sanic.Carp.Plugins.Infraestructura;
@@ -34,7 +35,41 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
-            throw new NotImplementedException();
+            var target = contexto.Target;
+            var esSaliente = target.Contains("directioncode") && target["directioncode"] is bool && (bool)target["directioncode"];
+            var regardingSdk = target.Contains("regardingobjectid") ? target["regardingobjectid"] as EntityReference : null;
+            var regarding = regardingSdk == null ? null : new ReferenciaDeEntidad(regardingSdk.LogicalName, regardingSdk.Id);
+
+            // Identidad y Configuracion son perezosas: leerlas aqui no crea servicios ni consulta (PA-EML-05, PA-EML-06).
+            var pedido = new PedidoDeRemitente(esSaliente, regarding, RemitentesDe(target), contexto.Identidad, contexto.Configuracion);
+            var resultado = ReglasDeCorreo.EvaluarRemitente(pedido);
+            if (!resultado.Permitida) throw resultado.Error;
+
+            object pedidos;
+            if (!resultado.Escribir.TryGetValue(ReglasDeCorreo.ColumnaFrom, out pedidos)) return;
+
+            // Sin participationtypemask: la plataforma lo completa (2.9 punto 3). Coleccion nueva: no se muta la que mando la persona.
+            var partes = new List<Entity>();
+            foreach (var referencia in (IReadOnlyList<ReferenciaDeEntidad>)pedidos)
+            {
+                partes.Add(new Entity("activityparty") { ["partyid"] = new EntityReference(referencia.Tabla, referencia.Id) });
+            }
+            target["from"] = new EntityCollection(partes);
+        }
+
+        // null = el Target no trae `from`. Una parte sin partyid cuenta como "otra parte" (ReferenciaDeEntidad vacia).
+        private static IReadOnlyList<ReferenciaDeEntidad> RemitentesDe(Entity target)
+        {
+            if (!target.Contains("from")) return null;
+            var coleccion = target["from"] as EntityCollection;
+            if (coleccion == null) return null;
+            var lista = new List<ReferenciaDeEntidad>();
+            foreach (var parte in coleccion.Entities)
+            {
+                var partyid = parte.Contains("partyid") ? parte["partyid"] as EntityReference : null;
+                lista.Add(partyid == null ? new ReferenciaDeEntidad(string.Empty, Guid.Empty) : new ReferenciaDeEntidad(partyid.LogicalName, partyid.Id));
+            }
+            return lista;
         }
     }
 }

@@ -28,7 +28,8 @@ namespace Sanic.Carp.Plugins.Infraestructura
         private const string VariableNombreTeamJefatura = "sanic_carp_ev_nombreteamjefatura";
         private const string VariableBuzonArea = "sanic_carp_ev_buzonarea";
 
-        private readonly IOrganizationService _servicio;
+        private readonly Func<IOrganizationService> _origenDelServicio;
+        private IOrganizationService _servicioResuelto;
         private readonly Dictionary<string, string> _valores = new Dictionary<string, string>(StringComparer.Ordinal);
         private Guid? _buId;
         private Guid? _teamPropietarioId;
@@ -38,7 +39,32 @@ namespace Sanic.Carp.Plugins.Infraestructura
         public ConfiguracionDelArea(IOrganizationService servicioDeSistema)
         {
             if (servicioDeSistema == null) throw new ArgumentNullException(nameof(servicioDeSistema));
-            _servicio = servicioDeSistema;
+            _servicioResuelto = servicioDeSistema;
+        }
+
+        /// <summary>
+        /// Igual que el constructor público, pero el servicio de SYSTEM se pide a <paramref name="sistema"/> la primera vez que hace falta consultar, y una sola vez: leer la
+        /// configuración de un camino que no consulta no crea el servicio (sublote 5f, decisión del orquestador; mismo patrón que <c>IdentidadDeEjecucion</c> en el cierre del 5a).
+        /// Es una fábrica y no un segundo constructor público porque la prueba del lote 4 (<c>new ConfiguracionDelArea(null)</c>) dejaría de compilar por ambigüedad entre los dos overloads.
+        /// </summary>
+        public static ConfiguracionDelArea Perezosa(Func<IOrganizationService> sistema)
+        {
+            return new ConfiguracionDelArea(sistema, true);
+        }
+
+        private ConfiguracionDelArea(Func<IOrganizationService> sistema, bool perezosa)
+        {
+            if (sistema == null) throw new ArgumentNullException(nameof(sistema));
+            _origenDelServicio = sistema;
+        }
+
+        private IOrganizationService Servicio
+        {
+            get
+            {
+                if (_servicioResuelto == null) _servicioResuelto = _origenDelServicio();
+                return _servicioResuelto;
+            }
         }
 
         // Un miembro que falla lanza antes de asignar su campo: el error no se memoiza (diseno/03 4.2, punto 13).
@@ -53,7 +79,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
                     consulta.Criteria.AddCondition("name", ConditionOperator.Equal, Valor(VariableNombreBu));
                     consulta.Criteria.AddCondition("isdisabled", ConditionOperator.Equal, false);
                     // TopCount 2: alcanza para distinguir "una" de "mas de una" sin traer el resto.
-                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 2);
+                    var filas = AyudaDeConsultas.Primeras(Servicio,consulta, 2);
                     if (filas.Count != 1) throw CodigosDeError.CFG_001.Crear();
                     _buId = filas[0].Id;
                 }
@@ -70,7 +96,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
                     var consulta = AyudaDeConsultas.SoloId("team");
                     consulta.Criteria.AddCondition("businessunitid", ConditionOperator.Equal, BuId);
                     consulta.Criteria.AddCondition("isdefault", ConditionOperator.Equal, true);
-                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 2);
+                    var filas = AyudaDeConsultas.Primeras(Servicio,consulta, 2);
                     if (filas.Count != 1) throw CodigosDeError.CFG_002.Crear();
                     _teamPropietarioId = filas[0].Id;
                 }
@@ -89,7 +115,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
                     consulta.Criteria.AddCondition("name", ConditionOperator.Equal, Valor(VariableNombreTeamJefatura));
                     consulta.Criteria.AddCondition("businessunitid", ConditionOperator.Equal, bu);
                     // TopCount 2: distingue "uno" de "mas de uno"; con varios la jefatura quedaria librada al azar (cierre del lote 4, 2026-10-19).
-                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 2);
+                    var filas = AyudaDeConsultas.Primeras(Servicio,consulta, 2);
                     if (filas.Count != 1) throw CodigosDeError.CFG_003.Crear();
                     _teamJefaturaId = filas[0].Id;
                 }
@@ -106,7 +132,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
                     var consulta = AyudaDeConsultas.SoloId("queue");
                     consulta.Criteria.AddCondition("emailaddress", ConditionOperator.Equal, Valor(VariableBuzonArea));
                     consulta.Criteria.AddCondition("statecode", ConditionOperator.Equal, Estados.Activo);
-                    var filas = AyudaDeConsultas.Primeras(_servicio, consulta, 2);
+                    var filas = AyudaDeConsultas.Primeras(Servicio,consulta, 2);
                     if (filas.Count == 0) throw CodigosDeError.CFG_004.Crear();
                     if (filas.Count > 1) throw CodigosDeError.CFG_005.Crear();
                     _queueRemitenteId = filas[0].Id;
@@ -123,13 +149,13 @@ namespace Sanic.Carp.Plugins.Infraestructura
 
             var definiciones = new QueryExpression("environmentvariabledefinition") { ColumnSet = new ColumnSet("defaultvalue") };
             definiciones.Criteria.AddCondition("schemaname", ConditionOperator.Equal, nombre);
-            var definicion = AyudaDeConsultas.Primeras(_servicio, definiciones, 1);
+            var definicion = AyudaDeConsultas.Primeras(Servicio,definiciones, 1);
             if (definicion.Count == 0) throw CodigosDeError.CFG_006.Crear(nombre);
 
             var valores = new QueryExpression("environmentvariablevalue") { ColumnSet = new ColumnSet("value") };
             valores.Criteria.AddCondition("environmentvariabledefinitionid", ConditionOperator.Equal, definicion[0].Id);
             string resuelto = null;
-            foreach (var fila in _servicio.RetrieveMultiple(valores).Entities)
+            foreach (var fila in Servicio.RetrieveMultiple(valores).Entities)
             {
                 var valor = fila.GetAttributeValue<string>("value");
                 if (!string.IsNullOrEmpty(valor)) { resuelto = valor; break; }
