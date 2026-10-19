@@ -60,6 +60,37 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
             return ResultadoDeEvaluacion.Rechazar(CodigosDeError.EML_001.Crear());
         }
 
+        private static readonly IReadOnlyList<string> DelRemitente = new ReadOnlyCollection<string>(new[] { "directioncode", "regardingobjectid" });
+
+        /// <summary>
+        /// Las dos columnas guardadas que <see cref="EvaluarRemitenteEnActualizacion"/> puede pedir con <see cref="ILecturasDelRemitente"/>, en este orden: <c>directioncode</c>, <c>regardingobjectid</c>
+        /// (S-37). <c>from</c> no está: no se lee (ver <see cref="ILecturasDelRemitente"/>).
+        /// </summary>
+        public static IReadOnlyList<string> ColumnasDelRemitente { get { return DelRemitente; } }
+
+        /// <summary>
+        /// S-37 (2.9, <c>RemitenteDelAreaStep</c> en el <c>Update</c>): la MISMA regla de S-31 evaluada sobre el estado efectivo DESPUÉS del <c>Update</c> (el <c>Target</c> sobre lo guardado). Permitido o
+        /// rechazado; cuando hay que fijar el remitente, <c>Escribir</c> trae UNA clave, <see cref="ColumnaFrom"/>, con la lista de un solo elemento <c>[queue]</c>, igual que <see cref="EvaluarRemitente"/>.
+        /// En este orden, y con ESTAS lecturas:
+        /// <list type="number">
+        /// <item>Si el <c>Target</c> trae <c>regardingobjectid</c> y no es una <c>sanic_carp_tbl_conversacion</c> (tabla ordinal; <c>null</c> = vaciado), o trae <c>directioncode</c> y no es verdadero
+        /// (<c>false</c> o <c>null</c>) ⇒ permite sin tocar nada. <b>0 lecturas, 0 consultas de configuración, 0 de identidad</b> (PA5F_REM_U01 a U03).</item>
+        /// <item>Lo que el <c>Target</c> no trae de <c>directioncode</c> y <c>regardingobjectid</c> se toma de <c>Lecturas.ColumnasDelRemitente(EmailId)</c>: UNA sola lectura para las dos, pedida solo si falta
+        /// alguna. Una clave que la lectura trae en <c>null</c> es "no es saliente" o "sin conversación".</item>
+        /// <item>Efectivamente no saliente, o efectivamente sin conversación ⇒ permite sin tocar nada.</item>
+        /// <item><c>Configuracion.QueueRemitenteId</c> (<c>CARP-CFG-004</c> o <c>-005</c> suben tal cual).</item>
+        /// <item><c>Remitentes</c> ausente (<c>null</c>) o vacío ⇒ <c>Escribir[from] = [queue]</c>. <b>Diferencia con el Create:</b> el <c>from</c> guardado nunca se lee, así que un <c>Update</c> sin <c>from</c> de un
+        /// correo que queda dentro del alcance lo REEMPLAZA por la queue (la regla "sale siempre por la queue" se cumple igual y no hace falta saber quién estaba antes). El resto es idéntico a
+        /// <see cref="EvaluarRemitente"/>: la queue sola ⇒ permite sin escribir; el usuario que escribe (<c>ActorId</c>) solo ⇒ <c>[queue]</c>; cualquier otra parte, o más de una ⇒ <c>CARP-EML-001</c>. SYSTEM
+        /// tampoco tiene excepción.</item>
+        /// </list>
+        /// No consulta <c>EsEscrituraDelSistema</c> ni <c>EsJefatura()</c>. <c>pedido</c> nulo ⇒ <see cref="ArgumentNullException"/>.
+        /// </summary>
+        public static ResultadoDeEvaluacion EvaluarRemitenteEnActualizacion(PedidoDeRemitenteActualizado pedido)
+        {
+            throw new NotImplementedException("S-37: lo implementa el constructor (diseno/03 2.9, cierre del sublote 5f).");
+        }
+
         private static ResultadoDeEvaluacion PonerLaCola(Guid queueId)
         {
             var desde = new ReadOnlyCollection<ReferenciaDeEntidad>(new[] { new ReferenciaDeEntidad(TablaDeCola, queueId) });

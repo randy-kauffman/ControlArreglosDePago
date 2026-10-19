@@ -43,6 +43,50 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
     }
 
     /// <summary>
+    /// Lo que <see cref="ReglasDeCorreo.EvaluarRemitenteEnActualizacion"/> necesita de UN <c>Update</c> de correo (S-37, diseno/03 2.9 y "Decisiones del arquitecto, 2026-10-19 (cierre del sublote 5f)").
+    /// Sin <c>Entity</c> ni <c>EntityCollection</c>. Contenedor sin lógica; no consulta nada.
+    /// </summary>
+    public sealed class PedidoDeRemitenteActualizado
+    {
+        /// <summary>
+        /// El <c>Target</c> en neutro (<c>ContextoDeStep.TargetNeutro()</c>). La regla SOLO mira dos claves: <c>directioncode</c> (<c>bool</c>) y <c>regardingobjectid</c>
+        /// (<see cref="ReferenciaDeEntidad"/>). Una clave presente con <c>null</c> es "vaciar esa columna" (DC-05); una ausente es "no se toca" y se completa con lo guardado. <c>from</c> NO va acá: va en <see cref="Remitentes"/>.
+        /// </summary>
+        public IReadOnlyDictionary<string, object> Target { get; }
+
+        /// <summary>Los <c>partyid</c> de <c>Target["from"]</c> (igual que en <see cref="PedidoDeRemitente.Remitentes"/>), o <c>null</c> si el <c>Target</c> no trae <c>from</c>.</summary>
+        public IReadOnlyList<ReferenciaDeEntidad> Remitentes { get; }
+
+        /// <summary>El id del correo (<c>ContextoDeStep.IdPrimario</c>); lo usa <see cref="Lecturas"/>.</summary>
+        public Guid EmailId { get; }
+
+        /// <summary>Quién escribe. La regla solo lee <c>ActorId</c> (no consulta nada).</summary>
+        public IIdentidadDeEjecucion Identidad { get; }
+
+        /// <summary>La configuración del área; la regla pide <c>QueueRemitenteId</c> solo si el correo, ya con el <c>Update</c>, es saliente de una conversación.</summary>
+        public IConfiguracionDelArea Configuracion { get; }
+
+        /// <summary>La lectura con SYSTEM de lo guardado; la regla la pide como mucho UNA vez y solo si el <c>Target</c> no le alcanza.</summary>
+        public ILecturasDelRemitente Lecturas { get; }
+
+        /// <summary><paramref name="remitentes"/> puede ser <c>null</c>; <paramref name="target"/>, <paramref name="identidad"/>, <paramref name="configuracion"/> y <paramref name="lecturas"/> nulos ⇒ <see cref="ArgumentNullException"/>. No consulta nada.</summary>
+        public PedidoDeRemitenteActualizado(IReadOnlyDictionary<string, object> target, IReadOnlyList<ReferenciaDeEntidad> remitentes, Guid emailId,
+            IIdentidadDeEjecucion identidad, IConfiguracionDelArea configuracion, ILecturasDelRemitente lecturas)
+        {
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (identidad == null) throw new ArgumentNullException(nameof(identidad));
+            if (configuracion == null) throw new ArgumentNullException(nameof(configuracion));
+            if (lecturas == null) throw new ArgumentNullException(nameof(lecturas));
+            Target = target;
+            Remitentes = remitentes;
+            EmailId = emailId;
+            Identidad = identidad;
+            Configuracion = configuracion;
+            Lecturas = lecturas;
+        }
+    }
+
+    /// <summary>
     /// Lo que <see cref="ReglasDeCorreo.EvaluarColumnasDelSistema"/> necesita de UN guardado de correo (S-32 y S-33, diseno/03 2.9 y "Decisiones del arquitecto, 2026-10-19 (sublote 5f)").
     /// Contenedor sin lógica.
     /// </summary>

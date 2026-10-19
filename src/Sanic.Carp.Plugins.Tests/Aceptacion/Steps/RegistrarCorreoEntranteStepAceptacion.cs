@@ -49,7 +49,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         {
             var e = Escenario(entrada: true, cadena: true);
             var conversacion = e.Sembrar(Abierta(Hora(9, 0)));
-            var id = e.ComoSistema.Create(UnEntranteNuevo(e.Oficial));
+            var id = CrearEntranteDelArea(e, e.ComoSistema, UnEntranteNuevo(e.Oficial));
             Assert.Equal(1, e.Pipeline.PendientesAsincronos);
             // La correlacion de Exchange llega en un Update posterior al Create (spike 3): el Target del Create nunca la tuvo.
             e.ComoSistema.Update(new Entity(TablaCorreo, id) { ["regardingobjectid"] = RefConv(conversacion), ["subject"] = "otro asunto" });
@@ -85,7 +85,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         public void PA5F_RCE_02_UnCreateEntranteEncolaElStep_ElJobCreaLaConversacion_YLaCadenaDeStepsLaAcepta()
         {
             var e = Escenario(entrada: true, cadena: true);
-            var id = e.ComoOficial.Create(UnEntranteNuevo(e.Oficial));
+            var id = CrearEntranteDelArea(e, e.ComoOficial, UnEntranteNuevo(e.Oficial));
             e.Almacen.LimpiarRegistros();
 
             Assert.Equal(1, e.Pipeline.PendientesAsincronos);
@@ -128,7 +128,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         public void PA5F_RCE_05_ElJobSoloUsaLaIdentidadDeSystem_NuncaLaDeQuienCreoElCorreo()
         {
             var e = Escenario(entrada: true, cadena: true);
-            e.ComoOficial.Create(UnEntranteNuevo(e.Oficial));
+            CrearEntranteDelArea(e, e.ComoOficial, UnEntranteNuevo(e.Oficial));
             e.Almacen.LimpiarRegistros();
             var antes = e.Fabrica.ServiciosCreados.Count;
 
@@ -175,7 +175,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         public void PA5F_RCE_08_UnaFallaDeClaveAlCrearLaConversacion_HaceFallarElJob_SinAtraparla_YLaReparaElRegistrador()
         {
             var e = Escenario(entrada: true, cadena: true);
-            var id = e.ComoSistema.Create(UnEntranteNuevo(e.Oficial));
+            var id = CrearEntranteDelArea(e, e.ComoSistema, UnEntranteNuevo(e.Oficial));
             e.Almacen.LimpiarRegistros();
             e.Almacen.FallarEn(OperacionDeDatos.Create, TablaConv, 1, CodigosDeFalla.ClaveDuplicada);
 
@@ -197,8 +197,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         public void PA5F_RCE_09_DosCreatesConElMismoMessageId_UnaSolaConversacionDespuesDeLosDosJobs()
         {
             var e = Escenario(entrada: true, cadena: true);
-            var primero = e.ComoOficial.Create(UnEntranteNuevo(e.Oficial));
-            var segundo = e.ComoOficial.Create(UnEntranteNuevo(e.OtroOficial));
+            var primero = CrearEntranteDelArea(e, e.ComoOficial, UnEntranteNuevo(e.Oficial));
+            var segundo = CrearEntranteDelArea(e, e.ComoOficial, UnEntranteNuevo(e.OtroOficial));
             e.Almacen.LimpiarRegistros();
 
             e.Pipeline.EjecutarAsincronos();
@@ -216,12 +216,12 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         public void PA5F_RCE_10_ElStepCorreComoQuienCreoElCorreo_PeroLosStepsAnidadosVenASystem()
         {
             var e = Escenario(entrada: true, cadena: true);
-            e.ComoOficial.Create(UnEntranteNuevo(e.Oficial));
+            CrearEntranteDelArea(e, e.ComoOficial, UnEntranteNuevo(e.Oficial));
             e.Almacen.LimpiarRegistros();
 
             e.Pipeline.EjecutarAsincronos();
 
-            Assert.Equal(e.Oficial, UnicaEjecucionDe<RegistrarCorreoEntranteStep>(e).Contexto.InitiatingUserId);
+            Assert.Equal(e.Oficial,UnicaEjecucionDe<RegistrarCorreoEntranteStep>(e).Contexto.InitiatingUserId);
             Assert.Equal(e.Almacen.IdDeSystem, UnicaEjecucionDe<ConversacionCrearStep>(e).Contexto.InitiatingUserId);
             Assert.Equal(e.Almacen.IdDeSystem, UnicaEjecucionDe<PropietarioAlCrearStep>(e).Contexto.InitiatingUserId);
         }
@@ -233,7 +233,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var finalizada = e.Sembrar(ConstructorDeDatos.UnaConversacion(EstadoDeConversacion.Finalizada).Con("sanic_correonuevoenfinalizada", false));
             var entidad = UnEntranteNuevo(e.Oficial);
             entidad["regardingobjectid"] = RefConv(finalizada);
-            e.ComoOficial.Create(entidad);
+            CrearEntranteDelArea(e, e.ComoOficial, entidad);
             e.Almacen.LimpiarRegistros();
 
             e.Pipeline.EjecutarAsincronos();
@@ -285,6 +285,54 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var excepcion = Assert.Throws<InvalidPluginExecutionException>(() => EjecutarDirecto(e, new RegistrarCorreoEntranteStep(), "Create", id, e.Oficial));
 
             Assert.StartsWith("CARP-ENT-900: ", excepcion.Message, StringComparison.Ordinal);
+        }
+
+        // ---------------------------------------------------------------- Solo la BU del area (2.10 punto 13, cierre del sublote 5f)
+
+        [Fact]
+        public void PA5F_RCE_B01_UnCreateDeOtraBu_ElJobTerminaSinExcepcion_SinEscrituras_YSinConversaciones()
+        {
+            var e = Escenario(entrada: true, cadena: true);
+            CrearEntranteDelArea(e, e.ComoSistema, UnEntranteNuevo(e.Oficial), Guid.NewGuid());
+            e.Almacen.LimpiarRegistros();
+
+            e.Pipeline.EjecutarAsincronos();
+
+            Assert.Null(UnicaEjecucionDe<RegistrarCorreoEntranteStep>(e).Excepcion);
+            AssertSinEscrituras(e);
+            Assert.Empty(Conversaciones(e));
+        }
+
+        [Fact]
+        public void PA5F_RCE_B02_UnEntranteAjeno_TrazaElCodigoDeLaOmision_YNoLanza()
+        {
+            var e = Escenario(entrada: true, cadena: true);
+            var id = e.Sembrar(Entrante(Hora(10, 0)).Con("owningbusinessunit", RefBu(Guid.NewGuid())));
+            e.Almacen.LimpiarRegistros();
+
+            var lineas = EjecutarDirectoConTraza(e, new RegistrarCorreoEntranteStep(), "Create", id, e.Oficial);
+
+            Assert.Contains(lineas, linea => linea.IndexOf(CodigosDeError.ENT_002.Codigo, StringComparison.Ordinal) >= 0);
+            AssertSinEscrituras(e);
+            Assert.Empty(Conversaciones(e));
+        }
+
+        [Fact]
+        public void PA5F_RCE_B03_DosCreates_UnoDeLaBuDelAreaYOtroAjeno_SoloElPropioRecibeConversacion()
+        {
+            var e = Escenario(entrada: true, cadena: true);
+            var otraBu = Guid.NewGuid();
+            var ajeno = CrearEntranteDelArea(e, e.ComoSistema, UnEntranteNuevo(e.Oficial, "Ajeno", "ajeno@x.com"), otraBu);
+            var propio = CrearEntranteDelArea(e, e.ComoSistema, UnEntranteNuevo(e.OtroOficial, "Propio", "propio@x.com"));
+            e.Almacen.LimpiarRegistros();
+
+            e.Pipeline.EjecutarAsincronos();
+
+            Assert.All(EjecucionesDe<RegistrarCorreoEntranteStep>(e), ejecucion => Assert.Null(ejecucion.Excepcion));
+            Assert.Equal(2, EjecucionesDe<RegistrarCorreoEntranteStep>(e).Count);
+            var conversacion = Assert.Single(Conversaciones(e));
+            AssertRegardingEs(e.Fila(TablaCorreo, propio), conversacion.Id);
+            Assert.False(e.Fila(TablaCorreo, ajeno).Contains("regardingobjectid"));
         }
     }
 }

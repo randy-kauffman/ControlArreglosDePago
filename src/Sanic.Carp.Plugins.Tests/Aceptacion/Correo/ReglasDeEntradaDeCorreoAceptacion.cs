@@ -297,10 +297,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioCorreo
         // ---------------------------------------------------------------- Listas y constantes
 
         [Fact]
-        // VERDE A PROPÓSITO: las listas y las constantes ya vienen implementadas en la firma de la vuelta 1; la prueba las fija para que ningún cambio posterior las altere.
+        // Las listas y las constantes vienen implementadas en la firma; la prueba las fija para que ningún cambio posterior las altere. EN ROJO desde el cierre del sublote 5f: la lista del correo gana
+        // owningbusinessunit al final (2.10 punto 13) y la firma todavía trae las nueve.
         public void PA5F_ENT_P12_LasColumnasYLasConstantes_SonLasDelDiseno_YDeSoloLectura()
         {
-            Assert.Equal(new[] { "directioncode", "regardingobjectid", "messageid", "inreplyto", "subject", "sender", "actualend", "createdon", "ownerid" },
+            Assert.Equal(new[] { "directioncode", "regardingobjectid", "messageid", "inreplyto", "subject", "sender", "actualend", "createdon", "ownerid", "owningbusinessunit" },
                 ReglasDeEntradaDeCorreo.ColumnasDelCorreo.ToArray());
             Assert.Equal(new[] { "statecode", "statuscode", "sanic_sinrespuestadesde", "sanic_correonuevoenfinalizada" }, ReglasDeEntradaDeCorreo.ColumnasDeLaConversacion.ToArray());
             Assert.Equal(400, ReglasDeEntradaDeCorreo.LargoMaximoDelAsunto);

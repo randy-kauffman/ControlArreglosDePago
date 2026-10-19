@@ -507,8 +507,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioCorreo
         }
 
         [Fact]
-        public void PA5F_ENT_17_ElEmailSeReleeUnaVezConSystemYLasNueveColumnas()
+        public void PA5F_ENT_17_ElEmailSeReleeUnaVezConSystemYLasDiezColumnas()
         {
+            // Las nueve de 2.10 paso 1 mas owningbusinessunit (cierre del sublote 5f, punto 13).
             var e = Escenario();
             var id = e.Sembrar(Entrante(Hora(10, 0)));
             e.Almacen.LimpiarRegistros();
@@ -520,6 +521,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioCorreo
             Assert.Equal(e.Almacen.IdDeSystem, lectura.Identidad);
             Assert.False(lectura.TodasLasColumnas);
             Assert.Equal(Ordenadas(ReglasDeEntradaDeCorreo.ColumnasDelCorreo), Ordenadas(lectura.Columnas));
+            Assert.Equal(10, lectura.Columnas.Count());
+            Assert.Contains("owningbusinessunit", lectura.Columnas);
         }
 
         // ---------------------------------------------------------------- El propietario del Email (PA-ENT-14)
@@ -823,7 +826,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioCorreo
         [InlineData("une")]
         [InlineData("yaTenia")]
         [InlineData("cadenaQueNoTermina")]
-        public void PA5F_ENT_26_ElTeamPropietarioSeLeeUnaSolaVez_YNoSeLeeNingunOtroMiembro(string ruta)
+        public void PA5F_ENT_26_LaBuYElTeamPropietarioSeLeenUnaSolaVez_YNoSeLeeNingunOtroMiembro(string ruta)
         {
             var e = Escenario();
             var configuracion = new ConfiguracionSimulada();
@@ -836,8 +839,10 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioCorreo
 
             Registrador(e, null, configuracion).Registrar(id);
 
+            // Cierre del sublote 5f: la BU se lee una vez para comparar el correo (punto 13) y el team una vez para asignar; nada mas.
+            Assert.Equal(1, configuracion.Lecturas(nameof(IConfiguracionDelArea.BuId)));
             Assert.Equal(1, configuracion.Lecturas(nameof(IConfiguracionDelArea.TeamPropietarioId)));
-            Assert.Equal(1, configuracion.LecturasTotales);
+            Assert.Equal(2, configuracion.LecturasTotales);
         }
 
         [Fact]
@@ -988,6 +993,160 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioCorreo
             Assert.Null(UnicaEjecucionDe<ConversacionActualizarStep>(e).Excepcion);
             Assert.True(Assert.IsType<bool>(Valor(e, TablaConv, conversacion, "sanic_correonuevoenfinalizada")));
             AssertEstado(e.Fila(TablaConv, conversacion), EstadoDeConversacion.Finalizada);
+        }
+
+        // ---------------------------------------------------------------- Solo la BU del área (2.10 punto 13, cierre del sublote 5f, decisión del usuario)
+
+        [Theory]
+        [InlineData("otraBu")]
+        [InlineData("sinLaColumna")]
+        public void PA_ENT_24_UnEntranteQueNoEsDeLaBuDelArea_EsOmitidoConEnt002_SinEscribirBuscarNiCrearNada(string caso)
+        {
+            var e = Escenario();
+            var configuracion = new ConfiguracionSimulada();
+            var fila = Entrante(Hora(10, 0));
+            if (caso == "otraBu") fila.Con("owningbusinessunit", RefBu(Guid.NewGuid()));
+            else fila.Sin("owningbusinessunit");
+            var id = e.Sembrar(fila);
+            e.Almacen.LimpiarRegistros();
+
+            var resultado = Registrador(e, null, configuracion).Registrar(id);
+
+            Assert.Equal(TipoDeRegistro.Omitido, resultado.Tipo);
+            Assert.Equal(CodigosDeError.ENT_002.Codigo, resultado.Omision.Codigo);
+            Assert.Null(resultado.ConversacionId);
+            AssertSinEscrituras(e);
+            Assert.Empty(Conversaciones(e));
+            Assert.DoesNotContain(e.Almacen.Consultas, c => c.Operacion == OperacionDeDatos.RetrieveMultiple);
+            Assert.Equal(1, configuracion.Lecturas(nameof(IConfiguracionDelArea.BuId)));
+            Assert.Equal(1, configuracion.LecturasTotales);
+        }
+
+        [Fact]
+        public void PA5F_ENT_B02_UnEntranteAjeno_NoFallaPorElTeamDelArea_PorqueElTeamNoSeLee()
+        {
+            var e = Escenario();
+            var configuracion = new ConfiguracionSimulada();
+            var falla = CodigosDeError.CFG_002.Crear();
+            configuracion.HacerFallar(nameof(IConfiguracionDelArea.TeamPropietarioId), falla);
+            var id = e.Sembrar(Entrante(Hora(10, 0)).Con("owningbusinessunit", RefBu(Guid.NewGuid())));
+            e.Almacen.LimpiarRegistros();
+
+            var resultado = Registrador(e, null, configuracion).Registrar(id);
+
+            Assert.Equal(TipoDeRegistro.Omitido, resultado.Tipo);
+            Assert.Equal(0, configuracion.Lecturas(nameof(IConfiguracionDelArea.TeamPropietarioId)));
+            AssertSinEscrituras(e);
+        }
+
+        [Fact]
+        public void PA5F_ENT_B03_LaBuSeComparaConLaDeLaConfiguracion_NoConUnaConstante()
+        {
+            var e = Escenario();
+            var configuracion = new ConfiguracionSimulada();
+            var otraBu = Guid.NewGuid();
+            configuracion.BuId = otraBu;
+            var deLaBuPorDefecto = e.Sembrar(Entrante(Hora(10, 0)));
+            var deLaBuConfigurada = e.Sembrar(Entrante(Hora(10, 5), "<otro@mail.example.com>").Con("owningbusinessunit", RefBu(otraBu)));
+            e.Almacen.LimpiarRegistros();
+
+            var ajeno = Registrador(e, null, configuracion).Registrar(deLaBuPorDefecto);
+            var propio = Registrador(e, null, configuracion).Registrar(deLaBuConfigurada);
+
+            Assert.Equal(TipoDeRegistro.Omitido, ajeno.Tipo);
+            Assert.Equal(CodigosDeError.ENT_002.Codigo, ajeno.Omision.Codigo);
+            Assert.Equal(TipoDeRegistro.Creada, propio.Tipo);
+            Assert.Single(Conversaciones(e));
+            Assert.False(e.Fila(CorreoTabla, deLaBuPorDefecto).Contains("regardingobjectid"));
+        }
+
+        [Fact]
+        public void PA5F_ENT_B04_UnAjenoConElMismoMessageId_NoSeUneALaConversacionDelArea()
+        {
+            // Sin la regla, el ajeno encontraria por huella la conversacion del correo propio y quedaria asignado al team del area.
+            var e = Escenario();
+            var ajeno = e.Sembrar(Entrante(Hora(10, 0)).Con("owningbusinessunit", RefBu(Guid.NewGuid())));
+            var propio = e.Sembrar(Entrante(Hora(10, 30)));
+            e.Almacen.LimpiarRegistros();
+
+            var primero = Registrador(e).Registrar(propio);
+            var segundo = Registrador(e).Registrar(ajeno);
+
+            Assert.Equal(TipoDeRegistro.Creada, primero.Tipo);
+            Assert.Equal(TipoDeRegistro.Omitido, segundo.Tipo);
+            Assert.Single(Conversaciones(e));
+            var fila = e.Fila(CorreoTabla, ajeno);
+            Assert.False(fila.Contains("regardingobjectid"));
+            Assert.NotEqual(e.TeamDelArea, ((EntityReference)fila["ownerid"]).Id);
+        }
+
+        [Theory]
+        [InlineData("deOtraBu")]
+        [InlineData("sinLaColumna")]
+        public void PA5F_ENT_B05_SiLaBuDelAreaNoSeResuelve_CualquierEntranteLanzaCfg001_SinImportarSuBu(string caso)
+        {
+            var e = Escenario(unidadesDeNegocio: 0);
+            var fila = Entrante(Hora(10, 0));
+            if (caso == "deOtraBu") fila.Con("owningbusinessunit", RefBu(Guid.NewGuid()));
+            else fila.Sin("owningbusinessunit");
+            var id = e.Sembrar(fila);
+            e.Almacen.LimpiarRegistros();
+
+            var error = Assert.Throws<ErrorDeNegocio>(() => Registrador(e).Registrar(id));
+
+            Assert.Equal(CodigosDeError.CFG_001.Codigo, error.Codigo);
+            AssertSinEscrituras(e);
+        }
+
+        // ---------------------------------------------------------------- Trazas de la ruta C (2.10 punto 14)
+
+        [Fact]
+        public void PA5F_ENT_T01_LaTrazaDeLaRutaC_NoLlevaLaHuella_SoloIdsRutaYCodigo()
+        {
+            var lineas = new List<string>();
+            var e = Escenario();
+            var primero = e.Sembrar(Entrante(Hora(10, 0)));
+            var mismoMessageId = e.Sembrar(Entrante(Hora(10, 30)));
+            var sinMessageId = e.Sembrar(Entrante(Hora(11, 0)).ConId(CorreoDeLaHuellaDeRespaldo).Sin("messageid"));
+
+            var creada = Registrador(e, lineas).Registrar(primero);
+            Registrador(e, lineas).Registrar(mismoMessageId);
+            Registrador(e, lineas).Registrar(sinMessageId);
+
+            Assert.Equal(TipoDeRegistro.Creada, creada.Tipo);
+            Assert.Contains(lineas, linea => linea.IndexOf("ruta C", StringComparison.Ordinal) >= 0);
+            Assert.Contains(lineas, linea => linea.IndexOf(creada.ConversacionId.Value.ToString("D"), StringComparison.Ordinal) >= 0);
+            Assert.DoesNotContain(lineas, linea => linea.IndexOf(HuellaDelDiseno, StringComparison.OrdinalIgnoreCase) >= 0);
+            Assert.DoesNotContain(lineas, linea => linea.IndexOf(HuellaDeRespaldo, StringComparison.OrdinalIgnoreCase) >= 0);
+            Assert.DoesNotContain(lineas, linea => System.Text.RegularExpressions.Regex.IsMatch(linea, "[0-9a-fA-F]{64}"));
+        }
+
+        // ---------------------------------------------------------------- Un par de estado desconocido es un dato corrupto (2.10 punto 8 de 5f)
+
+        [Theory]
+        [InlineData("parQueNoExiste")]
+        [InlineData("sinEstado")]
+        public void PA5F_ENT_E01_UnaConversacionConUnParDeEstadoDesconocido_InvalidOperationException_SinEscribir(string caso)
+        {
+            var e = Escenario();
+            var fila = ConstructorDeDatos.UnaConversacion();
+            if (caso == "parQueNoExiste")
+            {
+                // (statecode de Abierta, statuscode de Finalizada): ninguna fila de 0.7 es asi.
+                fila.Con("statecode", new OptionSetValue(Estados.De(EstadoDeConversacion.Abierta).StateCode))
+                    .Con("statuscode", new OptionSetValue(Estados.De(EstadoDeConversacion.Finalizada).StatusCode));
+            }
+            else
+            {
+                fila.Sin("statecode").Sin("statuscode");
+            }
+            var conversacion = e.Sembrar(fila);
+            var id = e.Sembrar(Entrante(Hora(10, 0)).Con("regardingobjectid", RefConv(conversacion)));
+            e.Almacen.LimpiarRegistros();
+
+            Assert.Throws<InvalidOperationException>(() => Registrador(e).Registrar(id));
+
+            AssertSinEscrituras(e);
         }
 
         // ---------------------------------------------------------------- Contenedores

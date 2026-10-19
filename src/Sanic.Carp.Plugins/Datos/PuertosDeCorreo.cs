@@ -15,7 +15,7 @@ namespace Sanic.Carp.Plugins.Datos
     /// <item><c>ColumnasDelSistema</c>: <c>new CorreosDataverse(servicio).Leer(emailId, ReglasDeCorreo.ColumnasSoloSistema)</c> y completa con <c>null</c> la columna ausente; si no hay fila, las dos en <c>null</c>.</item>
     /// </list>
     /// </summary>
-    internal sealed class LecturasDeCorreoDataverse : ILecturasDeCorreo
+    internal sealed class LecturasDeCorreoDataverse : ILecturasDeCorreo, ILecturasDelRemitente
     {
         private readonly Func<IOrganizationService> _servicio;
 
@@ -36,6 +36,15 @@ namespace Sanic.Carp.Plugins.Datos
                 valores[columna] = valor;
             }
             return new ReadOnlyDictionary<string, object>(valores);
+        }
+
+        /// <summary>
+        /// <see cref="ILecturasDelRemitente.ColumnasDelRemitente"/> (S-37): <c>new CorreosDataverse(servicio).Leer(emailId, ReglasDeCorreo.ColumnasDelRemitente)</c> (UN <c>Retrieve</c> por id con esas dos columnas,
+        /// nunca todas) y devuelve SIEMPRE las dos claves, con <c>null</c> en la que la fila no trae y en las dos si no hay fila o no hay acceso. Pide el servicio a la <c>Func</c> recién aquí.
+        /// </summary>
+        public IReadOnlyDictionary<string, object> ColumnasDelRemitente(Guid emailId)
+        {
+            throw new NotImplementedException("S-37: lo implementa el constructor (diseno/03 2.9, cierre del sublote 5f).");
         }
     }
 }

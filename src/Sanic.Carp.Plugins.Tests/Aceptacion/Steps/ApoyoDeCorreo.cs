@@ -85,6 +85,18 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             ApoyoDeSteps.Ejecutar(paso, e.Fabrica, ApoyoDeSteps.Contexto("Create", 20, Correo, actor, target));
         }
 
+        /// <summary>Igual que <see cref="EjecutarCreateDirecto"/> para un <c>Update</c> de correo en PreOperation (S-37, cierre del sublote 5f): el <paramref name="target"/> lleva el id del correo.</summary>
+        public static void EjecutarUpdateDirecto(EscenarioDeSteps e, BaseDeStep paso, Entity target, Guid actor)
+        {
+            ApoyoDeSteps.Ejecutar(paso, e.Fabrica, ApoyoDeSteps.Contexto("Update", 20, Correo, actor, target));
+        }
+
+        /// <summary>El proveedor de servicios de un <c>Update</c> de correo en PreOperation con un tracing espía.</summary>
+        public static ProveedorConEspia ProveedorUpdateConEspia(EscenarioDeSteps e, Entity target, Guid actor)
+        {
+            return new ProveedorConEspia(ApoyoDeSteps.Contexto("Update", 20, Correo, actor, target), e.Fabrica);
+        }
+
         /// <summary>El proveedor de servicios de un <c>Create</c> de correo en PreOperation con un tracing espía (<c>Espia.Lineas()</c>): sirve aunque el step lance.</summary>
         public static ProveedorConEspia ProveedorCreateConEspia(EscenarioDeSteps e, Entity target, Guid actor)
         {

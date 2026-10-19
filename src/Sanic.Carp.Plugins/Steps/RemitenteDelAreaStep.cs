@@ -21,12 +21,27 @@ namespace Sanic.Carp.Plugins.Steps
     /// <item>Permitida con <c>Escribir["from"]</c> ⇒ pone en el <c>Target</c> <c>from</c> = una <c>EntityCollection</c> de UN <c>activityparty</c> con <c>partyid</c> = <c>EntityReference("queue", queueId)</c>
     /// (sin <c>participationtypemask</c>: la plataforma lo completa). Reemplaza la colección entera; no escribe nada más. No toca <c>parentactivityid</c> (lo completa el botón Responder, spike 4).</item>
     /// </list>
+    /// <para>
+    /// <b>S-37 (cierre del sublote 5f, 2026-10-19, decisión del usuario):</b> la MISMA clase tiene un segundo registro, Update · PreOperation · síncrono · orden 20 (no 10: S-33 ya es el 10 de
+    /// <c>Update</c> Pre sobre <c>email</c> y BP-PP-060 no admite dos steps con el mismo orden) · filtro <c>from,directioncode,regardingobjectid</c> · SIN pre-imagen (la sección 5 la deja en "—"). Con
+    /// <c>contexto.Mensaje</c> igual a <c>Update</c> (ordinal) hace esto, y NO lo del <c>Create</c>:
+    /// </para>
+    /// <list type="number">
+    /// <item>Arma el <see cref="PedidoDeRemitenteActualizado"/> con <c>contexto.TargetNeutro()</c>, los <c>Remitentes</c> del <c>from</c> del <c>Target</c> (la misma conversión que el <c>Create</c>; ausente ⇒ <c>null</c>),
+    /// <c>contexto.IdPrimario</c>, <c>contexto.Identidad</c>, <c>contexto.Configuracion</c> y <c>new LecturasDeCorreoDataverse(() =&gt; contexto.ServicioComoSistema)</c> (perezoso: el servicio de SYSTEM
+    /// solo se crea si la regla necesita leer lo guardado).</item>
+    /// <item><c>ReglasDeCorreo.EvaluarRemitenteEnActualizacion</c>; no permitida ⇒ <c>throw resultado.Error;</c>. Permitida con <c>Escribir["from"]</c> ⇒ pone en el <c>Target</c> <c>from</c> = una
+    /// <c>EntityCollection</c> de UN <c>activityparty</c> con <c>partyid</c> = <c>EntityReference("queue", queueId)</c>, exactamente como en el <c>Create</c>. Un <c>Update</c> que deja el correo dentro del
+    /// alcance SIN <c>from</c> en el <c>Target</c> recibe la queue (no se rechaza).</item>
+    /// </list>
     /// </summary>
     public sealed class RemitenteDelAreaStep : BaseDeStep
     {
         private static readonly IReadOnlyList<RegistroEsperado> Registros = new ReadOnlyCollection<RegistroEsperado>(new[]
         {
-            new RegistroEsperado("Create", EtapaDelPipeline.PreOperation, false, 10, new[] { TablasDelArea.Correo }, null, null)
+            new RegistroEsperado("Create", EtapaDelPipeline.PreOperation, false, 10, new[] { TablasDelArea.Correo }, null, null),
+            new RegistroEsperado("Update", EtapaDelPipeline.PreOperation, false, 20, new[] { TablasDelArea.Correo },
+                new[] { "from", "directioncode", "regardingobjectid" }, null)
         });
 
         internal override string Area { get { return "EML"; } }
@@ -35,6 +50,12 @@ namespace Sanic.Carp.Plugins.Steps
 
         internal override void Ejecutar(ContextoDeStep contexto)
         {
+            if (string.Equals(contexto.Mensaje, "Update", StringComparison.Ordinal))
+            {
+                EjecutarActualizacion(contexto);
+                return;
+            }
+
             var target = contexto.Target;
             var esSaliente = target.Contains("directioncode") && target["directioncode"] is bool && (bool)target["directioncode"];
             var regardingSdk = target.Contains("regardingobjectid") ? target["regardingobjectid"] as EntityReference : null;
@@ -55,6 +76,12 @@ namespace Sanic.Carp.Plugins.Steps
                 partes.Add(new Entity("activityparty") { ["partyid"] = new EntityReference(referencia.Tabla, referencia.Id) });
             }
             target["from"] = new EntityCollection(partes);
+        }
+
+        // S-37: contrato en el comentario de la clase.
+        private static void EjecutarActualizacion(ContextoDeStep contexto)
+        {
+            throw new NotImplementedException("S-37: lo implementa el constructor (diseno/03 2.9, cierre del sublote 5f).");
         }
 
         // null = el Target no trae `from`. Una parte sin partyid cuenta como "otra parte" (ReferenciaDeEntidad vacia).

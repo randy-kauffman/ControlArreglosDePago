@@ -18,4 +18,20 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         IReadOnlyDictionary<string, object> ColumnasDelSistema(Guid emailId);
     }
+
+    /// <summary>
+    /// La lectura con SYSTEM que <see cref="ReglasDeCorreo.EvaluarRemitenteEnActualizacion"/> pide solo cuando el <c>Target</c> de un <c>Update</c> no le alcanza (S-37, diseno/03 2.9 y "Decisiones del
+    /// arquitecto, 2026-10-19 (cierre del sublote 5f)", punto 1). Lo implementa <c>Datos/LecturasDeCorreoDataverse</c>, la misma clase que <see cref="ILecturasDeCorreo"/>. Existe porque S-37 NO tiene
+    /// pre-imagen (sección 5): para saber si el correo, DESPUÉS del <c>Update</c>, es saliente y está en una conversación hay que mirar lo guardado de las columnas que el <c>Target</c> no trae. El <c>from</c>
+    /// NO se lee nunca (un <c>Retrieve</c> con columnas no trae las partes y el diseño prohíbe <c>ColumnSet(true)</c> sobre <c>email</c>): el step lo reemplaza por la queue cuando el <c>Target</c> no lo trae.
+    /// </summary>
+    public interface ILecturasDelRemitente
+    {
+        /// <summary>
+        /// Los valores guardados de <c>directioncode</c> y <c>regardingobjectid</c> del correo (UNA consulta por id, solo esas dos columnas, en este orden), en neutro (<c>bool</c> y
+        /// <see cref="ReferenciaDeEntidad"/>). El diccionario trae SIEMPRE las dos claves, con <c>null</c> en la columna que la fila no tiene (la plataforma no devuelve las nulas; el adaptador las completa)
+        /// y en las dos si la fila no existe o no se puede leer. Una falla distinta de "no existe" o "sin acceso" escapa.
+        /// </summary>
+        IReadOnlyDictionary<string, object> ColumnasDelRemitente(Guid emailId);
+    }
 }

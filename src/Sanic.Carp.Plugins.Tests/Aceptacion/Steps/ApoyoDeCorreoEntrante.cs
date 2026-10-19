@@ -31,6 +31,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         public const string TablaCliente = TablasDelArea.Cliente;
         public const string TablaUsuario = "systemuser";
         public const string TablaTeam = "team";
+        public const string TablaBu = "businessunit";
 
         /// <summary>El Message-ID de PA-ENT-01 y su huella (diseno/03 2.10).</summary>
         public const string MessageIdDelDiseno = "<CAF+abc123@mail.example.com>";
@@ -107,11 +108,33 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         /// </summary>
         public static ConstructorDeFila Entrante(DateTime llegada, string messageId = MessageIdDelDiseno)
         {
+            // Cierre del sublote 5f: S-34 solo procesa correos de la BU del area (2.10 punto 13). La plataforma fija owningbusinessunit al crear; el doble no la deriva, asi que se siembra.
             return ConstructorDeDatos.UnCorreoEntrante()
                 .Con("messageid", messageId)
                 .Con("subject", "Arreglo")
                 .Con("sender", "Ana@X.com")
-                .Con("actualend", llegada);
+                .Con("actualend", llegada)
+                .Con("owningbusinessunit", RefBu(ConfiguracionSimulada.IdDeBuPorDefecto));
+        }
+
+        public static EntityReference RefBu(Guid id)
+        {
+            return new EntityReference(TablaBu, id);
+        }
+
+        /// <summary>
+        /// Crea un entrante por <c>Create</c> (así queda encolado el job de S-34) y lo deja como lo dejaría la plataforma: con <c>owningbusinessunit</c> = <paramref name="bu"/> (por defecto la BU del área).
+        /// El doble IGNORA <c>owningbusinessunit</c> al escribir y no la deriva del propietario (<c>RESULTADO.md</c>, 18-texto-y-esquema), y el job relee la fila: por eso, después del <c>Create</c> se borra la
+        /// fila y se siembra otra vez con el mismo id y la misma columna. El job que quedó encolado no cambia. Ensucia <c>Escrituras</c> (un <c>Delete</c>): llamar a <c>LimpiarRegistros</c> después.
+        /// </summary>
+        public static Guid CrearEntranteDelArea(EscenarioDeSteps e, IOrganizationService como, Entity entidad, Guid? bu = null)
+        {
+            var id = como.Create(entidad);
+            var fila = e.Fila(TablaCorreo, id);
+            e.ComoSistema.Delete(TablaCorreo, id);
+            fila["owningbusinessunit"] = RefBu(bu ?? e.Bu);
+            e.Almacen.Sembrar(fila);
+            return id;
         }
 
         /// <summary>Una respuesta saliente ya en Sent (fixture 01): <c>senton</c> sembrado, <c>createdby</c> el autor, Regarding a la conversación y SIN <c>sanic_respondidoporid</c>.</summary>

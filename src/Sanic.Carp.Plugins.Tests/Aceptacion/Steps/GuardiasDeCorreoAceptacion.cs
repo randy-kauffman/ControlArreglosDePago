@@ -52,6 +52,59 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             Assert.All(filas, f => Assert.False(f.LlevaPreImagen));
         }
 
+        [Fact]
+        public void PA5F_REG_01b_LaSeccion5TraeS37_ElUpdateDeRemitenteDelAreaStep_ConLosValoresDelCierreDel5f()
+        {
+            // VERDE A PROPÓSITO (cierre del sublote 5f, decisión del usuario): la tabla de la sección 5 es la fuente y la clase ya declara el registro. Los valores van escritos aquí: orden 20 y no 10 porque
+            // S-33 ya es el 10 de Update Pre sobre email (BP-PP-060); sin pre-imagen; el filtro son las tres columnas que definen "saliente de una conversación con este remitente".
+            var fila = Assert.Single(DocumentoDeSteps.Filas(), f => f.Numero == "S-37");
+
+            Assert.Equal("RemitenteDelAreaStep", fila.Clase);
+            Assert.Equal("Update", fila.Mensaje);
+            Assert.Equal("email", fila.Tabla);
+            Assert.Equal(20, fila.Etapa);
+            Assert.False(fila.Asincrono);
+            Assert.Equal(20, fila.Orden);
+            Assert.Equal("directioncode,from,regardingobjectid", string.Join(",", fila.Filtro.OrderBy(c => c, StringComparer.Ordinal)));
+            Assert.False(fila.LlevaPreImagen);
+        }
+
+        [Fact]
+        public void PA5F_REG_01c_LaSeccion5TieneLosTreintaYSieteRegistros_DeS01AS37_SinHuecosNiRepetidos()
+        {
+            // VERDE A PROPÓSITO: 37 registros (36 + S-37) sobre 21 clases. Una fila que se pierda al editar el documento, o un número repetido, lo delata.
+            var filas = DocumentoDeSteps.Filas();
+
+            Assert.Equal(37, filas.Count);
+            Assert.Equal(Enumerable.Range(1, 37).Select(n => "S-" + n.ToString("D2", System.Globalization.CultureInfo.InvariantCulture)).ToArray(),
+                filas.Select(f => f.Numero).OrderBy(n => n, StringComparer.Ordinal).ToArray());
+            Assert.Equal(21, filas.Select(f => f.Clase).Distinct(StringComparer.Ordinal).Count());
+        }
+
+        [Fact]
+        public void PA5F_REG_07_NingunaFilaDeLaSeccion5RepiteMensajeTablaEtapaModoYOrden_BPPP060()
+        {
+            // VERDE A PROPÓSITO: BP-PP-060, "un orden distinto por (mensaje, tabla, etapa)". Es lo que obligó a S-37 a ir en 20: con 10 chocaba con S-33.
+            var repetidas = DocumentoDeSteps.Filas()
+                .GroupBy(f => f.Mensaje + "|" + f.Tabla + "|" + f.Etapa + "|" + f.Asincrono + "|" + f.Orden, StringComparer.Ordinal)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key + " => " + string.Join(",", g.Select(f => f.Numero)))
+                .ToArray();
+
+            Assert.Empty(repetidas);
+        }
+
+        [Fact]
+        public void PA5F_REG_08_ElDetectorDeOrdenesRepetidos_VeLaColisionQueS37TeniaConS33()
+        {
+            // VERDE A PROPÓSITO: fija el detector de PA5F_REG_07 para que una guardia no se pase con una variante: dos filas con el mismo (mensaje, tabla, etapa, modo, orden) se agrupan.
+            Func<FilaDeRegistro, string> clave = f => f.Mensaje + "|" + f.Tabla + "|" + f.Etapa + "|" + f.Asincrono + "|" + f.Orden;
+            var s33 = DocumentoDeSteps.Filas().Single(f => f.Numero == "S-33");
+            var colision = new FilaDeRegistro { Numero = "S-37", Mensaje = "Update", Tabla = "email", Etapa = 20, Asincrono = false, Orden = 10 };
+
+            Assert.Equal(clave(s33), clave(colision));
+        }
+
         [Theory]
         [InlineData("RemitenteDelAreaStep")]
         [InlineData("EmailSoloSistemaStep")]
@@ -89,12 +142,12 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         [Fact]
         public void PA5F_REG_04_ElOrdenDeEjecucionSobreEmail_EsElDeLaSeccion5()
         {
-            // VERDE A PROPÓSITO: Create Pre 10 (S-31) y 20 (S-32), Create Post asíncrono 10 (S-34); Update Pre 10 (S-33), Update Post asíncrono 10 (S-35). Ninguno escucha Delete.
+            // VERDE A PROPÓSITO: Create Pre 10 (S-31) y 20 (S-32), Create Post asíncrono 10 (S-34); Update Pre 10 (S-33) y 20 (S-37, cierre del sublote 5f), Update Post asíncrono 10 (S-35). Ninguno escucha Delete.
             var filas = DocumentoDeSteps.Filas().Where(f => f.Tabla == "email").ToList();
 
             Assert.Equal(new[] { 10, 20 }, filas.Where(f => f.Mensaje == "Create" && f.Etapa == 20).Select(f => f.Orden).OrderBy(o => o).ToArray());
             Assert.Equal(new[] { 10 }, filas.Where(f => f.Mensaje == "Create" && f.Etapa == 40).Select(f => f.Orden).ToArray());
-            Assert.Equal(new[] { 10 }, filas.Where(f => f.Mensaje == "Update" && f.Etapa == 20).Select(f => f.Orden).ToArray());
+            Assert.Equal(new[] { 10, 20 }, filas.Where(f => f.Mensaje == "Update" && f.Etapa == 20).Select(f => f.Orden).OrderBy(o => o).ToArray());
             Assert.Equal(new[] { 10 }, filas.Where(f => f.Mensaje == "Update" && f.Etapa == 40).Select(f => f.Orden).ToArray());
             Assert.DoesNotContain(filas, f => f.Mensaje == "Delete");
         }
@@ -118,6 +171,13 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var adaptador = TipoDe("Sanic.Carp.Plugins.Datos.LecturasDeCorreoDataverse");
             Assert.False(adaptador.IsPublic);
             Assert.True(puerto.IsAssignableFrom(adaptador));
+
+            // Cierre del sublote 5f (S-37): el pedido y el puerto nuevos son publicos, y el mismo adaptador sirve a los dos puertos.
+            Assert.True(TipoDe(EspacioDelDominio + ".PedidoDeRemitenteActualizado").IsPublic);
+            var puertoDelRemitente = TipoDe(EspacioDelDominio + ".ILecturasDelRemitente");
+            Assert.True(puertoDelRemitente.IsPublic);
+            Assert.True(puertoDelRemitente.IsInterface);
+            Assert.True(puertoDelRemitente.IsAssignableFrom(adaptador));
         }
 
         [Fact]
@@ -127,6 +187,19 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var lineas = ApoyoDeAceptacion.LineasDelDocumento("diseno/03-contratos-custom-api.md");
 
             Assert.Equal(4, lineas.Count(l => l.StartsWith("**Decisiones del arquitecto, 2026-10-19 (sublote 5f)", StringComparison.Ordinal)));
+        }
+
+        [Fact]
+        public void PA5F_REG_06b_LaSeccion29_Y_La210_TraenLasDecisionesDelCierreDelSublote5f_YLa81_LasPruebasDeHumoH26AH28()
+        {
+            // VERDE A PROPÓSITO: cierre del sublote 5f (2026-10-19). 2.9 = S-37, 2.10 = S-34 (BU del área y traza de la ruta C); 8.1 = H-26 (BU de un correo sincronizado), H-27 (SYSTEM sobre un
+            // Email cerrado) y H-28 (S-37 en Dev).
+            var lineas = ApoyoDeAceptacion.LineasDelDocumento("diseno/03-contratos-custom-api.md");
+
+            Assert.Equal(2, lineas.Count(l => l.StartsWith("**Decisiones del arquitecto, 2026-10-19 (cierre del sublote 5f)", StringComparison.Ordinal)));
+            Assert.Single(lineas, l => l.StartsWith("| H-26 |", StringComparison.Ordinal) && l.Contains("owningbusinessunit") && l.Contains("sincronización del servidor"));
+            Assert.Single(lineas, l => l.StartsWith("| H-27 |", StringComparison.Ordinal) && l.Contains("sanic_respondidoporid") && l.Contains("sanic_tiemporespuesta") && l.Contains("CARP-ENT-900") && l.Contains("CARP-RES-900"));
+            Assert.Single(lineas, l => l.StartsWith("| H-28 |", StringComparison.Ordinal) && l.Contains("S-37"));
         }
 
         // ---------------------------------------------------------------- guardias de fuente
