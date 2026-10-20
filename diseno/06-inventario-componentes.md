@@ -30,11 +30,15 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 2 | 3 | 2 |
 | 11 | Flujos | 3 | 0 | 2 | 1 |
-| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 4 | 21 | 0 |
+| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 8 | 17 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
-| **Total** | | **127** | **45** | **71** | **11** |
+| **Total** | | **127** | **49** | **67** | **11** |
 
 Notas del resumen:
+
+- 2026-10-20 (Dev, construcción del lote A de app): 12.22 pasó a `hecho` (el JS y los 4 SVG, verificados `ya_existia`; los SVG no tienen fila propia, ver la fila 12.27 propuesta). El grupo 12 pasó de 7 hechas y 18 pendientes a 8 y 17 (el total, de 48 y 68 a 49 y 67). Las filas 12.17 a 12.21 (6 formularios), 12.23 (sitemap) y 12.25 (app) **se construyeron y publicaron en Dev pero siguen `pendiente`** porque la herramienta no las da por verificadas: `formulario.py` exige la etiqueta embebida 3082 y la plataforma solo conserva la 1033 en el `formxml` de `systemforms`; `app.py` ve el sitemap bien pero `AddAppComponents` devuelve 204 sin agregar las 8 tablas. Detalle en `pruebas-humo/lote-a/RESULTADO.md`.
+
+- 2026-10-20 (Dev, cierre del lote A de vistas): 12.10, 12.11 y 12.12 pasaron a `hecho` tras corregir `vista.py` (búsqueda rápida: `PATCH` con los cuatro campos; pertenencia a la solución por la fila propia de la vista) y volver a verificar `Respuestas enviadas` (`ya_existia`). El grupo 12 pasó de 4 hechas y 21 pendientes a 7 y 18 (el total, de 45 y 71 a 48 y 68).
 
 - 2026-10-20 (Dev, vistas del lote A): 18 vistas creadas y verificadas `ya_existia` con `vista.py` (12.1, 12.2, 12.5 y las 15 de 12.13, de las que `Respuestas enviadas` queda en `difiere` por un falso positivo de la herramienta sobre `email`, ver la fila 12.13); las 4 filas pasaron a `hecho`. Quedan sin construir 12.10 y 12.11 (búsqueda rápida: defecto de `vista.py`, ver sus filas) y 12.12 (hueco de diseño). El resumen del grupo 12 pasó de 0 hechas y 25 pendientes a 4 y 21 (el total, de 41 y 75 a 45 y 71).
 
@@ -276,9 +280,9 @@ Nombre de vista: texto de negocio, sin prefijo y sin tildes. Los nombres son *(p
 | 12.7 | Arreglos en riesgo (vigentes con una cuota vencida sin pago; filtro relacionado, `olderthan-x-days 1` o `yesterday`) | Arreglo | `playbooks/vista/arreglos_en_riesgo.md` | 3.3, 3.4, 4.5 | RF-11, D-11 | pendiente (diseño completo en `diseno/07` §3.4) |
 | 12.8 | Arreglos de prestamo | Arreglo | `playbooks/vista/arreglos_de_prestamo.md` | 3.3, 2.3 | RF-17, D-35 | pendiente (diseño completo en `diseno/07` §3.4) |
 | 12.9 | Arreglos de tarjeta | Arreglo | `playbooks/vista/arreglos_de_tarjeta.md` | 3.3, 2.3 | RF-17, D-35 | pendiente (diseño completo en `diseno/07` §3.4) |
-| 12.10 | Busqueda rapida de Cliente (cédula, nombre, correo, celular) | Cliente | `playbooks/vista/busqueda_rapida_cliente.md` | 3.1, 6.1 | RF-13, D-12 | pendiente (playbook escrito el 2026-10-20; bloqueada por `vista.py`: el `PATCH` del `fetchxml` de una búsqueda rápida exige `{fetchxml, layoutxml, name, returnedtypecode}` juntos y la herramienta manda solo lo que difiere; el nombre real en Dev es `Quick Find Active Clientes`) (diseño completo en `diseno/07` §3.5) |
-| 12.11 | Busqueda rapida de Arreglo (número de producto) | Arreglo | `playbooks/vista/busqueda_rapida_arreglo.md` | 3.3 | RF-13, D-12 | pendiente (playbook escrito el 2026-10-20; bloqueada por el mismo defecto de `vista.py` que 12.10; el nombre real en Dev es `Quick Find Active Arreglos`) (diseño completo en `diseno/07` §3.4) |
-| 12.12 | Arreglos del cliente (subgrid con todos los estados) | Arreglo | `playbooks/vista/arreglos_del_cliente.md` | 3.3, 4.2 | RF-13, ítem 13 | pendiente (playbook escrito el 2026-10-20 y sin construir: hueco de diseño, `diseno/07` §3.4 ordena por `createdon` y no lo incluye en las columnas, y `vista.py` solo ordena por columnas visibles; falta decidir si se agrega la columna o se ordena por otra) (diseño completo en `diseno/07` §3.4) |
+| 12.10 | Busqueda rapida de Cliente (cédula, nombre, correo, celular) | Cliente | `playbooks/vista/busqueda_rapida_cliente.md` | 3.1, 6.1 | RF-13, D-12 | hecho (Dev, 2026-10-20) (`Quick Find Active Clientes` reparada con `vista.py --completar`: el `PATCH` manda `{fetchxml, layoutxml, name, returnedtypecode}` juntos; `--solo-verificar` da `ya_existia`; el `?savedQuery=` da 200 y la búsqueda real por la cédula HUMO encuentra la fila) (diseño completo en `diseno/07` §3.5) |
+| 12.11 | Busqueda rapida de Arreglo (número de producto) | Arreglo | `playbooks/vista/busqueda_rapida_arreglo.md` | 3.3 | RF-13, D-12 | hecho (Dev, 2026-10-20) (`Quick Find Active Arreglos` reparada con `vista.py --completar`; `--solo-verificar` da `ya_existia`; el `?savedQuery=` da 200 y la búsqueda real por el número de producto HUMO encuentra la fila) (diseño completo en `diseno/07` §3.4) |
+| 12.12 | Arreglos del cliente (subgrid con todos los estados) | Arreglo | `playbooks/vista/arreglos_del_cliente.md` | 3.3, 4.2 | RF-13, ítem 13 | hecho (Dev, 2026-10-20) (se agregó `createdon` 150 como última columna, decisión del orquestador; `--solo-verificar` da `ya_existia`; el `?savedQuery=` da 200 con 15 filas) (diseño completo en `diseno/07` §3.4) |
 | 12.13 | Otras vistas "por perfil" (oficial y jefe). La definición no las enumera | varias | `playbooks/vista/<nombre>.md` (15 playbooks) | 3.x, 4.x | §6 Componentes (app) | hecho (Dev, 2026-10-20) (las 15 vistas; `Respuestas enviadas` sobre `email` la verifica `vista.py` como `difiere` por un falso positivo: la tabla está en la solución con `rootcomponentbehavior` 1, pero la vista figura en la solución como componente propio, tipo 26) (diseño completo en `diseno/07` §3.5 y §3.6 (15 vistas)) |
 
 ### 12.2 Dashboard y gráficos
@@ -307,7 +311,7 @@ Nombre: `FRM - CARP - Tabla - Tipo`. La definición no nombra un formulario para
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 12.22 | Web resource JavaScript mínimo `WR - CARP - JS - Comandos` *(prov.; `sanic_carp_wr_js_comandos`)*: solo invoca las Custom API, pide la confirmación previa y dispara la descarga. Sin lógica de negocio | `playbooks/web-resource/js_comandos.md` | 8.2 a 8.6 | D-17, §6 Componentes | pendiente (diseño completo en `diseno/07` §5.1 a §5.3) |
+| 12.22 | Web resource JavaScript mínimo `WR - CARP - JS - Comandos` *(prov.; `sanic_carp_wr_js_comandos`)*: solo invoca las Custom API, pide la confirmación previa y dispara la descarga. Sin lógica de negocio | `playbooks/web-resource/js_comandos.md` | 8.2 a 8.6 | D-17, §6 Componentes | hecho (Dev, 2026-10-20) |
 | 12.23 | Sitemap `sanic_carp_sm_controlarreglospago` (cuatro áreas, arriba) | `playbooks/app/controlarreglospago.md` (comparte con 12.25) | 12.1 a 12.13, 12.14, 12.17 a 12.21 | §6 Componentes (app) | pendiente (diseño completo en `diseno/07` §7.2) |
 | 12.24 | Comandos del command bar para los gestos de abajo (un solo playbook). El mecanismo de cada gesto (botón, captura de motivo, confirmación) no está definido | `playbooks/importacion/comandos.md` (ruta a confirmar) | 12.22, 8.2 a 8.6, 7.12, 7.14 a 7.16 | D-17, RF-02, RF-14 a RF-16 | pendiente (diseño completo en `diseno/07` §5.4 a §5.6) |
 | 12.25 | App `sanic_carp_mda_controlarreglospago` (`MDA - CARP - Control de Arreglos de Pago`), una sola app para oficial y jefe | `playbooks/app/controlarreglospago.md` | 12.23, 12.24, 6.2 a 6.5 | D-01, RNF-04 | pendiente (diseño completo en `diseno/07` §7.1) |
