@@ -1,0 +1,694 @@
+{
+ "filas": [
+  {
+   "clave": "cliente-01",
+   "conjunto": "sanic_carp_tbl_clientes",
+   "id": "b18eeaa1-90cc-f111-a05b-00224808ffcd",
+   "nota": ""
+  },
+  {
+   "clave": "conv-01",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "b28eeaa1-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-14 (a) sin sanic_nombre"
+  },
+  {
+   "clave": "conv-x-null",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "b88eeaa1-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-14 nombre null"
+  },
+  {
+   "clave": "conv-x-vacio",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "ba8eeaa1-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-14 nombre vacio"
+  },
+  {
+   "clave": "conv-777777",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "c08eeaa1-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-14 (b) valor con formato valido"
+  },
+  {
+   "clave": "conv-aux-unida",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "c28eeaa1-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-15: destino del lookup sanic_unidaaid"
+  },
+  {
+   "clave": "conv-04-poblada",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "c48eeaa1-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-15: Abierta con las 21 columnas vigiladas pobladas"
+  },
+  {
+   "clave": "conv-u1",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "3bb35ddf-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-29 union"
+  },
+  {
+   "clave": "conv-u2",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "3db35ddf-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-29 union"
+  },
+  {
+   "clave": "conv-u3",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "3fb35ddf-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-29 union"
+  },
+  {
+   "clave": "conv-u4",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "41b35ddf-90cc-f111-a05b-00224808ffcd",
+   "nota": "H-29 union"
+  },
+  {
+   "clave": "version-sonda-v92",
+   "conjunto": "sanic_carp_tbl_versionplantillas",
+   "id": "3dd84729-91cc-f111-a05b-00224808ffcd",
+   "nota": "version de humo"
+  },
+  {
+   "clave": "version-v90",
+   "conjunto": "sanic_carp_tbl_versionplantillas",
+   "id": "40d84729-91cc-f111-a05b-00224808ffcd",
+   "nota": "version de humo"
+  },
+  {
+   "clave": "mapeo-v90-00",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "44d84729-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-01",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "46d84729-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-02",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "48d84729-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-03",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "4ad84729-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-04",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "4cd84729-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-05",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "4ed84729-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-06",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "50d84729-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-07",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "f2db492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-08",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "f4db492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-09",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "f6db492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-10",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "f8db492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-11",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "fadb492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-12",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "fcdb492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-13",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "fedb492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-14",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "00dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-15",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "02dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-16",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "04dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-17",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "06dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-18",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "08dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-19",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "0adc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-20",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "0cdc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-21",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "0edc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-22",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "10dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-23",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "12dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-24",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "14dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-25",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "16dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-26",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "18dc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v90-27",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "1adc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "version-v91",
+   "conjunto": "sanic_carp_tbl_versionplantillas",
+   "id": "1cdc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "version de humo"
+  },
+  {
+   "clave": "mapeo-v91-00",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "793fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-01",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "7b3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-02",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "7d3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-03",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "7f3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-04",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "813fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-05",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "833fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-06",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "853fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-07",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "873fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-08",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "893fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-09",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "8b3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-10",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "8d3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-11",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "8f3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-12",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "913fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-13",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "933fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-14",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "953fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-15",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "973fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-16",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "993fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-17",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "9b3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-18",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "9d3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-19",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "9f3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-20",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "a13fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-21",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "a33fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-22",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "a53fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-23",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "a73fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-24",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "a93fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-25",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "ab3fb735-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-26",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "234ec03b-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v91-27",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "254ec03b-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-sonda-a",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "274ec03b-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "version-v94",
+   "conjunto": "sanic_carp_tbl_versionplantillas",
+   "id": "c1effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "version de humo"
+  },
+  {
+   "clave": "mapeo-v94-00",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "c4effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-01",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "c6effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-02",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "c8effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-03",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "caeffe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-04",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "cceffe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-05",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "ceeffe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-06",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "d0effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-07",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "d2effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-08",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "d4effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-09",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "d6effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-10",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "d8effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-11",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "daeffe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-12",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "dceffe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-13",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "deeffe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-14",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "e0effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-15",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "e2effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-16",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "e4effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-17",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "e6effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-18",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "e8effe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-19",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "eaeffe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-20",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "eceffe81-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-21",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "96c6f987-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-22",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "98c6f987-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-23",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "9ac6f987-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-24",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "9cc6f987-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-25",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "9ec6f987-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-26",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "a0c6f987-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v94-27",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "a2c6f987-91cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "arreglo-h16-statecode",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "7be8d3d5-91cc-f111-a05b-00224808ffcd",
+   "nota": "H-16 (a) statecode=1 sin statuscode"
+  },
+  {
+   "clave": "arreglo-01",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "81e8d3d5-91cc-f111-a05b-00224808ffcd",
+   "nota": "H-16 b / H-18 base"
+  },
+  {
+   "clave": "arreglo-h17-5565",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "4f4d13dd-91cc-f111-a05b-00224808ffcd",
+   "nota": "H-17 saldo 5.565"
+  },
+  {
+   "clave": "arreglo-h17-5575",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "524d13dd-91cc-f111-a05b-00224808ffcd",
+   "nota": "H-17 saldo 5.575"
+  },
+  {
+   "clave": "arreglo-60cuotas",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "554d13dd-91cc-f111-a05b-00224808ffcd",
+   "nota": "H-3 60 cuotas"
+  },
+  {
+   "clave": "arreglo-h19",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "51807043-92cc-f111-a05b-00224808ffcd",
+   "nota": "arreglo-h19"
+  },
+  {
+   "clave": "arreglo-h2-a",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "5a807043-92cc-f111-a05b-00224808ffcd",
+   "nota": "arreglo-h2-a"
+  },
+  {
+   "clave": "arreglo-h2-b",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "d4a87949-92cc-f111-a05b-00224808ffcd",
+   "nota": "arreglo-h2-b"
+  },
+  {
+   "clave": "arreglo-h2-c",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "dfa87949-92cc-f111-a05b-00224808ffcd",
+   "nota": "arreglo-h2-c"
+  },
+  {
+   "clave": "arreglo-h2-d",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "e5a87949-92cc-f111-a05b-00224808ffcd",
+   "nota": "arreglo-h2-d"
+  },
+  {
+   "clave": "conv-h31-1",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "1e38d272-92cc-f111-a05b-00224808ffcd",
+   "nota": "H-31"
+  },
+  {
+   "clave": "conv-h31-2",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "2138d272-92cc-f111-a05b-00224808ffcd",
+   "nota": "H-31"
+  },
+  {
+   "clave": "conv-h31-3",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "2438d272-92cc-f111-a05b-00224808ffcd",
+   "nota": "H-31"
+  },
+  {
+   "clave": "conv-h31-4",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "2738d272-92cc-f111-a05b-00224808ffcd",
+   "nota": "H-31"
+  },
+  {
+   "clave": "conv-h31-5",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "2a38d272-92cc-f111-a05b-00224808ffcd",
+   "nota": "H-31"
+  }
+ ]
+}

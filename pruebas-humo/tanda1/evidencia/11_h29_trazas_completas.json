@@ -1,0 +1,595 @@
+[
+ {
+  "inicio": "2026-10-20T14:16:42.187Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "aeb20987",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] rechazo CARP-TOM-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-TOM-001: Falta la conversación que se quiere tomar.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid executi"
+ },
+ {
+  "inicio": "2026-10-20T14:16:42.437Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 109,
+  "corr": "ded86772",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] rechazo CARP-TOM-002"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-TOM-002: No se encontró la conversación o no tiene acceso a ella.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest"
+ },
+ {
+  "inicio": "2026-10-20T14:16:42.797Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 265,
+  "corr": "66367e38",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] asignada",
+   "[TomarConversacionApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:42.89Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "66367e38",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=b88eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:42.953Z",
+  "tipo": "ConversacionAsignacionStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "66367e38",
+  "lineas": [
+   "[ConversacionAsignacionStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=b88eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionAsignacionStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:43.297Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "d3b9fa1a",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] ya asignada al llamador",
+   "[TomarConversacionApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:44.11Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 234,
+  "corr": "80d4c6f7",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] asignada",
+   "[TomarConversacionApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:44.203Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "80d4c6f7",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=ba8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:44.283Z",
+  "tipo": "ConversacionAsignacionStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "80d4c6f7",
+  "lineas": [
+   "[ConversacionAsignacionStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=ba8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionAsignacionStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:44.797Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "4a3fe050",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] rechazo CARP-TOM-004"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-TOM-004: La conversación ya fue tomada por # PowerPlatform-Dev.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, "
+ },
+ {
+  "inicio": "2026-10-20T14:16:45.097Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "2204dbf8",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c08eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] columnas escritas: sanic_finalizadoporid, sanic_fechafinalizacion, sanic_sinrespuestadesde, sanic_tiempototal, sanic_motivosinrespuesta, sanic_detallesinrespuesta",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:45.407Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "5260dc63",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] rechazo CARP-TOM-003"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-TOM-003: Solo se puede tomar una conversación abierta.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid exec"
+ },
+ {
+  "inicio": "2026-10-20T14:16:45.767Z",
+  "tipo": "IniciarConversacionNuevaApi",
+  "msg": "sanic_carp_capi_iniciarconversacionnueva",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "9dfaa7a3",
+  "lineas": [
+   "[IniciarConversacionNuevaApi] entrada profundidad=1",
+   "[IniciarConversacionNuevaApi] rechazo CARP-INI-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-INI-001: Falta la conversación.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid executionId, ISandboxFabric"
+ },
+ {
+  "inicio": "2026-10-20T14:16:46.017Z",
+  "tipo": "IniciarConversacionNuevaApi",
+  "msg": "sanic_carp_capi_iniciarconversacionnueva",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "82fd525e",
+  "lineas": [
+   "[IniciarConversacionNuevaApi] entrada profundidad=1",
+   "[IniciarConversacionNuevaApi] rechazo CARP-INI-002"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-INI-002: No se encontró la conversación o no tiene acceso a ella.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest"
+ },
+ {
+  "inicio": "2026-10-20T14:16:46.283Z",
+  "tipo": "IniciarConversacionNuevaApi",
+  "msg": "sanic_carp_capi_iniciarconversacionnueva",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "87678d3c",
+  "lineas": [
+   "[IniciarConversacionNuevaApi] entrada profundidad=1",
+   "[IniciarConversacionNuevaApi] rechazo CARP-INI-003"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-INI-003: Solo una conversación finalizada con correos nuevos puede iniciar una conversación nueva.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginReque"
+ },
+ {
+  "inicio": "2026-10-20T14:16:46.563Z",
+  "tipo": "IniciarConversacionNuevaApi",
+  "msg": "sanic_carp_capi_iniciarconversacionnueva",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "6ecde0bd",
+  "lineas": [
+   "[IniciarConversacionNuevaApi] entrada profundidad=1",
+   "[IniciarConversacionNuevaApi] rechazo CARP-INI-003"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-INI-003: Solo una conversación finalizada con correos nuevos puede iniciar una conversación nueva.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginReque"
+ },
+ {
+  "inicio": "2026-10-20T14:16:46.86Z",
+  "tipo": "IniciarConversacionNuevaApi",
+  "msg": "sanic_carp_capi_iniciarconversacionnueva",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "e3781dd9",
+  "lineas": [
+   "[IniciarConversacionNuevaApi] entrada profundidad=1",
+   "[IniciarConversacionNuevaApi] rechazo CARP-INI-003"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-INI-003: Solo una conversación finalizada con correos nuevos puede iniciar una conversación nueva.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginReque"
+ },
+ {
+  "inicio": "2026-10-20T14:16:47.203Z",
+  "tipo": "ReconciliarCorreosApi",
+  "msg": "sanic_carp_capi_reconciliarcorreos",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "c96cece9",
+  "lineas": [
+   "[ReconciliarCorreosApi] entrada profundidad=1",
+   "[ReconciliarCorreosApi] rechazo CARP-REC-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-REC-001: El máximo de correos no puede ser negativo.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid execut"
+ },
+ {
+  "inicio": "2026-10-20T14:16:47.47Z",
+  "tipo": "ReconciliarCorreosApi",
+  "msg": "sanic_carp_capi_reconciliarcorreos",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "2deac1f0",
+  "lineas": [
+   "[ReconciliarCorreosApi] entrada profundidad=1",
+   "[ReconciliarCorreosApi] rechazo CARP-REC-002"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-REC-002: Los minutos mínimos no pueden ser negativos.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid execu"
+ },
+ {
+  "inicio": "2026-10-20T14:16:47.72Z",
+  "tipo": "ReconciliarCorreosApi",
+  "msg": "sanic_carp_capi_reconciliarcorreos",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 390,
+  "corr": "f5f798ad",
+  "lineas": [
+   "[ReconciliarCorreosApi] entrada profundidad=1",
+   "[ReconciliarCorreosApi] rechazo CARP-REC-003"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-REC-003: El correo indicado no existe o no es un correo entrante sin conversación.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteReque"
+ },
+ {
+  "inicio": "2026-10-20T14:16:48.36Z",
+  "tipo": "ReconciliarCorreosApi",
+  "msg": "sanic_carp_capi_reconciliarcorreos",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 109,
+  "corr": "9d34688b",
+  "lineas": [
+   "[ReconciliarCorreosApi] entrada profundidad=1",
+   "[ReconciliarCorreosApi] reconciliacion: 0 procesados, 0 omitidos",
+   "[ReconciliarCorreosApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:48.69Z",
+  "tipo": "ReconciliarCorreosApi",
+  "msg": "sanic_carp_capi_reconciliarcorreos",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "e34c9741",
+  "lineas": [
+   "[ReconciliarCorreosApi] entrada profundidad=1",
+   "[ReconciliarCorreosApi] reconciliacion: 0 procesados, 0 omitidos",
+   "[ReconciliarCorreosApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:49.003Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "8382593a",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=3bb35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:49.063Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "8382593a",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=3bb35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:49.503Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "b01a8f08",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=3db35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:49.563Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "b01a8f08",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=3db35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:49.86Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "a599edbb",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=3fb35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:49.923Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "a599edbb",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=3fb35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:50.207Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "a5d11781",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=41b35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:50.267Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "a5d11781",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=41b35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:50.61Z",
+  "tipo": "UnirConversacionesApi",
+  "msg": "sanic_carp_capi_unirconversaciones",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "f839d835",
+  "lineas": [
+   "[UnirConversacionesApi] entrada profundidad=1",
+   "[UnirConversacionesApi] rechazo CARP-UNI-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-UNI-001: Faltan la conversación de origen o la de destino.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid "
+ },
+ {
+  "inicio": "2026-10-20T14:16:50.86Z",
+  "tipo": "UnirConversacionesApi",
+  "msg": "sanic_carp_capi_unirconversaciones",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "a11abd7a",
+  "lineas": [
+   "[UnirConversacionesApi] entrada profundidad=1",
+   "[UnirConversacionesApi] rechazo CARP-UNI-002"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-UNI-002: No se puede unir una conversación consigo misma.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid e"
+ },
+ {
+  "inicio": "2026-10-20T14:16:51.11Z",
+  "tipo": "UnirConversacionesApi",
+  "msg": "sanic_carp_capi_unirconversaciones",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 296,
+  "corr": "80a83918",
+  "lineas": [
+   "[UnirConversacionesApi] entrada profundidad=1",
+   "[UnirConversacionesApi] unidas correos=0 arreglos=0",
+   "[UnirConversacionesApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:51.283Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "80a83918",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=3bb35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:52.003Z",
+  "tipo": "UnirConversacionesApi",
+  "msg": "sanic_carp_capi_unirconversaciones",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 249,
+  "corr": "e609b107",
+  "lineas": [
+   "[UnirConversacionesApi] entrada profundidad=1",
+   "[UnirConversacionesApi] unidas correos=0 arreglos=0",
+   "[UnirConversacionesApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:52.11Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "e609b107",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=3fb35ddf-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:16:52.753Z",
+  "tipo": "UnirConversacionesApi",
+  "msg": "sanic_carp_capi_unirconversaciones",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "22aa788f",
+  "lineas": [
+   "[UnirConversacionesApi] entrada profundidad=1",
+   "[UnirConversacionesApi] rechazo CARP-UNI-004"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-UNI-004: La conversación de origen debe estar abierta.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid exec"
+ },
+ {
+  "inicio": "2026-10-20T14:16:53.017Z",
+  "tipo": "UnirConversacionesApi",
+  "msg": "sanic_carp_capi_unirconversaciones",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "bdf3cb9f",
+  "lineas": [
+   "[UnirConversacionesApi] entrada profundidad=1",
+   "[UnirConversacionesApi] rechazo CARP-UNI-005"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-UNI-005: La conversación de destino debe estar abierta.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid exe"
+ },
+ {
+  "inicio": "2026-10-20T14:16:53.3Z",
+  "tipo": "UnirConversacionesApi",
+  "msg": "sanic_carp_capi_unirconversaciones",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "2d66c8e0",
+  "lineas": [
+   "[UnirConversacionesApi] entrada profundidad=1",
+   "[UnirConversacionesApi] rechazo CARP-UNI-003"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-UNI-003: No se encontró alguna de las conversaciones o no tiene acceso a ella.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest e"
+ }
+]

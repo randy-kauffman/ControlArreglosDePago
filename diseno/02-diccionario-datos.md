@@ -610,7 +610,7 @@ Fuente: RNF-02 y §6 Datos (Volumen): unas 4.000 conversaciones y 3.000 arreglos
 | Cuota | 180.000 (3.000 × 60) | **1.260.000** | **1,26 a 1,89 GB** | Dominan la base. Coincide con el "1 a 2 GB" de la definición |
 | Generación de formato | ≤ 9.000 (supuesto: 3 por arreglo: firma, reimpresión tras desbloqueo, reapertura) | ≤ 63.000 | ≈ 63 MB | Se purga con el arreglo |
 | Versión de plantilla | unas pocas | decenas (catálogo, no se purga) | archivos de decenas de KB; tope por `MaxSizeInKB` = 5 MB cada una | v07 pesa 32 KB (spike 1) |
-| Mapeo de celda | 27 por versión nueva | ≈ 1.400 con 50 versiones | despreciable | El mapeo v07 del mockup tiene 27 filas |
+| Mapeo de celda | 27 por versión nueva | ≈ 1.400 con 50 versiones | despreciable | El mapeo v07 del mockup tiene 28 filas, porque `clienteNombre` y `fechaFormalizacion` van dos veces (medido en la tanda 1 de humo, 2026-10-20) |
 | **Total tablas propias** | | | **≈ 1,4 a 2,1 GB** | A validar con el reporte de capacidad del tenant (C-02, riesgo de capacidad) |
 
 **Log de auditoría.** La auditoría de tabla registra altas, cambios y bajas y consume capacidad de log, aparte de la de base de datos (Learn, *Manage Dataverse auditing*). Con Cuota auditada, cada alta de cuota es una fila de auditoría (hasta 180.000 por año), cada pago agrega otra (hasta 180.000 por año) y cada baja de la purga otra más. Los logs de auditoría no los purga el BulkDelete de la solución (D-20, pendiente de C-02): su retención es del entorno (P-15).

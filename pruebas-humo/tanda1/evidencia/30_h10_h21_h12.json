@@ -1,0 +1,284 @@
+[
+ {
+  "prueba": "H-10",
+  "sub": "linea base: ninguna Vigente antes de publicar",
+  "ok": true,
+  "esperado": [],
+  "obtenido": []
+ },
+ {
+  "prueba": "H-10",
+  "sub": "Publicar un Borrador sin archivo: CARP-VER-005",
+  "ok": true,
+  "esperado": "400 VER-005",
+  "obtenido": [
+   400,
+   "CARP-VER-005",
+   0.62
+  ]
+ },
+ {
+  "prueba": "H-10",
+  "sub": "Publicar con mapeo invalido (una sola fila suelta en una hoja inexistente): CARP-VER-007",
+  "ok": true,
+  "esperado": "400 VER-007",
+  "obtenido": [
+   400,
+   "CARP-VER-007",
+   "CARP-VER-007: El mapeo no se puede publicar: el bloque de cuotas está incompleto, faltan las columnas 'Cuota: número', 'Cuota: fecha de vencimiento', 'Cuota: monto', 'Cuota: fecha de pago', 'Cuota: monto pagado'.",
+   0.44
+  ]
+ },
+ {
+  "prueba": "H-10",
+  "sub": "Publicar con el mapeo completo pero la hoja 'FORMATO' sin el espacio inicial (PA-VER-08): CARP-VER-009 que lista las hojas reales",
+  "ok": true,
+  "esperado": "400 VER-009",
+  "obtenido": [
+   400,
+   "CARP-VER-009",
+   "CARP-VER-009: La plantilla y el mapeo no producen un formato válido: El mapeo es inválido: La hoja 'FORMATO' no existe en la plantilla. Hojas disponibles: ' FORMATO ARP ELECTRONICO', 'CONTROL DE PAGOS'. | La hoja 'CONTROL' no existe en la plantilla. Hojas disponibles: ' FORMATO ARP ELECTRONICO', 'CO",
+   0.94
+  ]
+ },
+ {
+  "prueba": "H-10",
+  "sub": "los rechazos no dejan Vigente ni cambian el estado",
+  "ok": true,
+  "esperado": [],
+  "obtenido": []
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(b) Borrador: reenviar sanic_huella=null (columna nula) no es cambio",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(b) Borrador: reenviar sanic_fechaaprobacion=null (columna nula) no es cambio",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(b) Borrador: reenviar sanic_aprobadoporid=null (columna nula) no es cambio",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(b) Borrador: reenviar nombre y capacidad iguales no es cambio",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(b) Mapeo Borrador: reenviar sanic_filasmaximas=None (nulo o igual) no es cambio (S-29)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(b) Mapeo Borrador: reenviar sanic_hoja='HUMO-hoja' (nulo o igual) no es cambio (S-29)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(b) Mapeo Borrador: reenviar sanic_celda='Z99' (nulo o igual) no es cambio (S-29)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(b) Mapeo Borrador: reenviar sanic_tipo=159460001 (nulo o igual) no es cambio (S-29)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(b) Mapeo: cambiar sanic_nombre a mano: CARP-MAP-008",
+  "ok": true,
+  "esperado": "400 MAP-008",
+  "obtenido": [
+   400,
+   "CARP-MAP-008"
+  ]
+ },
+ {
+  "prueba": "H-10",
+  "sub": "Publicar v90 (primera, sin Vigente previa): estado Vigente, huella = SHA-256 del archivo, aprobador = actor, fecha; tiempo",
+  "ok": true,
+  "esperado": "204, Vigente, huella correcta, aprobador=yo",
+  "obtenido": [
+   204,
+   null,
+   "",
+   {
+    "sanic_fechaaprobacion": "2026-10-20T14:21:33Z",
+    "sanic_huella": "8f6b4dd58f422ee55ba548f8bcbbf9432dbc59eb9564894d659c9a2367d4f63a",
+    "_sanic_aprobadoporid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+    "sanic_estado": 159460002,
+    "sanic_carp_tbl_versionplantillaid": "40d84729-91cc-f111-a05b-00224808ffcd",
+    "statecode": 0,
+    "sanic_archivo_name": "HUMO-v90.xlsx"
+   },
+   "huella==sha256 local",
+   1.09
+  ],
+  "segundos": 1.09
+ },
+ {
+  "prueba": "H-10",
+  "sub": "queda exactamente una Vigente (v90)",
+  "ok": true,
+  "esperado": [
+   "v90"
+  ],
+  "obtenido": [
+   "v90"
+  ]
+ },
+ {
+  "prueba": "H-12",
+  "sub": "(a) reemplazo del archivo por PATCH directo sobre una Vigente: rechazo CARP-VER-003 y el archivo queda como estaba (la 1a pasada, que deja null, se revierte)",
+  "ok": true,
+  "esperado": "4xx VER-003 y archivo igual",
+  "obtenido": [
+   400,
+   "CARP-VER-003",
+   "CARP-VER-003: Solo una versión en Borrador se puede modificar. Para cambiar el formato cree una versión nueva.",
+   "HUMO-v90.xlsx",
+   "HUMO-v90.xlsx",
+   true
+  ]
+ },
+ {
+  "prueba": "H-12",
+  "sub": "Vigente: editar la capacidad: CARP-VER-003",
+  "ok": true,
+  "esperado": "400 VER-003",
+  "obtenido": [
+   400,
+   "CARP-VER-003"
+  ]
+ },
+ {
+  "prueba": "H-12",
+  "sub": "(c) DELETE .../sanic_archivo sobre la Vigente v90: S-27 lo ve? (rechazo = el archivo se conserva)",
+  "ok": true,
+  "esperado": "rechazo y archivo conservado",
+  "obtenido": [
+   400,
+   "CARP-VER-003",
+   "CARP-VER-003: Solo una versión en Borrador se puede modificar. Para cambiar el formato cree una versión nueva.",
+   "archivo CONSERVADO",
+   "HUMO-v90.xlsx"
+  ],
+  "borrado": false
+ },
+ {
+  "prueba": "H-10",
+  "sub": "Publicar v91 con v90 Vigente: v90 pasa a Historica (escritura de SYSTEM anidada, S-26 profundidad 2 la deja pasar por DC-03 = H-21 a), v91 Vigente con huella; tiempo",
+  "ok": true,
+  "esperado": "204, v90 Historica, v91 Vigente",
+  "obtenido": [
+   204,
+   null,
+   "",
+   159460003,
+   159460002,
+   0.55
+  ],
+  "segundos": 0.55
+ },
+ {
+  "prueba": "H-10",
+  "sub": "queda exactamente una Vigente (v91)",
+  "ok": true,
+  "esperado": [
+   "v91"
+  ],
+  "obtenido": [
+   "v91"
+  ]
+ },
+ {
+  "prueba": "H-10",
+  "sub": "Historica: editar: CARP-VER-003",
+  "ok": true,
+  "esperado": "400 VER-003",
+  "obtenido": [
+   400,
+   "CARP-VER-003"
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(e) ITracingService no recibe el nombre de la hoja ni datos del archivo en ningun rechazo de Publicar",
+  "ok": false,
+  "esperado": "0 trazas con nombres de hoja",
+  "obtenido": [
+   0,
+   [],
+   [
+    [
+     "VersionPlantillaActualizarStep",
+     "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-VER-009: La plantilla y el mapeo no producen un formato válido: El mapeo es inválido: La hoja 'FORMATO' no existe"
+    ]
+   ]
+  ]
+ },
+ {
+  "prueba": "H-21",
+  "sub": "(a) traza del Update anidado de v90 a Historica: VersionPlantillaActualizarStep a profundidad 2 y salida correcta (identidad SYSTEM)",
+  "ok": true,
+  "esperado": "depth 2 + salida correcta",
+  "obtenido": [
+   [
+    2,
+    "[VersionPlantillaActualizarStep] salida correcta"
+   ]
+  ]
+ }
+]

@@ -1,0 +1,576 @@
+[
+ {
+  "prueba": "H-14",
+  "sub": "alta del cliente HUMO (ClienteStep)",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": [
+   201,
+   {
+    "nombre": "HUMO Cliente 01",
+    "cedula": "HUMO-CED-01"
+   }
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(a) alta sin sanic_nombre: la fila guarda CONV-nnnnnn y el step S-36 la deja pasar",
+  "ok": true,
+  "esperado": "201 y CONV-nnnnnn",
+  "obtenido": [
+   201,
+   "CONV-001154",
+   ""
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(a bis) alta con sanic_nombre=null: pasa y la plataforma completa el autonumerico",
+  "ok": true,
+  "esperado": "201 y CONV-nnnnnn",
+  "obtenido": [
+   201,
+   "CONV-001155",
+   ""
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(a ter) alta con sanic_nombre='': pasa",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": [
+   201,
+   "CONV-001156",
+   ""
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(b,d) alta con sanic_nombre='ZZV-NOMBRE': S-36 rechaza con CARP-CNV-001 y no queda fila",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001",
+  "obtenido": [
+   400,
+   "CARP-CNV-001"
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(b,d) alta con sanic_nombre='conv-000001': S-36 rechaza con CARP-CNV-001 y no queda fila",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001",
+  "obtenido": [
+   400,
+   "CARP-CNV-001"
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(b,d) alta con sanic_nombre='CONV-12345': S-36 rechaza con CARP-CNV-001 y no queda fila",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001",
+  "obtenido": [
+   400,
+   "CARP-CNV-001"
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(b,d) alta con sanic_nombre='CONV-000001 ': S-36 rechaza con CARP-CNV-001 y no queda fila",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001",
+  "obtenido": [
+   400,
+   "CARP-CNV-001"
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(b) alta con sanic_nombre='CONV-777777': se guarda tal cual",
+  "ok": true,
+  "esperado": "201 y CONV-777777",
+  "obtenido": [
+   201,
+   "CONV-777777",
+   ""
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(c) Update de persona sobre sanic_clienteid: pasa (si la plataforma agregara un sanic_nombre distinto, daria CARP-CNV-001) y el nombre no cambia",
+  "ok": true,
+  "esperado": "204 y nombre igual",
+  "obtenido": [
+   204,
+   null,
+   true
+  ]
+ },
+ {
+  "prueba": "H-14",
+  "sub": "(c bis) Update de persona que cambia sanic_nombre: CARP-CNV-001",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001",
+  "obtenido": [
+   400,
+   "CARP-CNV-001"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "alta de una Abierta con todas las columnas vigiladas pobladas",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": [
+   201,
+   "ok"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_huellamessageid=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_fechaprimercorreo=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_asunto=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_remitente=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_sinrespuestadesde=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_correonuevoenfinalizada=False se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_fechafinalizacion=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_tiempoprimerarespuesta=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_tiempototal=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_cantidadrespuestas=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_unidaaid=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_finalizadoporid=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_nombre=None se detecta como cambio",
+  "ok": true,
+  "esperado": "400 CARP-CNV-001 nombrando la columna",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   true,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_resultado=null se detecta (gesto, CARP-CNV-005)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-005",
+  "obtenido": [
+   400,
+   "CARP-CNV-005"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_motivosinrespuesta=null se detecta (gesto, CARP-CNV-005)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-005",
+  "obtenido": [
+   400,
+   "CARP-CNV-005"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) Abierta con valor: PATCH sanic_detallesinrespuesta=null se detecta (gesto, CARP-CNV-005)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-005",
+  "obtenido": [
+   400,
+   "CARP-CNV-005"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) columnas NULAS reenviadas como null: no son cambio (ausente = nulo)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(a) mismo valor reenviado sobre columnas con valor: no es cambio",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "Finalizar (statecode=1/statuscode=2): efectos del step (finalizadopor=actor, tiempototal, sinrespuestadesde=null)",
+  "ok": true,
+  "esperado": "204, Finalizada, finalizadopor=yo, sinrespuestadesde=null",
+  "obtenido": [
+   204,
+   null,
+   {
+    "_sanic_finalizadoporid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+    "sanic_carp_tbl_conversacionid": "c48eeaa1-90cc-f111-a05b-00224808ffcd",
+    "statecode": 1,
+    "sanic_fechafinalizacion": "2026-10-20T14:15:13Z",
+    "sanic_sinrespuestadesde": null,
+    "sanic_tiempototal": 255,
+    "statuscode": 2
+   }
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_huellamessageid=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_fechaprimercorreo=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_asunto=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_remitente=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_sinrespuestadesde=None se detecta (CARP-CNV-009)",
+  "ok": false,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   204,
+   null
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_correonuevoenfinalizada=False se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_fechafinalizacion=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_tiempoprimerarespuesta=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_tiempototal=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_cantidadrespuestas=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_unidaaid=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_finalizadoporid=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_nombre=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_resultado=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_motivosinrespuesta=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: PATCH sanic_detallesinrespuesta=None se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: clienteid=null se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: oficialasignadoid=null se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: nombre cambiado se detecta (CARP-CNV-009)",
+  "ok": true,
+  "esperado": "400 CARP-CNV-009",
+  "obtenido": [
+   400,
+   "CARP-CNV-009"
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "(b) Finalizada: reenviar el MISMO cliente, oficial y propietario no es cambio (pre-imagen trae sus valores)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-15",
+  "sub": "Reabrir (statecode=0/statuscode=1): efectos del step y estado Abierta",
+  "ok": true,
+  "esperado": "204, Abierta, resultado=null, indicador=false",
+  "obtenido": [
+   204,
+   null,
+   {
+    "sanic_carp_tbl_conversacionid": "c48eeaa1-90cc-f111-a05b-00224808ffcd",
+    "sanic_correonuevoenfinalizada": false,
+    "sanic_resultado": null,
+    "statecode": 0,
+    "sanic_fechafinalizacion": null,
+    "sanic_sinrespuestadesde": null,
+    "statuscode": 1
+   }
+  ]
+ }
+]

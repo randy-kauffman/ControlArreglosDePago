@@ -1,0 +1,330 @@
+[
+ {
+  "prueba": "H-29",
+  "sub": "tomar sin conversacionid: CARP-TOM-001",
+  "ok": true,
+  "esperado": "400 TOM-001",
+  "obtenido": [
+   400,
+   "CARP-TOM-001",
+   "CARP-TOM-001: Falta la conversación que se quiere tomar."
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "tomar con id inexistente: CARP-TOM-002",
+  "ok": true,
+  "esperado": "400 TOM-002",
+  "obtenido": [
+   400,
+   "CARP-TOM-002"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "tomar DIRECTO (admin): oficial = el llamador; salidas Guid/String/Boolean",
+  "ok": true,
+  "esperado": "oficial=yo, yaasignada=false",
+  "obtenido": [
+   200,
+   null,
+   true,
+   {
+    "oficialasignadoid": "str",
+    "oficialnombre": "str",
+    "yaasignada": "bool"
+   },
+   0.51
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "tomar de nuevo (idempotente): yaasignada=true",
+  "ok": true,
+  "esperado": "yaasignada=true",
+  "obtenido": [
+   200,
+   true,
+   null
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "tomar con CallerId=Randy: oficial asignado = InitiatingUserId (Randy, no el app user)",
+  "ok": true,
+  "esperado": "oficialasignadoid=Randy",
+  "obtenido": [
+   200,
+   null,
+   "Randy",
+   "Randy Kauffman DEV"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "tomar una conversacion ya tomada por otro (c4 la tiene el app user): CARP-TOM-004 con su nombre",
+  "ok": true,
+  "esperado": "400 TOM-004",
+  "obtenido": [
+   400,
+   "CARP-TOM-004",
+   "CARP-TOM-004: La conversación ya fue tomada por # PowerPlatform-Dev."
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "preparacion: Finalizar c777 (ConArregloDePago)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "tomar una Finalizada: CARP-TOM-003",
+  "ok": true,
+  "esperado": "400 TOM-003",
+  "obtenido": [
+   400,
+   "CARP-TOM-003"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "iniciar sin id: CARP-INI-001",
+  "ok": true,
+  "esperado": "400 INI-001",
+  "obtenido": [
+   400,
+   "CARP-INI-001"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "iniciar con id inexistente: CARP-INI-002",
+  "ok": true,
+  "esperado": "400 INI-002",
+  "obtenido": [
+   400,
+   "CARP-INI-002"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "iniciar sobre una Abierta DIRECTO: CARP-INI-003",
+  "ok": true,
+  "esperado": "400 INI-003",
+  "obtenido": [
+   400,
+   "CARP-INI-003"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "iniciar sobre una Abierta con CallerId: CARP-INI-003",
+  "ok": true,
+  "esperado": "400 INI-003",
+  "obtenido": [
+   400,
+   "CARP-INI-003"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "iniciar sobre una Finalizada sin indicador: CARP-INI-003",
+  "ok": true,
+  "esperado": "400 INI-003",
+  "obtenido": [
+   400,
+   "CARP-INI-003"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "reconciliar maximo=-1: CARP-REC-001",
+  "ok": true,
+  "esperado": "400 REC-001",
+  "obtenido": [
+   400,
+   "CARP-REC-001"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "reconciliar minutosminimos=-5: CARP-REC-002",
+  "ok": true,
+  "esperado": "400 REC-002",
+  "obtenido": [
+   400,
+   "CARP-REC-002"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "reconciliar con emailid inexistente: CARP-REC-003",
+  "ok": true,
+  "esperado": "400 REC-003",
+  "obtenido": [
+   400,
+   "CARP-REC-003"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "reconciliar DIRECTO maximo=1 (0 candidatos en la BU del area): salidas Integer/Boolean/String",
+  "ok": true,
+  "esperado": "encontrados=0, haymas=false, detalle='[]'",
+  "obtenido": [
+   200,
+   null,
+   {
+    "encontrados": "int",
+    "registrados": "int",
+    "conerror": "int",
+    "haymas": "bool",
+    "detalle": "str"
+   },
+   {
+    "encontrados": 0,
+    "registrados": 0,
+    "conerror": 0,
+    "haymas": false,
+    "detalle": "[]"
+   },
+   0.35
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "reconciliar con CallerId",
+  "ok": true,
+  "esperado": "encontrados=0",
+  "obtenido": [
+   200,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "unir sin ids: CARP-UNI-001",
+  "ok": true,
+  "esperado": "400 UNI-001",
+  "obtenido": [
+   400,
+   "CARP-UNI-001"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "unir consigo misma: CARP-UNI-002",
+  "ok": true,
+  "esperado": "400 UNI-002",
+  "obtenido": [
+   400,
+   "CARP-UNI-002"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "unir DIRECTO: origen Unida, unidaaid=destino, finalizadoporid=el llamador; los steps de Conversacion aceptan la escritura de SYSTEM de la API",
+  "ok": true,
+  "esperado": "origen 1/159460001, finalizadopor=yo",
+  "obtenido": [
+   200,
+   null,
+   {
+    "destinoid": "str",
+    "correosmovidos": "int",
+    "arreglosrepunteados": "int"
+   },
+   {
+    "_sanic_finalizadoporid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+    "_sanic_unidaaid_value": "3db35ddf-90cc-f111-a05b-00224808ffcd",
+    "sanic_carp_tbl_conversacionid": "3bb35ddf-90cc-f111-a05b-00224808ffcd",
+    "statecode": 1,
+    "sanic_fechafinalizacion": "2026-10-20T14:16:50Z",
+    "sanic_sinrespuestadesde": null,
+    "statuscode": 159460001
+   },
+   0.54
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "unir con CallerId=Randy: finalizadoporid = InitiatingUserId (Randy)",
+  "ok": true,
+  "esperado": "finalizadopor=Randy",
+  "obtenido": [
+   200,
+   null,
+   "Randy",
+   ""
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "unir con origen ya Unida: CARP-UNI-004",
+  "ok": true,
+  "esperado": "400 UNI-004",
+  "obtenido": [
+   400,
+   "CARP-UNI-004"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "unir con destino Unida: CARP-UNI-005",
+  "ok": true,
+  "esperado": "400 UNI-005",
+  "obtenido": [
+   400,
+   "CARP-UNI-005"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "unir con destino inexistente: CARP-UNI-003",
+  "ok": true,
+  "esperado": "400 UNI-003",
+  "obtenido": [
+   400,
+   "CARP-UNI-003"
+  ]
+ },
+ {
+  "prueba": "H-29",
+  "sub": "contexto de la traza de la API: MessageName = uniquename, PrimaryEntityName, Mode sincrono, Depth",
+  "ok": true,
+  "esperado": "visible en plugintracelog",
+  "obtenido": [
+   [
+    "TomarConversacionApi",
+    "sanic_carp_capi_tomarconversacion",
+    "none",
+    1,
+    0,
+    7
+   ],
+   [
+    "IniciarConversacionNuevaApi",
+    "sanic_carp_capi_iniciarconversacionnueva",
+    "none",
+    1,
+    0,
+    5
+   ],
+   [
+    "ReconciliarCorreosApi",
+    "sanic_carp_capi_reconciliarcorreos",
+    "none",
+    1,
+    0,
+    2
+   ]
+  ]
+ }
+]

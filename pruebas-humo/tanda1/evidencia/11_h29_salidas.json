@@ -1,0 +1,154 @@
+{
+ "tom_sin_id": {
+  "http": 400,
+  "seg": 1.01,
+  "cuerpo": "CARP-TOM-001: Falta la conversación que se quiere tomar."
+ },
+ "tom_inexistente": {
+  "http": 400,
+  "seg": 0.33,
+  "cuerpo": "CARP-TOM-002: No se encontró la conversación o no tiene acceso a ella."
+ },
+ "tom_directo": {
+  "http": 200,
+  "seg": 0.51,
+  "cuerpo": {
+   "oficialasignadoid": "ffc778df-d287-f111-8075-70a8a5af5a32",
+   "oficialnombre": "# PowerPlatform-Dev",
+   "yaasignada": false
+  }
+ },
+ "tom_directo_2": {
+  "http": 200,
+  "seg": 0.28,
+  "cuerpo": {
+   "oficialasignadoid": "ffc778df-d287-f111-8075-70a8a5af5a32",
+   "oficialnombre": "# PowerPlatform-Dev",
+   "yaasignada": true
+  }
+ },
+ "tom_callerid": {
+  "http": 200,
+  "seg": 1.0,
+  "cuerpo": {
+   "oficialasignadoid": "12b85b09-58f3-f011-8407-000d3a316609",
+   "oficialnombre": "Randy Kauffman DEV",
+   "yaasignada": false
+  }
+ },
+ "tom_otro_oficial": {
+  "http": 400,
+  "seg": 0.26,
+  "cuerpo": "CARP-TOM-004: La conversación ya fue tomada por # PowerPlatform-Dev."
+ },
+ "tom_finalizada": {
+  "http": 400,
+  "seg": 0.27,
+  "cuerpo": "CARP-TOM-003: Solo se puede tomar una conversación abierta."
+ },
+ "ini_sin_id": {
+  "http": 400,
+  "seg": 0.34,
+  "cuerpo": "CARP-INI-001: Falta la conversación."
+ },
+ "ini_inexistente": {
+  "http": 400,
+  "seg": 0.27,
+  "cuerpo": "CARP-INI-002: No se encontró la conversación o no tiene acceso a ella."
+ },
+ "ini_abierta": {
+  "http": 400,
+  "seg": 0.27,
+  "cuerpo": "CARP-INI-003: Solo una conversación finalizada con correos nuevos puede iniciar una conversación nueva."
+ },
+ "ini_abierta_callerid": {
+  "http": 400,
+  "seg": 0.27,
+  "cuerpo": "CARP-INI-003: Solo una conversación finalizada con correos nuevos puede iniciar una conversación nueva."
+ },
+ "ini_finalizada_sin_indicador": {
+  "http": 400,
+  "seg": 0.31,
+  "cuerpo": "CARP-INI-003: Solo una conversación finalizada con correos nuevos puede iniciar una conversación nueva."
+ },
+ "rec_max_neg": {
+  "http": 400,
+  "seg": 0.34,
+  "cuerpo": "CARP-REC-001: El máximo de correos no puede ser negativo."
+ },
+ "rec_min_neg": {
+  "http": 400,
+  "seg": 0.26,
+  "cuerpo": "CARP-REC-002: Los minutos mínimos no pueden ser negativos."
+ },
+ "rec_email_inexistente": {
+  "http": 400,
+  "seg": 0.63,
+  "cuerpo": "CARP-REC-003: El correo indicado no existe o no es un correo entrante sin conversación."
+ },
+ "rec_directo": {
+  "http": 200,
+  "seg": 0.35,
+  "cuerpo": {
+   "encontrados": 0,
+   "registrados": 0,
+   "conerror": 0,
+   "haymas": false,
+   "detalle": "[]"
+  }
+ },
+ "rec_callerid": {
+  "http": 200,
+  "seg": 0.28,
+  "cuerpo": {
+   "encontrados": 0,
+   "registrados": 0,
+   "conerror": 0,
+   "haymas": false,
+   "detalle": "[]"
+  }
+ },
+ "uni_sin_ids": {
+  "http": 400,
+  "seg": 0.31,
+  "cuerpo": "CARP-UNI-001: Faltan la conversación de origen o la de destino."
+ },
+ "uni_iguales": {
+  "http": 400,
+  "seg": 0.24,
+  "cuerpo": "CARP-UNI-002: No se puede unir una conversación consigo misma."
+ },
+ "uni_directo": {
+  "http": 200,
+  "seg": 0.54,
+  "cuerpo": {
+   "destinoid": "3db35ddf-90cc-f111-a05b-00224808ffcd",
+   "correosmovidos": 0,
+   "arreglosrepunteados": 0
+  }
+ },
+ "uni_callerid": {
+  "http": 200,
+  "seg": 0.57,
+  "cuerpo": {
+   "destinoid": "41b35ddf-90cc-f111-a05b-00224808ffcd",
+   "correosmovidos": 0,
+   "arreglosrepunteados": 0
+  }
+ },
+ "uni_origen_unida": {
+  "http": 400,
+  "seg": 0.29,
+  "cuerpo": "CARP-UNI-004: La conversación de origen debe estar abierta."
+ },
+ "uni_destino_unida": {
+  "http": 400,
+  "seg": 0.26,
+  "cuerpo": "CARP-UNI-005: La conversación de destino debe estar abierta."
+ },
+ "uni_inexistente": {
+  "http": 400,
+  "seg": 0.27,
+  "cuerpo": "CARP-UNI-003: No se encontró alguna de las conversaciones o no tiene acceso a ella."
+ }
+}

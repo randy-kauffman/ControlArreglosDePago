@@ -1,0 +1,1915 @@
+[
+ {
+  "inicio": "2026-10-20T14:18:47.243Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 125,
+  "corr": "11222a04",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_versionplantilla id=3dd84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:47.367Z",
+  "tipo": "VersionPlantillaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "11222a04",
+  "lineas": [
+   "[VersionPlantillaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_versionplantilla id=3dd84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:48.54Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "d80d472f",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_versionplantilla id=40d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:48.603Z",
+  "tipo": "VersionPlantillaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "d80d472f",
+  "lineas": [
+   "[VersionPlantillaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_versionplantilla id=40d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:49.197Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "3bb5ab7a",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=40d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:49.227Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "3bb5ab7a",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=40d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:53.573Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "96ae30b0",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=40d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:53.617Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "96ae30b0",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=40d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:53.823Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "96ae30b0",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=40d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:53.837Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "96ae30b0",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=40d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:54.4Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "fc1ae064",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=44d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:54.463Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "fc1ae064",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=44d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:55.027Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "cf68f430",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=46d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:55.103Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "cf68f430",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=46d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:55.447Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "d806132e",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=48d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:55.527Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "d806132e",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=48d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:55.837Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "2518c7ef",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=4ad84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:55.9Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "2518c7ef",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=4ad84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:56.23Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "3d04daf1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=4cd84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:56.29Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "3d04daf1",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=4cd84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:56.603Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "04e229da",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=4ed84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:56.697Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "04e229da",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=4ed84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:56.98Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "4e1b1b59",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=50d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:57.057Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "4e1b1b59",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=50d84729-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:57.37Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "1b8dd874",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=f2db492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:57.433Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1b8dd874",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=f2db492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:57.76Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "ad47fb4a",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=f4db492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:57.837Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "ad47fb4a",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=f4db492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:58.167Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "401744bc",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=f6db492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:58.23Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "401744bc",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=f6db492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:58.51Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "01bc14cd",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=f8db492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:58.573Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "01bc14cd",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=f8db492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:58.857Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "e2d7d104",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=fadb492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:58.9Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "e2d7d104",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=fadb492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:59.197Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "b3b373db",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=fcdb492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:59.247Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "b3b373db",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=fcdb492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:59.543Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "b7889b9e",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=fedb492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:59.59Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "b7889b9e",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=fedb492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:59.87Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "a7bab340",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=00dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:18:59.947Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "a7bab340",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=00dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:00.247Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "3799d050",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=02dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:00.307Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "3799d050",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=02dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:00.65Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "a88970fb",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=04dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:00.697Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "a88970fb",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=04dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:00.997Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "9045b85b",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=06dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:01.057Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "9045b85b",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=06dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:01.4Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 93,
+  "corr": "a0366295",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=08dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:01.497Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "a0366295",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=08dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:02.34Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "5066eadc",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=0adc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:02.417Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "5066eadc",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=0adc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:02.713Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "5c7c17e6",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=0cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:02.777Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "5c7c17e6",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=0cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:03.107Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "5a71ce7b",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=0edc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:03.15Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "5a71ce7b",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=0edc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:03.51Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 125,
+  "corr": "b992473d",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=10dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:03.637Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "b992473d",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=10dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:03.9Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "5f63d8ae",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=12dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:03.963Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "5f63d8ae",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=12dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:04.23Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "ac4d95a9",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=14dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:04.293Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "ac4d95a9",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=14dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:04.697Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "fe95d300",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=16dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:04.747Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "fe95d300",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=16dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:05.073Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "2d89bafb",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=18dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:05.15Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 18,
+  "corr": "2d89bafb",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=18dc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:05.467Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 93,
+  "corr": "6030b0ab",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=1adc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:05.56Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "6030b0ab",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=1adc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:05.857Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "8952a49d",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:05.92Z",
+  "tipo": "VersionPlantillaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "8952a49d",
+  "lineas": [
+   "[VersionPlantillaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:06.34Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "2862427b",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:06.357Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "2862427b",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:07.683Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "9cc1f34e",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:07.7Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "9cc1f34e",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:07.903Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "9cc1f34e",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:07.92Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "9cc1f34e",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:08.45Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "56bdae1a",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=793fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:08.527Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "56bdae1a",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=793fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:08.81Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "987121c1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=7b3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:08.857Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "987121c1",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=7b3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:09.153Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "da8896a1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=7d3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:09.2Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "da8896a1",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=7d3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:09.527Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 124,
+  "corr": "0f291d4f",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=7f3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:09.653Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "0f291d4f",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=7f3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:09.95Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "d17b934a",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=813fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:10.013Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "d17b934a",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=813fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:10.31Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "1033023b",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=833fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:10.373Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "1033023b",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=833fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:10.653Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "7ae31623",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=853fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:10.733Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "7ae31623",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=853fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:11.013Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "7dffefd1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=873fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:11.09Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "7dffefd1",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=873fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:11.373Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "042c72d1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=893fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:11.437Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "042c72d1",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=893fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:11.763Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 125,
+  "corr": "1f94ce6a",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=8b3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:11.887Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1f94ce6a",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=8b3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:12.2Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "113fa7c7",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=8d3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:12.263Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "113fa7c7",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=8d3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:12.543Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "683092a0",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=8f3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:12.607Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "683092a0",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=8f3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:12.903Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "25e68609",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=913fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:12.983Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "25e68609",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=913fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:13.34Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "f40466f3",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=933fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:13.403Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "f40466f3",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=933fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:13.717Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 140,
+  "corr": "25d04500",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=953fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:13.857Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "25d04500",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=953fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:14.153Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "d5bb0ebe",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=973fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:14.217Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "d5bb0ebe",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=973fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:14.483Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "73efad5c",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=993fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:14.543Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "73efad5c",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=993fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:14.84Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "c40bfba3",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=9b3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:14.903Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "c40bfba3",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=9b3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:15.187Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "d54aa2da",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=9d3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:15.247Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "d54aa2da",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=9d3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:15.543Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 93,
+  "corr": "6bc0e047",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=9f3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:15.637Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "6bc0e047",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=9f3fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:15.967Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 156,
+  "corr": "216c984a",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a13fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:16.123Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "216c984a",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a13fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:16.403Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "10a1a95f",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a33fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:16.467Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "10a1a95f",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a33fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:16.747Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "938f0cd7",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a53fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:16.81Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "938f0cd7",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a53fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:17.09Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 109,
+  "corr": "b3848054",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a73fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:17.2Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "b3848054",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a73fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:17.513Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "2e2f7c9b",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a93fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:19:17.56Z",
+  "tipo": "MapeoCeldaCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_mapeocelda",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "2e2f7c9b",
+  "lineas": [
+   "[MapeoCeldaCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_mapeocelda id=a93fb735-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[MapeoCeldaCrearStep] columnas escritas: sanic_celda, sanic_nombre",
+   "[MapeoCeldaCrearStep] salida correcta"
+  ],
+  "exc": ""
+ }
+]

@@ -1,0 +1,487 @@
+[
+ {
+  "inicio": "2026-10-20T14:28:01.527Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 109,
+  "corr": "37a82cc4",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=1e38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:01.637Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "37a82cc4",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=1e38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:02.073Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 500,
+  "corr": "a1f24045",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] asignada",
+   "[TomarConversacionApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:02.167Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 0,
+  "corr": "a1f24045",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=1e38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:02.167Z",
+  "tipo": "ConversacionAsignacionStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 249,
+  "corr": "a1f24045",
+  "lineas": [
+   "[ConversacionAsignacionStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=1e38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionAsignacionStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:02.417Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 171,
+  "corr": "6c61551e",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-TOM-900: La conversación cambió en este instante. Actualice la pantalla y vuelva a intentar.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Ex"
+ },
+ {
+  "inicio": "2026-10-20T14:28:03.23Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "bd8c8bb8",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2138d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:03.293Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "bd8c8bb8",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2138d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:03.73Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 125,
+  "corr": "b43a24a3",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] asignada",
+   "[TomarConversacionApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:03.747Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 125,
+  "corr": "60cb939c",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-TOM-900: La conversación cambió en este instante. Actualice la pantalla y vuelva a intentar.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Ex"
+ },
+ {
+  "inicio": "2026-10-20T14:28:03.777Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "b43a24a3",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=2138d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:03.793Z",
+  "tipo": "ConversacionAsignacionStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "b43a24a3",
+  "lineas": [
+   "[ConversacionAsignacionStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=2138d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionAsignacionStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:04.887Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "bf378b84",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2438d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:04.933Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "bf378b84",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2438d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:05.247Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 109,
+  "corr": "72f4c6d4",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] asignada",
+   "[TomarConversacionApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:05.263Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 156,
+  "corr": "722fa071",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-TOM-900: La conversación cambió en este instante. Actualice la pantalla y vuelva a intentar.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Ex"
+ },
+ {
+  "inicio": "2026-10-20T14:28:05.293Z",
+  "tipo": "ConversacionAsignacionStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "72f4c6d4",
+  "lineas": [
+   "[ConversacionAsignacionStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=2438d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionAsignacionStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:05.293Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 0,
+  "corr": "72f4c6d4",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=2438d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:05.937Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "8c35189a",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2738d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:05.997Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 0,
+  "corr": "8c35189a",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2738d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:06.293Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 109,
+  "corr": "612bdcf2",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] asignada",
+   "[TomarConversacionApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:06.34Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "612bdcf2",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=2738d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:06.357Z",
+  "tipo": "ConversacionAsignacionStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "612bdcf2",
+  "lineas": [
+   "[ConversacionAsignacionStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=2738d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionAsignacionStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:06.373Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "ca374a31",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-TOM-900: La conversación cambió en este instante. Actualice la pantalla y vuelva a intentar.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Ex"
+ },
+ {
+  "inicio": "2026-10-20T14:28:06.903Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "ae085d40",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2a38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:06.95Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "ae085d40",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2a38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:07.23Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 93,
+  "corr": "d306be51",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] asignada",
+   "[TomarConversacionApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:07.263Z",
+  "tipo": "TomarConversacionApi",
+  "msg": "sanic_carp_capi_tomarconversacion",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 93,
+  "corr": "c012cdb2",
+  "lineas": [
+   "[TomarConversacionApi] entrada profundidad=1",
+   "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-TOM-900: La conversación cambió en este instante. Actualice la pantalla y vuelva a intentar.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Ex"
+ },
+ {
+  "inicio": "2026-10-20T14:28:07.277Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "d306be51",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=2a38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:07.293Z",
+  "tipo": "ConversacionAsignacionStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "d306be51",
+  "lineas": [
+   "[ConversacionAsignacionStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=2a38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionAsignacionStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:08.013Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "9fdc7260",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2d38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:28:08.06Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "9fdc7260",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=2d38d272-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ }
+]

@@ -1,0 +1,198 @@
+[
+ {
+  "prueba": "H-4",
+  "sub": "generarformato como ADMIN (directo): archivo, congelado, provisional=1, instantanea, bitacora con generadoporid=actor; tiempo",
+  "ok": true,
+  "esperado": "200 y bitacora",
+  "obtenido": [
+   200,
+   null,
+   {
+    "archivo": "42868 chars b64",
+    "nombrearchivo": "F-NIC-0000052-ARR-001061.xlsx",
+    "numeroprovisional": 1,
+    "congelado": true,
+    "advertencias": ""
+   },
+   {
+    "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#sanic_carp_tbl_arreglos(sanic_fechacongelamiento,sanic_numeroprovisional,sanic_instantaneanombre,statecode)/$entity",
+    "@odata.etag": "W/\"13358584\"",
+    "sanic_instantaneanombre": "HUMO Cliente 01",
+    "sanic_fechacongelamiento": "2026-10-20T14:26:41Z",
+    "sanic_carp_tbl_arregloid": "51807043-92cc-f111-a05b-00224808ffcd",
+    "statecode": 0,
+    "sanic_numeroprovisional": 1
+   },
+   1,
+   2.43
+  ],
+  "segundos": 2.43
+ },
+ {
+  "prueba": "H-4",
+  "sub": "el no administrador con rol real y perfil de columna",
+  "ok": false,
+  "esperado": "requiere usuario no admin",
+  "obtenido": "NO CORRIDA: tanda 2",
+  "no_corrida": true
+ },
+ {
+  "prueba": "H-2",
+  "sub": "Formalizar (Borrador congelado -> Vigente) con numeroarreglo asignado",
+  "ok": true,
+  "esperado": "204, Vigente, numero 1",
+  "obtenido": [
+   204,
+   null,
+   "",
+   {
+    "statuscode": 159460001,
+    "sanic_carp_tbl_arregloid": "51807043-92cc-f111-a05b-00224808ffcd",
+    "sanic_numeroarreglo": 1,
+    "statecode": 0,
+    "_sanic_formalizadoporid_value": "ffc778df-d287-f111-8075-70a8a5af5a32"
+   }
+  ]
+ },
+ {
+  "prueba": "H-18",
+  "sub": "(a) cuota sin pago: reenviar fechapago=null y montopagado=null no es cambio",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-18",
+  "sub": "(b) cambiar sanic_monto: CARP-CUO-001",
+  "ok": true,
+  "esperado": "400 CUO-001",
+  "obtenido": [
+   400,
+   "CARP-CUO-001"
+  ]
+ },
+ {
+  "prueba": "H-18",
+  "sub": "solo fechapago: CARP-CUO-003",
+  "ok": true,
+  "esperado": "400 CUO-003",
+  "obtenido": [
+   400,
+   "CARP-CUO-003"
+  ]
+ },
+ {
+  "prueba": "H-18",
+  "sub": "(b) statecode=1 en la cuota: CARP-CUO-001 (la pre-imagen trae statecode/statuscode)",
+  "ok": true,
+  "esperado": "400 CUO-001",
+  "obtenido": [
+   400,
+   "CARP-CUO-001"
+  ]
+ },
+ {
+  "prueba": "H-18",
+  "sub": "pago 1 con statecode/statuscode iguales reenviados (no cambio): pasa y el arreglo sigue Vigente",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null
+  ]
+ },
+ {
+  "prueba": "H-18",
+  "sub": "(a) cuota con pago: vaciar solo fechapago: CARP-CUO-003 (la pre-imagen trae el monto pagado)",
+  "ok": true,
+  "esperado": "400 CUO-003",
+  "obtenido": [
+   400,
+   "CARP-CUO-003"
+  ]
+ },
+ {
+  "prueba": "H-19",
+  "sub": "(a,b) pagar la ULTIMA cuota como persona: S-24 escribe el arreglo con SYSTEM anidado, S-21 lo deja pasar (DC-03): arreglo Terminado sin CARP-ARR-010",
+  "ok": true,
+  "esperado": "204 y Terminado (1/2) con fechatermino",
+  "obtenido": [
+   204,
+   null,
+   "",
+   {
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "51807043-92cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": "2026-10-20T14:26:48Z",
+    "statecode": 1
+   },
+   0.47
+  ],
+  "segundos": 0.47
+ },
+ {
+  "prueba": "H-2",
+  "sub": "dos Borradores del mismo credito generan formato: ambos con provisional 1",
+  "ok": true,
+  "esperado": "provisional 1 y 1",
+  "obtenido": [
+   200,
+   200,
+   1,
+   1
+  ]
+ },
+ {
+  "prueba": "H-2",
+  "sub": "formalizar el primero: pasa con numeroarreglo 1",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null
+  ]
+ },
+ {
+  "prueba": "H-2",
+  "sub": "formalizar el segundo (mismo credito): rechazo CARP-ARR-020 (provisional 1, el siguiente es 2)",
+  "ok": true,
+  "esperado": "400 CARP-ARR-020",
+  "obtenido": [
+   400,
+   "CARP-ARR-020",
+   "CARP-ARR-020: Otro arreglo del mismo crédito se formalizó después de imprimir este formato. Desbloquee el borrador y vuelva a generar el formato."
+  ]
+ },
+ {
+  "prueba": "H-2",
+  "sub": "dos formalizaciones SIMULTANEAS del mismo credito: una pasa; la otra recibe CARP-ARR-020 o el rechazo de la clave K-02",
+  "ok": true,
+  "esperado": "una 204 y la otra 4xx",
+  "obtenido": {
+   "c": [
+    204,
+    null,
+    ""
+   ],
+   "d": [
+    412,
+    null,
+    "Entity Key KEY - CARP - Arreglo - Producto, numero de producto y numero de arreglo violated. A record with the same value for Numero de arreglo, Numero de prest"
+   ]
+  }
+ },
+ {
+  "prueba": "H-2",
+  "sub": "tras la carrera no hay dos arreglos con el mismo numero de credito",
+  "ok": true,
+  "esperado": "numeros distintos o uno solo",
+  "obtenido": [
+   1,
+   null
+  ]
+ }
+]

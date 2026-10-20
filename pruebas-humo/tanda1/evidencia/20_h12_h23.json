@@ -1,0 +1,140 @@
+[
+ {
+  "prueba": "H-23",
+  "sub": "(a/b) Create de VersionPlantilla por una persona con statecode=1 (y con statecode=1/statuscode=2): ver si la plataforma lo acepta y como nace la fila",
+  "ok": true,
+  "esperado": "medicion (sin veredicto previo)",
+  "obtenido": [
+   {
+    "extra": {
+     "statecode": 1
+    },
+    "http": 201,
+    "codigo": null,
+    "fila": {
+     "sanic_estado": 159460001,
+     "sanic_carp_tbl_versionplantillaid": "3dd84729-91cc-f111-a05b-00224808ffcd",
+     "statecode": 0,
+     "statuscode": 1
+    }
+   },
+   {
+    "extra": {
+     "statecode": 1,
+     "statuscode": 2
+    },
+    "http": 400,
+    "codigo": null
+   }
+  ]
+ },
+ {
+  "prueba": "H-12/H-23",
+  "sub": "alta de v90 en Borrador (capacidad 60)",
+  "ok": true,
+  "esperado": "201 Borrador activa",
+  "obtenido": [
+   201,
+   null,
+   {
+    "sanic_estado": 159460001,
+    "statecode": 0,
+    "statuscode": 1
+   }
+  ]
+ },
+ {
+  "prueba": "H-12",
+  "sub": "subida y REEMPLAZO del archivo (PATCH directo, 2 pasadas) sobre v90 Borrador, como administrador: pasan y el nombre queda el nuevo",
+  "ok": true,
+  "esperado": "204/204 y nombre nuevo",
+  "obtenido": [
+   204,
+   204,
+   "HUMO-v90-primera.xlsx",
+   "HUMO-v90.xlsx",
+   "",
+   ""
+  ]
+ },
+ {
+  "prueba": "H-23",
+  "sub": "carga de los 28 mapeos de MAP_V07 en v90 (el diseno decia 27): nombre calculado hoja!celda",
+  "ok": true,
+  "esperado": "28 creados con nombre hoja!celda",
+  "obtenido": [
+   28,
+   [],
+   11.5
+  ]
+ },
+ {
+  "prueba": "H-12/H-23",
+  "sub": "alta de v91 en Borrador (capacidad 60)",
+  "ok": true,
+  "esperado": "201 Borrador activa",
+  "obtenido": [
+   201,
+   null,
+   {
+    "sanic_estado": 159460001,
+    "statecode": 0,
+    "statuscode": 1
+   }
+  ]
+ },
+ {
+  "prueba": "H-12",
+  "sub": "subida y REEMPLAZO del archivo (PATCH directo, 2 pasadas) sobre v91 Borrador, como administrador: pasan y el nombre queda el nuevo",
+  "ok": true,
+  "esperado": "204/204 y nombre nuevo",
+  "obtenido": [
+   204,
+   204,
+   "HUMO-v91-primera.xlsx",
+   "HUMO-v91.xlsx",
+   "",
+   ""
+  ]
+ },
+ {
+  "prueba": "H-23",
+  "sub": "carga de los 28 mapeos de MAP_V07 en v91 (el diseno decia 27): nombre calculado hoja!celda",
+  "ok": true,
+  "esperado": "28 creados con nombre hoja!celda",
+  "obtenido": [
+   28,
+   [],
+   10.5
+  ]
+ },
+ {
+  "prueba": "H-23",
+  "sub": "(a/b) Create de MapeoCelda por una persona con statecode=1 (y con statecode=1/statuscode=2) sobre una version Borrador desechable",
+  "ok": true,
+  "esperado": "medicion (sin veredicto previo)",
+  "obtenido": [
+   {
+    "extra": {
+     "statecode": 1
+    },
+    "http": 201,
+    "codigo": null,
+    "fila": {
+     "statecode": 0,
+     "sanic_carp_tbl_mapeoceldaid": "274ec03b-91cc-f111-a05b-00224808ffcd",
+     "sanic_nombre": "HUMO-hoja!Z99",
+     "statuscode": 1
+    }
+   },
+   {
+    "extra": {
+     "statecode": 1,
+     "statuscode": 2
+    },
+    "http": 400,
+    "codigo": null
+   }
+  ]
+ }
+]

@@ -1,0 +1,230 @@
+[
+ {
+  "prueba": "H-16",
+  "sub": "(a) Create de Arreglo con statecode=1 y SIN statuscode: que ve el Target de PreOperation",
+  "ok": true,
+  "esperado": "medicion: CARP-ARR-008 si el Target trae statecode=1; fila Borrador si trae 0",
+  "obtenido": [
+   "el alta se ACEPTO",
+   {
+    "statuscode": 1,
+    "sanic_carp_tbl_arregloid": "7be8d3d5-91cc-f111-a05b-00224808ffcd",
+    "statecode": 0,
+    "sanic_nombre": "ARR-001056"
+   }
+  ]
+ },
+ {
+  "prueba": "H-16",
+  "sub": "(a) conclusion: el Target de PreOperation trae el statecode ENVIADO (1) si el step rechaza con CARP-ARR-008",
+  "ok": false,
+  "esperado": "la plataforma dejo 0 o el step no lo vio",
+  "obtenido": [
+   "el alta se ACEPTO",
+   {
+    "statuscode": 1,
+    "sanic_carp_tbl_arregloid": "7be8d3d5-91cc-f111-a05b-00224808ffcd",
+    "statecode": 0,
+    "sanic_nombre": "ARR-001056"
+   }
+  ]
+ },
+ {
+  "prueba": "H-16",
+  "sub": "alta normal de un Borrador (plazo 4, cuota 300, saldo 1000): remanente/total/fechafin/version/calendario",
+  "ok": true,
+  "esperado": "201 Borrador",
+  "obtenido": [
+   201,
+   null,
+   {
+    "sanic_nombre": "ARR-001057",
+    "statecode": 0,
+    "statuscode": 1,
+    "sanic_saldoremanente": 1000.0,
+    "sanic_totalpagar": 1000.0,
+    "sanic_fechafin": "2027-02-05",
+    "sanic_cantidadreaperturas": 0
+   }
+  ]
+ },
+ {
+  "prueba": "H-16",
+  "sub": "alta normal: el calendario real (S-20) crea 4 cuotas 300/300/300/100 con nombre <arreglo>-Cnn; version = v91",
+  "ok": true,
+  "esperado": "4 cuotas 300,300,300,100; version v91",
+  "obtenido": [
+   [
+    300.0,
+    300.0,
+    300.0,
+    100.0
+   ],
+   [
+    "ARR-001057-C01",
+    "ARR-001057-C02"
+   ],
+   "ARR-001057",
+   "2027-02-05",
+   true
+  ]
+ },
+ {
+  "prueba": "H-16",
+  "sub": "(b) Borrador: reenviar null en 20 columnas que estan nulas (solo-sistema, de gesto y libres) no es cambio: la pre-imagen/regla trata la ausencia correctamente",
+  "ok": false,
+  "esperado": "20/20 con 204",
+  "obtenido": [
+   19,
+   [
+    [
+     "sanic_fechacongelamiento",
+     400,
+     "CARP-ARR-017"
+    ]
+   ]
+  ]
+ },
+ {
+  "prueba": "H-16",
+  "sub": "(b) Borrador: reenviar los valores IGUALES (cantidadreaperturas=0, producto, plazo, cuota, saldo, abonado) no es cambio",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-16",
+  "sub": "(b) cambios reales sobre columnas con valor o nulas se detectan (valor presente en la pre-imagen / nulo -> valor)",
+  "ok": true,
+  "esperado": "400 con el codigo esperado en los 6",
+  "obtenido": [
+   [
+    "sanic_numeroarreglo",
+    5,
+    400,
+    "CARP-ARR-009",
+    "CARP-ARR-009"
+   ],
+   [
+    "sanic_cantidadreaperturas",
+    null,
+    400,
+    "CARP-ARR-009",
+    "CARP-ARR-009"
+   ],
+   [
+    "sanic_cantidadreaperturas",
+    7,
+    400,
+    "CARP-ARR-009",
+    "CARP-ARR-009"
+   ],
+   [
+    "sanic_motivodescarte",
+    "HUMO motivo",
+    400,
+    "CARP-ARR-024",
+    "CARP-ARR-024"
+   ],
+   [
+    "sanic_fechacongelamiento",
+    "2026-10-20T00:00:00Z",
+    400,
+    "CARP-ARR-009",
+    "CARP-ARR-009"
+   ],
+   [
+    "sanic_nombre",
+    "ARR-777777",
+    400,
+    "CARP-ARR-009",
+    "CARP-ARR-009"
+   ]
+  ]
+ },
+ {
+  "prueba": "H-16",
+  "sub": "(c) orden de la falla de columna protegida frente a PreOperation en un Update",
+  "ok": false,
+  "esperado": "requiere un usuario SIN el perfil de datos sensibles (no admin)",
+  "obtenido": "NO CORRIDA: tanda 2 (usuario no admin)",
+  "no_corrida": true
+ },
+ {
+  "prueba": "H-17",
+  "sub": "modo de redondeo de Dev en decimal de 2 decimales: 5.565 -> 5.57, 5.575 -> 5.58  => AwayFromZero (mitad hacia arriba)",
+  "ok": true,
+  "esperado": "medicion",
+  "obtenido": {
+   "5565": {
+    "respuesta_create": {
+     "sanic_saldoinicial": 5.57,
+     "sanic_saldoremanente": 5.57,
+     "sanic_totalpagar": 5.57
+    },
+    "leido": {
+     "sanic_saldoinicial": 5.57,
+     "sanic_saldoremanente": 5.57,
+     "sanic_totalpagar": 5.57
+    },
+    "cuotas": [
+     5.57
+    ]
+   },
+   "5575": {
+    "respuesta_create": {
+     "sanic_saldoinicial": 5.58,
+     "sanic_saldoremanente": 5.58,
+     "sanic_totalpagar": 5.58
+    },
+    "leido": {
+     "sanic_saldoinicial": 5.58,
+     "sanic_saldoremanente": 5.58,
+     "sanic_totalpagar": 5.58
+    },
+    "cuotas": [
+     5.58
+    ]
+   }
+  },
+  "modo_de_redondeo": "AwayFromZero (mitad hacia arriba)"
+ },
+ {
+  "prueba": "H-3",
+  "sub": "alta de un Arreglo de 60 cuotas (60 Create individuales en PostOperation sincrono): tiempo 4.84s, limite 120s",
+  "ok": true,
+  "esperado": "201 en < 120 s",
+  "obtenido": [
+   201,
+   null,
+   "",
+   4.84
+  ],
+  "segundos": 4.84
+ },
+ {
+  "prueba": "H-3",
+  "sub": "las 60 cuotas existen: numeradas 1..60, monto 100, nombre <arreglo>-C01..C60",
+  "ok": true,
+  "esperado": "60 cuotas 1..60 de 100",
+  "obtenido": [
+   60,
+   [
+    1,
+    2,
+    3
+   ],
+   [
+    58,
+    59,
+    60
+   ],
+   "ARR-001060-C01",
+   "ARR-001060-C60"
+  ]
+ }
+]

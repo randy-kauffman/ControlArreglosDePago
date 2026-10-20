@@ -1,0 +1,987 @@
+[
+ {
+  "inicio": "2026-10-20T14:26:40.423Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 109,
+  "corr": "1d16463f",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=51807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:40.55Z",
+  "tipo": "ArregloCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "1d16463f",
+  "lineas": [
+   "[ArregloCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=51807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloCrearStep] columnas escritas: sanic_numeroproducto, sanic_versionplantillaid, sanic_saldoremanente, sanic_totalpagar, sanic_fechafin, sanic_cantidadreaperturas",
+   "[ArregloCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:40.643Z",
+  "tipo": "ArregloCalendarioStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 281,
+  "corr": "1d16463f",
+  "lineas": [
+   "[ArregloCalendarioStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=51807043-92cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[ArregloCalendarioStep] cuotas creadas: 2",
+   "[ArregloCalendarioStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:40.707Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1d16463f",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=53807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:40.863Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1d16463f",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=54807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:41.83Z",
+  "tipo": "GenerarFormatoApi",
+  "msg": "sanic_carp_capi_generarformato",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 1531,
+  "corr": "4ffdd39f",
+  "lineas": [
+   "[GenerarFormatoApi] entrada profundidad=1",
+   "[GenerarFormatoApi] generarformato arreglo=51807043-92cc-f111-a05b-00224808ffcd vistaPrevia=no",
+   "[GenerarFormatoApi] generarformato terminado arreglo=51807043-92cc-f111-a05b-00224808ffcd congelado=si",
+   "[GenerarFormatoApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:42.893Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "4ffdd39f",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=51807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:43.22Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_generacionformato",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "4ffdd39f",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_generacionformato id=56807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:44.58Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "5c15eda5",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=51807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] columnas escritas: sanic_numeroarreglo, sanic_formalizadoporid, sanic_fechaformalizado",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:45.94Z",
+  "tipo": "CuotaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "307d9ada",
+  "lineas": [
+   "[CuotaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=53807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[CuotaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:45.987Z",
+  "tipo": "CuotaTerminarArregloStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 174,
+  "corr": "307d9ada",
+  "lineas": [
+   "[CuotaTerminarArregloStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=53807043-92cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[CuotaTerminarArregloStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:46.47Z",
+  "tipo": "CuotaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "1fff93ed",
+  "lineas": [
+   "[CuotaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=53807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[CuotaActualizarStep] rechazo CARP-CUO-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CUO-001: En una cuota solo se puede registrar la fecha y el monto de pago. Columna no permitida: sanic_monto.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest "
+ },
+ {
+  "inicio": "2026-10-20T14:26:47.08Z",
+  "tipo": "CuotaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "3fa14c29",
+  "lineas": [
+   "[CuotaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=53807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[CuotaActualizarStep] rechazo CARP-CUO-003"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CUO-003: El pago de una cuota se registra con su fecha y su monto juntos, y el monto debe ser mayor que cero.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest "
+ },
+ {
+  "inicio": "2026-10-20T14:26:47.393Z",
+  "tipo": "CuotaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "3ff32d5d",
+  "lineas": [
+   "[CuotaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=53807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[CuotaActualizarStep] rechazo CARP-CUO-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CUO-001: En una cuota solo se puede registrar la fecha y el monto de pago. Columna no permitida: statecode.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pl"
+ },
+ {
+  "inicio": "2026-10-20T14:26:47.787Z",
+  "tipo": "CuotaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 125,
+  "corr": "3baccd92",
+  "lineas": [
+   "[CuotaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=53807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[CuotaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:47.957Z",
+  "tipo": "CuotaTerminarArregloStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "3baccd92",
+  "lineas": [
+   "[CuotaTerminarArregloStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=53807043-92cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[CuotaTerminarArregloStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:48.63Z",
+  "tipo": "CuotaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "7cb2afbe",
+  "lineas": [
+   "[CuotaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=53807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[CuotaActualizarStep] rechazo CARP-CUO-003"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CUO-003: El pago de una cuota se registra con su fecha y su monto juntos, y el monto debe ser mayor que cero.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest "
+ },
+ {
+  "inicio": "2026-10-20T14:26:48.94Z",
+  "tipo": "CuotaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "ee23880d",
+  "lineas": [
+   "[CuotaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=54807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[CuotaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:49.003Z",
+  "tipo": "CuotaTerminarArregloStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 125,
+  "corr": "ee23880d",
+  "lineas": [
+   "[CuotaTerminarArregloStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=54807043-92cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[CuotaTerminarArregloStep] arreglo terminado: 51807043-92cc-f111-a05b-00224808ffcd",
+   "[CuotaTerminarArregloStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:49.067Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "ee23880d",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=51807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:49.787Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "01042526",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=5a807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:49.847Z",
+  "tipo": "ArregloCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "01042526",
+  "lineas": [
+   "[ArregloCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=5a807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloCrearStep] columnas escritas: sanic_numeroproducto, sanic_versionplantillaid, sanic_saldoremanente, sanic_totalpagar, sanic_fechafin, sanic_cantidadreaperturas",
+   "[ArregloCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:49.91Z",
+  "tipo": "ArregloCalendarioStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 250,
+  "corr": "01042526",
+  "lineas": [
+   "[ArregloCalendarioStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=5a807043-92cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[ArregloCalendarioStep] cuotas creadas: 4",
+   "[ArregloCalendarioStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:49.957Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "01042526",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=5c807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.02Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "01042526",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=5d807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.067Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "01042526",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=5e807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.113Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "01042526",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=5f807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.55Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "748dffa1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=d4a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.613Z",
+  "tipo": "ArregloCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "748dffa1",
+  "lineas": [
+   "[ArregloCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=d4a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloCrearStep] columnas escritas: sanic_numeroproducto, sanic_versionplantillaid, sanic_saldoremanente, sanic_totalpagar, sanic_fechafin, sanic_cantidadreaperturas",
+   "[ArregloCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.66Z",
+  "tipo": "ArregloCalendarioStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 359,
+  "corr": "748dffa1",
+  "lineas": [
+   "[ArregloCalendarioStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=d4a87949-92cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[ArregloCalendarioStep] cuotas creadas: 4",
+   "[ArregloCalendarioStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.817Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "748dffa1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=d6a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.863Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "748dffa1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=d7a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.927Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "748dffa1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=d8a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:50.973Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "748dffa1",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=d9a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:51.287Z",
+  "tipo": "GenerarFormatoApi",
+  "msg": "sanic_carp_capi_generarformato",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 328,
+  "corr": "edc37f65",
+  "lineas": [
+   "[GenerarFormatoApi] entrada profundidad=1",
+   "[GenerarFormatoApi] generarformato arreglo=5a807043-92cc-f111-a05b-00224808ffcd vistaPrevia=no",
+   "[GenerarFormatoApi] generarformato terminado arreglo=5a807043-92cc-f111-a05b-00224808ffcd congelado=si",
+   "[GenerarFormatoApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:51.503Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "edc37f65",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=5a807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:51.567Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_generacionformato",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "edc37f65",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_generacionformato id=dba87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:51.91Z",
+  "tipo": "GenerarFormatoApi",
+  "msg": "sanic_carp_capi_generarformato",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 343,
+  "corr": "5024c00a",
+  "lineas": [
+   "[GenerarFormatoApi] entrada profundidad=1",
+   "[GenerarFormatoApi] generarformato arreglo=d4a87949-92cc-f111-a05b-00224808ffcd vistaPrevia=no",
+   "[GenerarFormatoApi] generarformato terminado arreglo=d4a87949-92cc-f111-a05b-00224808ffcd congelado=si",
+   "[GenerarFormatoApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:52.143Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "5024c00a",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=d4a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:52.207Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_generacionformato",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "5024c00a",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_generacionformato id=dda87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:52.583Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "242d3dac",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=5a807043-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] columnas escritas: sanic_numeroarreglo, sanic_formalizadoporid, sanic_fechaformalizado",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:53.02Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 93,
+  "corr": "390783e0",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=d4a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] rechazo CARP-ARR-020"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-ARR-020: Otro arreglo del mismo crédito se formalizó después de imprimir este formato. Desbloquee el borrador y vuelva a generar el formato.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePlugi"
+ },
+ {
+  "inicio": "2026-10-20T14:26:53.41Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "a1576486",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=dfa87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:53.473Z",
+  "tipo": "ArregloCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "a1576486",
+  "lineas": [
+   "[ArregloCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=dfa87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloCrearStep] columnas escritas: sanic_numeroproducto, sanic_versionplantillaid, sanic_saldoremanente, sanic_totalpagar, sanic_fechafin, sanic_cantidadreaperturas",
+   "[ArregloCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:53.503Z",
+  "tipo": "ArregloCalendarioStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 265,
+  "corr": "a1576486",
+  "lineas": [
+   "[ArregloCalendarioStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=dfa87949-92cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[ArregloCalendarioStep] cuotas creadas: 4",
+   "[ArregloCalendarioStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:53.537Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "a1576486",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=e1a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:53.583Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "a1576486",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=e2a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:53.643Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "a1576486",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=e3a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:53.707Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "a1576486",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=e4a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:54.083Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "1031aeff",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=e5a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:54.143Z",
+  "tipo": "ArregloCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1031aeff",
+  "lineas": [
+   "[ArregloCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=e5a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloCrearStep] columnas escritas: sanic_numeroproducto, sanic_versionplantillaid, sanic_saldoremanente, sanic_totalpagar, sanic_fechafin, sanic_cantidadreaperturas",
+   "[ArregloCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:54.19Z",
+  "tipo": "ArregloCalendarioStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 249,
+  "corr": "1031aeff",
+  "lineas": [
+   "[ArregloCalendarioStep] entrada mensaje=Create tabla=sanic_carp_tbl_arreglo id=e5a87949-92cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[ArregloCalendarioStep] cuotas creadas: 4",
+   "[ArregloCalendarioStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:54.223Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1031aeff",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=e7a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:54.287Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "1031aeff",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=e8a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:54.333Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1031aeff",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=e9a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:54.393Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1031aeff",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cuota id=eaa87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:54.8Z",
+  "tipo": "GenerarFormatoApi",
+  "msg": "sanic_carp_capi_generarformato",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 312,
+  "corr": "08bc0ba7",
+  "lineas": [
+   "[GenerarFormatoApi] entrada profundidad=1",
+   "[GenerarFormatoApi] generarformato arreglo=dfa87949-92cc-f111-a05b-00224808ffcd vistaPrevia=no",
+   "[GenerarFormatoApi] generarformato terminado arreglo=dfa87949-92cc-f111-a05b-00224808ffcd congelado=si",
+   "[GenerarFormatoApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:55.003Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "08bc0ba7",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=dfa87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:55.083Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_generacionformato",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "08bc0ba7",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_generacionformato id=eca87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:55.427Z",
+  "tipo": "GenerarFormatoApi",
+  "msg": "sanic_carp_capi_generarformato",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 343,
+  "corr": "4f3ea8bd",
+  "lineas": [
+   "[GenerarFormatoApi] entrada profundidad=1",
+   "[GenerarFormatoApi] generarformato arreglo=e5a87949-92cc-f111-a05b-00224808ffcd vistaPrevia=no",
+   "[GenerarFormatoApi] generarformato terminado arreglo=e5a87949-92cc-f111-a05b-00224808ffcd congelado=si",
+   "[GenerarFormatoApi] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:55.647Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "4f3ea8bd",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=e5a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:55.723Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_generacionformato",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "4f3ea8bd",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_generacionformato id=eea87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:56.177Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "98773709",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=dfa87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] columnas escritas: sanic_numeroarreglo, sanic_formalizadoporid, sanic_fechaformalizado",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:26:56.223Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "17d544d5",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=e5a87949-92cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] columnas escritas: sanic_numeroarreglo, sanic_formalizadoporid, sanic_fechaformalizado",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ }
+]

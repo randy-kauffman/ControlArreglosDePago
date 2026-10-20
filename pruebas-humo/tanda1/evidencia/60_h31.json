@@ -1,0 +1,123 @@
+[
+ {
+  "prueba": "H-31",
+  "sub": "dos tomarconversacion simultaneas sobre una conversacion sin oficial (5 rondas): siempre queda UN oficial; el perdedor recibe CARP-TOM-900 (IfRowVersionMatches) o CARP-TOM-004 (llego despues)",
+  "ok": true,
+  "esperado": "un solo oficial por ronda",
+  "obtenido": [
+   {
+    "admin": [
+     200,
+     null,
+     0.86
+    ],
+    "randy": [
+     400,
+     "CARP-TOM-900",
+     0.87
+    ],
+    "oficial_final": "admin"
+   },
+   {
+    "admin": [
+     200,
+     null,
+     0.83
+    ],
+    "randy": [
+     400,
+     "CARP-TOM-900",
+     0.83
+    ],
+    "oficial_final": "admin"
+   },
+   {
+    "randy": [
+     200,
+     null,
+     0.33
+    ],
+    "admin": [
+     400,
+     "CARP-TOM-900",
+     0.41
+    ],
+    "oficial_final": "randy"
+   },
+   {
+    "randy": [
+     200,
+     null,
+     0.36
+    ],
+    "admin": [
+     400,
+     "CARP-TOM-900",
+     0.37
+    ],
+    "oficial_final": "randy"
+   },
+   {
+    "randy": [
+     200,
+     null,
+     0.34
+    ],
+    "admin": [
+     400,
+     "CARP-TOM-900",
+     0.35
+    ],
+    "oficial_final": "randy"
+   }
+  ],
+  "hubo_tom900": true,
+  "hubo_tom004": false
+ },
+ {
+  "prueba": "H-31",
+  "sub": "K-01: Create de conversacion con huella duplicada (Web API directo): rechazo de clave",
+  "ok": true,
+  "esperado": "4xx por clave",
+  "obtenido": [
+   412,
+   "Entity Key KEY - CARP - Conversacion - Huella del Message-ID violated. A record with the same value for Huella del Message-ID already exists. A duplicate record cannot be created. Select one or more unique values and try"
+  ]
+ },
+ {
+  "prueba": "H-31",
+  "sub": "K-01 DENTRO de un plugin (iniciarconversacionnueva con huella existente: CARP-INI-005/-900) y 0x80040265 anidado traducido",
+  "ok": false,
+  "esperado": "requiere correos entrantes (no se crean correos: S-34 async y buzones)",
+  "obtenido": "NO CORRIDA",
+  "no_corrida": true
+ },
+ {
+  "prueba": "H-31",
+  "sub": "forma de la FaultException de IfRowVersionMatches en la traza de la API (codigo hexadecimal)",
+  "ok": true,
+  "esperado": "medicion",
+  "obtenido": [
+   [
+    "TomarConversacionApi",
+    "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+   ],
+   [
+    "TomarConversacionApi",
+    "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+   ],
+   [
+    "TomarConversacionApi",
+    "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+   ],
+   [
+    "TomarConversacionApi",
+    "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+   ],
+   [
+    "TomarConversacionApi",
+    "[TomarConversacionApi] falla de la plataforma FaultException`1 codigo 0x80060882"
+   ]
+  ]
+ }
+]

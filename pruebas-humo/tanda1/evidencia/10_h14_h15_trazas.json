@@ -1,0 +1,754 @@
+[
+ {
+  "inicio": "2026-10-20T14:15:00.217Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cliente",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 468,
+  "corr": "14ef9aa6",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_cliente id=b18eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:00.687Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_cliente",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 249,
+  "corr": "14ef9aa6",
+  "lineas": [
+   "[ClienteStep] entrada mensaje=Create tabla=sanic_carp_tbl_cliente id=b18eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ClienteStep] unicidad de la cedula (alta)",
+   "[ClienteStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:01.577Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 187,
+  "corr": "5a356c22",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=b28eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:01.767Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "5a356c22",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=b28eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:02.717Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "6d9cf655",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=b88eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:02.78Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "6d9cf655",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=b88eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:03.107Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 93,
+  "corr": "18a8afcc",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=ba8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:03.203Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "18a8afcc",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=ba8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:03.827Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "3230188f",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=bc8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:03.907Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "3230188f",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=bc8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_nombre.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Execute"
+ },
+ {
+  "inicio": "2026-10-20T14:15:04.39Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "8bc91088",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=bd8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:04.467Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "8bc91088",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=bd8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_nombre.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Execute"
+ },
+ {
+  "inicio": "2026-10-20T14:15:04.767Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "8c96beb4",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=be8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:04.843Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "8c96beb4",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=be8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_nombre.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Execute"
+ },
+ {
+  "inicio": "2026-10-20T14:15:05.267Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "e855a6c8",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=bf8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:05.327Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "e855a6c8",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=bf8eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_nombre.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Execute"
+ },
+ {
+  "inicio": "2026-10-20T14:15:05.723Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 73,
+  "corr": "875bc20e",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=c08eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:05.797Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "875bc20e",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=c08eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:06.297Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "95cd67af",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=b28eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:06.907Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "7d435765",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=b28eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_nombre.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Execute"
+ },
+ {
+  "inicio": "2026-10-20T14:15:07.327Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "bb3e066c",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=c28eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:07.42Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "bb3e066c",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=c28eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:07.767Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 78,
+  "corr": "baa84a11",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:07.857Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 0,
+  "corr": "baa84a11",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:08.17Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "9199401a",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_huellamessageid.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest"
+ },
+ {
+  "inicio": "2026-10-20T14:15:08.467Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "2e1d5ee8",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_fechaprimercorreo.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginReque"
+ },
+ {
+  "inicio": "2026-10-20T14:15:08.797Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "27960546",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_asunto.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Execute"
+ },
+ {
+  "inicio": "2026-10-20T14:15:09.233Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "3170573e",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_remitente.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Exec"
+ },
+ {
+  "inicio": "2026-10-20T14:15:09.56Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "0232c066",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_sinrespuestadesde.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginReque"
+ },
+ {
+  "inicio": "2026-10-20T14:15:09.873Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1a895d5c",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_correonuevoenfinalizada.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest plugi"
+ },
+ {
+  "inicio": "2026-10-20T14:15:10.187Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "ffa93820",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_fechafinalizacion.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginReque"
+ },
+ {
+  "inicio": "2026-10-20T14:15:10.687Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "97760c4a",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_tiempoprimerarespuesta.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest plugin"
+ },
+ {
+  "inicio": "2026-10-20T14:15:11.03Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "5ea889ef",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_tiempototal.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Ex"
+ },
+ {
+  "inicio": "2026-10-20T14:15:11.343Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "dba732d3",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_cantidadrespuestas.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequ"
+ },
+ {
+  "inicio": "2026-10-20T14:15:11.717Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "5fcfe608",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_unidaaid.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Execu"
+ },
+ {
+  "inicio": "2026-10-20T14:15:12.077Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "db052955",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_finalizadoporid.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest"
+ },
+ {
+  "inicio": "2026-10-20T14:15:12.517Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "c503eccc",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-001"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_nombre.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, Execute"
+ },
+ {
+  "inicio": "2026-10-20T14:15:12.827Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "ed740a6d",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-005"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-005: El resultado, el motivo y el detalle solo se registran al finalizar la conversación.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, E"
+ },
+ {
+  "inicio": "2026-10-20T14:15:13.127Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "43348afe",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-005"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-005: El resultado, el motivo y el detalle solo se registran al finalizar la conversación.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, E"
+ },
+ {
+  "inicio": "2026-10-20T14:15:13.467Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "417e0d20",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-005"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-005: El resultado, el motivo y el detalle solo se registran al finalizar la conversación.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, E"
+ },
+ {
+  "inicio": "2026-10-20T14:15:13.78Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "26eb0a0e",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=b28eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:14.077Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "c2c00547",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:14.407Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "0aab6fca",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] columnas escritas: sanic_finalizadoporid, sanic_fechafinalizacion, sanic_sinrespuestadesde, sanic_tiempototal",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:15.703Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "194ac9b8",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-009"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-009: Una conversación finalizada o unida no se puede modificar. Para cambiar una finalizada, reábrala primero.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginReq"
+ },
+ {
+  "inicio": "2026-10-20T14:15:15.983Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "22add20c",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-009"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-009: Una conversación finalizada o unida no se puede modificar. Para cambiar una finalizada, reábrala primero.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginReq"
+ },
+ {
+  "inicio": "2026-10-20T14:15:16.267Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "371dcc38",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-009"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-009: Una conversación finalizada o unida no se puede modificar. Para cambiar una finalizada, reábrala primero.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginReq"
+ },
+ {
+  "inicio": "2026-10-20T14:15:16.563Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "cf1b61e6",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-009"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-009: Una conversación finalizada o unida no se puede modificar. Para cambiar una finalizada, reábrala primero.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginReq"
+ },
+ {
+  "inicio": "2026-10-20T14:15:16.86Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "2dcd5f6a",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:15:17.173Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "416ca1b7",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-009"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-009: Una conversación finalizada o unida no se puede modificar. Para cambiar una finalizada, reábrala primero.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginReq"
+ },
+ {
+  "inicio": "2026-10-20T14:15:17.453Z",
+  "tipo": "0, Culture=neutral, PublicKeyToken=null",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "675d6693",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=c48eeaa1-90cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ConversacionActualizarStep] rechazo CARP-CNV-009"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-CNV-009: Una conversación finalizada o unida no se puede modificar. Para cambiar una finalizada, reábrala primero.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginReq"
+ }
+]

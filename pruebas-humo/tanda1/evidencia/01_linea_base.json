@@ -1,0 +1,49 @@
+{
+ "whoami": {
+  "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#Microsoft.Dynamics.CRM.WhoAmIResponse",
+  "BusinessUnitId": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+  "UserId": "ffc778df-d287-f111-8075-70a8a5af5a32",
+  "OrganizationId": "88c7cdef-44ef-f011-aa23-6045bd003e24"
+ },
+ "yo": {
+  "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#systemusers(fullname,applicationid,isdisabled,accessmode,_businessunitid_value)/$entity",
+  "@odata.etag": "W/\"5709812\"",
+  "ownerid": "ffc778df-d287-f111-8075-70a8a5af5a32",
+  "_businessunitid_value": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+  "fullname": "# PowerPlatform-Dev",
+  "applicationid": "20a795ee-51b9-4c25-8ca4-9c854bc364f1",
+  "isdisabled": false,
+  "systemuserid": "ffc778df-d287-f111-8075-70a8a5af5a32",
+  "accessmode": 4
+ },
+ "ev": [
+  {
+   "@odata.etag": "W/\"13357151\"",
+   "defaultvalue": null,
+   "schemaname": "sanic_carp_ev_nombrebu",
+   "environmentvariabledefinitionid": "bdf0c88e-8fcc-f111-a05b-00224808ffcd"
+  },
+  {
+   "@odata.etag": "W/\"13357178\"",
+   "defaultvalue": null,
+   "schemaname": "sanic_carp_ev_nombreteamjefatura",
+   "environmentvariabledefinitionid": "c5f0c88e-8fcc-f111-a05b-00224808ffcd"
+  }
+ ],
+ "filas_cliente": 0,
+ "filas_conversacion": 0,
+ "filas_arreglo": 0,
+ "filas_version": 0,
+ "filas_mapeo": 0,
+ "filas_cuota": 0,
+ "filas_generacion": 0,
+ "candidatos_reconciliar_en_la_BU_del_area": 0,
+ "tracelog_setting": [
+  {
+   "@odata.etag": "W/\"13355229\"",
+   "plugintracelogsetting": 2,
+   "organizationid": "88c7cdef-44ef-f011-aa23-6045bd003e24"
+  }
+ ],
+ "trazas_previas_del_paquete": 0
+}

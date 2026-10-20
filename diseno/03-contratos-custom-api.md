@@ -2405,6 +2405,10 @@ Lo que el doble no puede probar (pipeline real, transacción, seguridad) se prue
 | H-31 | Dentro de un plugin de Custom API: forma de la `FaultException` de `UpdateRequest` con `IfRowVersionMatches` (0x80060882), de K-01 (0x80060892) y de un rechazo anidado (0x80040265), y que la transacción se revierta entera tras la traducción a `-900` | 0.5, 1.3, 1.4, 1.5 |
 | H-32 | Que un `Retrieve` que falla con `0x80040220` (sin privilegio o sin acceso) y se atrapa dentro de un plugin **no** aborte la transacción (cierre del lote 6, 2026-10-19; hallazgo del revisor). `AyudaDeConsultas.LeerOMenos` lo convierte en `null` y sigue (4.2 decisión 3), y el spike solo midió que un `Retrieve` atrapado con `0x80040217` no aborta (`RESULTADO.md` (g)). Si abortara, toda lectura puntual "sin acceso" dentro de un step o una API tendría que dejar de atraparse | 4.2, 0.5 |
 
+**Tanda 1 de humo, como admin (2026-10-20)**, resultados en `pruebas-humo/tanda1/RESULTADO.md`. Confirmadas: H-3 (60 cuotas en 4,84 s), H-10, H-12 (a, c), H-14, H-15, H-17 (Dev redondea AwayFromZero: 5.565 → 5.57, 5.575 → 5.58), H-18, H-19, H-2, H-21 (a, b, e), H-23, H-4 (admin). Parciales: H-29, H-31, H-21 (c). Pendientes para la tanda 2 (no admin): H-4, H-12 (b), H-16 (c), H-32 y las demás de esa tanda. Dos aclaraciones del diseño, sin cambio de código:
+- H-16: un `Create` de Arreglo con `statecode = 1` y sin `statuscode` nace Borrador. La plataforma deja 0 en el `Target` antes de PreOperation, así que `CARP-ARR-008` no se alcanza por esa vía. Es inocuo.
+- Reenviar `sanic_fechacongelamiento = null` sobre un Borrador **no** congelado da `CARP-ARR-017`, porque se lee como el gesto Desbloquear. El formulario y el web resource mandan solo las columnas cambiadas y nunca reenvían una fila completa (`diseno/07`).
+
 ### 8.2 Conteos
 
 | Concepto | Cantidad |
