@@ -1,0 +1,57 @@
+<customapi uniquename="sanic_carp_capi_iniciarconversacionnueva">
+  <allowedcustomprocessingsteptype>0</allowedcustomprocessingsteptype>
+  <bindingtype>0</bindingtype>
+  <description default="Cuando llegaron correos nuevos a una conversación finalizada, abre una conversación nueva con el primero de ellos y le mueve los correos posteriores. Devuelve la conversación nueva y cuántos correos movió.">
+    <label description="Cuando llegaron correos nuevos a una conversación finalizada, abre una conversación nueva con el primero de ellos y le mueve los correos posteriores. Devuelve la conversación nueva y cuántos correos movió." languagecode="1033" />
+  </description>
+  <displayname default="CAPI - CARP - Iniciar conversacion nueva">
+    <label description="CAPI - CARP - Iniciar conversacion nueva" languagecode="1033" />
+  </displayname>
+  <executeprivilegename>prvWritesanic_carp_tbl_conversacion</executeprivilegename>
+  <iscustomizable>1</iscustomizable>
+  <isfunction>0</isfunction>
+  <isprivate>0</isprivate>
+  <name>sanic_carp_capi_iniciarconversacionnueva</name>
+  <plugintypeid>
+    <plugintypeexportkey>2ED7988D8B51B85D08C376F41CACC2A7440A123407728FB5EFB4C9F6B27304E6</plugintypeexportkey>
+  </plugintypeid>
+  <workflowsdkstepenabled>0</workflowsdkstepenabled>
+  <customapirequestparameters>
+    <customapirequestparameter uniquename="conversacionid">
+      <description default="Identificador de la conversación finalizada que tiene el indicador de correos nuevos.">
+        <label description="Identificador de la conversación finalizada que tiene el indicador de correos nuevos." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_IP - CARP - Conversacion">
+        <label description="CAPI_IP - CARP - Conversacion" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <isoptional>1</isoptional>
+      <name>sanic_carp_capiip_iniciarconversacionnueva_conversacionid</name>
+      <type>12</type>
+    </customapirequestparameter>
+  </customapirequestparameters>
+  <customapiresponseproperties>
+    <customapiresponseproperty uniquename="nuevaconversacionid">
+      <description default="Identificador de la conversación nueva que se creó.">
+        <label description="Identificador de la conversación nueva que se creó." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Nueva conversacion">
+        <label description="CAPI_OP - CARP - Nueva conversacion" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_iniciarconversacionnueva_nuevaconversacionid</name>
+      <type>12</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="correosmovidos">
+      <description default="Correos que pasaron de la conversación finalizada a la nueva.">
+        <label description="Correos que pasaron de la conversación finalizada a la nueva." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Correos movidos">
+        <label description="CAPI_OP - CARP - Correos movidos" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_iniciarconversacionnueva_correosmovidos</name>
+      <type>7</type>
+    </customapiresponseproperty>
+  </customapiresponseproperties>
+</customapi>

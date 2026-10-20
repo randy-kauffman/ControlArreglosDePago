@@ -1,0 +1,102 @@
+<customapi uniquename="sanic_carp_capi_generarformato">
+  <allowedcustomprocessingsteptype>0</allowedcustomprocessingsteptype>
+  <bindingtype>0</bindingtype>
+  <description default="Genera el formato F-NIC-0000052 en Excel de un arreglo y lo devuelve en Base64; si el arreglo no estaba congelado, lo congela. Con una versión previa solo hace la vista previa, sin escribir nada.">
+    <label description="Genera el formato F-NIC-0000052 en Excel de un arreglo y lo devuelve en Base64; si el arreglo no estaba congelado, lo congela. Con una versión previa solo hace la vista previa, sin escribir nada." languagecode="1033" />
+  </description>
+  <displayname default="CAPI - CARP - Generar formato">
+    <label description="CAPI - CARP - Generar formato" languagecode="1033" />
+  </displayname>
+  <executeprivilegename>prvReadsanic_carp_tbl_generacionformato</executeprivilegename>
+  <iscustomizable>1</iscustomizable>
+  <isfunction>0</isfunction>
+  <isprivate>0</isprivate>
+  <name>sanic_carp_capi_generarformato</name>
+  <plugintypeid>
+    <plugintypeexportkey>BF9962B2FD0F521AB481172B9951EAC09AFDFBC9C8ACDEA11C1891C9FC99B375</plugintypeexportkey>
+  </plugintypeid>
+  <workflowsdkstepenabled>0</workflowsdkstepenabled>
+  <customapirequestparameters>
+    <customapirequestparameter uniquename="arregloid">
+      <description default="Identificador del arreglo cuyo formato se quiere generar.">
+        <label description="Identificador del arreglo cuyo formato se quiere generar." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_IP - CARP - Arreglo">
+        <label description="CAPI_IP - CARP - Arreglo" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <isoptional>1</isoptional>
+      <name>sanic_carp_capiip_generarformato_arregloid</name>
+      <type>12</type>
+    </customapirequestparameter>
+    <customapirequestparameter uniquename="versionpreviaid">
+      <description default="Versión de plantilla en Borrador con la que se hace una vista previa. Si falta, se genera el formato real.">
+        <label description="Versión de plantilla en Borrador con la que se hace una vista previa. Si falta, se genera el formato real." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_IP - CARP - Version previa">
+        <label description="CAPI_IP - CARP - Version previa" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <isoptional>1</isoptional>
+      <name>sanic_carp_capiip_generarformato_versionpreviaid</name>
+      <type>12</type>
+    </customapirequestparameter>
+  </customapirequestparameters>
+  <customapiresponseproperties>
+    <customapiresponseproperty uniquename="archivo">
+      <description default="Libro de Excel (.xlsx) del formato, codificado en Base64.">
+        <label description="Libro de Excel (.xlsx) del formato, codificado en Base64." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Archivo">
+        <label description="CAPI_OP - CARP - Archivo" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_generarformato_archivo</name>
+      <type>10</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="nombrearchivo">
+      <description default="Nombre del archivo: F-NIC-0000052 y el código del arreglo. No lleva datos del cliente.">
+        <label description="Nombre del archivo: F-NIC-0000052 y el código del arreglo. No lleva datos del cliente." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Nombre del archivo">
+        <label description="CAPI_OP - CARP - Nombre del archivo" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_generarformato_nombrearchivo</name>
+      <type>10</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="numeroprovisional">
+      <description default="Número impreso en un Borrador; 0 si no aplica.">
+        <label description="Número impreso en un Borrador; 0 si no aplica." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Numero provisional">
+        <label description="CAPI_OP - CARP - Numero provisional" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_generarformato_numeroprovisional</name>
+      <type>7</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="congelado">
+      <description default="Verdadero si, al terminar, el arreglo está congelado (por esta llamada o antes).">
+        <label description="Verdadero si, al terminar, el arreglo está congelado (por esta llamada o antes)." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Congelado">
+        <label description="CAPI_OP - CARP - Congelado" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_generarformato_congelado</name>
+      <type>0</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="advertencias">
+      <description default="Avisos del generador, uno por línea. Vacío si no hay.">
+        <label description="Avisos del generador, uno por línea. Vacío si no hay." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Advertencias">
+        <label description="CAPI_OP - CARP - Advertencias" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_generarformato_advertencias</name>
+      <type>10</type>
+    </customapiresponseproperty>
+  </customapiresponseproperties>
+</customapi>

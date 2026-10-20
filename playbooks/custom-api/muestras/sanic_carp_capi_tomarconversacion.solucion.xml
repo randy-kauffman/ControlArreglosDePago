@@ -1,0 +1,68 @@
+<customapi uniquename="sanic_carp_capi_tomarconversacion">
+  <allowedcustomprocessingsteptype>0</allowedcustomprocessingsteptype>
+  <bindingtype>0</bindingtype>
+  <description default="Asigna la conversación abierta al oficial que llama, con control de concurrencia optimista. Devuelve el oficial asignado y si ya lo estaba.">
+    <label description="Asigna la conversación abierta al oficial que llama, con control de concurrencia optimista. Devuelve el oficial asignado y si ya lo estaba." languagecode="1033" />
+  </description>
+  <displayname default="CAPI - CARP - Tomar conversacion">
+    <label description="CAPI - CARP - Tomar conversacion" languagecode="1033" />
+  </displayname>
+  <executeprivilegename>prvWritesanic_carp_tbl_conversacion</executeprivilegename>
+  <iscustomizable>1</iscustomizable>
+  <isfunction>0</isfunction>
+  <isprivate>0</isprivate>
+  <name>sanic_carp_capi_tomarconversacion</name>
+  <plugintypeid>
+    <plugintypeexportkey>6F5CD9C3355A394FEA30973F05BBBA50C64FB0A3FBE3D3D566850AD59EA0E972</plugintypeexportkey>
+  </plugintypeid>
+  <workflowsdkstepenabled>0</workflowsdkstepenabled>
+  <customapirequestparameters>
+    <customapirequestparameter uniquename="conversacionid">
+      <description default="Identificador de la conversación que se quiere tomar.">
+        <label description="Identificador de la conversación que se quiere tomar." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_IP - CARP - Conversacion">
+        <label description="CAPI_IP - CARP - Conversacion" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <isoptional>1</isoptional>
+      <name>sanic_carp_capiip_tomarconversacion_conversacionid</name>
+      <type>12</type>
+    </customapirequestparameter>
+  </customapirequestparameters>
+  <customapiresponseproperties>
+    <customapiresponseproperty uniquename="oficialasignadoid">
+      <description default="Oficial que quedó asignado a la conversación: el usuario que llama.">
+        <label description="Oficial que quedó asignado a la conversación: el usuario que llama." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Oficial asignado">
+        <label description="CAPI_OP - CARP - Oficial asignado" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_tomarconversacion_oficialasignadoid</name>
+      <type>12</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="oficialnombre">
+      <description default="Nombre completo del oficial asignado; vacío si no se pudo leer.">
+        <label description="Nombre completo del oficial asignado; vacío si no se pudo leer." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Nombre del oficial">
+        <label description="CAPI_OP - CARP - Nombre del oficial" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_tomarconversacion_oficialnombre</name>
+      <type>10</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="yaasignada">
+      <description default="Verdadero si ya estaba asignada al llamador y no se cambió nada.">
+        <label description="Verdadero si ya estaba asignada al llamador y no se cambió nada." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Ya asignada">
+        <label description="CAPI_OP - CARP - Ya asignada" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_tomarconversacion_yaasignada</name>
+      <type>0</type>
+    </customapiresponseproperty>
+  </customapiresponseproperties>
+</customapi>

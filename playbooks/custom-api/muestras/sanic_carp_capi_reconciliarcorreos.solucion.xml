@@ -1,0 +1,114 @@
+<customapi uniquename="sanic_carp_capi_reconciliarcorreos">
+  <allowedcustomprocessingsteptype>0</allowedcustomprocessingsteptype>
+  <bindingtype>0</bindingtype>
+  <description default="Red de seguridad de la entrada de correo: registra en una conversación los correos entrantes del área que quedaron sin ella porque el plugin asíncrono falló. Devuelve cuántos encontró, registró y omitió.">
+    <label description="Red de seguridad de la entrada de correo: registra en una conversación los correos entrantes del área que quedaron sin ella porque el plugin asíncrono falló. Devuelve cuántos encontró, registró y omitió." languagecode="1033" />
+  </description>
+  <displayname default="CAPI - CARP - Reconciliar correos">
+    <label description="CAPI - CARP - Reconciliar correos" languagecode="1033" />
+  </displayname>
+  <executeprivilegename>prvCreatesanic_carp_tbl_conversacion</executeprivilegename>
+  <iscustomizable>1</iscustomizable>
+  <isfunction>0</isfunction>
+  <isprivate>0</isprivate>
+  <name>sanic_carp_capi_reconciliarcorreos</name>
+  <plugintypeid>
+    <plugintypeexportkey>6057229BA28E959A1303D10B7617A19F4223F063C9DF95A6ACD78F4ACABEEDBE</plugintypeexportkey>
+  </plugintypeid>
+  <workflowsdkstepenabled>0</workflowsdkstepenabled>
+  <customapirequestparameters>
+    <customapirequestparameter uniquename="emailid">
+      <description default="Correo entrante que se quiere reconciliar. Si falta, se reconcilian los candidatos de un lote.">
+        <label description="Correo entrante que se quiere reconciliar. Si falta, se reconcilian los candidatos de un lote." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_IP - CARP - Correo">
+        <label description="CAPI_IP - CARP - Correo" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <isoptional>1</isoptional>
+      <name>sanic_carp_capiip_reconciliarcorreos_emailid</name>
+      <type>12</type>
+    </customapirequestparameter>
+    <customapirequestparameter uniquename="maximo">
+      <description default="Cantidad máxima de correos del lote. Ausente o 0 vale 20; más de 100 se recorta a 100; un negativo se rechaza.">
+        <label description="Cantidad máxima de correos del lote. Ausente o 0 vale 20; más de 100 se recorta a 100; un negativo se rechaza." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_IP - CARP - Maximo de correos">
+        <label description="CAPI_IP - CARP - Maximo de correos" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <isoptional>1</isoptional>
+      <name>sanic_carp_capiip_reconciliarcorreos_maximo</name>
+      <type>7</type>
+    </customapirequestparameter>
+    <customapirequestparameter uniquename="minutosminimos">
+      <description default="Antigüedad mínima del correo, en minutos. Ausente vale 10; 0 explícito es sin espera; un negativo se rechaza.">
+        <label description="Antigüedad mínima del correo, en minutos. Ausente vale 10; 0 explícito es sin espera; un negativo se rechaza." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_IP - CARP - Minutos minimos">
+        <label description="CAPI_IP - CARP - Minutos minimos" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <isoptional>1</isoptional>
+      <name>sanic_carp_capiip_reconciliarcorreos_minutosminimos</name>
+      <type>7</type>
+    </customapirequestparameter>
+  </customapirequestparameters>
+  <customapiresponseproperties>
+    <customapiresponseproperty uniquename="encontrados">
+      <description default="Correos procesados en este lote.">
+        <label description="Correos procesados en este lote." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Encontrados">
+        <label description="CAPI_OP - CARP - Encontrados" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_reconciliarcorreos_encontrados</name>
+      <type>7</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="registrados">
+      <description default="Correos que quedaron con conversación (creada, unida o que ya la tenían).">
+        <label description="Correos que quedaron con conversación (creada, unida o que ya la tenían)." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Registrados">
+        <label description="CAPI_OP - CARP - Registrados" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_reconciliarcorreos_registrados</name>
+      <type>7</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="conerror">
+      <description default="Correos que se omitieron con un código de negocio.">
+        <label description="Correos que se omitieron con un código de negocio." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Con error">
+        <label description="CAPI_OP - CARP - Con error" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_reconciliarcorreos_conerror</name>
+      <type>7</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="haymas">
+      <description default="Verdadero si quedan candidatos fuera de este lote.">
+        <label description="Verdadero si quedan candidatos fuera de este lote." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Hay mas">
+        <label description="CAPI_OP - CARP - Hay mas" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_reconciliarcorreos_haymas</name>
+      <type>0</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="detalle">
+      <description default="JSON con un renglón por correo: emailid, resultado, conversacionid y codigo. Sin datos del correo.">
+        <label description="JSON con un renglón por correo: emailid, resultado, conversacionid y codigo. Sin datos del correo." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Detalle">
+        <label description="CAPI_OP - CARP - Detalle" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_reconciliarcorreos_detalle</name>
+      <type>10</type>
+    </customapiresponseproperty>
+  </customapiresponseproperties>
+</customapi>

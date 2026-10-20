@@ -1,0 +1,740 @@
+<SdkMessageProcessingSteps>
+  <SdkMessageProcessingStep Name="STEP - CARP - arreglo - Create - PostOperation - ArregloCalendarioStep" SdkMessageProcessingStepId="{52126aa0-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>5B4D8CBCFB0BF21F757C575E4320D2FDDCF0C0799B9D7429B66B840F64D448B6</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_arreglo</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Crea el calendario de cuotas de un arreglo recién creado; si falla, el arreglo tampoco se guarda.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>40</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - arreglo - Create - PreOperation - ArregloCrearStep" SdkMessageProcessingStepId="{4f126aa0-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>A9D1A547F703D51C79792921DE0A0B305665FB670287CC04E9C09FEF43216D7C</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_arreglo</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Valida el alta de un arreglo hecha por una persona (siempre en Borrador), completa la versión vigente de la plantilla, calcula los montos y la fecha de fin y rechaza las columnas que solo escribe el sistema.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - arreglo - Create - PreOperation - PropietarioAlCrearStep" SdkMessageProcessingStepId="{4f54b393-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>2040010F2B0E605D20F983E5BF061E7BAD606512C3CF4FF6E3E9E33864D75EE9</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_arreglo</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Fija al team del área como propietario de todo arreglo nuevo, sin importar quién lo cree.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - arreglo - Update - PostOperation - ArregloCalendarioStep" SdkMessageProcessingStepId="{389562a6-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>5B4D8CBCFB0BF21F757C575E4320D2FDDCF0C0799B9D7429B66B840F64D448B6</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_arreglo</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Recalcula el calendario de cuotas cuando cambia el plazo, la cuota mensual, la fecha de inicio, el saldo inicial o el monto abonado de un arreglo.</Description>
+    <FilteringAttributes>sanic_cuotamensual,sanic_fechainicio,sanic_montoabonado,sanic_plazo,sanic_saldoinicial</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>40</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - arreglo - Update - PreOperation - ArregloActualizarStep" SdkMessageProcessingStepId="{349562a6-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>CD1AEF6FD5D8A8D404694EC9C68DC94FD188C86366DC14938ECEA335405A7E59</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_arreglo</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Gobierna los cambios de un arreglo: identifica el gesto, aplica la máquina de estados, protege las columnas congeladas y las que solo escribe el sistema, y rechaza cambios en un arreglo cerrado.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages>
+      <SdkMessageProcessingStepImage Name="PreImagen">
+        <SdkMessageProcessingStepImageId>{379562a6-8dcc-f111-a05b-00224808ffcd}</SdkMessageProcessingStepImageId>
+        <Attributes>sanic_anuladoporid,sanic_canalorigen,sanic_cantidadreaperturas,sanic_clienteid,sanic_comentarios,sanic_conversacionid,sanic_cuentadebitar,sanic_cuotamensual,sanic_descartadoporid,sanic_fechaanulacion,sanic_fechacongelamiento,sanic_fechadescarte,sanic_fechafin,sanic_fechaformalizacion,sanic_fechaformalizado,sanic_fechainicio,sanic_fechareapertura,sanic_fechatermino,sanic_formalizadoporid,sanic_instantaneacedula,sanic_instantaneacelular,sanic_instantaneacorreo,sanic_instantaneanombre,sanic_moneda,sanic_montoabonado,sanic_motivoanulacion,sanic_motivodescarte,sanic_motivoreapertura,sanic_nombre,sanic_numeroarreglo,sanic_numeroproducto,sanic_numeroprovisional,sanic_oficialid,sanic_plazo,sanic_producto,sanic_reabiertoporid,sanic_saldoinicial,sanic_saldoremanente,sanic_tipo,sanic_totalpagar,sanic_versionplantillaid,statecode,statuscode</Attributes>
+        <EntityAlias>PreImagen</EntityAlias>
+        <ImageType>0</ImageType>
+        <MessagePropertyName>Target</MessagePropertyName>
+        <IsCustomizable>1</IsCustomizable>
+      </SdkMessageProcessingStepImage>
+    </SdkMessageProcessingStepImages>
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - arreglo - Update - PreOperation - PropietarioAlActualizarStep" SdkMessageProcessingStepId="{5cddfc99-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>FB8E198C54506D94222374C43E33346B4690A9C0D02D2E440119527D846527EB</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_arreglo</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona deje como propietario de un arreglo a alguien que no sea el team del área.</Description>
+    <FilteringAttributes>ownerid</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - cliente - Create - PreOperation - ClienteStep" SdkMessageProcessingStepId="{6bddfc99-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>9A56A99E15A4B54332E0BA475F09F9BAC0620FE8F3E01C11F1A80FD3050412D5</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_cliente</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Normaliza y valida el nombre, la cédula, el correo y el celular del cliente al crearlo, exige la cédula y rechaza una cédula ya registrada.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - cliente - Create - PreOperation - PropietarioAlCrearStep" SdkMessageProcessingStepId="{90b8da8c-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>2040010F2B0E605D20F983E5BF061E7BAD606512C3CF4FF6E3E9E33864D75EE9</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_cliente</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Fija al team del área como propietario de todo cliente nuevo, sin importar quién lo cree.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - cliente - Update - PreOperation - ClienteStep" SdkMessageProcessingStepId="{43126aa0-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>9A56A99E15A4B54332E0BA475F09F9BAC0620FE8F3E01C11F1A80FD3050412D5</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_cliente</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Normaliza y valida los datos del cliente al cambiarlos, rechaza que una persona cambie su estado o su nombre mostrado y vuelve a comprobar que la cédula no esté repetida.</Description>
+    <FilteringAttributes>sanic_cedula,sanic_celular,sanic_correo,sanic_nombre,sanic_nombrecompleto,statecode,statuscode</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages>
+      <SdkMessageProcessingStepImage Name="PreImagen">
+        <SdkMessageProcessingStepImageId>{46126aa0-8dcc-f111-a05b-00224808ffcd}</SdkMessageProcessingStepImageId>
+        <Attributes>sanic_nombre,statecode,statuscode</Attributes>
+        <EntityAlias>PreImagen</EntityAlias>
+        <ImageType>0</ImageType>
+        <MessagePropertyName>Target</MessagePropertyName>
+        <IsCustomizable>1</IsCustomizable>
+      </SdkMessageProcessingStepImage>
+    </SdkMessageProcessingStepImages>
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - cliente - Update - PreOperation - PropietarioAlActualizarStep" SdkMessageProcessingStepId="{5e54b393-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>FB8E198C54506D94222374C43E33346B4690A9C0D02D2E440119527D846527EB</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_cliente</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona deje como propietario de un cliente a alguien que no sea el team del área.</Description>
+    <FilteringAttributes>ownerid</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - conversacion - Create - PreOperation - ConversacionCrearStep" SdkMessageProcessingStepId="{c25269b2-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>2AF55915E3AF81261BEE20BE22840E1F04AABEB3E7C9A19F9BF7630648FF1168</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_conversacion</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona escriba el código autonumérico de la conversación, que asigna la plataforma.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - conversacion - Create - PreOperation - PropietarioAlCrearStep" SdkMessageProcessingStepId="{93b8da8c-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>2040010F2B0E605D20F983E5BF061E7BAD606512C3CF4FF6E3E9E33864D75EE9</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_conversacion</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Fija al team del área como propietario de toda conversación nueva, sin importar quién la cree.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - conversacion - Update - PreOperation - ConversacionActualizarStep" SdkMessageProcessingStepId="{47126aa0-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>21062E7656B14FEA046BE142673F4AA7C3423733D93B2860A33E5C3AF8595281</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_conversacion</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Gobierna los cambios de una conversación: aplica las transiciones de estado (finalizar y reabrir), protege las columnas que solo escribe el sistema y bloquea cambios en una conversación finalizada o unida.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages>
+      <SdkMessageProcessingStepImage Name="PreImagen">
+        <SdkMessageProcessingStepImageId>{4a126aa0-8dcc-f111-a05b-00224808ffcd}</SdkMessageProcessingStepImageId>
+        <Attributes>ownerid,sanic_asunto,sanic_cantidadrespuestas,sanic_clienteid,sanic_correonuevoenfinalizada,sanic_detallesinrespuesta,sanic_fechafinalizacion,sanic_fechaprimercorreo,sanic_finalizadoporid,sanic_huellamessageid,sanic_motivosinrespuesta,sanic_nombre,sanic_oficialasignadoid,sanic_remitente,sanic_resultado,sanic_sinrespuestadesde,sanic_tiempoprimerarespuesta,sanic_tiempototal,sanic_unidaaid,statecode,statuscode</Attributes>
+        <EntityAlias>PreImagen</EntityAlias>
+        <ImageType>0</ImageType>
+        <MessagePropertyName>Target</MessagePropertyName>
+        <IsCustomizable>1</IsCustomizable>
+      </SdkMessageProcessingStepImage>
+    </SdkMessageProcessingStepImages>
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - conversacion - Update - PreOperation - ConversacionAsignacionStep" SdkMessageProcessingStepId="{4b126aa0-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>82F26A448FE40996840E671847B8C1F5B37B61514E51F870BA5CB50E7BF8889B</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_conversacion</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Controla quién puede cambiar el oficial asignado de una conversación: tomarla vacía pasa; cualquier otro cambio exige ser de la jefatura.</Description>
+    <FilteringAttributes>sanic_oficialasignadoid</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>20</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages>
+      <SdkMessageProcessingStepImage Name="PreImagen">
+        <SdkMessageProcessingStepImageId>{4e126aa0-8dcc-f111-a05b-00224808ffcd}</SdkMessageProcessingStepImageId>
+        <Attributes>sanic_oficialasignadoid</Attributes>
+        <EntityAlias>PreImagen</EntityAlias>
+        <ImageType>0</ImageType>
+        <MessagePropertyName>Target</MessagePropertyName>
+        <IsCustomizable>1</IsCustomizable>
+      </SdkMessageProcessingStepImage>
+    </SdkMessageProcessingStepImages>
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - conversacion - Update - PreOperation - PropietarioAlActualizarStep" SdkMessageProcessingStepId="{59ddfc99-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>FB8E198C54506D94222374C43E33346B4690A9C0D02D2E440119527D846527EB</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_conversacion</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona deje como propietario de una conversación a alguien que no sea el team del área.</Description>
+    <FilteringAttributes>ownerid</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - cuota - Create - PreOperation - PropietarioAlCrearStep" SdkMessageProcessingStepId="{5254b393-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>2040010F2B0E605D20F983E5BF061E7BAD606512C3CF4FF6E3E9E33864D75EE9</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_cuota</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Fija al team del área como propietario de toda cuota nueva, sin importar quién la cree.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - cuota - Update - PostOperation - CuotaTerminarArregloStep" SdkMessageProcessingStepId="{3f9562a6-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>7E6297FF6EAFFE5105D98E0E8FE605F22CF3883378304D59EBDF65A5340A0386</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_cuota</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Cuando se registra el último pago pendiente de un arreglo Vigente, lo pasa a Terminado como escritura del sistema.</Description>
+    <FilteringAttributes>sanic_fechapago,sanic_montopagado</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>20</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>40</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - cuota - Update - PreOperation - CuotaActualizarStep" SdkMessageProcessingStepId="{3b9562a6-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>FEABC0D68E117CF9B7CDFD031AD174A4B7C41E47FF1B923901606FFFBAC4ACA4</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_cuota</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Limita el cambio de una cuota a registrar el pago (fecha y monto), solo en un arreglo Vigente, y rechaza cualquier otra columna.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages>
+      <SdkMessageProcessingStepImage Name="PreImagen">
+        <SdkMessageProcessingStepImageId>{3e9562a6-8dcc-f111-a05b-00224808ffcd}</SdkMessageProcessingStepImageId>
+        <Attributes>sanic_arregloid,sanic_fechapago,sanic_fechavencimiento,sanic_monto,sanic_montopagado,sanic_nombre,sanic_numero,statecode,statuscode</Attributes>
+        <EntityAlias>PreImagen</EntityAlias>
+        <ImageType>0</ImageType>
+        <MessagePropertyName>Target</MessagePropertyName>
+        <IsCustomizable>1</IsCustomizable>
+      </SdkMessageProcessingStepImage>
+    </SdkMessageProcessingStepImages>
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - cuota - Update - PreOperation - PropietarioAlActualizarStep" SdkMessageProcessingStepId="{5fddfc99-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>FB8E198C54506D94222374C43E33346B4690A9C0D02D2E440119527D846527EB</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_cuota</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona deje como propietario de una cuota a alguien que no sea el team del área.</Description>
+    <FilteringAttributes>ownerid</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - email - Create - PostOperation - RegistrarCorreoEntranteStep" SdkMessageProcessingStepId="{bc5269b2-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>D7041A0656897E155137BEC672DAA5804055D03E7EC63519F0FA2B5F3838A38F</PluginTypeExportKey>
+    <PrimaryEntity>email</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Registra cada correo entrante en una conversación, nueva o existente, de forma asíncrona; si falla, el correo queda guardado y la reconciliación lo recoge.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>1</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>40</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - email - Create - PreOperation - EmailSoloSistemaStep" SdkMessageProcessingStepId="{ba5069b2-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>3CA71B84F48E5ACEB0EC20DAD3347F1FA07B137306448A3C46A416F31510DC6B</PluginTypeExportKey>
+    <PrimaryEntity>email</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona cree un correo con las columnas que solo escribe el sistema (tiempo de respuesta y quién respondió).</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>20</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - email - Create - PreOperation - RemitenteDelAreaStep" SdkMessageProcessingStepId="{b35069b2-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>BD10A7913E6A66971FEC8B43140C67B021D4CE33ACF91D0EF9B4B9A15FEC3FD2</PluginTypeExportKey>
+    <PrimaryEntity>email</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Obliga a que todo correo saliente de una conversación salga desde el buzón del área, reemplazando el remitente por defecto.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - email - Update - PostOperation - RespuestaEnviadaStep" SdkMessageProcessingStepId="{bf5269b2-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>BBA0B9099809907FE6E64FA000F35371AE09FE2441B4133D28D2B4107508B4F0</PluginTypeExportKey>
+    <PrimaryEntity>email</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Cuando se envía una respuesta, actualiza de forma asíncrona la cantidad de respuestas, los tiempos y los pendientes de la conversación.</Description>
+    <FilteringAttributes>statuscode</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>1</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>40</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - email - Update - PreOperation - EmailSoloSistemaStep" SdkMessageProcessingStepId="{b95269b2-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>3CA71B84F48E5ACEB0EC20DAD3347F1FA07B137306448A3C46A416F31510DC6B</PluginTypeExportKey>
+    <PrimaryEntity>email</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona cambie en un correo las columnas que solo escribe el sistema (tiempo de respuesta y quién respondió).</Description>
+    <FilteringAttributes>sanic_respondidoporid,sanic_tiemporespuesta</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - email - Update - PreOperation - RemitenteDelAreaStep" SdkMessageProcessingStepId="{c55269b2-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>BD10A7913E6A66971FEC8B43140C67B021D4CE33ACF91D0EF9B4B9A15FEC3FD2</PluginTypeExportKey>
+    <PrimaryEntity>email</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Exige que el remitente de un correo saliente de una conversación sea el buzón del área también al actualizarlo, para que nadie eluda el control del alta.</Description>
+    <FilteringAttributes>directioncode,from,regardingobjectid</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>20</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - generacionformato - Create - PreOperation - PropietarioAlCrearStep" SdkMessageProcessingStepId="{5b54b393-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>2040010F2B0E605D20F983E5BF061E7BAD606512C3CF4FF6E3E9E33864D75EE9</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_generacionformato</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Fija al team del área como propietario de toda generación de formato nueva, sin importar quién la cree.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - generacionformato - Update - PreOperation - PropietarioAlActualizarStep" SdkMessageProcessingStepId="{68ddfc99-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>FB8E198C54506D94222374C43E33346B4690A9C0D02D2E440119527D846527EB</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_generacionformato</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona deje como propietario de una generación de formato a alguien que no sea el team del área.</Description>
+    <FilteringAttributes>ownerid</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - mapeocelda - Create - PreOperation - MapeoCeldaCrearStep" SdkMessageProcessingStepId="{3ede64ac-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>25C464BC2C121B1A3AEE6EED6D226A7D63192A1E72BB725626FC2A4384710881</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_mapeocelda</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona agregue un mapeo a una versión de plantilla que no está en Borrador, valida el mapeo y calcula su nombre.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - mapeocelda - Create - PreOperation - PropietarioAlCrearStep" SdkMessageProcessingStepId="{5854b393-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>2040010F2B0E605D20F983E5BF061E7BAD606512C3CF4FF6E3E9E33864D75EE9</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_mapeocelda</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Fija al team del área como propietario de todo mapeo de celda nuevo, sin importar quién lo cree.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - mapeocelda - Delete - PreOperation - MapeoCeldaEliminarStep" SdkMessageProcessingStepId="{45de64ac-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>a1bdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>858555D675C0E334182926654DED1DF3E079942E9B747639BF1C92403F64EA29</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_mapeocelda</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona elimine el mapeo de una versión de plantilla que no está en Borrador.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages>
+      <SdkMessageProcessingStepImage Name="PreImagen">
+        <SdkMessageProcessingStepImageId>{48de64ac-8dcc-f111-a05b-00224808ffcd}</SdkMessageProcessingStepImageId>
+        <Attributes>sanic_versionplantillaid</Attributes>
+        <EntityAlias>PreImagen</EntityAlias>
+        <ImageType>0</ImageType>
+        <MessagePropertyName>Target</MessagePropertyName>
+        <IsCustomizable>1</IsCustomizable>
+      </SdkMessageProcessingStepImage>
+    </SdkMessageProcessingStepImages>
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - mapeocelda - Update - PreOperation - MapeoCeldaActualizarStep" SdkMessageProcessingStepId="{41de64ac-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>F4943550B1D28E1402C6FCE2973F3ADCB9217119A8B4928ED8F6CB6D566F21B2</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_mapeocelda</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona cambie el mapeo de una versión de plantilla que no está en Borrador, protege el estado y el nombre calculado y valida los valores del mapeo.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages>
+      <SdkMessageProcessingStepImage Name="PreImagen">
+        <SdkMessageProcessingStepImageId>{44de64ac-8dcc-f111-a05b-00224808ffcd}</SdkMessageProcessingStepImageId>
+        <Attributes>sanic_campo,sanic_celda,sanic_filasmaximas,sanic_hoja,sanic_nombre,sanic_tipo,sanic_versionplantillaid,statecode,statuscode</Attributes>
+        <EntityAlias>PreImagen</EntityAlias>
+        <ImageType>0</ImageType>
+        <MessagePropertyName>Target</MessagePropertyName>
+        <IsCustomizable>1</IsCustomizable>
+      </SdkMessageProcessingStepImage>
+    </SdkMessageProcessingStepImages>
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - mapeocelda - Update - PreOperation - PropietarioAlActualizarStep" SdkMessageProcessingStepId="{65ddfc99-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>FB8E198C54506D94222374C43E33346B4690A9C0D02D2E440119527D846527EB</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_mapeocelda</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona deje como propietario de un mapeo de celda a alguien que no sea el team del área.</Description>
+    <FilteringAttributes>ownerid</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - versionplantilla - Create - PreOperation - PropietarioAlCrearStep" SdkMessageProcessingStepId="{5554b393-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>2040010F2B0E605D20F983E5BF061E7BAD606512C3CF4FF6E3E9E33864D75EE9</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_versionplantilla</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Fija al team del área como propietario de toda versión de plantilla nueva, sin importar quién la cree.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - versionplantilla - Create - PreOperation - VersionPlantillaCrearStep" SdkMessageProcessingStepId="{429562a6-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>9D89FF5FA2ABD5AC82C12784EE6E49F510D8A6B258298F777E52C90F12265BA5</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_versionplantilla</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Obliga a que una versión de plantilla nazca en Borrador, sin huella ni datos de aprobación y con un nombre del formato vNN.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - versionplantilla - Update - PreOperation - ArchivoDePlantillaStep" SdkMessageProcessingStepId="{3bde64ac-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>202D7063C0339B26DE62CCED702134E5A65EC6862FA5DCEE5AFDCA8C77A759D6</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_versionplantilla</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona cambie el archivo de una versión de plantilla que no está en Borrador.</Description>
+    <FilteringAttributes>sanic_archivo</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>20</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - versionplantilla - Update - PreOperation - PropietarioAlActualizarStep" SdkMessageProcessingStepId="{62ddfc99-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>FB8E198C54506D94222374C43E33346B4690A9C0D02D2E440119527D846527EB</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_versionplantilla</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Rechaza que una persona deje como propietario de una versión de plantilla a alguien que no sea el team del área.</Description>
+    <FilteringAttributes>ownerid</FilteringAttributes>
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>5</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages />
+  </SdkMessageProcessingStep>
+  <SdkMessageProcessingStep Name="STEP - CARP - versionplantilla - Update - PreOperation - VersionPlantillaActualizarStep" SdkMessageProcessingStepId="{459562a6-8dcc-f111-a05b-00224808ffcd}">
+    <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+    <PluginTypeExportKey>5D75EA4588A7F3FD2EC6CE680BB86631B7F416D72BAD92F30CFE6BFC92B5862B</PluginTypeExportKey>
+    <PrimaryEntity>sanic_carp_tbl_versionplantilla</PrimaryEntity>
+    <AsyncAutoDelete>0</AsyncAutoDelete>
+    <Description>Gobierna el ciclo de la versión de plantilla (Borrador, Vigente, Histórica): al publicar valida el mapeo, genera una prueba y deja una sola Vigente; el estado nativo solo lo cambia el sistema.</Description>
+    <FilteringAttributes />
+    <InvocationSource>1</InvocationSource>
+    <Mode>0</Mode>
+    <Rank>10</Rank>
+    <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+    <Stage>20</Stage>
+    <IsCustomizable>1</IsCustomizable>
+    <IsHidden>0</IsHidden>
+    <SupportedDeployment>0</SupportedDeployment>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <SdkMessageProcessingStepImages>
+      <SdkMessageProcessingStepImage Name="PreImagen">
+        <SdkMessageProcessingStepImageId>{3ade64ac-8dcc-f111-a05b-00224808ffcd}</SdkMessageProcessingStepImageId>
+        <Attributes>sanic_aprobadoporid,sanic_capacidad,sanic_estado,sanic_fechaaprobacion,sanic_huella,sanic_nombre,statecode,statuscode</Attributes>
+        <EntityAlias>PreImagen</EntityAlias>
+        <ImageType>0</ImageType>
+        <MessagePropertyName>Target</MessagePropertyName>
+        <IsCustomizable>1</IsCustomizable>
+      </SdkMessageProcessingStepImage>
+    </SdkMessageProcessingStepImages>
+  </SdkMessageProcessingStep>
+</SdkMessageProcessingSteps>

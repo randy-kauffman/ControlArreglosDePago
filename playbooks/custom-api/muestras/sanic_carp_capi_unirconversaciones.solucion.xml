@@ -1,0 +1,80 @@
+<customapi uniquename="sanic_carp_capi_unirconversaciones">
+  <allowedcustomprocessingsteptype>0</allowedcustomprocessingsteptype>
+  <bindingtype>0</bindingtype>
+  <description default="Une una conversación de origen a una de destino: mueve los correos y los arreglos al destino y deja el origen en estado Unida, todo en una transacción. Devuelve el destino y cuántos correos y arreglos se movieron.">
+    <label description="Une una conversación de origen a una de destino: mueve los correos y los arreglos al destino y deja el origen en estado Unida, todo en una transacción. Devuelve el destino y cuántos correos y arreglos se movieron." languagecode="1033" />
+  </description>
+  <displayname default="CAPI - CARP - Unir conversaciones">
+    <label description="CAPI - CARP - Unir conversaciones" languagecode="1033" />
+  </displayname>
+  <executeprivilegename>prvWritesanic_carp_tbl_conversacion</executeprivilegename>
+  <iscustomizable>1</iscustomizable>
+  <isfunction>0</isfunction>
+  <isprivate>0</isprivate>
+  <name>sanic_carp_capi_unirconversaciones</name>
+  <plugintypeid>
+    <plugintypeexportkey>14754DAB5CBB69937429D1BA235DC3E8AEF6819B7F943F89BA535A953659CB4D</plugintypeexportkey>
+  </plugintypeid>
+  <workflowsdkstepenabled>0</workflowsdkstepenabled>
+  <customapirequestparameters>
+    <customapirequestparameter uniquename="origenid">
+      <description default="Identificador de la conversación de origen: la que deja de estar activa.">
+        <label description="Identificador de la conversación de origen: la que deja de estar activa." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_IP - CARP - Origen">
+        <label description="CAPI_IP - CARP - Origen" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <isoptional>1</isoptional>
+      <name>sanic_carp_capiip_unirconversaciones_origenid</name>
+      <type>12</type>
+    </customapirequestparameter>
+    <customapirequestparameter uniquename="destinoid">
+      <description default="Identificador de la conversación de destino: la que recibe los correos y los arreglos.">
+        <label description="Identificador de la conversación de destino: la que recibe los correos y los arreglos." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_IP - CARP - Destino">
+        <label description="CAPI_IP - CARP - Destino" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <isoptional>1</isoptional>
+      <name>sanic_carp_capiip_unirconversaciones_destinoid</name>
+      <type>12</type>
+    </customapirequestparameter>
+  </customapirequestparameters>
+  <customapiresponseproperties>
+    <customapiresponseproperty uniquename="destinoid">
+      <description default="Eco del destino: la conversación que recibió la unión.">
+        <label description="Eco del destino: la conversación que recibió la unión." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Destino">
+        <label description="CAPI_OP - CARP - Destino" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_unirconversaciones_destinoid</name>
+      <type>12</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="correosmovidos">
+      <description default="Correos cuya conversación pasó al destino.">
+        <label description="Correos cuya conversación pasó al destino." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Correos movidos">
+        <label description="CAPI_OP - CARP - Correos movidos" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_unirconversaciones_correosmovidos</name>
+      <type>7</type>
+    </customapiresponseproperty>
+    <customapiresponseproperty uniquename="arreglosrepunteados">
+      <description default="Arreglos que ahora apuntan al destino: todos los del origen, activos e inactivos.">
+        <label description="Arreglos que ahora apuntan al destino: todos los del origen, activos e inactivos." languagecode="1033" />
+      </description>
+      <displayname default="CAPI_OP - CARP - Arreglos repunteados">
+        <label description="CAPI_OP - CARP - Arreglos repunteados" languagecode="1033" />
+      </displayname>
+      <iscustomizable>1</iscustomizable>
+      <name>sanic_carp_capiop_unirconversaciones_arreglosrepunteados</name>
+      <type>7</type>
+    </customapiresponseproperty>
+  </customapiresponseproperties>
+</customapi>
