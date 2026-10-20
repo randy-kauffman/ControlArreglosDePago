@@ -80,18 +80,16 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Formato
         }
 
         [Fact]
-        public void Generar_ConUnPagoEnUnaColumnaSinFormatoDeFecha_LlevaLaAdvertenciaALaSalida()
+        public void Generar_ConUnPagoEnUnaColumnaSinFormatoDeFecha_NoLlevaAdvertenciaPorqueLaCeldaSaleConFormatoDeFecha()
         {
-            // Spike 1, hallazgo 4. Es lo que la Custom API devuelve en `advertencias` (1.1, PA-GEN-24).
+            // Spike 1, hallazgo 4. Hasta el 2026-10-20 se avisaba; con la opción B (diseno/03 4.3 punto 19) el generador le pone formato de fecha.
             var datos = Plantillas.Datos(12, null, i => i <= 3
                 ? new CuotaDato(i, new DateTime(2026, 11, 8).AddMonths(i - 1), 100m, new DateTime(2026, 11, 9).AddMonths(i - 1), 100m)
                 : new CuotaDato(i, new DateTime(2026, 11, 8).AddMonths(i - 1), 100m));
 
             var r = Generar(Adaptador(null), Plantillas.V07, Plantillas.MapaV07(), datos);
 
-            var avisos = r.Advertencias.Where(a => a.Contains("no es de fecha")).ToList();
-            Assert.Single(avisos);
-            Assert.Contains("D7", avisos[0]);
+            Assert.DoesNotContain(r.Advertencias, a => a.Contains("no es de fecha"));
         }
 
         // ---- Errores: el tipo se conserva ----

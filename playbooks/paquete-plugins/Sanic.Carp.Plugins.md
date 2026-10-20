@@ -36,7 +36,7 @@ Advertencias: un paquete no lleva etiquetas por idioma, así que `idiomas` solo 
   "nombre": "sanic_carp_pkg_plugins",
   "uniquename": "sanic_carp_pkg_plugins",
   "version": "1.0.0",
-  "version_ensamblado": "1.0.0.0",
+  "version_ensamblado": "1.0.1.0",
   "nupkg": "src/Sanic.Carp.Plugins.Paquete/bin/Release/sanic_carp_pkg_plugins.1.0.0.nupkg",
   "tipos": [
     "Sanic.Carp.Plugins.Api.GenerarFormatoApi",
@@ -77,13 +77,14 @@ Decisiones que este playbook toma y el diseño no traía:
 |---|---|---|
 | `nombre` igual a `uniquename` | `sanic_carp_pkg_plugins` | La convención dice «no aplica» para el nombre visible y solo da el unique name. Los paquetes de los spikes 2026-003 se registraron con `name` = `uniquename`, y un `name` en texto libre fue rechazado con 400 |
 | `version` del paquete | `1.0.0` | **Hueco de diseño.** `diseno/03` §4.1 no la fija; el `.csproj` solo declara `AssemblyVersion` 1.0.0.0, que no es la versión de paquete. `1.0.0` es la que usaron todos los spikes del proyecto. **Irreversible**: el dueño la confirma antes de construir |
-| `version_ensamblado` | `1.0.0.0` | El `AssemblyVersion` del ensamblado `Sanic.Carp.Plugins` (`<AssemblyVersion>` de los dos `.csproj`), que la plataforma guarda en `pluginassemblies.version`. **No es la `version` del paquete.** La herramienta compara contra él lo que lee del entorno y, con `--actualizar-contenido`, exige que `modifiedon` haya avanzado: **hay que subir el tercer número en cada despliegue** y actualizar este valor a la par (`alm.md`) |
+| `version_ensamblado` | `1.0.1.0` (era `1.0.0.0` hasta el 2026-10-20) | El `AssemblyVersion` del ensamblado `Sanic.Carp.Plugins` (`<AssemblyVersion>` de los dos `.csproj`), que la plataforma guarda en `pluginassemblies.version`. **No es la `version` del paquete.** La herramienta compara contra él lo que lee del entorno y, con `--actualizar-contenido`, exige que `modifiedon` haya avanzado: **hay que subir el tercer número en cada despliegue** y actualizar este valor a la par (`alm.md`) |
 | Ruta del `.nupkg` | `src/Sanic.Carp.Plugins.Paquete/bin/Release/sanic_carp_pkg_plugins.1.0.0.nupkg` | **Ruta cerrada (2026-10-20).** El `.csproj` de producción no declara `PackageId` ni empaquetado de plugins; lo hace el proyecto aparte `src/Sanic.Carp.Plugins.Paquete/` (`PackageId` `sanic_carp_pkg_plugins`, `Version` `1.0.0`) y la ruta quedó confirmada con una corrida real. La `version` del paquete sigue siendo del dueño (irreversible) |
 | Lista `tipos` | Las 26 clases | Salen del código (clases `sealed` que heredan de `BaseDeApi` o `BaseDeStep`), no de memoria. `diseno/03` §5 cuenta 21 clases de step y 5 API |
 
 Declarado en prosa porque la herramienta no lo lee (no son claves del bloque):
 
-- `AssemblyVersion` y `FileVersion` esperados del ensamblado propio: **1.0.0.0** (`src/Sanic.Carp.Plugins/Sanic.Carp.Plugins.csproj`). En cada despliegue posterior se sube **solo el tercer número**.
+- `AssemblyVersion` y `FileVersion` esperados del ensamblado propio: **1.0.1.0** (`src/Sanic.Carp.Plugins/Sanic.Carp.Plugins.csproj` y el `.csproj` de empaquetado). En cada despliegue posterior se sube **solo el tercer número**. La `version` del paquete sigue en `1.0.0`: es inmutable en Dataverse y cambiarla obligaría a borrar el paquete con sus steps.
+- **2026-10-20, despliegue 2 (1.0.0.0 → 1.0.1.0):** el generador de formatos aplica formato de fecha a una fecha escrita en una celda cuyo estilo no es de fecha (opción B del usuario, `diseno/03` 4.3 punto 19). Subido con `--actualizar-contenido`.
 - Dependencias que tienen que viajar dentro del `.nupkg`: `DocumentFormat.OpenXml` 2.20.0. **No** viaja `Microsoft.CrmSdk.CoreAssemblies` (el csproj lo marca `PrivateAssets=All`: ya está en el sandbox).
 - Destino de compilación que ejecuta el sandbox: `net462`.
 
@@ -128,7 +129,7 @@ python3 herramientas/construir/paquete_plugins.py playbooks/paquete-plugins/Sani
 | 2 | `GET pluginassemblies` y `GET plugintypes` del paquete | **exactamente** los 26 tipos de la sección 2: uno que falta y uno de más son `error`/`difiere` |
 | 3 | `GET solutioncomponents` de la solución por el `pluginpackageid` | una fila; **se informa el `componenttype`** que puso la plataforma, no se compara con un número |
 | 4 | Contenido del `.nupkg` antes de subir (en el alta y con `--actualizar-contenido`; si falla, no se escribe nada) | el `.nuspec` dice `id` = `uniquename` y `version` = `version`; cada dependencia del nuspec que no es de plataforma (`DocumentFormat.OpenXml` entre ellas) tiene su `.dll` en `lib/net462/`; cada uno de los 26 tipos está definido, con su namespace completo, en un `.dll` de `lib/net462/` |
-| 5 | `GET pluginassemblies?$select=name,version,modifiedon&$filter=_packageid_value eq <id>` (la herramienta lo hace en los tres caminos) | cada ensamblado con `version` = `version_ensamblado` (`1.0.0.0`). Con `--actualizar-contenido` se lee antes y después del `PATCH` y `modifiedon` tiene que haber avanzado: si no, `error` |
+| 5 | `GET pluginassemblies?$select=name,version,modifiedon&$filter=_packageid_value eq <id>` (la herramienta lo hace en los tres caminos) | cada ensamblado con `version` = `version_ensamblado` (`1.0.1.0`). Con `--actualizar-contenido` se lee antes y después del `PATCH` y `modifiedon` tiene que haber avanzado: si no, `error` |
 | 6 | Segunda ejecución sin `--solo-verificar` | estado `ya_existia`, código de salida 0 |
 
 ## 6. Si ya existe

@@ -37,3 +37,13 @@ Los GUID de las filas HUMO están en `estado-plantilla.json` (separado del `esta
 ## Herramienta
 
 `herramientas/construir/datos.py` ahora admite columnas de archivo (`{"archivo": "<ruta relativa al playbook>", "nombre": "<nombre en Dataverse>"}`): el archivo no viaja en el alta, se sube aparte y se verifica bajándolo y comparando la SHA-256; con `--completar` se vuelve a subir si difiere (sobre una Vigente el plugin lo rechaza con CARP-VER-003 y la herramienta informa `error`). Pruebas nuevas en `tests/test_datos_archivo.py` (14); la suite de `herramientas/construir` da 1492 OK.
+
+
+## 2026-10-20: fecha de pago con formato de fecha (opción B del usuario)
+
+La primera verificación dejaba esta advertencia: "En la hoja 'CONTROL DE PAGOS' se escribieron N fechas en la columna D (desde D7) cuyo formato de celda no es de fecha". El usuario eligió que el generador corrija el formato al escribir, sin tocar la v07 aprobada (`diseno/03` 4.3 punto 19).
+
+- Paquete `sanic_carp_pkg_plugins` en Dev con el ensamblado **1.0.1.0** (`--actualizar-contenido`: `actualizado`, `modifiedon` avanzó; luego `ya_existia`). La `version` del paquete sigue en 1.0.0.
+- `step.py --solo-verificar`: `ya_existia`, 37 de 37. Las 5 Custom API: `ya_existia`. Steps del ensamblado: 42 de 42 habilitados.
+- `scripts/l11_fecha_formato.py` como User 8 sobre `arreglo-l0-v07b`: HTTP 200 en 2,55 s, `advertencias` vacía, D7 (la cuota 1 pagada) con `number_format` `dd/mm/yyyy;@` según openpyxl. Evidencia: `evidencia/11_fecha_formato.json` y `evidencia/11_F-NIC-0000052-v07-HUMO-fecha.xlsx`.
+- La llamada agregó una fila de Generación de formato del arreglo HUMO (bitácora normal del gesto).

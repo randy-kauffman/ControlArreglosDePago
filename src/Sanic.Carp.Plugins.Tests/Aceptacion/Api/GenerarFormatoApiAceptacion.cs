@@ -96,9 +96,15 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
         }
 
         /// <summary>La hoja con cada celda de cadena compartida reemplazada por su texto: independiente del orden de la tabla de cadenas.</summary>
-        private static string HojaResuelta(byte[] xml, List<string> textos)
+        private static string HojaResuelta(byte[] xml, List<string> textos, bool sinEstiloDeFechasDePago = false)
         {
             var documento = System.Xml.Linq.XDocument.Load(new MemoryStream(xml));
+            if (sinEstiloDeFechasDePago)
+            {
+                var fechasDePago = new HashSet<string>(Enumerable.Range(7, 12).Select(n => "D" + n));
+                foreach (var celda in documento.Descendants().Where(e => e.Name.LocalName == "c" && fechasDePago.Contains((string)e.Attribute("r"))))
+                    celda.SetAttributeValue("s", null);
+            }
             foreach (var celda in documento.Descendants().Where(e => e.Name.LocalName == "c" && (string)e.Attribute("t") == "s").ToList())
             {
                 var valor = celda.Elements().Single(e => e.Name.LocalName == "v");
@@ -171,8 +177,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
             for (int i = 0; i < esperados.Count; i++)
             {
                 var nombre = esperados[i].Key;
+                // Con pagos, la opción B (diseno/03 4.3 punto 19) cambia a propósito styles.xml (un estilo de fecha más) y el estilo de las 12 fechas
+                // de pago de CONTROL DE PAGOS (D7 a D18). Lo fija SalidaIdenticaAlSpikeAceptacion; aquí se comparan las hojas sin ese atributo.
+                if (conPagos && nombre == "xl/styles.xml") continue;
                 if (nombre.StartsWith("xl/worksheets/", StringComparison.Ordinal) && nombre.EndsWith(".xml", StringComparison.Ordinal))
-                    Assert.True(HojaResuelta(esperados[i].Value, textosEsperados) == HojaResuelta(obtenidos[i].Value, textosObtenidos),
+                    Assert.True(HojaResuelta(esperados[i].Value, textosEsperados, conPagos) == HojaResuelta(obtenidos[i].Value, textosObtenidos, conPagos),
                         "La hoja '" + nombre + "' de la salida de " + plazo + " cuotas, generada por la API desde el almacén, difiere del spike 1b (con las cadenas resueltas).");
                 else if (nombre != "xl/sharedStrings.xml")
                     Assert.True(esperados[i].Value.SequenceEqual(obtenidos[i].Value),

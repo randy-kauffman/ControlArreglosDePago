@@ -1,0 +1,36 @@
+{
+ "fecha": "2026-10-20",
+ "caller": "User 8",
+ "arreglo": "arreglo-l0-v07b",
+ "paquete": "1.0.1.0",
+ "ensamblado": [
+  {
+   "name": "Sanic.Carp.Plugins",
+   "version": "1.0.1.0"
+  }
+ ],
+ "steps": {
+  "total": 42,
+  "habilitados": 42,
+  "deshabilitados": []
+ },
+ "generar": {
+  "http": 200,
+  "seg": 2.55,
+  "nombrearchivo": "F-NIC-0000052-ARR-001077.xlsx",
+  "advertencias": ""
+ },
+ "fechas_de_pago": [
+  {
+   "celda": "D7",
+   "valor": "2026-11-05 00:00:00",
+   "number_format": "dd/mm/yyyy;@",
+   "es_fecha": true
+  }
+ ],
+ "veredicto": {
+  "todas_con_formato_de_fecha": true,
+  "sin_advertencia": true,
+  "steps_habilitados": true
+ }
+}

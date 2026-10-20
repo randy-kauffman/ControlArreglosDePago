@@ -121,7 +121,6 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Formato
 
         [Theory]
         [InlineData(6, "salida-ejemplo-6-cuotas.xlsx", false)]
-        [InlineData(60, "salida-ejemplo-60-cuotas.xlsx", true)]
         public void PA_GEN_27_ElGeneradorRealDaLaMismaSalidaQueElSpike1b_ComponenteAComponenteYByteAByteSalvoLosSellosDeTiempoDelZip(int plazo, string salidaDelSpike, bool conPagos)
         {
             var plantilla = Plantillas.V07;
@@ -141,6 +140,64 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Formato
             Assert.Equal(esperada.Length, resultado.Archivo.Length);
             Assert.True(SinSellosDeTiempo(esperada).SequenceEqual(SinSellosDeTiempo(resultado.Archivo)),
                 "Los componentes coinciden pero el archivo completo (sin sellos de tiempo) difiere del spike 1b: cambió el empaquetado del ZIP (compresión, orden o metadatos).");
+        }
+
+        private static readonly System.Xml.Linq.XNamespace M = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+
+        /// <summary>
+        /// PA-GEN-27 con pagos (60 cuotas, las 12 primeras pagadas). Desde la opción B del 2026-10-20 (diseno/03 4.3 punto 19) la salida ya NO es
+        /// la del spike en dos partes, y solo en lo que la decisión cambia: <c>xl/styles.xml</c> trae UN estilo más al final de <c>cellXfs</c>
+        /// (copia del de la columna D con el formato de fecha 164) y la hoja CONTROL DE PAGOS cambia solo el atributo <c>s</c> de las 12 fechas de
+        /// pago (D7 a D18), que apuntan a ese estilo. Las otras partes siguen byte a byte iguales al spike 1b. Mutación que mata: cualquier otro
+        /// cambio en esas dos partes o en las demás.
+        /// </summary>
+        [Fact]
+        public void PA_GEN_27_ConPagos_SoloCambianElEstiloNuevoYElEstiloDeLasFechasDePago()
+        {
+            var plantilla = Plantillas.V07;
+            var resultado = new GeneradorOpenXml(null).Generar(plantilla, Plantillas.Sha256(plantilla), Plantillas.MapaV07(), DatosDelSpike(60, true));
+
+            var esperada = SalidaDelSpike("salida-ejemplo-60-cuotas.xlsx");
+            var rutaControl = Paquete.Abrir(esperada).RutaDeHoja(Plantillas.HojaControl);
+            var esperados = Componentes(esperada);
+            var obtenidos = Componentes(resultado.Archivo);
+            Assert.Equal(esperados.Select(c => c.Key).ToArray(), obtenidos.Select(c => c.Key).ToArray());
+            for (int i = 0; i < esperados.Count; i++)
+            {
+                var nombre = esperados[i].Key;
+                if (nombre == "xl/styles.xml" || nombre == rutaControl) continue;
+                Assert.True(esperados[i].Value.SequenceEqual(obtenidos[i].Value), "El componente '" + nombre + "' difiere del spike 1b.");
+            }
+
+            var estilosEsperados = Paquete.Abrir(esperada).Xml("xl/styles.xml");
+            var estilosObtenidos = Paquete.Abrir(resultado.Archivo).Xml("xl/styles.xml");
+            var xfsEsperados = estilosEsperados.Root.Element(M + "cellXfs");
+            var xfsObtenidos = estilosObtenidos.Root.Element(M + "cellXfs");
+            int cantidad = xfsEsperados.Elements(M + "xf").Count();
+            Assert.Equal(cantidad + 1, xfsObtenidos.Elements(M + "xf").Count());
+            var nuevo = xfsObtenidos.Elements(M + "xf").Last();
+            Assert.Equal("164", (string)nuevo.Attribute("numFmtId"));
+            nuevo.Remove();
+            xfsObtenidos.SetAttributeValue("count", (string)xfsEsperados.Attribute("count"));
+            Assert.Equal(estilosEsperados.ToString(), estilosObtenidos.ToString());
+
+            var hojaEsperada = Paquete.Abrir(esperada).Xml(rutaControl);
+            var hojaObtenida = Paquete.Abrir(resultado.Archivo).Xml(rutaControl);
+            var indiceNuevo = cantidad.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            var cambiadas = new List<string>();
+            foreach (var c in hojaObtenida.Descendants(M + "c"))
+            {
+                var r = (string)c.Attribute("r");
+                var antes = hojaEsperada.Descendants(M + "c").Single(x => (string)x.Attribute("r") == r);
+                if ((string)c.Attribute("s") != (string)antes.Attribute("s"))
+                {
+                    Assert.Equal(indiceNuevo, (string)c.Attribute("s"));
+                    cambiadas.Add(r);
+                    c.SetAttributeValue("s", (string)antes.Attribute("s"));
+                }
+            }
+            Assert.Equal(Enumerable.Range(7, 12).Select(n => "D" + n).ToArray(), cambiadas.ToArray());
+            Assert.Equal(hojaEsperada.ToString(), hojaObtenida.ToString());
         }
     }
 }

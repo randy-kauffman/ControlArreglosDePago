@@ -32,7 +32,18 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Formato
 
             var c = salida.Celda(Plantillas.HojaControl, "B7");
             Assert.NotNull(c);
-            Assert.Equal("28", c.S);                         // la columna B declara style="28"
+            // La columna B declara style="28", que no es de fecha: desde la opción B (diseno/03 4.3 punto 19) la celda lleva una copia de 28
+            // con el formato de fecha, igual en todo lo demás.
+            Assert.Equal("dd/mm/yyyy;@", salida.FormatoNumerico(c.S).Value);
+            var estilos = salida.Xml("xl/styles.xml").Root.Element(M + "cellXfs").Elements(M + "xf").ToList();
+            Func<XElement, string> sinFormato = x =>
+            {
+                var copia = new XElement(x);
+                copia.SetAttributeValue("numFmtId", null);
+                copia.SetAttributeValue("applyNumberFormat", null);
+                return copia.ToString();
+            };
+            Assert.Equal(sinFormato(estilos[28]), sinFormato(estilos[int.Parse(c.S)]));
             Assert.Equal("46334", c.V);
             var fila = salida.Hoja(Plantillas.HojaControl).Descendants(M + "row").Single(r => (string)r.Attribute("r") == "7");
             Assert.Equal(new[] { "A7", "B7", "C7", "D7", "E7" }, fila.Elements(M + "c").Select(x => (string)x.Attribute("r")).ToArray());

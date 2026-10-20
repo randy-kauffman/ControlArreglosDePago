@@ -18,8 +18,8 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <PowerAppsTargetsPath>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\PowerApps</PowerAppsTargetsPath>
     <!-- HAY QUE SUBIR EL TERCER NUMERO EN CADA DESPLIEGUE (alm.md). Mantenerlo igual al de ../Sanic.Carp.Plugins. El paquete conserva su version. -->
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
     <ProjectTypeGuids>{4C25E9B5-9FA6-436c-8E19-B395D2A65FAF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
 

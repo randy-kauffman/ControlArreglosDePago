@@ -89,7 +89,6 @@ namespace Sanic.Carp.Plugins.Formato
                 memoria.Write(plantilla, 0, plantilla.Length);
                 memoria.Position = 0;
                 bool recalculo;
-                var advertencias = new List<string>();
                 using (var doc = SpreadsheetDocument.Open(memoria, true))
                 {
                     var libro = doc.WorkbookPart;
@@ -100,7 +99,7 @@ namespace Sanic.Carp.Plugins.Formato
                     var hojas = ResolverHojas(libro, mapeo);
                     VerificarCeldasVisibles(hojas, mapeo, bloque);
                     var estilos = EstilosInfo.Cargar(libro);
-                    var escritor = new Escritor(libro, hojas, estilos, EsSistema1904(libro), advertencias);
+                    var escritor = new Escritor(libro, hojas, estilos, EsSistema1904(libro));
                     escritor.PrepararTextos();
 
                     foreach (var m in mapeo.Where(x => x.Tipo == TipoMapeo.Simple))
@@ -123,11 +122,12 @@ namespace Sanic.Carp.Plugins.Formato
                     // celda mapeada mostraría el valor viejo.
                     recalculo = noMapeadas.TieneFormulas || hojas.Values.Any(h => h.TieneFormulas());
                     if (recalculo) MarcarRecalculoAlAbrir(libro);
-                    escritor.AgregarAdvertenciasDeFechas();
+                    escritor.GuardarEstilos();
                     libro.Workbook.Save();
                     foreach (var h in hojas.Values) h.Parte.Worksheet.Save();
                 }
-                return new ResultadoGeneracion(memoria.ToArray(), advertencias, recalculo);
+                // Sin avisos desde la opción B (4.3 punto 19): la única advertencia que había, la fecha fuera de formato, ahora se corrige.
+                return new ResultadoGeneracion(memoria.ToArray(), new string[0], recalculo);
             }
         }
 
@@ -445,34 +445,25 @@ namespace Sanic.Carp.Plugins.Formato
             calc.FullCalculationOnLoad = true;
         }
 
-        /// <summary>Escribe valores tipados en celdas conservando su StyleIndex.</summary>
+        /// <summary>Escribe valores tipados en celdas conservando su StyleIndex, salvo una fecha en un estilo que no es de fecha (<see cref="EstilosDeFecha"/>).</summary>
         private sealed class Escritor
         {
             private readonly WorkbookPart _libro;
             private readonly Dictionary<string, HojaEditable> _hojas;
             private readonly EstilosInfo _estilos;
             private readonly bool _sistema1904;
-            private readonly List<string> _advertencias;
             private readonly Dictionary<string, int> _indicePorTexto = new Dictionary<string, int>(StringComparer.Ordinal);
-            private readonly Dictionary<string, FechaFueraDeFormato> _fechasSinFormato = new Dictionary<string, FechaFueraDeFormato>(StringComparer.Ordinal);
+            private readonly EstilosDeFecha _estilosDeFecha;
             private SharedStringTable _tabla;
             private int _cantidadTextos;
 
-            private sealed class FechaFueraDeFormato
-            {
-                public string Hoja;
-                public string Primera;
-                public string Columna;
-                public int Cantidad;
-            }
-
-            public Escritor(WorkbookPart libro, Dictionary<string, HojaEditable> hojas, EstilosInfo estilos, bool sistema1904, List<string> advertencias)
+            public Escritor(WorkbookPart libro, Dictionary<string, HojaEditable> hojas, EstilosInfo estilos, bool sistema1904)
             {
                 _libro = libro;
                 _hojas = hojas;
                 _estilos = estilos;
                 _sistema1904 = sistema1904;
-                _advertencias = advertencias;
+                _estilosDeFecha = new EstilosDeFecha(libro);
             }
 
             public void Escribir(string nombreHoja, ReferenciaCelda r, object valor)
@@ -499,7 +490,7 @@ namespace Sanic.Carp.Plugins.Formato
                 else if (valor is DateTime)
                 {
                     celda.CellValue = new CellValue(Serial((DateTime)valor).ToString(CultureInfo.InvariantCulture));
-                    if (!_estilos.EsFecha(estilo)) RegistrarFechaSinFormato(hoja, r);
+                    if (!_estilos.EsFecha(estilo)) celda.StyleIndex = _estilosDeFecha.Para(estilo);
                 }
                 else if (valor is decimal)
                 {
@@ -559,25 +550,9 @@ namespace Sanic.Carp.Plugins.Formato
                 return indice;
             }
 
-            private void RegistrarFechaSinFormato(HojaEditable hoja, ReferenciaCelda r)
+            public void GuardarEstilos()
             {
-                var clave = hoja.Nombre + "!" + ReferenciaCelda.LetrasDeColumna(r.Columna);
-                FechaFueraDeFormato f;
-                if (!_fechasSinFormato.TryGetValue(clave, out f))
-                {
-                    f = new FechaFueraDeFormato { Hoja = hoja.Nombre, Primera = r.ToString(), Columna = ReferenciaCelda.LetrasDeColumna(r.Columna) };
-                    _fechasSinFormato[clave] = f;
-                }
-                f.Cantidad++;
-            }
-
-            public void AgregarAdvertenciasDeFechas()
-            {
-                foreach (var f in _fechasSinFormato.Values)
-                {
-                    _advertencias.Add("En la hoja '" + f.Hoja + "' se escribieron " + Num(f.Cantidad) + " fechas en la columna " + f.Columna
-                        + " (desde " + f.Primera + ") cuyo formato de celda no es de fecha: Excel las mostrará como número.");
-                }
+                _estilosDeFecha.Guardar();
             }
 
             /// <summary>Actualiza count (celdas de texto de todo el libro) y uniqueCount (cantidad de textos) de sharedStrings.xml con lo que realmente hay.</summary>

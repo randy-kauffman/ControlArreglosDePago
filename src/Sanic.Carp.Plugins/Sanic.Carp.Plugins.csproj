@@ -17,8 +17,8 @@
     <!-- HAY QUE SUBIR EL TERCER NUMERO (el build) EN CADA DESPLIEGUE: sin version nueva, Dataverse sigue ejecutando el binario viejo
          (verificado en Dev en el proyecto M-PPP, 2026-09-22). Solo build o revision: cambiar major o minor hace que Dataverse lo
          trate como OTRO ensamblado y los steps registrados no se re-apuntan solos. -->
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

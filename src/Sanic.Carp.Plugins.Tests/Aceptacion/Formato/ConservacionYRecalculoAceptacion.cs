@@ -194,19 +194,18 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Formato
         }
 
         [Fact]
-        public void Generar_FechaDePagoEnCeldaConFormatoDeMoneda_AvisaConUnaAdvertenciaPorColumna()
+        public void Generar_FechaDePagoEnCeldaConFormatoDeMoneda_NoAvisaPorqueLeAplicaFormatoDeFecha()
         {
-            // En la v07 la columna "Fecha pago" (D) hereda el formato de moneda de la v06: la fecha se vería como $46,335.00.
+            // En la v07 la columna "Fecha pago" (D) hereda el formato de moneda de la v06: la fecha se vería como $46,335.00. Desde el
+            // 2026-10-20 (opción B, diseno/03 4.3 punto 19) sale con formato de fecha; el detalle está en FechaSinFormatoDeFechaAceptacion.
             var datos = Plantillas.Datos(12, null, i => i <= 3
                 ? new CuotaDato(i, new DateTime(2026, 11, 8).AddMonths(i - 1), 100m, new DateTime(2026, 11, 9).AddMonths(i - 1), 100m)
                 : new CuotaDato(i, new DateTime(2026, 11, 8).AddMonths(i - 1), 100m));
 
             var r = GeneradorFormato.GenerarConInforme(Plantillas.V07, GeneradorFormato.CalcularHuella(Plantillas.V07), Plantillas.MapaV07(), datos);
 
-            var avisos = r.Advertencias.Where(a => a.Contains("no es de fecha")).ToList();
-            Assert.Single(avisos);
-            Assert.Contains("D7", avisos[0]);
-            Assert.Contains("CONTROL DE PAGOS", avisos[0]);
+            Assert.Empty(r.Advertencias);
+            Assert.Equal("dd/mm/yyyy;@", Paquete.Abrir(r.Archivo).FormatoNumerico(Paquete.Abrir(r.Archivo).Celda(Plantillas.HojaControl, "D7").S).Value);
         }
 
         [Fact]
