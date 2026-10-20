@@ -1,0 +1,68 @@
+{
+ "t": "2026-10-20T18:08:36Z",
+ "pasos": [
+  {
+   "paso": "crear queue",
+   "http": 204,
+   "id": "88b4a845-b1cc-f111-a05b-00224808ffcd"
+  },
+  {
+   "paso": "aprobar correo",
+   "http": 204,
+   "error": null
+  },
+  {
+   "paso": "Test & Enable (testemailconfigurationscheduled)",
+   "http": 204,
+   "error": null
+  }
+ ],
+ "otras_queues_con_la_direccion": [],
+ "queue": {
+  "queueid": "88b4a845-b1cc-f111-a05b-00224808ffcd",
+  "emailaddress": "PP_MAIL_BUZON_1",
+  "_businessunitid_value": null,
+  "statecode": 0,
+  "name": "Arreglos de Pago",
+  "_defaultmailbox_value": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+  "queueviewtype": 0,
+  "_ownerid_value": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "incomingemailfilteringmethod": 0,
+  "estado": "creada"
+ },
+ "comprobaciones_queue": {
+  "owner_es_team_del_sistema": true,
+  "bu_es_arreglos_de_pago": false,
+  "filtro_all_email_messages": true,
+  "publica": true,
+  "activa": true
+ },
+ "mailbox": {
+  "mailboxid": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+  "_emailserverprofile_value": "7eedeb22-6a30-4a66-808b-00c25a95b03f",
+  "_regardingobjectid_value": "88b4a845-b1cc-f111-a05b-00224808ffcd",
+  "name": "Arreglos de Pago",
+  "lastsuccessfulsynccompletedon": null,
+  "incomingemaildeliverymethod": 2,
+  "enabledforoutgoingemail": true,
+  "_ownerid_value": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "isemailaddressapprovedbyo365admin": true,
+  "emailaddress": "PP_MAIL_BUZON_1",
+  "statecode": 0,
+  "outgoingemailstatus": 1,
+  "enabledforincomingemail": true,
+  "emailrouteraccessapproval": 1,
+  "testmailboxaccesscompletedon": "2026-10-20T18:09:06Z",
+  "testemailconfigurationscheduled": false,
+  "outgoingemaildeliverymethod": 2,
+  "lastsyncerror": null,
+  "incomingemailstatus": 1,
+  "incomingemailstatus_etiqueta": "Success",
+  "outgoingemailstatus_etiqueta": "Success",
+  "emailrouteraccessapproval_etiqueta": "Approved"
+ },
+ "alertas_del_mailbox": {
+  "http": 404,
+  "error": "Resource not found for the segment 'traces'."
+ }
+}

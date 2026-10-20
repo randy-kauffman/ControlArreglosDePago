@@ -57,6 +57,7 @@
         <RolePrivilege name="prvReadEntityKey" level="Global" />
         <RolePrivilege name="prvReadEntityMap" level="Global" />
         <RolePrivilege name="prvReadHierarchyRule" level="Global" />
+        <RolePrivilege name="prvReadMailbox" level="Basic" />
         <RolePrivilege name="prvReadNewProcess" level="Global" />
         <RolePrivilege name="prvReadOptionSet" level="Global" />
         <RolePrivilege name="prvReadOrganization" level="Global" />

@@ -1,0 +1,75 @@
+{
+ "t": "2026-10-20T18:09:33Z",
+ "pasos": [],
+ "otras_queues_con_la_direccion": [],
+ "queue": {
+  "queueid": "88b4a845-b1cc-f111-a05b-00224808ffcd",
+  "emailaddress": "PP_MAIL_BUZON_1",
+  "statecode": 0,
+  "name": "Arreglos de Pago",
+  "_defaultmailbox_value": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+  "queueviewtype": 0,
+  "_owningbusinessunit_value": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "_ownerid_value": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "incomingemailfilteringmethod": 0,
+  "estado": "ya_existia"
+ },
+ "comprobaciones_queue": {
+  "owner_es_team_del_sistema": true,
+  "bu_es_arreglos_de_pago": true,
+  "filtro_all_email_messages": true,
+  "publica": true,
+  "activa": true
+ },
+ "mailbox": {
+  "mailboxid": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+  "_emailserverprofile_value": "7eedeb22-6a30-4a66-808b-00c25a95b03f",
+  "_regardingobjectid_value": "88b4a845-b1cc-f111-a05b-00224808ffcd",
+  "name": "Arreglos de Pago",
+  "lastsuccessfulsynccompletedon": null,
+  "incomingemaildeliverymethod": 2,
+  "enabledforoutgoingemail": true,
+  "_ownerid_value": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "isemailaddressapprovedbyo365admin": true,
+  "emailaddress": "PP_MAIL_BUZON_1",
+  "statecode": 0,
+  "outgoingemailstatus": 1,
+  "enabledforincomingemail": true,
+  "emailrouteraccessapproval": 1,
+  "testmailboxaccesscompletedon": "2026-10-20T18:09:06Z",
+  "testemailconfigurationscheduled": false,
+  "outgoingemaildeliverymethod": 2,
+  "lastsyncerror": null,
+  "incomingemailstatus": 1,
+  "incomingemailstatus_etiqueta": "Success",
+  "outgoingemailstatus_etiqueta": "Success",
+  "emailrouteraccessapproval_etiqueta": "Approved"
+ },
+ "alertas_del_mailbox": [
+  {
+   "createdon": "2026-10-20T18:09:07Z",
+   "level": 1,
+   "text": "Appointments, contacts and tasks can't be synchronized for mailbox @[9606,8ab4a845-b1cc-f111-a05b-00224808ffcd,\"Arreglos de Pago\"]. Set the synchronization method for \"Appointments, Contacts, and Tasks\" to \"Server-Side Synchronization\" in the mailbox record and try again."
+  },
+  {
+   "createdon": "2026-10-20T18:09:07Z",
+   "level": 1,
+   "text": "Appointments, contacts, and tasks can't be synchronized for your mailbox @[9606,8ab4a845-b1cc-f111-a05b-00224808ffcd,\"Arreglos de Pago\"]. Set the synchronization method for \"Appointments, Contacts, and Tasks\" to \"Server-Side Synchronization\" in your mailbox record and try again."
+  },
+  {
+   "createdon": "2026-10-20T18:09:06Z",
+   "level": 1,
+   "text": "The email configuration test for your mailbox @[9606,8ab4a845-b1cc-f111-a05b-00224808ffcd,\"Arreglos de Pago\"] was completed successfully for incoming email."
+  },
+  {
+   "createdon": "2026-10-20T18:09:06Z",
+   "level": 1,
+   "text": "The email configuration test for your mailbox @[9606,8ab4a845-b1cc-f111-a05b-00224808ffcd,\"Arreglos de Pago\"] was completed successfully for incoming email."
+  },
+  {
+   "createdon": "2026-10-20T18:09:05Z",
+   "level": 1,
+   "text": "The email configuration test for your mailbox @[9606,8ab4a845-b1cc-f111-a05b-00224808ffcd,\"Arreglos de Pago\"] was completed successfully for outgoing email."
+  }
+ ]
+}

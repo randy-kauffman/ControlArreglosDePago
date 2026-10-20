@@ -5,7 +5,12 @@
  "team_jefatura": "31bc18e7-f9c3-f111-a05a-7ced8d3c456b",
  "perfil_servidor": "7eedeb22-6a30-4a66-808b-00c25a95b03f",
  "variable_buzonarea": "0d2bd3b9-adcc-f111-a05b-00224808ffcd",
- "queue": null,
- "mailbox": null,
+ "queue": {
+  "id": "88b4a845-b1cc-f111-a05b-00224808ffcd",
+  "name": "Arreglos de Pago"
+ },
+ "mailbox": {
+  "id": "8ab4a845-b1cc-f111-a05b-00224808ffcd"
+ },
  "filas": []
 }

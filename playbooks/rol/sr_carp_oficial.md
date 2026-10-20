@@ -79,12 +79,13 @@ Advertencias: un rol no lleva etiquetas por idioma (es un texto único), así qu
     "prvReadQueue": "unidad",
     "prvAppendToQueue": "unidad",
     "prvAppendToUser": "unidad",
-    "prvReadRecordAuditHistory": "organizacion"
+    "prvReadRecordAuditHistory": "organizacion",
+    "prvReadMailbox": "usuario"
   }
 }
 ```
 
-Un security role en la unidad de negocio raíz, con los privilegios del rol `App Opener` (los que tenga el entorno en el momento de construir) más los 29 de este playbook (20 sobre tablas de la solución y 9 estándar: 5 de Email, 2 de Queue, `prvAppendToUser` y `prvReadRecordAuditHistory`). Alcances: `usuario` = Basic (solo lo propio) · `unidad` = Local (la BU `Arreglos de Pago`) · `unidad_e_hijas` = Deep · `organizacion` = Global.
+Un security role en la unidad de negocio raíz, con los privilegios del rol `App Opener` (los que tenga el entorno en el momento de construir) más los 30 de este playbook (20 sobre tablas de la solución y 10 estándar: 5 de Email, 2 de Queue, `prvAppendToUser`, `prvReadRecordAuditHistory` y `prvReadMailbox`). Alcances: `usuario` = Basic (solo lo propio) · `unidad` = Local (la BU `Arreglos de Pago`) · `unidad_e_hijas` = Deep · `organizacion` = Global.
 
 Decisiones que este playbook toma y el diseño no traía:
 
@@ -102,12 +103,13 @@ Viene del diseño, no lo decide este playbook:
 - **Adjuntos de correo**: la definición pide "crear y leer" y deja los privilegios para la construcción (línea 388). Leído de Dev el 2026-10-09: `activitymimeattachment` y `attachment` **no tienen privilegios propios**; los cubren `prvCreateActivity` y `prvReadActivity`. No se otorga nada sobre `msdyn_richtextfile` (el editor no la usa, spike 4). Duda D-03 de la matriz: no se probó con un adjunto real.
 - Queue Item no tiene privilegios propios (spike 4, hallazgo 3); lo cubre `prvReadQueue`.
 - **Sin `asignar`** (prueba de roles del 2026-10-09, `spikes/roles/RESULTADO.md`): crear con el team como dueño no lo necesita; la plataforma exige en cambio que el team dueño lea la tabla. Por eso este rol lee Mapeo (opción A del usuario) aunque no lo edite, y lleva `prvAppendToUser` para los lookups a usuario.
-- No tiene `crear` sobre Conversación (las crea el sistema, línea 384; y es el privilegio de ejecución de la reconciliación, solo de Servicio), ni `crear` ni `borrar` sobre Cuota (las altas y bajas las hace el sistema, D-08), ni acceso a Mapeo de celda ni a Mailbox (líneas 390 y 392).
+- No tiene `crear` sobre Conversación (las crea el sistema, línea 384; y es el privilegio de ejecución de la reconciliación, solo de Servicio), ni `crear` ni `borrar` sobre Cuota (las altas y bajas las hace el sistema, D-08), ni acceso a Mapeo de celda (línea 390). Sobre Mailbox solo lee con alcance Basic (ver abajo; antes la línea 392 decía "sin acceso al Mailbox").
 - Nadie humano borra (D-18): ninguna tabla lleva `borrar` y no hay `prvDeleteActivity`.
 - Tiene `escribir` sobre Conversación, Arreglo y Cuota, pero qué columnas puede tocar lo limitan los plugins (definición §6 Lógica), no este rol.
 - `anexar` y `anexar_a` de los lookups: Arreglo a Cliente, Conversación y Versión de plantilla; Conversación a Cliente; Email a Conversación. La matriz trae los dos lados de cada uno.
 - Las Custom API "Tomar", unir e iniciar conversación nueva se restringen con `escribir` de Conversación, y generar formato con `leer` de Generación de formato (línea 400); este rol ya los tiene.
 - **View Audit History** (`prvReadRecordAuditHistory`, Global): agregado el 2026-10-20 por decisión del usuario (M7, opción A; `diseno/04-matriz-privilegios.md` §3 y §8). Sin él, el Oficial no admin recibía 403 en `RetrieveRecordChangeHistory` sobre un arreglo que sí lee (`pruebas-humo/tanda2b/RESULTADO.md`). **Solo admite Global** (Dev: `canbeglobal = true`, los otros tres alcances `false`); qué registros ve lo sigue limitando el Read de cada tabla. No se agregan `prvReadAuditSummary` ni `prvReadAuditPartitions` (la vista de resumen de auditoría de la organización no es parte de la app).
+- **Mailbox** (`prvReadMailbox`, Basic): agregado el 2026-10-20 por decisión del usuario (opción A). La plataforma exige que el dueño de una queue pueda leer su Mailbox: crear la queue `Arreglos de Pago` con el team del sistema como dueño dio 403 sin este privilegio (inventario 13.4, `pruebas-humo/lote-0/RESULTADO.md`). Con Basic el principal solo lee el registro Mailbox que es suyo o de su team (dirección, estado de sincronización); **no da acceso a ningún correo**, que sigue gobernado por los privilegios de Activity.
 - Se parte de `App Opener`, no de `Basic User` (receta de seguridad, §2.1).
 - Este rol va al team del sistema de la BU y también lo reciben las cuentas de servicio que están en ella (decisión del 2026-10-09, línea 393).
 
@@ -121,7 +123,7 @@ Las de la receta (`seguridad/patrones.md` §2.1), con estos valores esperados:
 | 2 | Hay exactamente una unidad de negocio raíz | una |
 | 3 | El rol base existe una vez en la unidad raíz | `App Opener` |
 | 4 | Cada tabla nombrada existe, y cada privilegio admite el alcance pedido | `sanic_carp_tbl_cliente` · `sanic_carp_tbl_conversacion` · `sanic_carp_tbl_arreglo` · `sanic_carp_tbl_cuota` · `sanic_carp_tbl_versionplantilla` · `sanic_carp_tbl_generacionformato` |
-| 5 | Cada privilegio de `otros_privilegios` existe una vez y admite el alcance pedido | `prvCreateActivity` · `prvWriteActivity` · `prvAppendActivity` · `prvReadActivity` · `prvAppendToActivity` · `prvReadQueue` · `prvAppendToQueue` · `prvAppendToUser` · `prvReadRecordAuditHistory` (solo Global) |
+| 5 | Cada privilegio de `otros_privilegios` existe una vez y admite el alcance pedido | `prvCreateActivity` · `prvWriteActivity` · `prvAppendActivity` · `prvReadActivity` · `prvAppendToActivity` · `prvReadQueue` · `prvAppendToQueue` · `prvAppendToUser` · `prvReadRecordAuditHistory` (solo Global) · `prvReadMailbox` |
 | 6 | El nombre no lleva tildes ni ñ (BP-PP-197) y cumple `SR - CARP - Nombre` | el de la sección 2 |
 
 Si alguna falla: estado `bloqueado`, no se crea nada.
@@ -166,11 +168,12 @@ Otros privilegios:
 | `prvReadQueue` | Local |
 | `prvAppendToQueue` | Local |
 | `prvReadRecordAuditHistory` | Global (2026-10-20, M7) |
+| `prvReadMailbox` | Basic (2026-10-20, dueño de la queue) |
 
 | # | Comprobación | Esperado |
 |---|---|---|
 | 1 | `GET roles` por nombre en la unidad raíz | un rol · `ismanaged = false` · la descripción de la sección 2 |
-| 2 | `RetrieveRolePrivilegesRole` | los privilegios de `App Opener` más los de las tablas y los otros de arriba; **ninguno más** (en particular, ningún Delete y ningún privilegio sobre Mapeo de celda ni sobre Mailbox) |
+| 2 | `RetrieveRolePrivilegesRole` | los privilegios de `App Opener` más los de las tablas y los otros de arriba; **ninguno más** (en particular, ningún Delete y ningún privilegio sobre Mapeo de celda; sobre Mailbox solo `prvReadMailbox` Basic) |
 | 3 | Pertenencia a la solución | el rol figura una vez en la solución de la sección 1 (`solutioncomponents`, tipo 20) |
 | 4 | Segunda ejecución sin `--solo-verificar` | estado `ya_existia`, código de salida 0 |
 | 5 | Comprobación independiente contra el XML exportado (`muestra_rol.py`) | `OK`, y la muestra queda en `playbooks/rol/muestras/` |

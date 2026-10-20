@@ -76,7 +76,7 @@ def main():
         raise SystemExit(f"hay otras queues con la dirección de PP_MAIL_BUZON_1: {ev['otras_queues_con_la_direccion']}; no se sigue")
 
     q = uno(dv, f"queues?$select=queueid,name,emailaddress,queueviewtype,incomingemailfilteringmethod,statecode,"
-                f"_ownerid_value,_businessunitid_value,_defaultmailbox_value&$filter=name eq '{NOMBRE_QUEUE}'", "queue")
+                f"_ownerid_value,_owningbusinessunit_value,_defaultmailbox_value&$filter=name eq '{NOMBRE_QUEUE}'", "queue")
     if q is None:
         if solo:
             raise SystemExit("la queue no existe (--solo-verificar)")
@@ -90,7 +90,7 @@ def main():
         qid = Dataverse.id_creado(h)
         ev["pasos"].append({"paso": "crear queue", "http": s, "id": qid})
         q = uno(dv, f"queues?$select=queueid,name,emailaddress,queueviewtype,incomingemailfilteringmethod,statecode,"
-                    f"_ownerid_value,_businessunitid_value,_defaultmailbox_value&$filter=queueid eq {qid}", "queue")
+                    f"_ownerid_value,_owningbusinessunit_value,_defaultmailbox_value&$filter=queueid eq {qid}", "queue")
         estado_q = "creada"
     else:
         estado_q = "ya_existia"
@@ -108,7 +108,7 @@ def main():
     ev["queue"]["estado"] = estado_q
     ev["comprobaciones_queue"] = {
         "owner_es_team_del_sistema": q["_ownerid_value"] == team["teamid"],
-        "bu_es_arreglos_de_pago": q["_businessunitid_value"] == bu["businessunitid"],
+        "bu_es_arreglos_de_pago": q["_owningbusinessunit_value"] == bu["businessunitid"],  # businessunitid viene null en queues
         "filtro_all_email_messages": q["incomingemailfilteringmethod"] == TODOS_LOS_CORREOS,
         "publica": q["queueviewtype"] == 0, "activa": q["statecode"] == 0}
 
@@ -143,7 +143,7 @@ def main():
                 if m.get("incomingemailstatus") and m.get("outgoingemailstatus"):
                     break
     ev["mailbox"] = limpio(m, direccion)
-    st, al, _ = dv.call("GET", f"traces?$select=text,level,createdon&$filter=_regardingobjectid_value eq {mid}&$orderby=createdon desc&$top=5")
+    st, al, _ = dv.call("GET", f"tracelogs?$select=text,level,createdon&$filter=_regardingobjectid_value eq {mid}&$orderby=createdon desc&$top=5")
     ev["alertas_del_mailbox"] = [{"createdon": a["createdon"], "level": a.get("level"), "text": (a.get("text") or "")[:400]}
                                  for a in al.get("value", [])] if st < 300 else {"http": st, "error": al.get("error")}
 
