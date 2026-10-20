@@ -35,13 +35,15 @@ Advertencias: `web_resource.py` maneja `displayname` y `descripcion` como una so
   "tipo": "web-resource",
   "nombre": "sanic_carp_wr_js_comandos",
   "displayname": "WR - CARP - JS - Comandos",
-  "descripcion": "JavaScript de la app: eventos de formulario (OnLoad y OnSave) de Conversacion, Arreglo, Cuota y Mapeo de celda. Sin logica de negocio. El lote B suma las funciones de los 14 gestos en este mismo archivo.",
+  "descripcion": "JavaScript de la app: eventos de formulario (OnLoad y OnSave) de Conversacion, Arreglo, Cuota y Mapeo de celda, y las funciones de los gestos del command bar (lote B). Sin logica de negocio.",
   "recurso": "JS",
   "archivo": "webresources/js/comandos.js"
 }
 ```
 
-Contenido del lote A (el archivo ya existe en el repositorio; la herramienta lo sube, el playbook no lo repite). Un solo archivo, namespace `SanicCarp` (`diseno/07` §5.3 regla 8). Todos los manejadores se registran con **pasar el contexto de ejecución como primer parámetro** (`pasar_contexto: true` en el formulario):
+Contenido (lotes A y B; el archivo ya existe en el repositorio, la herramienta lo sube y el playbook no lo repite). Un solo archivo, namespace `SanicCarp`, un namespace por tabla (`diseno/07` §5.3 regla 8): `Comun`, `Conversacion`, `Arreglo`, `Cuota`, `Plantilla`. Los manejadores de evento se registran con **pasar el contexto de ejecución como primer parámetro** (`pasar_contexto: true` en el formulario). Los comandos del ribbon los registra `playbooks/importacion/comandos.md`.
+
+**Eventos de formulario (lote A)**
 
 | Función | Formulario | Evento | Qué hace |
 |---|---|---|---|
@@ -50,11 +52,33 @@ Contenido del lote A (el archivo ya existe en el repositorio; la herramienta lo 
 | `SanicCarp.Arreglo.alGuardar` | Arreglo (12.19) | OnSave | igual que Conversación, sobre `sanic_motivodescarte`, `sanic_motivoanulacion`, `sanic_motivoreapertura` y el aviso "Use el botón Descartar, Anular o Reabrir arreglo para aplicar el motivo." |
 | `SanicCarp.Cuota.alGuardar` | Cuota (12.26) | OnSave | si `getSaveMode() === 70`, `preventDefault()` (solo el autoguardado) |
 | `SanicCarp.Plantilla.alGuardarMapeo` | Mapeo de celda (12.21) | OnSave | igual que Cuota |
-| `SanicCarp.Comun.*` | (utilidades) | — | `levantarBandera` / `bajarBandera` / `banderaLevantada` (bandera de módulo: el botón de un gesto la levanta mientras guarda sus columnas, así el `OnSave` lo deja pasar; el lote B decide si guarda con `formContext.data.save` o escribe con `Xrm.WebApi.updateRecord`), `formContext`, `hayGestoPendiente`, `guardarSinGestoSuelto`, `cancelarAutoguardado`, `esJefe` (rol `SR - CARP - Jefe` por nombre en `userSettings.roles`, DA-14) |
+
+**Gestos del command bar (lote B; `diseno/07` §5.4). Todos corren dentro de `SanicCarp.Comun.conBandera` (try/finally: la bandera siempre baja)**
+
+| # | Gesto | Función del comando | Regla (`EnableRule`) | Qué hace | Manda |
+|---|---|---|---|---|---|
+| 1 | Tomar | `SanicCarp.Conversacion.tomar` | `puedeTomar` | Custom API `sanic_carp_capi_tomarconversacion`; `CARP-TOM-900`: texto neutro del catálogo + refresco, sin reintento; en grilla exige una sola fila | `conversacionid` |
+| 2 | Finalizar | `SanicCarp.Conversacion.finalizar` | `puedeFinalizar` | confirma y `updateRecord` | `statecode: 1`, `statuscode: 2`, `sanic_resultado` y, si tienen valor, motivo y detalle |
+| 3 | Reabrir conversación | `SanicCarp.Conversacion.reabrir` | `puedeReabrir` | confirma y `updateRecord` | solo `statecode: 0`, `statuscode: 1` |
+| 4 | Unir | `SanicCarp.Conversacion.unir` | `puedeUnir` | `lookupObjects` (abiertas, distinta de la actual, vista "Conversaciones para unir" por nombre), confirma con los dos números, Custom API `unirconversaciones`, abre el destino | `origenid`, `destinoid` |
+| 5 | Iniciar conversación nueva | `SanicCarp.Conversacion.iniciarNueva` | `puedeIniciarNueva` | confirma, Custom API `iniciarconversacionnueva`, abre la nueva | `conversacionid` |
+| 6 | Generar formato | `SanicCarp.Arreglo.generar` | `puedeGenerar` | exige formulario sin cambios; confirmación según estado; "Generando…"; Custom API `generarformato`; descarga con `openFile` (`fileSize` en KB, `openMode: 2`); muestra `advertencias`; refresca | `arregloid` |
+| 7 | Desbloquear | `SanicCarp.Arreglo.desbloquear` | `puedeDesbloquear` | confirma y `updateRecord` | solo `sanic_fechacongelamiento: null` |
+| 8 | Formalizar | `SanicCarp.Arreglo.formalizar` | `puedeFormalizar` | confirma y `updateRecord`; el toast relee `sanic_numeroarreglo` tras el refresco | solo `statecode: 0`, `statuscode: 159460001` |
+| 9 | Descartar | `SanicCarp.Arreglo.descartar` | `puedeDescartar` | confirma y `updateRecord` | `statecode: 1`, `statuscode: 159460003`, `sanic_motivodescarte` |
+| 10 | Anular | `SanicCarp.Arreglo.anular` | `puedeAnular` | confirma y `updateRecord` | `statecode: 1`, `statuscode: 159460002`, `sanic_motivoanulacion` |
+| 11 | Reabrir arreglo | `SanicCarp.Arreglo.reabrir` | `puedeReabrir` (+ `esJefe()`) | confirma y `updateRecord` | de un Terminado: `statecode: 0`, `statuscode: 159460001`, `sanic_motivoreapertura`; de un Vigente congelado: solo `sanic_motivoreapertura` |
+| 12 | Registrar pago | (sin botón) | — | Guardar nativo del formulario de Cuota | — |
+| 13 | Publicar versión | `SanicCarp.Plantilla.publicar` | `puedePublicar` (+ `esJefe()`) | exige formulario sin cambios; confirma y `updateRecord` | solo `sanic_estado: 159460002` |
+| 14 | Vista previa | `SanicCarp.Plantilla.vistaPrevia` | `puedeVistaPrevia` (+ `esJefe()`) | confirma, `lookupObjects` de un arreglo, Custom API `generarformato`, descarga; no escribe ni refresca | `arregloid`, `versionpreviaid` |
+
+**Utilidades `SanicCarp.Comun`**: `levantarBandera` / `bajarBandera` / `banderaLevantada` / `conBandera`, `formContext`, `hayGestoPendiente`, `guardarSinGestoSuelto`, `cancelarAutoguardado`, `esJefe` (rol `SR - CARP - Jefe` por nombre en `userSettings.roles`, DA-14); y, del lote B, `contexto(primero, segundo)` (unifica `PrimaryControl` y `SelectedControlSelectedItemIds` + `SelectedControl`), `ejecutarApi` (`Xrm.WebApi.online.execute`, `Edm.Guid`), `escribirGesto`, `textoDeError` / `mostrarError` (regex `/CARP-[A-Z]{3,4}-\d{3}:[\s\S]*/`: del código al final, todas las líneas; si no hay código, texto genérico y el técnico en `details`), `avisar` (toast), `alerta`, `confirmar`, `conProgreso`, `descargarXlsx`, `generarYDescargar`.
+
+Sintaxis: `async`/`await` (ES2017) en el lote B; el lote A conserva su forma.
 
 Decisiones del playbook (el diseño no trae el nombre): `diseno/07` §4.1, §4.6 y §4.7 dicen que Cuota y Mapeo cancelan el autoguardado en `OnSave` pero no nombran la función. Se eligió `SanicCarp.Cuota.alGuardar` (el namespace de la regla 8 solo lista Conversacion, Arreglo y Plantilla; se agrega `Cuota`) y `SanicCarp.Plantilla.alGuardarMapeo` (el mapeo es parte de la versión de plantilla). **Si el usuario prefiere otros nombres, se cambian aquí, en el JS y en los dos playbooks de formulario a la vez.**
 
-Fuera del lote A y **no incluido** en el archivo: el aviso de otra conversación abierta (`alCargar` de Conversación, lote C, `diseno/07` §4.2), el respaldo de herencia de cliente y oficial en el alta del Arreglo (`diseno/07` §4.4 punto 3, solo si el mapeo de columnas de REL-03 no funciona) y los 14 gestos (lote B).
+**No incluido** en el archivo: el aviso de otra conversación abierta (`alCargar` de Conversación, lote C, `diseno/07` §4.2) y el respaldo de herencia de cliente y oficial en el alta del Arreglo (`diseno/07` §4.4 punto 3, solo si el mapeo de columnas de REL-03 no funciona).
 
 ## 3. Precondiciones
 
@@ -98,10 +122,11 @@ Se hacen todas las comprobaciones de la sección 5. Si pasan: `ya_existia`. Si n
 
 ## 8. Fuera de alcance
 
-- Los 14 gestos y el ribbon: lote B (`playbooks/importacion/comandos.md`, 12.24).
+- Los botones del ribbon que llaman a estas funciones: `playbooks/importacion/comandos.md` (12.24).
 - Los registros de los manejadores en cada formulario: `playbooks/formulario/{conversacion,arreglo,cuota,mapeocelda}.md`.
 - Los iconos: `playbooks/web-resource/sanic_carp_wr_svg_*.md`.
 - **Por qué no `setSubmitMode("never")`** (Learn, `setSubmitMode`: "When this value is used, the column(s) in the form for this column cannot be edited"): los campos gesto quedan en `dirty` y el `OnSave` cancela el guardado mientras haya uno sin aplicar (mecanismo de `diseno/07` §4.1). **A verificar en Dev** (`diseno/07` §12 punto 17): que `preventDefault()` en el modo 2 (al navegar) y en "Guardar y nuevo" no deje al usuario atrapado; si pasa, el aviso lo orienta a usar el botón.
 - Costo conocido: con un gesto sin aplicar no se guarda ningún otro cambio del formulario.
-- **Lote B**: los botones deben llamar a `SanicCarp.Comun.levantarBandera()` antes de guardar o escribir y a `bajarBandera()` al terminar, también en error (`finally`). En el lote A solo existen la bandera y las dos funciones.
+- **Lote B**: cada gesto que escribe corre dentro de `SanicCarp.Comun.conBandera` (levanta la bandera, `finally` la baja). Los gestos escriben con `Xrm.WebApi.updateRecord` (no con `data.save`), así que el `OnSave` no se dispara por el gesto; la bandera protege el refresco y cualquier guardado que la plataforma encadene.
+- Un gesto en el formulario refresca con `data.refresh(false)`: descarta los cambios sin guardar de otros campos (solo Generar y Publicar los exigen guardados antes).
 - Al navegar fuera del formulario con datos sin guardar, la plataforma guarda con modo 2 (Save and Close), que en **Cuota** y **Mapeo** el diseño no cancela: una fecha de pago sin monto daría `CARP-CUO-003` al salir. Es feedback del servidor, no se corrige en el cliente.
