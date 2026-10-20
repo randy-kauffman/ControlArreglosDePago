@@ -30,11 +30,13 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 2 | 3 | 2 |
 | 11 | Flujos | 3 | 0 | 2 | 1 |
-| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 0 | 25 | 0 |
+| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 4 | 21 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
-| **Total** | | **127** | **41** | **75** | **11** |
+| **Total** | | **127** | **45** | **71** | **11** |
 
 Notas del resumen:
+
+- 2026-10-20 (Dev, vistas del lote A): 18 vistas creadas y verificadas `ya_existia` con `vista.py` (12.1, 12.2, 12.5 y las 15 de 12.13, de las que `Respuestas enviadas` queda en `difiere` por un falso positivo de la herramienta sobre `email`, ver la fila 12.13); las 4 filas pasaron a `hecho`. Quedan sin construir 12.10 y 12.11 (búsqueda rápida: defecto de `vista.py`, ver sus filas) y 12.12 (hueco de diseño). El resumen del grupo 12 pasó de 0 hechas y 25 pendientes a 4 y 21 (el total, de 41 y 75 a 45 y 71).
 
 - 2026-10-20: `diseno/07-diseno-app-y-flujos.md` cierra el diseño detallado de los grupos 11 y 12. Las filas 11.1, 11.2 y 12.1 a 12.25 pasaron de `diseño detallado pendiente` a `pendiente`; el total pasó de 48 pendientes y 38 de diseño detallado pendiente a 75 y 11 (127 filas, 41 hechas, sin cambio). 11.3 sigue como condicional (no se construye). «Pendiente» no quiere decir que el playbook se pueda escribir ya: varias filas necesitan antes una extensión de herramienta (`diseno/07` §2, G-V1 a G-I3). El diseño propone tres filas nuevas que **no suman** hasta que se confirmen: 12.26 formulario de Cuota, 12.27 cuatro iconos SVG y 12.28 importación de las tablas de la app (`diseno/07` §11).
 
@@ -265,19 +267,19 @@ Nombre de vista: texto de negocio, sin prefijo y sin tildes. Los nombres son *(p
 
 | # | Vista | Tabla | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|---|
-| 12.1 | Correos sin respuesta (todo `sanic_sinrespuestadesde` no vacío; para el jefe; incluye las finalizadas con correo nuevo, OA-2) | Conversación | `playbooks/vista/correos_sin_respuesta.md` | 3.2 (incluye `sanic_antiguedad`) | RF-04, D-27 | pendiente (diseño completo en `diseno/07` §3.2) |
-| 12.2 | Correos llegados a conversaciones finalizadas (indicador = sí; para el oficial, OA-2) | Conversación | `playbooks/vista/correos_en_finalizadas.md` | 3.2 | RF-15, D-32 | pendiente (diseño completo en `diseno/07` §3.2) |
+| 12.1 | Correos sin respuesta (todo `sanic_sinrespuestadesde` no vacío; para el jefe; incluye las finalizadas con correo nuevo, OA-2) | Conversación | `playbooks/vista/correos_sin_respuesta.md` | 3.2 (incluye `sanic_antiguedad`) | RF-04, D-27 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §3.2) |
+| 12.2 | Correos llegados a conversaciones finalizadas (indicador = sí; para el oficial, OA-2) | Conversación | `playbooks/vista/correos_en_finalizadas.md` | 3.2 | RF-15, D-32 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §3.2) |
 | 12.3 | Finalizadas sin respuesta (resultado = Sin respuesta) | Conversación | `playbooks/vista/finalizadas_sin_respuesta.md` | 3.2 | RF-04, D-06 | pendiente (diseño completo en `diseno/07` §3.2) |
 | 12.4 | Respuestas con error de envio | Email | `playbooks/vista/respuestas_con_error_de_envio.md` | 3.8 | RF-03, §6 Lógica ítem 3 | pendiente (diseño completo en `diseno/07` §3.3) |
-| 12.5 | Borradores | Arreglo | `playbooks/vista/borradores.md` | 3.3 | RF-16 | pendiente (diseño completo en `diseno/07` §3.4) |
+| 12.5 | Borradores | Arreglo | `playbooks/vista/borradores.md` | 3.3 | RF-16 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §3.4) |
 | 12.6 | Borradores sin movimiento (más de 30 días sin cambios; vista aparte de 12.5, OA-2) | Arreglo | `playbooks/vista/borradores_sin_movimiento.md` | 3.3 | RF-16, D-22, §6 Operación | pendiente (diseño completo en `diseno/07` §3.4) |
 | 12.7 | Arreglos en riesgo (vigentes con una cuota vencida sin pago; filtro relacionado, `olderthan-x-days 1` o `yesterday`) | Arreglo | `playbooks/vista/arreglos_en_riesgo.md` | 3.3, 3.4, 4.5 | RF-11, D-11 | pendiente (diseño completo en `diseno/07` §3.4) |
 | 12.8 | Arreglos de prestamo | Arreglo | `playbooks/vista/arreglos_de_prestamo.md` | 3.3, 2.3 | RF-17, D-35 | pendiente (diseño completo en `diseno/07` §3.4) |
 | 12.9 | Arreglos de tarjeta | Arreglo | `playbooks/vista/arreglos_de_tarjeta.md` | 3.3, 2.3 | RF-17, D-35 | pendiente (diseño completo en `diseno/07` §3.4) |
-| 12.10 | Busqueda rapida de Cliente (cédula, nombre, correo, celular) | Cliente | `playbooks/vista/busqueda_rapida_cliente.md` | 3.1, 6.1 | RF-13, D-12 | pendiente (diseño completo en `diseno/07` §3.5) |
-| 12.11 | Busqueda rapida de Arreglo (número de producto) | Arreglo | `playbooks/vista/busqueda_rapida_arreglo.md` | 3.3 | RF-13, D-12 | pendiente (diseño completo en `diseno/07` §3.4) |
-| 12.12 | Arreglos del cliente (subgrid con todos los estados) | Arreglo | `playbooks/vista/arreglos_del_cliente.md` | 3.3, 4.2 | RF-13, ítem 13 | pendiente (diseño completo en `diseno/07` §3.4) |
-| 12.13 | Otras vistas "por perfil" (oficial y jefe). La definición no las enumera | varias | `playbooks/vista/` (por definir) | 3.x, 4.x | §6 Componentes (app) | pendiente (diseño completo en `diseno/07` §3.5 y §3.6 (15 vistas)) |
+| 12.10 | Busqueda rapida de Cliente (cédula, nombre, correo, celular) | Cliente | `playbooks/vista/busqueda_rapida_cliente.md` | 3.1, 6.1 | RF-13, D-12 | pendiente (playbook escrito el 2026-10-20; bloqueada por `vista.py`: el `PATCH` del `fetchxml` de una búsqueda rápida exige `{fetchxml, layoutxml, name, returnedtypecode}` juntos y la herramienta manda solo lo que difiere; el nombre real en Dev es `Quick Find Active Clientes`) (diseño completo en `diseno/07` §3.5) |
+| 12.11 | Busqueda rapida de Arreglo (número de producto) | Arreglo | `playbooks/vista/busqueda_rapida_arreglo.md` | 3.3 | RF-13, D-12 | pendiente (playbook escrito el 2026-10-20; bloqueada por el mismo defecto de `vista.py` que 12.10; el nombre real en Dev es `Quick Find Active Arreglos`) (diseño completo en `diseno/07` §3.4) |
+| 12.12 | Arreglos del cliente (subgrid con todos los estados) | Arreglo | `playbooks/vista/arreglos_del_cliente.md` | 3.3, 4.2 | RF-13, ítem 13 | pendiente (playbook escrito el 2026-10-20 y sin construir: hueco de diseño, `diseno/07` §3.4 ordena por `createdon` y no lo incluye en las columnas, y `vista.py` solo ordena por columnas visibles; falta decidir si se agrega la columna o se ordena por otra) (diseño completo en `diseno/07` §3.4) |
+| 12.13 | Otras vistas "por perfil" (oficial y jefe). La definición no las enumera | varias | `playbooks/vista/<nombre>.md` (15 playbooks) | 3.x, 4.x | §6 Componentes (app) | hecho (Dev, 2026-10-20) (las 15 vistas; `Respuestas enviadas` sobre `email` la verifica `vista.py` como `difiere` por un falso positivo: la tabla está en la solución con `rootcomponentbehavior` 1, pero la vista figura en la solución como componente propio, tipo 26) (diseño completo en `diseno/07` §3.5 y §3.6 (15 vistas)) |
 
 ### 12.2 Dashboard y gráficos
 
