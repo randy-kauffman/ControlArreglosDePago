@@ -1,0 +1,16 @@
+{
+ "bu": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+ "team_jefatura": "31bc18e7-f9c3-f111-a05a-7ced8d3c456b",
+ "usuarios_en_la_bu": [
+  {
+   "id": "32122bbd-56c3-f111-a05a-000d3a35abca",
+   "fullname": "SPIKE4 SP - DEV - Pruebas de Correo",
+   "deshabilitado": false,
+   "accessmode": 4,
+   "es_aplicacion": true,
+   "roles_directos": [],
+   "en_jefatura": false
+  }
+ ],
+ "miembros_de_jefatura_fuera_de_la_bu": []
+}

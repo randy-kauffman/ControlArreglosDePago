@@ -1,0 +1,262 @@
+[
+ {
+  "prueba": "9.1",
+  "sub": "v07 Vigente, huella = SHA-256 del archivo aprobado, aprobador = actor, fecha de aprobacion",
+  "ok": true,
+  "esperado": "Vigente con huella",
+  "obtenido": {
+   "vigentes_antes": [
+    "v07"
+   ],
+   "huella_ok": true,
+   "archivo": "F-NIC-0000052_v07.xlsx",
+   "fecha": "2026-10-20T17:47:47Z"
+  }
+ },
+ {
+  "prueba": "9.1",
+  "sub": "queda exactamente una Vigente (v07); la anterior paso a Historica",
+  "ok": true,
+  "esperado": [
+   "v07"
+  ],
+  "obtenido": [
+   "v07"
+  ]
+ },
+ {
+  "prueba": "9.2",
+  "sub": "el cliente HUMO tiene correo y celular (para que sus celdas tengan dato)",
+  "ok": true,
+  "esperado": true,
+  "obtenido": {
+   "nombre_humo": true
+  }
+ },
+ {
+  "prueba": "9.2",
+  "sub": "el arreglo nuevo toma v07 (la Vigente) al alta",
+  "ok": true,
+  "esperado": "7d5465f9-adcc-f111-a05b-00224808ffcd",
+  "obtenido": "7d5465f9-adcc-f111-a05b-00224808ffcd"
+ },
+ {
+  "prueba": "9.2",
+  "sub": "formato en Borrador (PA-GEN-01): las 26 celdas que no son de pago tienen dato y el bloque tiene las 3 cuotas",
+  "ok": true,
+  "esperado": "0 vacias",
+  "obtenido": {
+   "vacias": [],
+   "seg": 0.93
+  }
+ },
+ {
+  "prueba": "9.2",
+  "sub": "formato del arreglo Vigente con la cuota 1 pagada (PA-GEN-04): las 28 celdas de MAP_V07 tienen dato",
+  "ok": true,
+  "esperado": "28 de 28",
+  "obtenido": {
+   "llenas": 28,
+   "vacias": [],
+   "seg": 0.62,
+   "detalle": [
+    {
+     "hoja": "FORMATO",
+     "celda": "B7",
+     "campo": "fechaFormalizacion",
+     "lleno": true,
+     "tipo_valor": "datetime"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "F7",
+     "campo": "oficial",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "B8",
+     "campo": "clienteNombre",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "F8",
+     "campo": "clienteCedula",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "B9",
+     "campo": "clienteCorreo",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "F9",
+     "campo": "clienteCelular",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "B12",
+     "campo": "numeroProducto",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "D12",
+     "campo": "tipo",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "F12",
+     "campo": "numeroArreglo",
+     "lleno": true,
+     "tipo_valor": "int"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "B13",
+     "campo": "saldoInicial",
+     "lleno": true,
+     "tipo_valor": "int"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "D13",
+     "campo": "montoAbonado",
+     "lleno": true,
+     "tipo_valor": "int"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "F13",
+     "campo": "saldoRemanente",
+     "lleno": true,
+     "tipo_valor": "int"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "B14",
+     "campo": "plazo",
+     "lleno": true,
+     "tipo_valor": "int"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "D14",
+     "campo": "cuota",
+     "lleno": true,
+     "tipo_valor": "int"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "F14",
+     "campo": "totalPagar",
+     "lleno": true,
+     "tipo_valor": "int"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "B15",
+     "campo": "fechaInicio",
+     "lleno": true,
+     "tipo_valor": "datetime"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "D15",
+     "campo": "fechaFin",
+     "lleno": true,
+     "tipo_valor": "datetime"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "F15",
+     "campo": "cuentaDebitar",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "FORMATO",
+     "celda": "A18",
+     "campo": "comentarios",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "CONTROL",
+     "celda": "B4",
+     "campo": "clienteNombre",
+     "lleno": true,
+     "tipo_valor": "str"
+    },
+    {
+     "hoja": "CONTROL",
+     "celda": "E4",
+     "campo": "fechaFormalizacion",
+     "lleno": true,
+     "tipo_valor": "datetime"
+    },
+    {
+     "hoja": "CONTROL",
+     "celda": "A7",
+     "campo": "cuotaNumero",
+     "lleno": true,
+     "tipo_valor": "list"
+    },
+    {
+     "hoja": "CONTROL",
+     "celda": "B7",
+     "campo": "cuotaFecha",
+     "lleno": true,
+     "tipo_valor": "list"
+    },
+    {
+     "hoja": "CONTROL",
+     "celda": "C7",
+     "campo": "cuotaMonto",
+     "lleno": true,
+     "tipo_valor": "list"
+    },
+    {
+     "hoja": "CONTROL",
+     "celda": "D7",
+     "campo": "cuotaFechaPago",
+     "lleno": true,
+     "tipo_valor": "list"
+    },
+    {
+     "hoja": "CONTROL",
+     "celda": "E7",
+     "campo": "cuotaMontoPagado",
+     "lleno": true,
+     "tipo_valor": "list"
+    },
+    {
+     "hoja": "CONTROL",
+     "celda": "C67",
+     "campo": "totalMontoCuotas",
+     "lleno": true,
+     "tipo_valor": "int"
+    },
+    {
+     "hoja": "CONTROL",
+     "celda": "E67",
+     "campo": "totalMontoPagado",
+     "lleno": true,
+     "tipo_valor": "int"
+    }
+   ]
+  }
+ }
+]

@@ -45,6 +45,16 @@ class ClienteSimulado:
             return respuesta
         raise AssertionError(f"ClienteSimulado: no hay regla configurada para {metodo} {ruta!r}")
 
+    def subir_archivo(self, ruta_columna, nombre_archivo, contenido, timeout=300):
+        """Como el real: un PATCH a la columna de archivo. Se registra como
+        PATCH (es una escritura) con el nombre y los bytes en el cuerpo."""
+        return self.call("PATCH", ruta_columna, {"x-ms-file-name": nombre_archivo, "contenido": contenido})
+
+    def descargar_archivo(self, ruta_columna, timeout=300):
+        """Como el real: GET a `<columna>/$value`; devuelve `(estado, bytes)`."""
+        est, cuerpo, _ = self.call("GET", ruta_columna + "/$value")
+        return est, cuerpo
+
     def metodos_llamados(self):
         return [l["metodo"] for l in self.llamadas]
 

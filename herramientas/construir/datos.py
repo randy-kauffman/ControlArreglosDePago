@@ -24,6 +24,7 @@ bueno: es el mismo control que va a ver una persona.
 Última línea de la salida: JSON de una línea con `estado`
 (creado | actualizado | ya_existia | difiere | bloqueado | error), `componente`, `detalle`.
 """
+import hashlib
 import os
 import sys
 
@@ -96,7 +97,11 @@ def _validar_estructura(datos):
         if faltan_clave:
             raise ErrorPlaybook(f"{donde}: no trae las columnas de la clave de negocio {faltan_clave}")
         for columna, valor in fila.items():
-            if isinstance(valor, dict) and "lookup" in valor:
+            if es_archivo(valor):
+                if columna in clave:
+                    raise ErrorPlaybook(f"{donde}: la columna de archivo '{columna}' no puede ser parte de la clave de negocio")
+                _validar_archivo(valor, donde, columna)
+            elif isinstance(valor, dict) and "lookup" in valor:
                 _validar_lookup(valor["lookup"], donde, columna)
                 if len(valor) != 1:
                     raise ErrorPlaybook(f"{donde}: la columna '{columna}' declara 'lookup' y además {sorted(set(valor) - {'lookup'})}")
@@ -105,12 +110,51 @@ def _validar_estructura(datos):
             elif not _es_escalar(valor):
                 raise ErrorPlaybook(
                     f"{donde}: la columna '{columna}' tiene un valor de tipo {type(valor).__name__}; "
-                    "solo se admiten escalares, {choice, etiqueta} o {lookup: {tabla, clave}}"
+                    "solo se admiten escalares, {choice, etiqueta}, {lookup: {tabla, clave}} o {archivo, nombre}"
                 )
         huella = tuple(_texto_de_clave(fila[c]) for c in clave)
         if huella in vistas:
             raise ErrorPlaybook(f"{donde}: hay otra fila con la misma clave de negocio {huella}")
         vistas.add(huella)
+
+
+def es_archivo(valor):
+    return isinstance(valor, dict) and "archivo" in valor
+
+
+def _validar_archivo(valor, donde, columna):
+    """Una columna de archivo se declara con la ruta del archivo local,
+    relativa a la carpeta del playbook, y opcionalmente el nombre con que se
+    sube (por defecto, el del archivo local)."""
+    sobran = sorted(set(valor) - {"archivo", "nombre"})
+    if sobran:
+        raise ErrorPlaybook(
+            f"{donde}: la columna '{columna}' es un archivo y solo se admite {{archivo, nombre}}; sobran {sobran}"
+        )
+    exigir_forma(valor["archivo"], str, donde, f"{columna}.archivo", no_vacio=True)
+    if "nombre" in valor:
+        exigir_forma(valor["nombre"], str, donde, f"{columna}.nombre", no_vacio=True)
+
+
+def leer_archivos(datos, carpeta):
+    """Los bytes de cada columna de archivo, leídos ANTES de tocar la red:
+    un archivo que falta es un error del playbook, no del entorno. Devuelve,
+    por fila, `{columna: (nombre, contenido)}`."""
+    adjuntos = []
+    for i, fila in enumerate(datos["filas"]):
+        por_columna = {}
+        for columna, valor in fila.items():
+            if not es_archivo(valor):
+                continue
+            ruta = os.path.normpath(os.path.join(carpeta, valor["archivo"]))
+            try:
+                with open(ruta, "rb") as f:
+                    contenido = f.read()
+            except OSError as e:
+                raise ErrorPlaybook(f"la fila [{i}]: no se pudo leer el archivo de '{columna}' ({ruta}): {e}")
+            por_columna[columna] = (valor.get("nombre") or os.path.basename(ruta), contenido)
+        adjuntos.append(por_columna)
+    return adjuntos
 
 
 def _validar_lookup(valor, donde, columna):
@@ -268,6 +312,9 @@ def cuerpo_de_fila(entorno, fila):
     traducción daría siempre "difiere"."""
     cuerpo, esperado = {}, {}
     for columna, valor in fila.items():
+        if es_archivo(valor):
+            # Un archivo no viaja en el cuerpo: se sube aparte, después del alta.
+            continue
         if isinstance(valor, dict) and "lookup" in valor:
             ref = valor["lookup"]
             conjunto, _ = entorno.tabla(ref["tabla"])
@@ -313,7 +360,46 @@ def _diferencias(cuerpo, fila):
     return difs
 
 
-def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente, dormir):
+def _sha256(contenido):
+    return hashlib.sha256(contenido).hexdigest()
+
+
+def _archivos_distintos(dv, conjunto, id_fila, fila, adjuntos):
+    """Qué columnas de archivo no tienen el archivo del playbook. El nombre
+    no alcanza: el mismo nombre con otros bytes es otro archivo, así que se
+    baja y se comparan las huellas SHA-256."""
+    difs = {}
+    for columna, (nombre, contenido) in sorted(adjuntos.items()):
+        actual = fila.get(f"{columna}_name")
+        if actual is None:
+            difs[columna] = "no tiene archivo"
+            continue
+        if actual != nombre:
+            difs[columna] = f"el archivo se llama {actual!r} y el playbook dice {nombre!r}"
+            continue
+        est, bajado = dv.descargar_archivo(f"{conjunto}({id_fila})/{columna}")
+        if est != 200:
+            raise ErrorEntorno(f"la descarga del archivo de '{columna}' devolvió HTTP {est} (se esperaba 200): {bajado}")
+        if not isinstance(bajado, bytes) or _sha256(bajado) != _sha256(contenido):
+            difs[columna] = "el contenido del archivo no es el del playbook (SHA-256 distinto)"
+    return difs
+
+
+def _subir_archivos(dv, conjunto, id_fila, adjuntos, columnas):
+    """Sube los archivos de esas columnas. Devuelve el motivo del primer rechazo, o None."""
+    for columna in sorted(columnas):
+        nombre, contenido = adjuntos[columna]
+        est, resp, _ = dv.subir_archivo(f"{conjunto}({id_fila})/{columna}", nombre, contenido)
+        if est not in (200, 204):
+            return f"la subida del archivo de '{columna}' devolvió HTTP {est} (se esperaba 204): {resp}"
+    return None
+
+
+def _texto_archivos(difs):
+    return "; ".join(f"{c}: {m}" for c, m in sorted(difs.items()))
+
+
+def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente, dormir, adjuntos=None):
     comprobar_solucion_e_idioma(dv, identidad)
     entorno = Entorno(dv)
     conjunto, primaria = entorno.tabla(datos["tabla"])
@@ -324,16 +410,19 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     # `Bloqueado` con el entorno intacto; si se resolviera fila por fila, un
     # playbook con un error en la fila 12 dejaría once filas escritas y la
     # carga a medias.
+    if adjuntos is None:
+        adjuntos = [{} for _ in datos["filas"]]
     preparadas = []
-    for fila in datos["filas"]:
+    for fila, archivos in zip(datos["filas"], adjuntos):
         cuerpo, esperado = cuerpo_de_fila(entorno, fila)
         clave_leida = [nombre_leido(fila, c) for c in clave]
         etiqueta = " / ".join(str(esperado[c]) for c in clave_leida)
-        preparadas.append((cuerpo, esperado, clave_leida, etiqueta))
+        columnas = list(esperado.keys()) + [f"{c}_name" for c in archivos]
+        preparadas.append((cuerpo, esperado, clave_leida, etiqueta, archivos, columnas))
 
     creadas, corregidas, iguales, difs = [], [], [], []
-    for cuerpo, esperado, clave_leida, etiqueta in preparadas:
-        existente = _buscar_fila(dv, conjunto, primaria, clave_leida, esperado, esperado.keys())
+    for cuerpo, esperado, clave_leida, etiqueta, archivos, columnas in preparadas:
+        existente = _buscar_fila(dv, conjunto, primaria, clave_leida, esperado, columnas)
 
         if existente is None:
             if solo_verificar:
@@ -344,41 +433,61 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
                 # Un 400 acá suele ser un plugin nuestro rechazando el valor:
                 # el mensaje del plugin es lo que hay que leer.
                 return "error", componente, f"{etiqueta}: el alta devolvió HTTP {est} (se esperaba 204): {resp}"
-            existente = _buscar_fila(dv, conjunto, primaria, clave_leida, esperado, esperado.keys())
+            existente = _buscar_fila(dv, conjunto, primaria, clave_leida, esperado, columnas)
             if existente is None:
                 return "error", componente, f"{etiqueta}: el alta no dio error pero la fila no aparece al releer"
             d = _diferencias(esperado, existente)
             if d:
                 detalle = "; ".join(f"{c}: quedó {a!r} y el playbook dice {e!r}" for c, (a, e) in sorted(d.items()))
                 return "error", componente, f"{etiqueta}: se creó pero no quedó como el playbook — {detalle}"
+            if archivos:
+                id_fila = exigir_forma(existente.get(primaria), str, C_FILAS, primaria, no_vacio=True)
+                motivo = _subir_archivos(dv, conjunto, id_fila, archivos, archivos)
+                if motivo:
+                    return "error", componente, f"{etiqueta}: se creó la fila pero {motivo}"
+                revisada = _buscar_fila(dv, conjunto, primaria, clave_leida, esperado, columnas) or {}
+                fd = _archivos_distintos(dv, conjunto, id_fila, revisada, archivos)
+                if fd:
+                    return "error", componente, f"{etiqueta}: se creó pero el archivo no quedó como el playbook — {_texto_archivos(fd)}"
             creadas.append(etiqueta)
             continue
 
+        id_fila = exigir_forma(existente.get(primaria), str, C_FILAS, primaria, no_vacio=True) if archivos else None
         d = _diferencias(esperado, existente)
-        if not d:
+        fd = _archivos_distintos(dv, conjunto, id_fila, existente, archivos) if archivos else {}
+        if not d and not fd:
             iguales.append(etiqueta)
             continue
 
         if completar and not solo_verificar:
             id_fila = exigir_forma(existente.get(primaria), str, C_FILAS, primaria, no_vacio=True)
-            # Se PATCHea con los nombres de ESCRITURA: un lookup se corrige con
-            # su `@odata.bind`, nunca con `_col_value`, que es de solo lectura.
-            leido_a_escritura = {k: k for k in cuerpo}
-            leido_a_escritura.update({f"_{k.split('@')[0]}_value": k for k in cuerpo if "@odata.bind" in k})
-            cambios = {leido_a_escritura[c]: cuerpo[leido_a_escritura[c]] for c in d}
-            est, resp, _ = escribir_metadatos(dv, "PATCH", f"{conjunto}({id_fila})", cambios, dormir=dormir)
-            if est not in (200, 204):
-                return "error", componente, f"{etiqueta}: la corrección devolvió HTTP {est} (se esperaba 204): {resp}"
-            revisada = _buscar_fila(dv, conjunto, primaria, clave_leida, esperado, esperado.keys())
+            if d:
+                # Se PATCHea con los nombres de ESCRITURA: un lookup se corrige con
+                # su `@odata.bind`, nunca con `_col_value`, que es de solo lectura.
+                leido_a_escritura = {k: k for k in cuerpo}
+                leido_a_escritura.update({f"_{k.split('@')[0]}_value": k for k in cuerpo if "@odata.bind" in k})
+                cambios = {leido_a_escritura[c]: cuerpo[leido_a_escritura[c]] for c in d}
+                est, resp, _ = escribir_metadatos(dv, "PATCH", f"{conjunto}({id_fila})", cambios, dormir=dormir)
+                if est not in (200, 204):
+                    return "error", componente, f"{etiqueta}: la corrección devolvió HTTP {est} (se esperaba 204): {resp}"
+            if fd:
+                motivo = _subir_archivos(dv, conjunto, id_fila, archivos, fd)
+                if motivo:
+                    return "error", componente, f"{etiqueta}: {motivo}"
+            revisada = _buscar_fila(dv, conjunto, primaria, clave_leida, esperado, columnas)
             pendientes = _diferencias(esperado, revisada or {})
             if pendientes:
                 detalle = "; ".join(f"{c}: quedó {a!r} y el playbook dice {e!r}" for c, (a, e) in sorted(pendientes.items()))
                 return "error", componente, f"{etiqueta}: se corrigió pero sigue distinta — {detalle}"
+            fd = _archivos_distintos(dv, conjunto, id_fila, revisada or {}, archivos) if archivos else {}
+            if fd:
+                return "error", componente, f"{etiqueta}: se volvió a subir el archivo pero sigue distinto — {_texto_archivos(fd)}"
             corregidas.append(etiqueta)
             continue
 
-        detalle = "; ".join(f"{c} es {a!r} y el playbook dice {e!r}" for c, (a, e) in sorted(d.items()))
-        difs.append(f"{etiqueta}: {detalle}")
+        partes = [f"{c} es {a!r} y el playbook dice {e!r}" for c, (a, e) in sorted(d.items())]
+        partes += [f"{c}: {m}" for c, m in sorted(fd.items())]
+        difs.append(f"{etiqueta}: {'; '.join(partes)}")
 
     if difs:
         estado = "error" if creadas or corregidas else "difiere"
@@ -408,6 +517,8 @@ def construir(ruta_playbook, solo_verificar, fabrica_cliente, completar=False, d
         identidad = obtener_identidad(secciones)
         paso = "validar el bloque de datos"
         validar_playbook(datos)
+        paso = "leer los archivos que declara el playbook"
+        adjuntos = leer_archivos(datos, os.path.dirname(os.path.abspath(ruta_playbook)))
     except ErrorPlaybook as e:
         return "error", componente, str(e)
     except Bloqueado as e:
@@ -425,7 +536,7 @@ def construir(ruta_playbook, solo_verificar, fabrica_cliente, completar=False, d
 
     rastro = Rastro(dv)
     try:
-        return _contra_entorno(rastro, datos, identidad, solo_verificar, completar, componente, dormir)
+        return _contra_entorno(rastro, datos, identidad, solo_verificar, completar, componente, dormir, adjuntos)
     except Bloqueado as e:
         return "bloqueado", componente, str(e)
     except ErrorEntorno as e:

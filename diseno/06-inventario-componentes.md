@@ -27,14 +27,16 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 6 | Seguridad: perfil de columnas (1) y roles (4) | 5 | 5 | 0 | 0 |
 | 7 | Código de plugins (C#, TDD estricto) | 22 | 22 | 0 | 0 |
 | 8 | Registro de paquete, Custom API y steps | 7 | 7 | 0 | 0 |
-| 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
-| 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 2 | 3 | 2 |
+| 9 | Datos semilla y de configuración | 3 | 2 | 0 | 1 |
+| 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 3 | 2 | 2 |
 | 11 | Flujos | 3 | 0 | 2 | 1 |
 | 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 26 | 23 | 3 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
-| **Total** | | **128** | **64** | **53** | **11** |
+| **Total** | | **128** | **67** | **50** | **11** |
 
 Notas del resumen:
+
+- 2026-10-20 (Dev, lote 0): 9.1 y 9.2 pasaron a `hecho` (v07 aprobada por Héctor cargada y publicada como Vigente, la v95 de humo pasó a Histórica; 28 de 28 mapeos `ya_existia`; el formato generado llena las 28 celdas, `pruebas-humo/lote-0/RESULTADO-plantilla.md`) y 10.8 también. El grupo 9 pasó de 0 hechas y 2 pendientes a 2 y 0; el grupo 10, de 2 y 3 a 3 y 2; el total, de 64 y 53 a 67 y 50. 13.4 quedó bloqueada: el dueño de una queue tiene que poder leer su Mailbox (403 sin `prvReadMailbox`) y el team del sistema solo tiene el rol Oficial, sin acceso al Mailbox según `04`; espera decisión del usuario (`pruebas-humo/lote-0/RESULTADO.md`).
 
 - 2026-10-20 (Dev, lote C de app): 12.3, 12.4, 12.6, 12.7, 12.8 y 12.9 pasaron a `hecho` (6 vistas: `creado` y luego `ya_existia` con `--solo-verificar`; el `?savedQuery=` da 200 en las 6). 12.4 no admite el filtro `regardingobjecttypecode` con el nombre de la tabla (HTTP 400, espera el entero ObjectTypeCode, que cambia de entorno a entorno): se usó el respaldo del diseño, un enlace `inner` a Conversación. Además se reconstruyeron con `--completar`, todos `ya_existia`: el web resource `sanic_carp_wr_js_comandos` (38591 bytes, `SanicCarp.Conversacion.alCargar` con el aviso de otra conversación abierta, DA-06), 12.18 (manejador `onload`), 12.19 (cuatro pestañas) y 12.23/12.25 (19 entradas, las tres nuevas de Supervisión con `Privilege`). El grupo 12 pasó de 17 hechas y 9 pendientes a 23 y 3 (quedan 12.14 a 12.16, lote E); el total, de 58 y 59 a 64 y 53. No se hizo "ocultar botones estándar" (DA-15, G-I3) porque el lote lo pedía como opcional y no tiene fila propia. Los 42 steps del paquete siguen con `statecode` 0. Detalle en `pruebas-humo/lote-c/RESULTADO.md`.
 
@@ -234,8 +236,8 @@ La BU, los teams, la queue, el mailbox y las versiones de plantilla con su mapeo
 
 | # | Qué | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 9.1 | Versión de plantilla v07 (fila y archivo `.xlsx`), publicada como Vigente por el flujo normal de publicación. v07 aprobada por Héctor Romero el 2026-10-09. En Prod el script crea la versión en Borrador y sube el archivo; el jefe publica y se compara la huella con la de Test (OA-4, 2026-10-10) | `playbooks/datos/versionplantilla.md` | 3.5, 8.7 (publicación), 9.2 | RF-09, C-01, D-15 | pendiente |
-| 9.2 | Mapeo de celda de v07 (28 filas: `MAP_V07` del mockup, medido en la tanda 1 de humo del 2026-10-20). El mismo script lo carga en Prod antes de que el jefe publique (OA-4, 2026-10-10) | `playbooks/datos/mapeocelda.md` | 3.6, 2.8, 2.9, 4.8 | RF-09, D-14, D-16 | pendiente |
+| 9.1 | Versión de plantilla v07 (fila y archivo `.xlsx`), publicada como Vigente por el flujo normal de publicación. v07 aprobada por Héctor Romero el 2026-10-09. En Prod el script crea la versión en Borrador y sube el archivo; el jefe publica y se compara la huella con la de Test (OA-4, 2026-10-10) | `playbooks/datos/versionplantilla.md` | 3.5, 8.7 (publicación), 9.2 | RF-09, C-01, D-15 | hecha (2026-10-20, Dev: `datos.py` con columna de archivo, `ya_existia`; publicada como Vigente con huella = SHA-256 del archivo aprobado, v95 HUMO pasó a Histórica; `pruebas-humo/lote-0/RESULTADO-plantilla.md`) |
+| 9.2 | Mapeo de celda de v07 (28 filas: `MAP_V07` del mockup, medido en la tanda 1 de humo del 2026-10-20). El mismo script lo carga en Prod antes de que el jefe publique (OA-4, 2026-10-10) | `playbooks/datos/mapeocelda.md` | 3.6, 2.8, 2.9, 4.8 | RF-09, D-14, D-16 | hecha (2026-10-20, Dev: 28 de 28 `ya_existia`; el formato generado sobre un arreglo HUMO Vigente con una cuota pagada llena las 28 celdas) |
 | 9.3 | Datos de prueba para Dev y Test (nunca datos reales de Prod). Contenido no definido | `playbooks/datos/humo_*.md` | 3.1 a 3.7, 4.x | Definición §6 Seguridad (Datos en entornos no productivos) | diseño detallado pendiente |
 
 ## 10. Configuración entre entornos

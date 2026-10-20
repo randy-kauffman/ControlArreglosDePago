@@ -541,7 +541,7 @@ DA-12 se retiró (un requerido con el control deshabilitado no bloquea el guarda
 | DA-18 | Vista "Arreglos de prestamo/de tarjeta": todos los estados | **Todos los estados** (el filtro de la columna Estado hace el resto, D-35) | Solo activos sería más corto pero esconde el historial |
 | DA-19 | Subgrid de arreglos de la conversación | **Reusa** la vista "Arreglos del cliente" | Una vista propia es un playbook más |
 | DA-20 | Clientes inactivos | La vista "Clientes" muestra solo activos; **ningún proceso desactiva clientes** (D-40) | Sin efecto práctico |
-| DA-21 | Ver la auditoría nativa (View Audit History) | **No se tocan los roles**: queda como decisión pendiente del usuario sobre la matriz `04`; verificar en Dev con un no administrador si lo necesitan | Sin el privilegio, la pestaña de auditoría del mockup no se ve; el dato igual se audita |
+| DA-21 | Ver la auditoría nativa (View Audit History) | **Resuelta el 2026-10-20 (decisión del usuario, M7):** `SR - CARP - Oficial` recibe `prvReadRecordAuditHistory` (solo admite Global; la lectura de la BU sigue acotando qué arreglos ve). Verificado en Dev con un no administrador: `RetrieveRecordChangeHistory` pasa de 403 a 200 (`pruebas-humo/lote-0/RESULTADO-auditoria.md`) | Sin el privilegio, la pestaña de auditoría del mockup no se ve; el dato igual se audita |
 
 ## 11. Componentes que el diseño agrega y el inventario no tiene (propuesta; no suman filas hasta confirmar)
 

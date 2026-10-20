@@ -308,6 +308,14 @@ class Rastro:
         self.en_curso = f"{metodo} {ruta.split('?')[0]}"
         return self._dv.call(metodo, ruta, *args, **kwargs)
 
+    def subir_archivo(self, ruta_columna, *args, **kwargs):
+        self.en_curso = f"la subida del archivo a {ruta_columna}"
+        return self._dv.subir_archivo(ruta_columna, *args, **kwargs)
+
+    def descargar_archivo(self, ruta_columna, *args, **kwargs):
+        self.en_curso = f"la descarga del archivo de {ruta_columna}"
+        return self._dv.descargar_archivo(ruta_columna, *args, **kwargs)
+
 
 C_SOLUCION = "la consulta de la solución (GET solutions)"
 C_IDIOMA_BASE = "la consulta del idioma base del entorno (GET organizations)"

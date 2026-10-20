@@ -65,6 +65,7 @@
         <RolePrivilege name="prvReadPluginType" level="Global" />
         <RolePrivilege name="prvReadQuery" level="Global" />
         <RolePrivilege name="prvReadQueue" level="Local" />
+        <RolePrivilege name="prvReadRecordAuditHistory" level="Global" />
         <RolePrivilege name="prvReadRelationship" level="Global" />
         <RolePrivilege name="prvReadReport" level="Basic" />
         <RolePrivilege name="prvReadRole" level="Global" />

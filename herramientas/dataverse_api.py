@@ -117,6 +117,25 @@ class Dataverse:
                 msg = txt[:1000]
             return e.code, {"error": msg}, {}
 
+    def descargar_archivo(self, ruta_columna, timeout=300):
+        """Baja los bytes crudos de una columna de archivo: GET a
+        `<conjunto>(<id>)/<columna>/$value`. Devuelve `(estado_http, bytes)`;
+        ante un error HTTP, el segundo elemento es el mensaje de error (texto)."""
+        h = {
+            "Authorization": "Bearer " + self._token,
+            "Accept": "application/octet-stream",
+            "OData-MaxVersion": "4.0",
+            "OData-Version": "4.0",
+        }
+        req = urllib.request.Request(
+            self.api + urllib.parse.quote(ruta_columna + "/$value", safe="/?&=$(),'@._-:"),
+            method="GET", headers=h)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return r.status, r.read()
+        except urllib.error.HTTPError as e:
+            return e.code, e.read().decode("utf-8", "replace")[:1000]
+
     @staticmethod
     def id_creado(cabeceras):
         """GUID del registro recién creado, tomado de la cabecera OData-EntityId."""

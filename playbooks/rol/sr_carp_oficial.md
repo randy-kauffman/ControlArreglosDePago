@@ -78,12 +78,13 @@ Advertencias: un rol no lleva etiquetas por idioma (es un texto único), así qu
     "prvAppendToActivity": "unidad",
     "prvReadQueue": "unidad",
     "prvAppendToQueue": "unidad",
-    "prvAppendToUser": "unidad"
+    "prvAppendToUser": "unidad",
+    "prvReadRecordAuditHistory": "organizacion"
   }
 }
 ```
 
-Un security role en la unidad de negocio raíz, con los privilegios del rol `App Opener` (los que tenga el entorno en el momento de construir) más los 28 de este playbook (21 sobre tablas de la solución y 7 estándar: 5 de Email y 2 de Queue). Alcances: `usuario` = Basic (solo lo propio) · `unidad` = Local (la BU `Arreglos de Pago`) · `unidad_e_hijas` = Deep · `organizacion` = Global.
+Un security role en la unidad de negocio raíz, con los privilegios del rol `App Opener` (los que tenga el entorno en el momento de construir) más los 29 de este playbook (20 sobre tablas de la solución y 9 estándar: 5 de Email, 2 de Queue, `prvAppendToUser` y `prvReadRecordAuditHistory`). Alcances: `usuario` = Basic (solo lo propio) · `unidad` = Local (la BU `Arreglos de Pago`) · `unidad_e_hijas` = Deep · `organizacion` = Global.
 
 Decisiones que este playbook toma y el diseño no traía:
 
@@ -106,6 +107,7 @@ Viene del diseño, no lo decide este playbook:
 - Tiene `escribir` sobre Conversación, Arreglo y Cuota, pero qué columnas puede tocar lo limitan los plugins (definición §6 Lógica), no este rol.
 - `anexar` y `anexar_a` de los lookups: Arreglo a Cliente, Conversación y Versión de plantilla; Conversación a Cliente; Email a Conversación. La matriz trae los dos lados de cada uno.
 - Las Custom API "Tomar", unir e iniciar conversación nueva se restringen con `escribir` de Conversación, y generar formato con `leer` de Generación de formato (línea 400); este rol ya los tiene.
+- **View Audit History** (`prvReadRecordAuditHistory`, Global): agregado el 2026-10-20 por decisión del usuario (M7, opción A; `diseno/04-matriz-privilegios.md` §3 y §8). Sin él, el Oficial no admin recibía 403 en `RetrieveRecordChangeHistory` sobre un arreglo que sí lee (`pruebas-humo/tanda2b/RESULTADO.md`). **Solo admite Global** (Dev: `canbeglobal = true`, los otros tres alcances `false`); qué registros ve lo sigue limitando el Read de cada tabla. No se agregan `prvReadAuditSummary` ni `prvReadAuditPartitions` (la vista de resumen de auditoría de la organización no es parte de la app).
 - Se parte de `App Opener`, no de `Basic User` (receta de seguridad, §2.1).
 - Este rol va al team del sistema de la BU y también lo reciben las cuentas de servicio que están en ella (decisión del 2026-10-09, línea 393).
 
@@ -119,7 +121,7 @@ Las de la receta (`seguridad/patrones.md` §2.1), con estos valores esperados:
 | 2 | Hay exactamente una unidad de negocio raíz | una |
 | 3 | El rol base existe una vez en la unidad raíz | `App Opener` |
 | 4 | Cada tabla nombrada existe, y cada privilegio admite el alcance pedido | `sanic_carp_tbl_cliente` · `sanic_carp_tbl_conversacion` · `sanic_carp_tbl_arreglo` · `sanic_carp_tbl_cuota` · `sanic_carp_tbl_versionplantilla` · `sanic_carp_tbl_generacionformato` |
-| 5 | Cada privilegio de `otros_privilegios` existe una vez y admite el alcance pedido | `prvCreateActivity` · `prvWriteActivity` · `prvAppendActivity` · `prvReadActivity` · `prvAppendToActivity` · `prvReadQueue` · `prvAppendToQueue` |
+| 5 | Cada privilegio de `otros_privilegios` existe una vez y admite el alcance pedido | `prvCreateActivity` · `prvWriteActivity` · `prvAppendActivity` · `prvReadActivity` · `prvAppendToActivity` · `prvReadQueue` · `prvAppendToQueue` · `prvAppendToUser` · `prvReadRecordAuditHistory` (solo Global) |
 | 6 | El nombre no lleva tildes ni ñ (BP-PP-197) y cumple `SR - CARP - Nombre` | el de la sección 2 |
 
 Si alguna falla: estado `bloqueado`, no se crea nada.
@@ -163,6 +165,7 @@ Otros privilegios:
 | `prvAppendToActivity` | Local |
 | `prvReadQueue` | Local |
 | `prvAppendToQueue` | Local |
+| `prvReadRecordAuditHistory` | Global (2026-10-20, M7) |
 
 | # | Comprobación | Esperado |
 |---|---|---|

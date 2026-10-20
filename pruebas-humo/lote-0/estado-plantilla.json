@@ -1,0 +1,22 @@
+{
+ "filas": [
+  {
+   "clave": "arreglo-l0-v07",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "fa2f6257-aecc-f111-a05b-00224808ffcd",
+   "nota": "arreglo HUMO de la prueba de la plantilla v07"
+  },
+  {
+   "clave": "cliente-l0-v07",
+   "conjunto": "sanic_carp_tbl_clientes",
+   "id": "15a4476b-aecc-f111-a05b-00224808ffcd",
+   "nota": "cliente HUMO completo"
+  },
+  {
+   "clave": "arreglo-l0-v07b",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "0d68be71-aecc-f111-a05b-00224808ffcd",
+   "nota": "arreglo HUMO de la prueba de la plantilla v07"
+  }
+ ]
+}

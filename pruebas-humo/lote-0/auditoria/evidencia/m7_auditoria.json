@@ -1,0 +1,48 @@
+{
+ "fecha": "2026-10-20",
+ "arreglo": "arreglo-t2-gen (HUMO, tanda 2)",
+ "antes": {
+  "isdisabled": true,
+  "en_jefatura": false
+ },
+ "intentos_oficial": [
+  {
+   "espera_s": 30,
+   "RetrieveRecordChangeHistory": [
+    200,
+    {
+     "cambios": 3
+    }
+   ],
+   "audits": [
+    403,
+    "Caller does not have privilege for ReadAuditSummary. RetriveMultiple call on Audit Entity must specify exactly one Condition set on objecttypecode at the top le"
+   ],
+   "lee_el_arreglo": 200
+  }
+ ],
+ "admin": {
+  "RetrieveRecordChangeHistory": [
+   200,
+   {
+    "cambios": 3
+   }
+  ],
+  "audits": [
+   200,
+   {
+    "filas": 3
+   }
+  ],
+  "lee_el_arreglo": 200
+ },
+ "despues": {
+  "isdisabled": true,
+  "en_jefatura": false,
+  "roles_directos": [],
+  "teams": [
+   "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  ],
+  "identico_a_linea_base": true
+ }
+}

@@ -1,0 +1,9 @@
+{
+ "t": "2026-10-20",
+ "paso": "crear queue 'Arreglos de Pago' (emailaddress = PP_MAIL_BUZON_1, filtro All email messages, publica, BU Arreglos de Pago, owner = team del sistema 2ebc18e7-f9c3-f111-a05a-7ced8d3c456b)",
+ "http": 403,
+ "error": "Read Privilege Check For Owner failed with exception: Principal team (Id=2ebc18e7-f9c3-f111-a05a-7ced8d3c456b, type=9, teamType=0, privilegeCount=110, businessUnitId=2dbc18e7-f9c3-f111-a05a-7ced8d3c456b), is missing prvReadMailbox privilege (Id=8e17de3a-5a69-479c-9535-1f7be75b2987) on OTC=9606 for entity 'mailbox'",
+ "creado": "nada (la queue 'Arreglos de Pago' sin corchetes no existe: 0 filas tras el intento)",
+ "roles_del_team_del_sistema": ["SR - CARP - Oficial"],
+ "estado_previo_de_los_buzones_de_prueba": "ninguna queue ni mailbox usa PP_MAIL_BUZON_1 ni PP_MAIL_BUZON_2 (las queues Spike y POC sobre el buzon 1 del spike del 2026-10-08 ya no existen); PP_MAIL_BUZON_3 lo usa 'POC BAC – Cola Consultas' (mailbox sin sincronizar)"
+}

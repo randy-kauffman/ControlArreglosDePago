@@ -93,6 +93,7 @@ Nombres exactos leídos de Dev el 2026-10-09. En el playbook van en `otros_privi
 | Queue | `prvReadQueue` | L | | L | | Línea 389. Spike 4: mínimo Local. Servicio: es el medio de "leer Queue Item" (sección 4, resolución R-03) |
 | Queue | `prvAppendToQueue` | L | | | | Línea 389, **lo exige la plataforma para poner la queue como remitente** (spike 4, hallazgo del intento 1; D-28) |
 | Usuario | `prvAppendToUser` | L | | | | Prueba de roles del 2026-10-09 (D-07): la plataforma lo exige para poner un usuario en cualquier lookup (403 `is missing prvAppendToUser`) |
+| (organización) | `prvReadRecordAuditHistory` | G | | | | **Agregado el 2026-10-20 por decisión del usuario (M7, opción A)**: View Audit History, para que el Oficial vea la historia de auditoría nativa del arreglo (`diseno/07` DA-21). **Solo admite G** (Dev). El Jefe lo recibe por el Oficial. Antes: 403 en `RetrieveRecordChangeHistory` con un Oficial no admin (`pruebas-humo/tanda2b/RESULTADO.md`) |
 | Mailbox | `prvReadMailbox` | | | L | | Línea 395. Oficial: "Sin acceso al Mailbox" (línea 392) |
 | (organización) | `prvBulkDelete` | | | | G | Línea 396. **Solo admite G** (lectura de Dev, sección 4). El alcance del borrado lo sigue limitando el Delete de cada tabla, que es L |
 | Attachment | (ninguno) | | | | | La definición pide "crear y leer" (línea 388) y "con sus adjuntos" (línea 396). **`activitymimeattachment` y `attachment` no tienen privilegios propios** (sección 4, R-01): el acceso lo da el Email |
@@ -134,12 +135,12 @@ Privilegios **propios del playbook** (los que se suman a `App Opener`).
 
 | Rol | Sobre tablas de la solución | Otros privilegios | Total |
 |---|---|---|---|
-| `SR - CARP - Oficial` | 20 | 8 | **28** |
+| `SR - CARP - Oficial` | 20 | 9 | **29** |
 | `SR - CARP - Jefe` | 7 | 0 | **7** |
 | `SR - CARP - Servicio` | 3 | 3 | **6** |
 | `SR - CARP - Purga` | 10 | 3 | **13** |
 
-Desglose del Oficial: Cliente 6, Conversación 4, Arreglo 6, Cuota 2, Versión de plantilla 2, Generación de formato 1; Email 5, Queue 2. De los 28, 9 son los del rol probado en el spike 4.
+Desglose del Oficial: Cliente 6, Conversación 4, Arreglo 6, Cuota 2, Versión de plantilla 2, Generación de formato 1; Email 5, Queue 2, Usuario 1, View Audit History 1 (2026-10-20, M7). De los 29, 9 son los del rol probado en el spike 4.
 
 ## 7. Cómo se verifica
 
@@ -155,3 +156,4 @@ Desglose del Oficial: Cliente 6, Conversación 4, Arreglo 6, Cuota 2, Versión d
 - El perfil de seguridad de columna (inventario 6.1) y su asociación a los teams (13.8): los roles no dan ni quitan acceso a `sanic_cedula`, `sanic_cuentadebitar` ni `sanic_instantaneacedula`. Por eso Desbloquear y Reabrir de un no administrador dependen de que el perfil dé actualizar sobre `sanic_instantaneacedula` (2026-10-20, hallazgo de la tanda 2 de humo; ver diccionario §8).
 - El acceso a la app model-driven (va con la app, 12.25) y las vistas y el dashboard de supervisión del Jefe (12.1 a 12.16): son componentes de la app, no privilegios del rol.
 - Auditoría de la asignación de roles (13.11) y la verificación de roles ajenos (13.9).
+- **2026-10-20, M7 (decisión del usuario, opción A):** se agregó `prvReadRecordAuditHistory` (Global) a `SR - CARP - Oficial`; es el único cambio de rol de esa fecha. El Jefe lo hereda porque también tiene el Oficial (por el team del sistema). No se agregó `prvReadAuditSummary`. Prueba con un no administrador: `pruebas-humo/lote-0/RESULTADO-auditoria.md`.
