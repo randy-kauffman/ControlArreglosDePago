@@ -35,6 +35,12 @@ pesada del proyecto, así que:
 3. Verifica DESPUÉS, contra el entorno, releyendo lo que quedó. Un `204` de
    `ImportSolution` no prueba nada.
 
+**Formato ampliado (diseno/07).** Un botón en `Form` pasa `PrimaryControl` (el formulario) y uno en `HomepageGrid` /
+`SubGrid` pasa `SelectedControlSelectedItemIds` + `SelectedControl`; uno en los dos contextos genera dos comandos
+(`<base>.Grid.Command` y `<base>.Form.Command`). En un formulario no se emite `Mscrm.SelectionCountAtLeastOne`. La tabla estándar
+`email` entra a `app_componentes.tablas` sin el prefijo. `ocultar` redefine el comando del botón nativo con un `DisplayRule`
+siempre falso (reversible); `ocultar_con_hidecustomaction: true` usa `HideCustomAction` (IRREVERSIBLE).
+
 Última línea de la salida: JSON de una línea con `estado`
 (creado | ya_existia | difiere | bloqueado | error), `componente`, `detalle`.
 """
@@ -91,6 +97,25 @@ CLAVES_POR_CLASE = {
     "app_componentes": ["app", "clase", "sitemap", "tablas"],
     "ribbon": ["biblioteca", "botones", "clase", "ocultar", "tabla"],
 }
+# `ocultar_con_hidecustomaction` (bool, por omisión false): cómo se ocultan los botones nativos de `ocultar`.
+#   false -> se redefine el comando del botón con un `DisplayRule` que siempre da falso. Es REVERSIBLE: sacar el sufijo de
+#            `ocultar` y reimportar devuelve el botón (Learn, "Define custom actions to modify the ribbon").
+#   true  -> `HideCustomAction`, que NO se puede quitar después, salvo con una versión nueva de la solución que lo instaló
+#            (el mismo Learn). Es la salida para el botón cuyo comando comparte otro botón que no se debe ocultar.
+CLAVES_OPCIONALES_POR_CLASE = {"app_componentes": [], "ribbon": ["ocultar_con_hidecustomaction"]}
+
+# Tablas ESTÁNDAR que pueden entrar a la app sin llevar el prefijo del publisher: la app las necesita (la vista de errores
+# de envío y el timeline son de `email`). Lista cerrada a propósito: cualquier otra estándar sigue siendo un error.
+TABLAS_ESTANDAR_EN_LA_APP = ("email",)
+
+# Contexto que recibe la función JS de un comando (Learn, "Pass data from a page as a parameter to ribbon actions"):
+# en una grilla, `SelectedControl` es la grilla y `SelectedControlSelectedItemIds` las filas; en un formulario, `PrimaryControl`
+# es el formulario y no hay filas seleccionadas.
+UBICACIONES_DE_FORMULARIO = ("Form",)
+PARAMETRO_DE_REGLA = {"grilla": "SelectedControl", "formulario": "PrimaryControl"}
+NOMBRE_DEL_CONTEXTO = {"grilla": "Grid", "formulario": "Form"}
+# `DisplayRule` de plataforma que, juntas, dan siempre falso (el ejemplo de Learn para ocultar `Mscrm.HomepageGrid.Deactivate`).
+REGLAS_SIEMPRE_FALSAS = ("Mscrm.HideOnModern", "Mscrm.ShowOnlyOnModern")
 CLAVES_BOTON = ["etiqueta", "icono", "id", "tooltip", "ubicaciones", "secuencia"]
 # Un botón lleva EXACTAMENTE una de las dos: `funcion` (botón común) o `menu` (menú desplegable, `FlyoutAnchor`).
 # Ver `ribbondiffxml`.
@@ -154,7 +179,7 @@ def validar_playbook(datos, identidad):
     if "tablas_excluidas_de_ocultar" in datos:
         excluidas = exigir_forma(datos["tablas_excluidas_de_ocultar"], [str], "el bloque de la importación",
                                  "tablas_excluidas_de_ocultar")
-        fuera = [t for t in excluidas if not t.startswith(prefijo)]
+        fuera = [t for t in excluidas if not t.startswith(prefijo) and t not in TABLAS_ESTANDAR_EN_LA_APP]
         if fuera:
             raise ErrorPlaybook(
                 f"'tablas_excluidas_de_ocultar' {fuera} no llevan el prefijo del publisher '{prefijo}'")
@@ -166,16 +191,18 @@ def validar_playbook(datos, identidad):
         clase = cambio.get("clase")
         if clase not in CLASES:
             raise ErrorPlaybook(f"{donde}: 'clase' es {clase!r}; las clases admitidas son {list(CLASES)}")
-        if sorted(cambio) != sorted(CLAVES_POR_CLASE[clase]):
+        obligatorias, opcionales = set(CLAVES_POR_CLASE[clase]), set(CLAVES_OPCIONALES_POR_CLASE[clase])
+        if not obligatorias <= set(cambio) or not set(cambio) <= obligatorias | opcionales:
             raise ErrorPlaybook(f"{donde}: un cambio {clase!r} admite exactamente "
-                                f"{{{', '.join(CLAVES_POR_CLASE[clase])}}}")
+                                f"{{{', '.join(CLAVES_POR_CLASE[clase])}}}"
+                                + (f" y, opcionales, {{{', '.join(sorted(opcionales))}}}" if opcionales else ""))
         if clase == "app_componentes":
             for campo in ("app", "sitemap"):
                 exigir_forma(cambio[campo], str, donde, campo, no_vacio=True)
             tablas = exigir_forma(cambio["tablas"], [str], donde, "tablas", no_vacio=True)
             if len(set(tablas)) != len(tablas):
                 raise ErrorPlaybook(f"{donde}: la lista de tablas tiene repetidos")
-            fuera = [t for t in tablas if not t.startswith(prefijo)]
+            fuera = [t for t in tablas if not t.startswith(prefijo) and t not in TABLAS_ESTANDAR_EN_LA_APP]
             if fuera:
                 raise ErrorPlaybook(f"{donde}: {fuera} no llevan el prefijo del publisher '{prefijo}'")
             if cambio["app"] in apps:
@@ -206,6 +233,11 @@ def _validar_ribbon(cambio, donde, identidad, idiomas, tablas_ribbon):
         raise ErrorPlaybook(f"{donde}: los sufijos a ocultar empiezan con punto; {fuera} no")
     if len(set(ocultar)) != len(ocultar):
         raise ErrorPlaybook(f"{donde}: la lista 'ocultar' tiene repetidos")
+
+    if "ocultar_con_hidecustomaction" in cambio:
+        exigir_forma(cambio["ocultar_con_hidecustomaction"], bool, donde, "ocultar_con_hidecustomaction")
+        if cambio["ocultar_con_hidecustomaction"] and not ocultar:
+            raise ErrorPlaybook(f"{donde}: 'ocultar_con_hidecustomaction' no sirve con 'ocultar' vacío: no hay nada que ocultar")
 
     botones = exigir_forma(cambio["botones"], list, donde, "botones")
     if not botones and not ocultar:
@@ -262,6 +294,10 @@ def _validar_ribbon(cambio, donde, identidad, idiomas, tablas_ribbon):
         malas = [u for u in ubicaciones if u not in UBICACIONES]
         if malas:
             raise ErrorPlaybook(f"{aqui}: ubicaciones {malas} no válidas; las válidas son {list(UBICACIONES)}")
+        if "menu" in boton and len(_contextos(ubicaciones)) > 1:
+            raise ErrorPlaybook(
+                f"{aqui}: un menú no puede estar a la vez en una grilla y en un formulario (cada contexto pasa un parámetro "
+                "distinto a la función); declarar dos botones")
         for campo in ("etiqueta", "tooltip"):
             _validar_textos(boton[campo], idiomas, f"{aqui}.{campo}")
 
@@ -328,6 +364,26 @@ ABRE_RIBBON = "<RibbonDiffXml>"
 CIERRA_RIBBON = "</RibbonDiffXml>"
 
 
+def _contexto(ubicacion):
+    """`grilla` (HomepageGrid, SubGrid) o `formulario` (Form): de eso depende qué parámetro recibe la función JS."""
+    return "formulario" if ubicacion in UBICACIONES_DE_FORMULARIO else "grilla"
+
+
+def _contextos(ubicaciones):
+    """Los contextos distintos de una lista de ubicaciones, en un orden fijo (grilla primero)."""
+    presentes = {_contexto(u) for u in ubicaciones}
+    return [c for c in ("grilla", "formulario") if c in presentes]
+
+
+def _id_de_comando(base, contextos, contexto):
+    """`<base>.Command` si el botón tiene un solo contexto (el id de siempre); con los dos, uno por contexto."""
+    return f"{base}.Command" if len(contextos) == 1 else f"{base}.{NOMBRE_DEL_CONTEXTO[contexto]}.Command"
+
+
+def _id_de_regla(base, contextos, contexto):
+    return f"{base}.EnableRule" if len(contextos) == 1 else f"{base}.{NOMBRE_DEL_CONTEXTO[contexto]}.EnableRule"
+
+
 def _base_id(identidad, cambio, boton):
     """`<prefijo>.<abrev>.<tabla sin prefijo>.<boton>`, con el `prefijo` y la `abrev` de la Identidad. El
     prefijo del publisher va primero, como recomienda Learn para garantizar unicidad."""
@@ -353,17 +409,18 @@ def _atributo(texto):
             .replace(">", "&gt;").replace('"', "&quot;"))
 
 
-def _regla_propia(base, boton, cambio, reglas):
-    """La regla de habilitación propia del botón (`regla` del playbook), registrada una vez; devuelve su referencia."""
+def _regla_propia(id_regla, boton, cambio, reglas, contexto="grilla"):
+    """La regla de habilitación propia del botón (`regla` del playbook), registrada una vez; devuelve su referencia.
+    La función recibe el contexto de SU ubicación: `SelectedControl` en una grilla, `PrimaryControl` en un formulario."""
     if not boton.get("regla"):
         return ""
     reglas.append(
-        f'<EnableRule Id="{base}.EnableRule">'
+        f'<EnableRule Id="{id_regla}">'
         f'<CustomRule FunctionName="{boton["regla"]}" '
         f'Library="$webresource:{cambio["biblioteca"]}" Default="false">'
-        '<CrmParameter Value="SelectedControl" />'
+        f'<CrmParameter Value="{PARAMETRO_DE_REGLA[contexto]}" />'
         "</CustomRule></EnableRule>")
-    return f'<EnableRule Id="{base}.EnableRule" />'
+    return f'<EnableRule Id="{id_regla}" />'
 
 
 def _menu_desplegable(base, boton, cambio, idiomas, acciones, comandos, etiquetas, reglas):
@@ -382,7 +439,8 @@ def _menu_desplegable(base, boton, cambio, idiomas, acciones, comandos, etiqueta
     en español). El "LabelText" que había hecho creer lo contrario fue metadata vieja. Con `idioma_del_texto`
     el texto va fijo en ese idioma (Learn, "Use localized labels with ribbons": el ribbon admite texto directo); queda
     para un caso que lo pida, no como regla."""
-    propia = _regla_propia(base, boton, cambio, reglas)
+    contexto = _contexto(boton["ubicaciones"][0])    # el playbook rechaza un menú con los dos contextos
+    propia = _regla_propia(f"{base}.EnableRule", boton, cambio, reglas, contexto)
     biblioteca = cambio["biblioteca"]
     opciones = sorted(boton["menu"], key=lambda o: o["secuencia"])
 
@@ -428,11 +486,11 @@ def _menu_desplegable(base, boton, cambio, idiomas, acciones, comandos, etiqueta
         comandos.append(
             f'<CommandDefinition Id="{base}.{o["id"]}.Command">{reglas_ancla}<DisplayRules />'
             f'<Actions><JavaScriptFunction FunctionName="{o["funcion"]}" Library="$webresource:{biblioteca}">'
-            '<CrmParameter Value="SelectedControl" />'
+            f'<CrmParameter Value="{PARAMETRO_DE_REGLA[contexto]}" />'
             "</JavaScriptFunction></Actions></CommandDefinition>")
 
 
-def ribbondiffxml(identidad, cambio, botones_presentes):
+def ribbondiffxml(identidad, cambio, botones_presentes, comandos_a_anular=None):
     """El `<RibbonDiffXml>` COMPLETO de una tabla: los botones propios y los
     genéricos que se ocultan. Los textos salen en los `idiomas` de la Identidad,
     en ese orden (una etiqueta embebida por idioma: la plataforma no sustituye).
@@ -454,12 +512,14 @@ def ribbondiffxml(identidad, cambio, botones_presentes):
         if "menu" in boton:
             _menu_desplegable(base, boton, cambio, idiomas, acciones, comandos, etiquetas, reglas)
             continue
+        contextos = _contextos(boton["ubicaciones"])
         for ubicacion in boton["ubicaciones"]:
             lugar = f"Mscrm.{ubicacion}.{tabla}.{GRUPO[ubicacion]}.Controls._children"
+            comando_de_la_ubicacion = _id_de_comando(base, contextos, _contexto(ubicacion))
             acciones.append(
                 f'<CustomAction Id="{base}.{ubicacion}.CustomAction" Location="{lugar}" '
                 f'Sequence="{boton["secuencia"]}"><CommandUIDefinition>'
-                f'<Button Command="{base}.Command" Id="{base}.{ubicacion}.Button" '
+                f'<Button Command="{comando_de_la_ubicacion}" Id="{base}.{ubicacion}.Button" '
                 f'LabelText="$LocLabels:{base}.Button.LabelText" Sequence="{boton["secuencia"]}" '
                 f'TemplateAlias="o1" ToolTipTitle="$LocLabels:{base}.Button.ToolTipTitle" '
                 f'ToolTipDescription="$LocLabels:{base}.Button.ToolTipDescription" '
@@ -480,32 +540,39 @@ def ribbondiffxml(identidad, cambio, botones_presentes):
         # (Learn, "Define ribbon enable rules"), así que esto es lo que lo oculta.
         # `Default="false"`: si la regla no llega a evaluarse, el botón no aparece;
         # la función ya devuelve `true` ante la duda, así que las dos capas no se pisan.
-        propias = ""
-        if boton.get("regla"):
-            propias = f'<EnableRule Id="{base}.EnableRule" />'
-            reglas.append(
-                f'<EnableRule Id="{base}.EnableRule">'
-                f'<CustomRule FunctionName="{boton["regla"]}" '
-                f'Library="$webresource:{cambio["biblioteca"]}" Default="false">'
-                '<CrmParameter Value="SelectedControl" />'
-                "</CustomRule></EnableRule>")
-        comandos.append(
-            f'<CommandDefinition Id="{base}.Command">'
-            f'<EnableRules><EnableRule Id="{ENABLE_RULE}" />{propias}</EnableRules>'
-            "<DisplayRules />"
-            f'<Actions><JavaScriptFunction FunctionName="{boton["funcion"]}" '
-            f'Library="$webresource:{cambio["biblioteca"]}">'
-            '<CrmParameter Value="SelectedControlSelectedItemIds" />'
-            '<CrmParameter Value="SelectedControl" />'
-            "</JavaScriptFunction></Actions></CommandDefinition>")
+        # Un comando por contexto (grilla / formulario): la función JS recibe cosas distintas en cada uno (G-I1b).
+        for contexto in contextos:
+            propias = _regla_propia(_id_de_regla(base, contextos, contexto), boton, cambio, reglas, contexto)
+            funcion = (f'<JavaScriptFunction FunctionName="{boton["funcion"]}" '
+                       f'Library="$webresource:{cambio["biblioteca"]}">')
+            if contexto == "grilla":
+                habilitacion = f'<EnableRules><EnableRule Id="{ENABLE_RULE}" />{propias}</EnableRules>'
+                parametros = ('<CrmParameter Value="SelectedControlSelectedItemIds" />'
+                              '<CrmParameter Value="SelectedControl" />')
+            else:
+                # En un formulario no hay filas seleccionadas: no se emite la regla de selección (G-I2).
+                habilitacion = f"<EnableRules>{propias}</EnableRules>" if propias else "<EnableRules />"
+                parametros = '<CrmParameter Value="PrimaryControl" />'
+            comandos.append(
+                f'<CommandDefinition Id="{_id_de_comando(base, contextos, contexto)}">'
+                f"{habilitacion}<DisplayRules />"
+                f"<Actions>{funcion}{parametros}</JavaScriptFunction></Actions></CommandDefinition>")
         etiquetas.extend(_loclabels(base, boton, idiomas))
 
     ocultos = []
-    for id_boton in botones_presentes:
-        # El punto no vale en un Id de HideCustomAction: se reemplaza por guion.
-        limpio = id_boton.replace(".", "-")
-        ocultos.append(f'<HideCustomAction HideActionId="{identidad["prefijo"]}.{identidad["abrev"]}.'
-                       f'hide.{limpio}.HideAction" Location="{id_boton}" />')
+    if cambio.get("ocultar_con_hidecustomaction"):
+        # IRREVERSIBLE (Learn): solo con la bandera explícita del playbook.
+        for id_boton in botones_presentes:
+            # El punto no vale en un Id de HideCustomAction: se reemplaza por guion.
+            limpio = id_boton.replace(".", "-")
+            ocultos.append(f'<HideCustomAction HideActionId="{identidad["prefijo"]}.{identidad["abrev"]}.'
+                           f'hide.{limpio}.HideAction" Location="{id_boton}" />')
+    else:
+        # REVERSIBLE: se redefine el comando del botón nativo con un DisplayRule que siempre da falso y sin acciones.
+        for id_comando in sorted(set(comandos_a_anular or [])):
+            reglas_falsas = "".join(f'<DisplayRule Id="{r}" />' for r in REGLAS_SIEMPRE_FALSAS)
+            comandos.append(f'<CommandDefinition Id="{id_comando}"><EnableRules />'
+                            f"<DisplayRules>{reglas_falsas}</DisplayRules><Actions /></CommandDefinition>")
 
     partes = [ABRE_RIBBON]
     partes.append("<CustomActions>" + "".join(acciones + ocultos) + "</CustomActions>"
@@ -660,6 +727,61 @@ def botones_a_ocultar(ribbon_xml, tabla, sufijos):
     return [i for i in ids_de_boton(ribbon_xml, tabla) if any(i.endswith(s) for s in sufijos)]
 
 
+def _comando_de_cada_boton(ribbon_xml):
+    """`{id del botón: Command o None}` de TODOS los botones del ribbon (también los de la pestaña de gráficos)."""
+    mapa = {}
+    for etiqueta in re.findall(r"<(?:Button|SplitButton|FlyoutAnchor|ToggleButton)\b[^>]*>", ribbon_xml):
+        id_ = re.search(r'\bId="([^"]+)"', etiqueta)
+        if id_:
+            comando = re.search(r'\bCommand="([^"]*)"', etiqueta)
+            mapa[id_.group(1)] = comando.group(1) if comando and comando.group(1) else None
+    return mapa
+
+
+def comandos_a_anular(ribbon_xml, tabla, sufijos):
+    """Los comandos que hay que redefinir con un DisplayRule falso para ocultar los botones nativos de `sufijos`.
+
+    Sale del `Command` de cada botón que coincide. Si el comando también lo usa un botón que el playbook NO pidió ocultar
+    (típico: el de la pestaña de gráficos), anularlo lo apagaría también: eso no se hace en silencio, es `Bloqueado`, y la
+    salida es `ocultar_con_hidecustomaction` (que oculta por el id del botón). Un botón a ocultar sin `Command` no se
+    puede resolver: forma inesperada."""
+    ids = botones_a_ocultar(ribbon_xml, tabla, sufijos)
+    mapa = _comando_de_cada_boton(ribbon_xml)
+    comandos = {}
+    for id_ in ids:
+        comando = mapa.get(id_)
+        if not comando:
+            raise ErrorEntorno(f"el botón '{id_}' que hay que ocultar no declara 'Command' en el ribbon de '{tabla}'; "
+                               "no se sabe qué comando redefinir")
+        comandos.setdefault(comando, []).append(id_)
+    for id_, comando in sorted(mapa.items()):
+        if comando in comandos and id_ not in ids:
+            raise Bloqueado(
+                f"para ocultar {comandos[comando]} habría que redefinir el comando '{comando}', que también usa el botón "
+                f"'{id_}', que el playbook no pidió ocultar; si se anula, se apaga también. Declarar "
+                "'ocultar_con_hidecustomaction': true (IRREVERSIBLE) o dejar ese botón fuera de 'ocultar'")
+    return sorted(comandos)
+
+
+def _bloque(ribbon_xml, etiqueta, id_):
+    """El contenido del `<etiqueta Id="id_">...</etiqueta>` (la DEFINICIÓN, no una referencia autocerrada), o None."""
+    patron = rf'<{etiqueta}\b[^>]*?\bId="{re.escape(id_)}"[^>]*?(?<!/)>(.*?)</{etiqueta}>'
+    m = re.search(patron, ribbon_xml, re.S)
+    return m.group(1) if m else None
+
+
+def comando_anulado(ribbon_xml, comando):
+    """¿El comando está redefinido con las dos reglas siempre-falsas en SUS `DisplayRules` y sin acciones? Se mira solo el
+    bloque de ese comando: buscar el nombre de la regla en todo el ribbon la encontraría en cualquier otro comando."""
+    bloque = _bloque(ribbon_xml, "CommandDefinition", comando)
+    if bloque is None:
+        return False
+    reglas = re.search(r"<DisplayRules>(.*?)</DisplayRules>", bloque, re.S)
+    if reglas is None or any(f'Id="{r}"' not in reglas.group(1) for r in REGLAS_SIEMPRE_FALSAS):
+        return False
+    return "<JavaScriptFunction" not in bloque and "<Url" not in bloque
+
+
 def hides_declarados(cust, tabla):
     """Los `Location` de los `HideCustomAction` que la solución YA declara para
     esa tabla."""
@@ -754,14 +876,33 @@ def _verificar_ribbon(dv, cambio, identidad):
         # herramienta que no aplica sus propios cambios.
         if f'ModernImage="$webresource:{boton["icono"]}"' not in ribbon:
             faltan.append(f"al botón '{boton['id']}' le falta el ModernImage (sale sin icono en UCI)")
-        if boton.get("regla"):
-            if f'"{base}.EnableRule"' not in ribbon:
-                faltan.append(f"al botón '{boton['id']}' le falta su EnableRule")
-            elif f'FunctionName="{boton["regla"]}"' not in ribbon:
-                faltan.append(f"la EnableRule del botón '{boton['id']}' no llama a '{boton['regla']}'")
-    siguen = botones_a_ocultar(ribbon, tabla, cambio["ocultar"])
-    if siguen:
-        faltan.append(f"siguen a la vista {len(siguen)} comandos genéricos: {siguen[:4]}")
+        contextos = _contextos(boton["ubicaciones"])
+        for contexto in contextos:
+            id_regla = _id_de_regla(base, contextos, contexto)
+            if boton.get("regla"):
+                if f'"{id_regla}"' not in ribbon:
+                    faltan.append(f"al botón '{boton['id']}' le falta su EnableRule")
+                elif f'FunctionName="{boton["regla"]}"' not in ribbon:
+                    faltan.append(f"la EnableRule del botón '{boton['id']}' no llama a '{boton['regla']}'")
+                elif contexto == "formulario":
+                    # El contexto de un formulario es PrimaryControl: con SelectedControl la función recibe otra cosa.
+                    regla = _bloque(ribbon, "EnableRule", id_regla) or ""
+                    if 'CrmParameter Value="PrimaryControl"' not in regla:
+                        faltan.append(f"la EnableRule del botón '{boton['id']}' no pasa PrimaryControl en el formulario")
+            if contexto == "formulario" and "menu" not in boton:
+                comando = _bloque(ribbon, "CommandDefinition", _id_de_comando(base, contextos, contexto)) or ""
+                if 'CrmParameter Value="PrimaryControl"' not in comando:
+                    faltan.append(f"el comando del botón '{boton['id']}' en el formulario no pasa PrimaryControl "
+                                  "(la función recibiría otro contexto)")
+    if cambio.get("ocultar_con_hidecustomaction"):
+        siguen = botones_a_ocultar(ribbon, tabla, cambio["ocultar"])
+        if siguen:
+            faltan.append(f"siguen a la vista {len(siguen)} comandos genéricos: {siguen[:4]}")
+    else:
+        sin_anular = [c for c in comandos_a_anular(ribbon, tabla, cambio["ocultar"]) if not comando_anulado(ribbon, c)]
+        if sin_anular:
+            faltan.append(f"siguen visibles {len(sin_anular)} botones nativos porque su comando no está anulado "
+                          f"por un DisplayRule falso: {sin_anular[:4]}")
     return faltan
 
 
@@ -911,9 +1052,15 @@ def _contra_entorno_nucleo(dv, datos, identidad, solo_verificar, componente, for
     for cambio in cambios_ribbon:
         # Se ocultan los botones que existen de verdad en esa tabla MÁS los que
         # la solución ya declara ocultos: mirar solo el ribbon los des-ocultaría.
-        ocultables = ocultables_de_la_tabla(cust, ribbon_de_la_tabla(dv, cambio["tabla"]),
-                                            cambio["tabla"], cambio["ocultar"])
-        xml = ribbondiffxml(identidad, cambio, ocultables)
+        ribbon_actual = ribbon_de_la_tabla(dv, cambio["tabla"])
+        if cambio.get("ocultar_con_hidecustomaction"):
+            ocultables = ocultables_de_la_tabla(cust, ribbon_actual, cambio["tabla"], cambio["ocultar"])
+            anular = []
+        else:
+            # Con el DisplayRule falso el botón sigue en el ribbon: no hay "botón que desaparece" que recordar.
+            ocultables = []
+            anular = comandos_a_anular(ribbon_actual, cambio["tabla"], cambio["ocultar"])
+        xml = ribbondiffxml(identidad, cambio, ocultables, anular)
         cust, hubo = reemplazar_ribbon(cust, cambio["tabla"], xml)
         if hubo:
             ribbons.append(cambio["tabla"])

@@ -14,6 +14,14 @@ Una vista existente se reconoce por su `name` + `returnedtypecode`: Dataverse
 no tiene clave alternativa para `savedquery`, así que ese par es la clave de
 negocio. Dos vistas con el mismo nombre en la misma tabla son forma inesperada.
 
+**Filtros** (`filtro`): `{tipo, condiciones, filtros, enlaces, buscar}`. `filtros` son grupos anidados `{tipo, condiciones, filtros}`
+(hasta 3 niveles). Cada `enlace` lleva `tipo`: `inner` (por omisión, con `alias` y columnas) o `any` / `not any` (filtran por
+filas relacionadas, sin alias ni columnas; Learn, "Filter rows using FetchXML", los documenta DENTRO de un `<filter>` y siguen
+su `type`, así que se emiten ahí). Operadores de fecha: `yesterday`, `today` (sin valor), `olderthan-x-days` (entero >= 0),
+`on-or-before`, `on-or-after`. La búsqueda rápida (`clase: BusquedaRapida`, querytype 4) exige `buscar: true`, `tipo: or` y
+condiciones `like` con `["{0}"]`, y emite `<filter type="or" isquickfindfields="1">`; NUNCA se crea (toda tabla nace con la suya):
+se repara con `--completar` y una segunda búsqueda rápida sobrante en la tabla se denuncia.
+
 Learn: una personalización se publica sola al CREARSE; hay que publicar
 explícitamente después de ACTUALIZARLA. La herramienta publica solo cuando
 escribió un `PATCH`.
@@ -55,10 +63,24 @@ CLASES = {"Publica": 0, "BusquedaAvanzada": 1, "Relacionada": 2, "BusquedaRapida
 # Operadores de FetchXML que hacen falta para las vistas del proyecto. Lista
 # cerrada a propósito: un operador mal escrito no falla al crear la vista,
 # falla al abrirla.
-OPERADORES_SIN_VALOR = {"null", "not-null", "eq-userid", "ne-userid"}
-OPERADORES_UN_VALOR = {"eq", "ne", "gt", "ge", "lt", "le", "like", "begins-with"}
+#
+# `yesterday`, `today` y `olderthan-x-days` los pide `diseno/07` §3.4 (vistas 12.6 y 12.7). El spike 5 probó que NINGÚN
+# operador da "fecha anterior a hoy" por sí solo sobre una columna DateOnly: la condición es `olderthan-x-days 1` OR
+# `yesterday` (`spikes/plataforma/RESULTADO.md`, D-11). `olderthan-x-days` lleva un entero >= 0 (días).
+OPERADORES_SIN_VALOR = {"null", "not-null", "eq-userid", "ne-userid", "yesterday", "today"}
+OPERADORES_UN_VALOR = {"eq", "ne", "gt", "ge", "lt", "le", "like", "begins-with",
+                       "olderthan-x-days", "on-or-before", "on-or-after"}
 OPERADORES_VARIOS_VALORES = {"in", "not-in"}
+OPERADORES_ENTEROS = {"olderthan-x-days"}
 OPERADORES = OPERADORES_SIN_VALOR | OPERADORES_UN_VALOR | OPERADORES_VARIOS_VALORES
+
+# Tipos de `link-entity`. `any` / `not any` (Learn, "Filter rows using FetchXML") filtran por filas relacionadas SIN devolver
+# columnas ni repetir la fila padre: no llevan alias y no se pueden mostrar columnas de ellos. La forma probada en Dev (spike
+# s52_q5_vista.py, vista guardada publicada y ejecutada) es el `link-entity` hijo de `<entity>`, sin alias, con su propio `<filter>`.
+TIPOS_ENLACE = ("inner", "any", "not any")
+TIPOS_ENLACE_DE_FILTRO = ("any", "not any")
+PROFUNDIDAD_MAXIMA_DE_FILTROS = 3
+VALOR_DE_BUSQUEDA = "{0}"
 
 ANCHO_POR_DEFECTO = 150
 LARGO_NOMBRE = 200
@@ -72,6 +94,7 @@ CLAVES = {"tipo": str, "nombre": str, "tabla": str, "clase": str, "descripcion":
           "pordefecto": bool, "columnas": list, "orden": list, "filtro": dict}
 
 C_VISTA = "la consulta de la vista (GET savedqueries)"
+C_BUSQUEDAS = "la consulta de las vistas de búsqueda rápida (GET savedqueries)"
 C_TABLA = "la consulta de la definición de la tabla (GET EntityDefinitions)"
 C_COMPONENTES = "la consulta de pertenencia a la solución (GET solutioncomponents)"
 
@@ -99,6 +122,27 @@ def _validar_condiciones(condiciones, donde):
             raise ErrorPlaybook(f"{aqui}: el operador {operador!r} lleva exactamente un valor, y trae {len(valores)}")
         if operador in OPERADORES_VARIOS_VALORES and not valores:
             raise ErrorPlaybook(f"{aqui}: el operador {operador!r} necesita al menos un valor")
+        if operador in OPERADORES_ENTEROS:
+            v = valores[0]
+            if not isinstance(v, int) or isinstance(v, bool) or v < 0:
+                raise ErrorPlaybook(f"{aqui}: el operador {operador!r} lleva un entero >= 0 (días) y trae {v!r}")
+
+
+def _validar_filtros_anidados(filtros, donde, profundidad=1):
+    """Grupos `{tipo, condiciones, filtros}` dentro de un filtro o de un enlace: el `filter or` anidado de la vista de riesgo."""
+    if profundidad > PROFUNDIDAD_MAXIMA_DE_FILTROS:
+        raise ErrorPlaybook(f"{donde}: los filtros anidan más de {PROFUNDIDAD_MAXIMA_DE_FILTROS} niveles; "
+                            "eso no es una vista de grilla")
+    for i, g in enumerate(filtros):
+        aqui = f"{donde}.filtros[{i}]"
+        exigir_forma(g, dict, aqui, "filtro")
+        sobran = sorted(set(g) - {"tipo", "condiciones", "filtros"})
+        if sobran:
+            raise ErrorPlaybook(f"{aqui}: se admite {{tipo, condiciones, filtros}}; sobra {sobran}")
+        if g.get("tipo", "and") not in ("and", "or"):
+            raise ErrorPlaybook(f"{aqui}: tipo = {g.get('tipo')!r}; solo 'and' u 'or'")
+        _validar_condiciones(exigir_forma(g.get("condiciones", []), list, aqui, "condiciones"), aqui)
+        _validar_filtros_anidados(exigir_forma(g.get("filtros", []), list, aqui, "filtros"), aqui, profundidad + 1)
 
 
 def _validar_enlaces(enlaces, donde, profundidad=0):
@@ -109,13 +153,24 @@ def _validar_enlaces(enlaces, donde, profundidad=0):
     for i, e in enumerate(enlaces):
         aqui = f"{donde}.enlaces[{i}]"
         exigir_forma(e, dict, aqui, "enlace")
-        faltan = sorted({"tabla", "de", "a", "alias"} - set(e))
-        sobran = sorted(set(e) - {"tabla", "de", "a", "alias", "condiciones", "enlaces"})
+        tipo = exigir_forma(e.get("tipo", "inner"), str, aqui, "tipo", no_vacio=True)
+        if tipo not in TIPOS_ENLACE:
+            raise ErrorPlaybook(f"{aqui}: tipo de enlace {tipo!r} no admitido; los válidos son {list(TIPOS_ENLACE)}")
+        de_filtro = tipo in TIPOS_ENLACE_DE_FILTRO
+        # `any` / `not any` no devuelven columnas: no tienen alias (nada que nombrar) y por eso tampoco enlaces adentro.
+        obligatorias = {"tabla", "de", "a"} | (set() if de_filtro else {"alias"})
+        faltan = sorted(obligatorias - set(e))
+        sobran = sorted(set(e) - {"tabla", "tipo", "de", "a", "alias", "condiciones", "filtros", "enlaces"})
         if faltan or sobran:
             raise ErrorPlaybook(f"{aqui}: faltan {faltan}, sobran {sobran}")
-        for campo in ("tabla", "de", "a", "alias"):
+        if de_filtro and "alias" in e:
+            raise ErrorPlaybook(f"{aqui}: un enlace {tipo!r} no lleva alias (no devuelve columnas)")
+        if de_filtro and e.get("enlaces"):
+            raise ErrorPlaybook(f"{aqui}: un enlace {tipo!r} no admite enlaces adentro")
+        for campo in obligatorias:
             exigir_forma(e[campo], str, aqui, campo, no_vacio=True)
         _validar_condiciones(exigir_forma(e.get("condiciones", []), list, aqui, "condiciones"), aqui)
+        _validar_filtros_anidados(exigir_forma(e.get("filtros", []), list, aqui, "filtros"), aqui)
         _validar_enlaces(exigir_forma(e.get("enlaces", []), list, aqui, "enlaces"), aqui, profundidad + 1)
 
 
@@ -173,13 +228,15 @@ def _validar_estructura(datos):
             raise ErrorPlaybook(f"{aqui}: se ordena por '{o['columna']}', que la vista no muestra")
 
     filtro = datos["filtro"]
-    sobran = sorted(set(filtro) - {"tipo", "condiciones", "enlaces"})
+    sobran = sorted(set(filtro) - {"tipo", "condiciones", "filtros", "enlaces", "buscar"})
     if sobran:
-        raise ErrorPlaybook(f"el filtro solo admite {{tipo, condiciones, enlaces}}; sobra {sobran}")
+        raise ErrorPlaybook(f"el filtro solo admite {{tipo, condiciones, filtros, enlaces, buscar}}; sobra {sobran}")
     if filtro.get("tipo", "and") not in ("and", "or"):
         raise ErrorPlaybook(f"el filtro tiene tipo = {filtro.get('tipo')!r}; solo 'and' u 'or'")
     _validar_condiciones(exigir_forma(filtro.get("condiciones", []), list, "el filtro", "condiciones"), "el filtro")
+    _validar_filtros_anidados(exigir_forma(filtro.get("filtros", []), list, "el filtro", "filtros"), "el filtro")
     _validar_enlaces(exigir_forma(filtro.get("enlaces", []), list, "el filtro", "enlaces"), "el filtro")
+    _validar_busqueda(datos["clase"], filtro)
 
     # Una columna que viene de una tabla enlazada tiene que nombrar un alias que
     # exista: si no, la celda queda vacia y eso no falla al crear la vista.
@@ -191,10 +248,40 @@ def _validar_estructura(datos):
                 f"los alias declarados son {sorted(alias_declarados) or 'ninguno'}")
 
 
+def _validar_busqueda(clase, filtro):
+    """Una vista de búsqueda rápida (`querytype 4`) busca en las columnas de su filtro marcado `isquickfindfields="1"`
+    (Learn, "Quick find"; probado en Dev, spike 2b): un `or` de `like` con `{0}`. Sin esa marca la búsqueda no encuentra nada y no
+    falla al crearla; por eso la marca es obligatoria en esa clase y prohibida en las demás."""
+    if "buscar" in filtro:
+        exigir_forma(filtro["buscar"], bool, "el filtro", "buscar")
+    buscar = filtro.get("buscar", False)
+    if clase != "BusquedaRapida":
+        if buscar:
+            raise ErrorPlaybook(f"el filtro declara buscar = true, que solo vale en una vista de clase 'BusquedaRapida' (esta es {clase!r})")
+        return
+    if not buscar:
+        raise ErrorPlaybook("una vista 'BusquedaRapida' tiene que declarar buscar = true en el filtro "
+                            "(es lo que marca las columnas por las que se busca)")
+    if filtro.get("tipo", "and") != "or":
+        raise ErrorPlaybook("el filtro de una búsqueda rápida lleva tipo 'or': basta que el texto esté en una columna")
+    if filtro.get("enlaces") or filtro.get("filtros"):
+        raise ErrorPlaybook("el filtro de una búsqueda rápida no admite ni enlaces ni filtros anidados: solo condiciones")
+    condiciones = filtro.get("condiciones", [])
+    if not condiciones:
+        raise ErrorPlaybook("el filtro de una búsqueda rápida necesita al menos una condición (una columna por la que buscar)")
+    for i, c in enumerate(condiciones):
+        if c["operador"] != "like":
+            raise ErrorPlaybook(f"el filtro.condiciones[{i}] de una búsqueda rápida usa el operador {c['operador']!r}; solo 'like'")
+        if c["valores"] != [VALOR_DE_BUSQUEDA]:
+            raise ErrorPlaybook(
+                f"el filtro.condiciones[{i}] de una búsqueda rápida lleva el valor {c['valores']!r}; tiene que ser ['{VALOR_DE_BUSQUEDA}']")
+
+
 def _alias_de(enlaces):
     alias = set()
     for e in enlaces:
-        alias.add(e["alias"])
+        if "alias" in e:
+            alias.add(e["alias"])
         alias |= _alias_de(e.get("enlaces", []))
     return alias
 
@@ -221,22 +308,47 @@ def _xml_condiciones(condiciones, sangria):
     return partes
 
 
+def _de_filtro(e):
+    """`any` / `not any`: Learn los documenta DENTRO de un `<filter>` (siguen su `type`); los demás son hijos del padre."""
+    return e.get("tipo", "inner") in TIPOS_ENLACE_DE_FILTRO
+
+
+def _xml_filtro(tipo, condiciones, filtros, sangria, extra="", enlaces_de_filtro=()):
+    """Un `<filter>` con sus condiciones, sus filtros anidados y, al final, los enlaces `any` / `not any`."""
+    partes = [f"{sangria}<filter type={quoteattr(tipo)}{extra}>"]
+    partes.extend(_xml_condiciones(condiciones, sangria + "  "))
+    for g in filtros:
+        partes.extend(_xml_filtro(g.get("tipo", "and"), g.get("condiciones", []), g.get("filtros", []), sangria + "  "))
+    for e in enlaces_de_filtro:
+        partes.extend(_xml_enlace(e, sangria + "  ", {}))
+    partes.append(f"{sangria}</filter>")
+    return partes
+
+
+def _xml_enlace(e, sangria, atributos_por_alias):
+    tipo = e.get("tipo", "inner")
+    alias = f" alias={quoteattr(e['alias'])}" if "alias" in e else ""
+    partes = [f"{sangria}<link-entity name={quoteattr(e['tabla'])} from={quoteattr(e['de'])} "
+              f"to={quoteattr(e['a'])}{alias} link-type={quoteattr(tipo)}>"]
+    for atributo in atributos_por_alias.get(e.get("alias"), []):
+        partes.append(f"{sangria}  <attribute name={quoteattr(atributo)} />")
+    condiciones, filtros = e.get("condiciones", []), e.get("filtros", [])
+    hijos = e.get("enlaces", [])
+    en_filtro = [h for h in hijos if _de_filtro(h)]
+    if condiciones or filtros or en_filtro:
+        partes.extend(_xml_filtro("and", condiciones, filtros, sangria + "  ", enlaces_de_filtro=en_filtro))
+    partes.extend(_xml_enlaces(hijos, sangria + "  ", atributos_por_alias))
+    partes.append(f"{sangria}</link-entity>")
+    return partes
+
+
 def _xml_enlaces(enlaces, sangria, atributos_por_alias=None):
+    """Los enlaces que son hijos directos de su padre (los `inner`); los `any` / `not any` los emite el filtro del padre."""
     atributos_por_alias = atributos_por_alias or {}
     partes = []
     for e in enlaces:
-        cabecera = (f"{sangria}<link-entity name={quoteattr(e['tabla'])} from={quoteattr(e['de'])} "
-                    f"to={quoteattr(e['a'])} alias={quoteattr(e['alias'])} link-type=\"inner\">")
-        partes.append(cabecera)
-        for atributo in atributos_por_alias.get(e["alias"], []):
-            partes.append(f"{sangria}  <attribute name={quoteattr(atributo)} />")
-        condiciones = e.get("condiciones", [])
-        if condiciones:
-            partes.append(f"{sangria}  <filter type=\"and\">")
-            partes.extend(_xml_condiciones(condiciones, sangria + "    "))
-            partes.append(f"{sangria}  </filter>")
-        partes.extend(_xml_enlaces(e.get("enlaces", []), sangria + "  ", atributos_por_alias))
-        partes.append(f"{sangria}</link-entity>")
+        if not _de_filtro(e):
+            partes.extend(_xml_enlace(e, sangria, atributos_por_alias))
     return partes
 
 
@@ -255,11 +367,11 @@ def fetchxml(datos, primaria):
     for o in datos["orden"]:
         partes.append(f'    <order attribute={quoteattr(o["columna"])} descending="{str(o["sentido"] == "desc").lower()}" />')
     filtro = datos["filtro"]
-    condiciones = filtro.get("condiciones", [])
-    if condiciones:
-        partes.append(f'    <filter type={quoteattr(filtro.get("tipo", "and"))}>')
-        partes.extend(_xml_condiciones(condiciones, "      "))
-        partes.append("    </filter>")
+    condiciones, filtros = filtro.get("condiciones", []), filtro.get("filtros", [])
+    en_filtro = [e for e in filtro.get("enlaces", []) if _de_filtro(e)]
+    if condiciones or filtros or en_filtro:
+        marca = ' isquickfindfields="1"' if filtro.get("buscar") else ""
+        partes.extend(_xml_filtro(filtro.get("tipo", "and"), condiciones, filtros, "    ", marca, en_filtro))
     partes.extend(_xml_enlaces(filtro.get("enlaces", []), "    ", por_alias))
     partes += ["  </entity>", "</fetch>"]
     return "\n".join(partes)
@@ -295,7 +407,7 @@ def _definicion_de_tabla(dv, logical_name):
 
 def _leer_vista(dv, nombre, tabla):
     ruta = ("savedqueries?$select=savedqueryid,name,returnedtypecode,querytype,isdefault,description,"
-            "fetchxml,layoutxml,statecode,ismanaged"
+            "fetchxml,layoutxml,statecode,ismanaged,isquickfindquery"
             f"&$filter=name eq '{nombre}' and returnedtypecode eq '{tabla}'")
     cuerpo = leer_entorno(dv, ruta, C_VISTA)
     filas = exigir_forma(cuerpo.get("value"), [dict], C_VISTA, "value")
@@ -303,6 +415,15 @@ def _leer_vista(dv, nombre, tabla):
         raise ErrorEntorno(
             f"{C_VISTA} devolvió {len(filas)} vistas llamadas '{nombre}' sobre '{tabla}'; el nombre es la clave de negocio")
     return filas[0] if filas else None
+
+
+def _busquedas_rapidas(dv, tabla):
+    """Las vistas de búsqueda rápida (`querytype 4`) de la tabla. Toda tabla nace con una (spike 2b) y solo cuenta esa:
+    una segunda no se usa. Por eso la herramienta nunca CREA una; repara la que hay con `--completar`."""
+    ruta = ("savedqueries?$select=savedqueryid,name"
+            f"&$filter=returnedtypecode eq '{tabla}' and querytype eq {CLASES['BusquedaRapida']}")
+    cuerpo = leer_entorno(dv, ruta, C_BUSQUEDAS)
+    return exigir_forma(cuerpo.get("value"), [dict], C_BUSQUEDAS, "value")
 
 
 def _normalizar_xml(texto):
@@ -394,6 +515,14 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     hubo_escritura = False
     hubo_alta = False
 
+    if vista is None and datos["clase"] == "BusquedaRapida":
+        # No se crea: se bloquea con los nombres reales (o con "ninguna") para que el playbook tome el de Dev.
+        hay = [str(f.get("name")) for f in _busquedas_rapidas(dv, datos["tabla"])]
+        raise Bloqueado(
+            f"la vista de búsqueda rápida '{datos['nombre']}' no existe sobre '{datos['tabla']}' y no se crea: "
+            + (f"la tabla tiene {', '.join(repr(n) for n in hay)}; el playbook tiene que llevar ese nombre y repararla con --completar"
+               if hay else "la tabla no tiene ninguna, y toda tabla nace con una; revisá el entorno"))
+
     if vista is None:
         if solo_verificar:
             return "difiere", componente, f"la vista '{datos['nombre']}' no existe sobre '{datos['tabla']}'"
@@ -433,7 +562,7 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     # Una vista por defecto tiene que ser LA unica por defecto. Esto se corrige
     # siempre que se este escribiendo, sin pedir `--completar`: no es un ajuste
     # de gusto, es que la declaracion del playbook sea cierta o no lo sea.
-    if datos["pordefecto"]:
+    if datos["pordefecto"] and datos["clase"] == "Publica":
         otras = _otras_por_defecto(dv, datos["tabla"], id_vista)
         if otras and not solo_verificar:
             for otra in otras:
@@ -455,6 +584,14 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
                 "con dos por defecto la plataforma elige una sola y la declaracion no se cumple")
 
     difs, _ = _diferencias(datos, vista, fetch, layout)
+    if datos["clase"] == "BusquedaRapida":
+        if not exigir_forma(vista.get("isquickfindquery"), bool, C_VISTA, "isquickfindquery"):
+            difs.append("isquickfindquery es False: la plataforma no la trata como la vista de búsqueda rápida de la tabla")
+        sobrantes = [str(o.get("name")) for o in _busquedas_rapidas(dv, datos["tabla"])
+                     if o.get("savedqueryid") != id_vista]
+        if sobrantes:
+            difs.append(f"la tabla tiene otras vistas de búsqueda rápida ({', '.join(repr(n) for n in sobrantes)}); "
+                        "solo cuenta una y no se borran desde acá")
     fila = _tabla_en_la_solucion(dv, solution_id, metadata_id)
     if fila is None:
         difs.append(f"la tabla '{datos['tabla']}' no figura en la solución (solutionid {solution_id}), "

@@ -70,8 +70,10 @@ BOTON = {"id": "generarformato", "funcion": "Sanic.Carp.Comandos.generarFormato"
          "tooltip": {"1033": "Generates the payment arrangement form for the selected arrangement.",
                      "3082": "Genera el formato del arreglo de pago seleccionado."},
          "ubicaciones": ["HomepageGrid", "SubGrid"], "secuencia": 50}
+# Estos ribbon ocultan con `HideCustomAction` (la bandera es explícita desde que el modo por omisión es el DisplayRule falso,
+# reversible; sus pruebas están en `test_importar_solucion_ampliado.py`). Todo lo de abajo que habla de HideCustomAction es ese modo.
 CAMBIO_RIBBON = {"clase": "ribbon", "tabla": TABLA, "biblioteca": "sanic_carp_wr_js_comandosarreglo",
-                 "botones": [BOTON], "ocultar": [".Delete", ".Assign"]}
+                 "botones": [BOTON], "ocultar": [".Delete", ".Assign"], "ocultar_con_hidecustomaction": True}
 
 # Ribbon como lo devuelve `RetrieveEntityRibbon`: `.Assign` existe, `.Delete`
 # solo en la pestaña de gráficos (que no se toca) y uno de otra tabla.
@@ -280,9 +282,10 @@ class RibbonGenerado(unittest.TestCase):
         # Y nunca un botón de OTRA tabla.
         self.assertNotIn(TABLAS[1], x)
 
-    def test_nunca_se_sobrescribe_un_CommandDefinition_de_la_plataforma(self):
-        # Los comandos OOB son GLOBALES: tocarlos apagaría ese botón en TODAS
-        # las tablas del entorno. Se oculta por el id del BOTÓN.
+    def test_con_la_bandera_nunca_se_sobrescribe_un_CommandDefinition_de_la_plataforma(self):
+        # Modo `ocultar_con_hidecustomaction`: se oculta por el id del BOTÓN y no se toca el comando, que puede compartirlo
+        # otro botón (los comandos OOB son globales a la aplicación). El modo por omisión (DisplayRule falso) sí redefine
+        # el comando, y bloquea si lo comparte un botón que no se pidió ocultar.
         x = self.xml()
         self.assertNotIn('<CommandDefinition Id="Mscrm.', x)
         self.assertNotIn("Mscrm.AssignSelectedRecord", x)
@@ -928,7 +931,7 @@ class DenunciaTablasSinBloque(ContraElEntorno):
     # `sanic_carp_tbl_cliente` y compañía), para poder armar un ribbon "ya
     # aplicado" sin tener que simular todo el ciclo de un botón con icono.
     CAMBIO_SIN_BOTONES = {"clase": "ribbon", "tabla": TABLA, "biblioteca": "sanic_carp_wr_js_comandosarreglo",
-                          "botones": [], "ocultar": [".Assign"]}
+                          "botones": [], "ocultar": [".Assign"], "ocultar_con_hidecustomaction": True}
     RIBBON_YA_OCULTO = "<RibbonDefinitions></RibbonDefinitions>"  # `.Assign` ya no está: nada que importar.
 
     def _cliente_con_tablas_de_app(self, tablas_app, pendiente=True):

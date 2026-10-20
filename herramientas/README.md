@@ -76,6 +76,31 @@ Regla general: **donde la skill marca un comportamiento como pendiente de verifi
 
 Además, en todas: `idiomas` reemplaza a `lcid` (un playbook viejo es un error, no se lee en silencio); la descripción es prosa y se escribe con el **mismo texto en cada idioma**; se verifica la etiqueta de cada idioma en los dos sentidos (una etiqueta en un idioma no declarado también es una diferencia); y el idioma base del entorno tiene que estar entre los `idiomas` (`bloqueado` si no) y todos tienen que estar provisionados.
 
+## Formatos ampliados para la app model-driven (2026-10-20, `diseno/07` §2)
+
+Cierran las brechas G-V1, G-V2, G-F1 a G-F4, G-A1 y G-I1 a G-I3. Todo clave nueva es **opcional**: un playbook anterior valida y genera lo mismo. Forma de cada pieza leída de Microsoft Learn y de formularios/sitemap reales de Dev (solo GET); las que no se pudieron comprobar van marcadas **[verificar]**.
+
+| Herramienta | Clave nueva | Qué hace / de dónde sale la forma |
+|---|---|---|
+| `vista.py` | `filtro.buscar: true` (clase `BusquedaRapida`) | `<filter type="or" isquickfindfields="1">` con `like` `["{0}"]` (spike 2b). **No crea** la vista: toda tabla nace con su quick find; se repara con `--completar` y se denuncia una sobrante. Lee `isquickfindquery` |
+| | `enlaces[].tipo: inner\|any\|not any`, `alias` solo en `inner` | `any` / `not any` se emiten **dentro del `<filter>`** del padre, sin alias ni columnas (Learn, *Filter rows using FetchXML*). El spike s52 los probó como hijo directo de `<entity>`; se siguió Learn **[verificar en Dev que la vista de riesgo (12.7) da lo mismo]**. Siguen el `type` del filtro que los contiene |
+| | `filtro.filtros` y `enlaces[].filtros`: `[{tipo, condiciones, filtros}]` | Filtros `or`/`and` anidados (3 niveles) |
+| | operadores `yesterday`, `today`, `olderthan-x-days` (entero >= 0), `on-or-before`, `on-or-after` | Spike 5: fecha anterior a hoy = `olderthan-x-days 1` OR `yesterday` |
+| `formulario.py` | `pestanas: [{titulo, secciones}]` | Excluyente con `pestana` + `secciones`. Ids de secciones y subgrillas con índice global |
+| | campo `{"nombre", "solo_lectura"}` en `campos` y `encabezado` | Manda sobre el `solo_lectura` del formulario |
+| | sección `{titulo, timeline: {alto}}` | `<control id="notescontrol" classid="{06375649-C143-495E-A496-C962E5B4488E}" />` en celda `showlabel="false"` (leído de los Main de `contact`). Bloquea si la tabla no tiene `HasActivities`. **Pendiente:** "solo correos, sin notas" no está en el XML del control (en un Main real no hay parámetros ni `controlDescriptions` del timeline); se configura en el diseñador y se exporta una muestra |
+| | `subgrilla.registros_por_pagina` (2 a 250, por omisión 10) | Learn, *Add and configure a subgrid component on a form* |
+| | `bibliotecas: [web resource JS]`, `eventos: [{evento, biblioteca, funcion, columna?, pasar_contexto?}]` | `<formLibraries>` y `<events>/<Handlers>` como un Main real (Portal Contact). `biblioteca` es obligatoria en cada evento (no se deduce). La biblioteca tiene que existir y ser JS (`webresourcetype 3`). **[verificar]** `active="true"` de `onchange` (ningún form de Dev trae uno de usuario); compararlo con la muestra exportada |
+| | `DecimalType` | classid `{C3EFE0C3-0EC6-42be-8349-CBD9079DFD8E}` (leído de `feedback.normalizedrating`) |
+| `app.py` | entrada `privilegios: [{tabla, privilegio}]` | `<Privilege Entity=".." Privilege="Create" />` hijo de `SubArea` (SiteMap.xsd). La tabla tiene que estar en `tablas` de la app |
+| | entrada `dashboard: "<nombre>"` (en vez de `tabla`) | Resuelve el `formid` (`systemforms`, type 0) y abre con `Url="/main.aspx?pagetype=dashboard&id=%7b..%7d"` **[verificar en la app]** |
+| `importar_solucion.py` | botón en `Form` | Pasa `PrimaryControl` (acción y `regla`); en grilla `SelectedControlSelectedItemIds` + `SelectedControl`. Un botón en los dos contextos genera `<base>.Grid.Command` y `<base>.Form.Command`. Un menú no puede mezclar contextos. En `Form` **no se emite** `Mscrm.SelectionCountAtLeastOne` **[verificar en Dev que el botón aparece y se habilita]**; la verificación comprueba `PrimaryControl` en el comando y en la regla |
+| | `app_componentes.tablas` admite `email` | Lista cerrada (`TABLAS_ESTANDAR_EN_LA_APP`); un `ribbon` sobre `email` sigue exigiendo el prefijo. `tablas_excluidas_de_ocultar` también admite `email` |
+| | `ocultar` (por omisión) | Redefine el comando del botón nativo con `Mscrm.HideOnModern` + `Mscrm.ShowOnlyOnModern` y sin acciones: **reversible** (Learn, *Define custom actions to modify the ribbon*). Se bloquea si el comando lo usa otro botón que no se pidió ocultar (típico: la pestaña de gráficos). **[verificar en Dev que redefinir el comando en el `RibbonDiffXml` de una tabla no apaga el botón en otra tabla]** |
+| | `ocultar_con_hidecustomaction: true` | `HideCustomAction`: **irreversible** (solo se quita con una versión nueva de la solución). Es la salida del bloqueo anterior |
+
+El corte de la primera versión **no** necesita: gráficos y dashboard (lote E, sin herramienta), el botón "Clonar" de plantilla (DA-13), `setSubmitMode` (lo maneja el JS).
+
 ## Qué se copió, qué se descartó y qué quedó sin adaptar
 
 **Descartado** (no se copió):

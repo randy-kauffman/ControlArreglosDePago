@@ -30,6 +30,13 @@ VEZ POR CADA idioma de la Identidad, en ese orden: ahí la plataforma no cae al 
 tildes (BP-PP-197); la etiqueta de cada campo sale del `DisplayName` de la columna, un texto por idioma, y si la
 columna no tiene alguno queda `bloqueado`. La verificación compara cada idioma en los dos sentidos.
 
+**Formato ampliado (diseno/07).** `pestanas: [{titulo, secciones}]` reemplaza a `pestana` + `secciones` (una forma o la otra; el XML
+de una sola pestaña no cambia). Un campo (de `campos` o de `encabezado`) es `"col"` o `{"nombre": "col", "solo_lectura": bool}`, y el
+del campo manda sobre el `solo_lectura` del formulario. Una sección `{titulo, timeline: {alto}}` pone el control Timeline
+(`notescontrol`, sin parámetros; qué actividades muestra no está en el XML). `subgrilla` admite `registros_por_pagina` (2 a 250). `bibliotecas`
+(web resources JS que tienen que existir) y `eventos: [{evento: onload|onsave|onchange, biblioteca, funcion, columna?
+(solo onchange), pasar_contexto?}]` generan `<formLibraries>` y `<events>`.
+
 Los `classid` NO son de memoria: se derivaron leyendo formularios reales del
 entorno y cruzándolos contra el tipo de cada columna. La plataforma **no
 normaliza** el `classid` (se probó con una sonda): guarda el que se le manda,
@@ -39,6 +46,7 @@ así que uno equivocado no falla al guardar y se ve roto recién en la app.
 (creado | actualizado | ya_existia | difiere | bloqueado | error), `componente`, `detalle`.
 """
 import os
+import re
 import sys
 import uuid
 from xml.etree import ElementTree as ET
@@ -100,9 +108,14 @@ CONTROL_POR_TIPO = {
     "DateTimeType": "{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}",
     "IntegerType": "{C6D124CA-7EDA-4a60-AEA9-7FB8D318B68F}",
     "MoneyType": "{533B9E00-756B-4312-95A0-DC888637AC78}",
+    # Decimal: leído de un formulario real de Dev el 2026-10-20 (`feedback.normalizedrating`, AttributeTypeName DecimalType),
+    # con el casing mixto con que lo escribe la plataforma.
+    "DecimalType": "{C3EFE0C3-0EC6-42be-8349-CBD9079DFD8E}",
     "FileType": "{0A7FF475-B016-4687-9CE5-042BFDBD6519}",
 }
 CONTROL_SUBGRILLA = "{E7A81278-8635-4D9E-8D4D-59480B391C5B}"
+# Learn: el máximo de filas de una subgrilla va de 2 a 250. Por omisión, 10 (lo que siempre se generó).
+REGISTROS_MINIMOS, REGISTROS_MAXIMOS, REGISTROS_POR_OMISION = 2, 250, 10
 
 # Espacio de nombres propio para los GUID deterministas del XML.
 SEMILLA = uuid.UUID("7d1f6a52-0c34-4a8e-9f21-5e0a9c3b7d40")
@@ -119,8 +132,26 @@ CLAVES = {"tipo": str, "nombre": str, "tabla": str, "descripcion": str, "pestana
 # Se validan aparte, con `validar_textos_por_idioma` (un texto por idioma de la Identidad).
 CLAVES_DE_TEXTO_POR_IDIOMA = ("pestana",)
 
-# `clase` es OPCIONAL y por omisión vale "principal": un playbook de formulario principal no la declara.
-CLAVES_OPCIONALES = {"clase": str}
+# Las dos formas del bloque: la de UNA pestaña (`pestana` + `secciones`, la original) o la de varias (`pestanas`, una lista de
+# `{titulo, secciones}`). Son excluyentes: la otra clave sobra. Las demás son comunes.
+CLAVES_COMUNES = {c: t for c, t in CLAVES.items() if c not in ("pestana", "secciones")}
+CLAVES_DE_UNA_PESTANA = ("pestana", "secciones")
+
+# OPCIONALES. `clase` por omisión vale "principal". `bibliotecas` (web resources JavaScript del formulario) y `eventos`
+# (manejadores de OnLoad / OnSave / OnChange) por omisión no hay ninguno y el `formxml` no los trae.
+CLAVES_OPCIONALES = {"clase": str, "pestanas": list, "bibliotecas": list, "eventos": list}
+
+# Eventos de formulario que genera la herramienta, y las claves de cada manejador.
+EVENTOS = ("onchange", "onload", "onsave")
+CLAVES_DE_EVENTO = {"evento", "biblioteca", "funcion"}
+CLAVES_OPCIONALES_DE_EVENTO = {"columna", "pasar_contexto"}
+NOMBRE_DE_FUNCION = re.compile(r"^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)*$")
+TIPO_JS = 3                  # webresourceset.webresourcetype: 3 = Script (JScript)
+
+# Control Timeline: `notescontrol`, leído de los Main reales de `contact` en Dev el 2026-10-20. Sin parámetros.
+CONTROL_TIMELINE = "{06375649-C143-495E-A496-C962E5B4488E}"
+ID_DEL_TIMELINE = "notescontrol"
+ALTO_MAXIMO_TIMELINE = 30
 CLASES = {"principal": FORMULARIO_PRINCIPAL, "creacion_rapida": FORMULARIO_CREACION_RAPIDA}
 CLASE_POR_DEFECTO = "principal"
 
@@ -164,9 +195,97 @@ def tipo_de_formulario(datos):
     return CLASES[clase_de(datos)]
 
 
+def pestanas_de(datos):
+    """Las pestañas del bloque como `[{"titulo": {...}, "secciones": [...]}]`, sea cual sea la forma en que se declararon.
+    La forma de una pestaña (`pestana` + `secciones`) es una lista de una."""
+    if "pestanas" in datos:
+        return datos["pestanas"]
+    return [{"titulo": datos["pestana"], "secciones": datos["secciones"]}]
+
+
+def secciones_de(datos):
+    """Todas las secciones de todas las pestañas, en orden: su posición es el índice global que usan los ids del XML
+    y las subgrillas resueltas."""
+    return [s for p in pestanas_de(datos) for s in p["secciones"]]
+
+
+def nombre_de_campo(campo):
+    """El nombre de la columna de una entrada de `campos` / `encabezado`: un texto o `{nombre, solo_lectura}`."""
+    return campo["nombre"] if isinstance(campo, dict) else campo
+
+
+def _solo_lectura_de(campo, del_formulario):
+    """Un campo con `{nombre, solo_lectura}` manda sobre el `solo_lectura` del formulario, en los dos sentidos."""
+    return campo["solo_lectura"] if isinstance(campo, dict) else del_formulario
+
+
+def columnas_declaradas(datos):
+    """Las columnas del formulario, en orden: encabezado y luego las secciones."""
+    return ([nombre_de_campo(c) for c in datos["encabezado"]]
+            + [nombre_de_campo(c) for s in secciones_de(datos) for c in s.get("campos", [])])
+
+
+def _validar_campo(campo, donde, indice):
+    aqui = f"{donde}[{indice}]"
+    if isinstance(campo, dict):
+        faltan, sobran = sorted({"nombre", "solo_lectura"} - set(campo)), sorted(set(campo) - {"nombre", "solo_lectura"})
+        if faltan or sobran:
+            raise ErrorPlaybook(f"{aqui}: se admite {{nombre, solo_lectura}}; faltan {faltan}, sobran {sobran}")
+        exigir_forma(campo["nombre"], str, aqui, "nombre", no_vacio=True)
+        exigir_forma(campo["solo_lectura"], bool, aqui, "solo_lectura")
+    else:
+        exigir_forma(campo, str, "el bloque del formulario", aqui, no_vacio=True)
+
+
+def _validar_bibliotecas_y_eventos(datos, columnas):
+    bibliotecas = exigir_forma(datos.get("bibliotecas", []), [str], "el bloque del formulario", "bibliotecas")
+    for i, b in enumerate(bibliotecas):
+        exigir_forma(b, str, "el bloque del formulario", f"bibliotecas[{i}]", no_vacio=True)
+    if len(set(bibliotecas)) != len(bibliotecas):
+        raise ErrorPlaybook(
+            f"hay bibliotecas repetidas: {sorted({b for b in bibliotecas if bibliotecas.count(b) > 1})}")
+    vistos = set()
+    for i, e in enumerate(exigir_forma(datos.get("eventos", []), list, "el bloque del formulario", "eventos")):
+        aqui = f"eventos[{i}]"
+        exigir_forma(e, dict, "el bloque del formulario", aqui)
+        faltan = sorted(CLAVES_DE_EVENTO - set(e))
+        sobran = sorted(set(e) - CLAVES_DE_EVENTO - CLAVES_OPCIONALES_DE_EVENTO)
+        if faltan or sobran:
+            raise ErrorPlaybook(f"{aqui}: faltan {faltan}, sobran {sobran}")
+        evento = exigir_forma(e["evento"], str, aqui, "evento", no_vacio=True)
+        if evento not in EVENTOS:
+            raise ErrorPlaybook(f"{aqui}: evento {evento!r} no admitido; los válidos son {sorted(EVENTOS)}")
+        biblioteca = exigir_forma(e["biblioteca"], str, aqui, "biblioteca", no_vacio=True)
+        if biblioteca not in bibliotecas:
+            raise ErrorPlaybook(f"{aqui}: la biblioteca {biblioteca!r} no está en 'bibliotecas' ({bibliotecas})")
+        funcion = exigir_forma(e["funcion"], str, aqui, "funcion", no_vacio=True)
+        if not NOMBRE_DE_FUNCION.match(funcion):
+            raise ErrorPlaybook(f"{aqui}: funcion {funcion!r} no es un nombre de función de JavaScript "
+                                "(letras, dígitos, _ y $, con puntos entre los espacios de nombres)")
+        if "pasar_contexto" in e:
+            exigir_forma(e["pasar_contexto"], bool, aqui, "pasar_contexto")
+        columna = None
+        if evento == "onchange":
+            if "columna" not in e:
+                raise ErrorPlaybook(f"{aqui}: un evento onchange necesita 'columna'")
+            columna = exigir_forma(e["columna"], str, aqui, "columna", no_vacio=True)
+            if columna not in columnas:
+                raise ErrorPlaybook(f"{aqui}: la columna {columna!r} no está en el formulario")
+        elif "columna" in e:
+            raise ErrorPlaybook(f"{aqui}: un evento solo lleva 'columna' en onchange (este es {evento})")
+        huella = (evento, columna, biblioteca, funcion)
+        if huella in vistos:
+            raise ErrorPlaybook(f"{aqui}: manejador repetido ({evento} {funcion})")
+        vistos.add(huella)
+
+
 def _validar_estructura(datos, identidad):
-    faltan = sorted(set(CLAVES) - set(datos))
-    sobran = sorted(set(datos) - set(CLAVES) - set(CLAVES_OPCIONALES))
+    de_varias = "pestanas" in datos
+    obligatorias = dict(CLAVES_COMUNES) if de_varias else dict(CLAVES)
+    faltan = sorted(set(obligatorias) - set(datos))
+    sobran = sorted(set(datos) - set(obligatorias) - set(CLAVES_OPCIONALES))
+    if de_varias:
+        sobran = sorted(set(sobran) | (set(datos) & set(CLAVES_DE_UNA_PESTANA)))
     if faltan or sobran:
         partes = []
         if faltan:
@@ -174,13 +293,15 @@ def _validar_estructura(datos, identidad):
         if sobran:
             partes.append(f"sobran {sobran}")
         raise ErrorPlaybook(f"el bloque del formulario no tiene las claves esperadas: {'; '.join(partes)}")
-    for clave, tipo in CLAVES.items():
+    for clave, tipo in obligatorias.items():
         if clave in CLAVES_DE_TEXTO_POR_IDIOMA:
             continue
         exigir_forma(datos[clave], tipo, "el bloque del formulario", clave, no_vacio=(tipo is str))
     for clave, tipo in CLAVES_OPCIONALES.items():
         if clave in datos:
-            exigir_forma(datos[clave], tipo, "el bloque del formulario", clave, no_vacio=True)
+            # Una lista vacía de bibliotecas o de eventos es "ninguno"; una de pestañas, no.
+            exigir_forma(datos[clave], tipo, "el bloque del formulario", clave,
+                         no_vacio=(clave in ("clase", "pestanas")))
     if datos["tipo"] != TIPO:
         raise ErrorPlaybook(f"el bloque dice tipo = {datos['tipo']!r}, se esperaba {TIPO!r}")
 
@@ -189,43 +310,73 @@ def _validar_estructura(datos, identidad):
         raise ErrorPlaybook(
             f"el bloque dice clase = {clase!r}; las que existen son {sorted(CLASES)}")
 
-    if clase == "creacion_rapida":
-        # Un formulario de creación rápida no tiene encabezado de registro, ni subgrillas, ni
-        # controles de web resource: la plataforma los ignora. Se rechaza en vez de generarlos y
-        # dejar que el usuario descubra en pantalla que la mitad del playbook no hizo nada.
-        if datos["encabezado"]:
-            raise ErrorPlaybook(
-                "un formulario de creación rápida no lleva encabezado: 'encabezado' tiene que ir vacío")
-        for i, s in enumerate(datos["secciones"]):
-            if "campos" not in s:
-                raise ErrorPlaybook(
-                    f"la sección {i} no es de campos; un formulario de creación rápida solo admite campos")
-
     exigir_sin_tildes(datos["nombre"], "nombre")
     if len(datos["nombre"]) > LARGO_NOMBRE:
         raise ErrorPlaybook(f"nombre tiene {len(datos['nombre'])} caracteres; el máximo es {LARGO_NOMBRE}")
     idiomas = identidad["idiomas"]
-    validar_textos_por_idioma(datos["pestana"], idiomas, "pestana")
 
-    encabezado = exigir_forma(datos["encabezado"], [str], "el bloque del formulario", "encabezado")
+    # Pestañas: las dos formas se validan como una lista de `{titulo, secciones}`.
+    if de_varias:
+        for i, p in enumerate(datos["pestanas"]):
+            aqui = f"la pestaña [{i}]"
+            exigir_forma(p, dict, aqui, "pestana")
+            faltan_p, sobran_p = sorted({"titulo", "secciones"} - set(p)), sorted(set(p) - {"titulo", "secciones"})
+            if faltan_p or sobran_p:
+                raise ErrorPlaybook(f"{aqui}: faltan {faltan_p}, sobran {sobran_p}")
+            validar_textos_por_idioma(p["titulo"], idiomas, f"pestanas[{i}].titulo")
+            exigir_forma(p["secciones"], list, aqui, "secciones", no_vacio=True)
+    else:
+        validar_textos_por_idioma(datos["pestana"], idiomas, "pestana")
+        exigir_forma(datos["secciones"], list, "el bloque del formulario", "secciones", no_vacio=True)
+
+    if clase == "creacion_rapida":
+        # Un formulario de creación rápida no tiene encabezado de registro, ni subgrillas, ni
+        # controles de web resource ni timeline: la plataforma los ignora. Se rechaza en vez de generarlos y
+        # dejar que el usuario descubra en pantalla que la mitad del playbook no hizo nada.
+        if datos["encabezado"]:
+            raise ErrorPlaybook(
+                "un formulario de creación rápida no lleva encabezado: 'encabezado' tiene que ir vacío")
+        for i, s in enumerate(secciones_de(datos)):
+            if not isinstance(s, dict) or "campos" not in s:
+                raise ErrorPlaybook(
+                    f"la sección {i} no es de campos; un formulario de creación rápida solo admite campos")
+
+    encabezado = exigir_forma(datos["encabezado"], list, "el bloque del formulario", "encabezado")
+    for k, c in enumerate(encabezado):
+        _validar_campo(c, "encabezado", k)
     if len(encabezado) > 3:
         # El header de un formulario principal tiene exactamente tres huecos.
         raise ErrorPlaybook(f"el encabezado trae {len(encabezado)} columnas y solo entran 3")
+    nombres_del_encabezado = [nombre_de_campo(c) for c in encabezado]
+    if len(set(nombres_del_encabezado)) != len(nombres_del_encabezado):
+        raise ErrorPlaybook("el encabezado: una columna ya está en el formulario (repetida en el encabezado)")
 
-    vistas, secciones = set(), exigir_forma(datos["secciones"], list, "el bloque del formulario", "secciones",
-                                            no_vacio=True)
-    columnas_vistas = set(encabezado)
+    vistas, secciones = set(), secciones_de(datos)
+    columnas_vistas = set(nombres_del_encabezado)
+    hay_timeline = False
     for i, s in enumerate(secciones):
         aqui = f"la sección [{i}]"
         exigir_forma(s, dict, aqui, "seccion")
-        sobran = sorted(set(s) - {"titulo", "campos", "subgrilla", "webresource"})
+        sobran = sorted(set(s) - {"titulo", "campos", "subgrilla", "webresource", "timeline"})
         if sobran or "titulo" not in s:
-            raise ErrorPlaybook(f"{aqui}: se admite {{titulo, campos, subgrilla, webresource}}; falta 'titulo' o sobra {sobran}")
+            raise ErrorPlaybook(
+                f"{aqui}: se admite {{titulo, campos, subgrilla, webresource, timeline}}; falta 'titulo' o sobra {sobran}")
         validar_textos_por_idioma(s["titulo"], idiomas, f"{aqui}.titulo")
-        cuantos = sum(1 for c in ("campos", "subgrilla", "webresource") if c in s)
+        cuantos = sum(1 for c in ("campos", "subgrilla", "webresource", "timeline") if c in s)
         if cuantos != 1:
             raise ErrorPlaybook(
-                f"{aqui}: una sección lleva 'campos', 'subgrilla' O 'webresource', exactamente uno")
+                f"{aqui}: una sección lleva 'campos', 'subgrilla', 'webresource' O 'timeline', exactamente uno")
+        if "timeline" in s:
+            if hay_timeline:
+                raise ErrorPlaybook(f"{aqui}: un formulario lleva un solo timeline (el control tiene un id fijo)")
+            hay_timeline = True
+            tl = exigir_forma(s["timeline"], dict, aqui, "timeline")
+            faltan_tl, sobran_tl = sorted({"alto"} - set(tl)), sorted(set(tl) - {"alto"})
+            if faltan_tl or sobran_tl:
+                raise ErrorPlaybook(f"{aqui}.timeline: faltan {faltan_tl}, sobran {sobran_tl}")
+            exigir_forma(tl["alto"], int, f"{aqui}.timeline", "alto")
+            if not 1 <= tl["alto"] <= ALTO_MAXIMO_TIMELINE:
+                raise ErrorPlaybook(f"{aqui}.timeline: 'alto' va en filas, entre 1 y {ALTO_MAXIMO_TIMELINE}")
         if "webresource" in s:
             wr = exigir_forma(s["webresource"], dict, aqui, "webresource")
             faltan_wr = sorted({"nombre", "alto"} - set(wr))
@@ -238,24 +389,34 @@ def _validar_estructura(datos, identidad):
                 raise ErrorPlaybook(f"{aqui}.webresource: 'alto' va en filas, entre 1 y 20")
 
         if "campos" in s:
-            for columna in exigir_forma(s["campos"], [str], aqui, "campos", no_vacio=True):
+            exigir_forma(s["campos"], list, aqui, "campos", no_vacio=True)
+            for k, campo in enumerate(s["campos"]):
+                _validar_campo(campo, "campos", k)
+                columna = nombre_de_campo(campo)
                 if columna in columnas_vistas:
                     raise ErrorPlaybook(f"{aqui}: la columna '{columna}' ya está en el formulario")
                 columnas_vistas.add(columna)
-        elif "webresource" in s:
+        elif "webresource" in s or "timeline" in s:
             pass   # ya quedó validado arriba
         else:
             sg = exigir_forma(s["subgrilla"], dict, aqui, "subgrilla")
             faltan_sg = sorted({"tabla", "lookup", "vista"} - set(sg))
-            sobran_sg = sorted(set(sg) - {"tabla", "lookup", "vista"})
+            sobran_sg = sorted(set(sg) - {"tabla", "lookup", "vista", "registros_por_pagina"})
             if faltan_sg or sobran_sg:
                 raise ErrorPlaybook(f"{aqui}.subgrilla: faltan {faltan_sg}, sobran {sobran_sg}")
             for campo in ("tabla", "lookup", "vista"):
                 exigir_forma(sg[campo], str, f"{aqui}.subgrilla", campo, no_vacio=True)
+            if "registros_por_pagina" in sg:
+                exigir_forma(sg["registros_por_pagina"], int, f"{aqui}.subgrilla", "registros_por_pagina")
+                if not REGISTROS_MINIMOS <= sg["registros_por_pagina"] <= REGISTROS_MAXIMOS:
+                    raise ErrorPlaybook(f"{aqui}.subgrilla: 'registros_por_pagina' va entre {REGISTROS_MINIMOS} y "
+                                        f"{REGISTROS_MAXIMOS} (Learn, \"Add and configure a subgrid component on a form\")")
             huella = (sg["tabla"], sg["lookup"])
             if huella in vistas:
                 raise ErrorPlaybook(f"{aqui}: ya hay otra subgrilla sobre {sg['tabla']} por '{sg['lookup']}'")
             vistas.add(huella)
+
+    _validar_bibliotecas_y_eventos(datos, columnas_vistas)
 
 
 def validar_playbook(datos, identidad):
@@ -281,13 +442,14 @@ def _celda(datos, ruta, columna, etiqueta, classid, deshabilitado, idiomas):
         f'disabled="{str(bool(deshabilitado)).lower()}" /></cell>')
 
 
-def _celda_subgrilla(datos, ruta, nombre, etiqueta, tabla_destino, vista_id, relacion, idiomas):
+def _celda_subgrilla(datos, ruta, nombre, etiqueta, tabla_destino, vista_id, relacion, idiomas,
+                     registros=REGISTROS_POR_OMISION):
     return (
         f'<cell id="{guid(datos["nombre"], ruta, "cell")}" locklevel="0" colspan="1" rowspan="6" auto="false" '
         f'labelid="{guid(datos["nombre"], ruta, "label")}">'
         f'{_labels(etiqueta, idiomas)}'
         f'<control indicationOfSubgrid="true" id={quoteattr(nombre)} classid="{CONTROL_SUBGRILLA}"><parameters>'
-        "<RecordsPerPage>10</RecordsPerPage><AutoExpand>Fixed</AutoExpand>"
+        f"<RecordsPerPage>{registros}</RecordsPerPage><AutoExpand>Fixed</AutoExpand>"
         "<EnableQuickFind>false</EnableQuickFind><EnableViewPicker>false</EnableViewPicker>"
         "<EnableChartPicker>false</EnableChartPicker><ChartGridMode>Grid</ChartGridMode>"
         f"<TargetEntityType>{tabla_destino}</TargetEntityType>"
@@ -317,42 +479,53 @@ def formxml(datos, etiquetas, controles, subgrillas, idiomas):
     entorno; `idiomas` son los de la Identidad: cada etiqueta sale una vez por idioma, en ese orden."""
     solo_lectura = datos["solo_lectura"]
     por_idioma_vacio = {str(i): "" for i in idiomas}   # la celda de relleno también lleva una etiqueta vacía por idioma
-    partes = ['<form headerdensity="HighWithControls"><tabs>',
-              f'<tab verticallayout="true" id="{guid(datos["nombre"], "tab")}" IsUserDefined="1" '
-              f'labelid="{guid(datos["nombre"], "tab", "label")}">',
-              _labels(datos["pestana"], idiomas),
-              '<columns><column width="100%"><sections>']
+    partes = ['<form headerdensity="HighWithControls"><tabs>']
 
-    for i, s in enumerate(datos["secciones"]):
-        ruta_sec = f"sec{i}"
-        partes.append(
-            f'<section showlabel="true" showbar="false" IsUserDefined="0" '
-            f'id="{guid(datos["nombre"], ruta_sec)}" labelid="{guid(datos["nombre"], ruta_sec, "label")}" '
-            f'columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">'
-            f'{_labels(s["titulo"], idiomas)}<rows>')
-        if "campos" in s:
-            for j, columna in enumerate(s["campos"]):
-                partes.append("<row>" + _celda(datos, f"{ruta_sec}.{j}", columna, etiquetas[columna],
-                                               controles[columna], solo_lectura, idiomas) + "</row>")
-        elif "webresource" in s:
-            wr = s["webresource"]
-            partes.append("<row>" + _celda_webresource(
-                datos, f"{ruta_sec}.wr", f"WebResource_{i}", s["titulo"],
-                wr["nombre"], wr["alto"], idiomas) + "</row>")
-        else:
-            sg = s["subgrilla"]
-            resuelta = subgrillas[i]
-            partes.append("<row>" + _celda_subgrilla(
-                datos, f"{ruta_sec}.grid", f"Subgrid_{i}", s["titulo"], sg["tabla"],
-                resuelta["vista_id"], resuelta["relacion"], idiomas) + "</row>")
-        partes.append("</rows></section>")
-
-    partes.append("</sections></column></columns></tab></tabs>")
+    i = 0   # índice GLOBAL de sección: da el id de la sección y el nombre de la subgrilla, no se reinicia por pestaña
+    for k, pestana in enumerate(pestanas_de(datos)):
+        # La primera pestaña conserva los ids de siempre (un formulario de una pestaña no cambia al sumar esta función).
+        ruta_tab = ("tab",) if k == 0 else ("tab", k)
+        partes += [f'<tab verticallayout="true" id="{guid(datos["nombre"], *ruta_tab)}" IsUserDefined="1" '
+                   f'labelid="{guid(datos["nombre"], *ruta_tab, "label")}">',
+                   _labels(pestana["titulo"], idiomas),
+                   '<columns><column width="100%"><sections>']
+        for s in pestana["secciones"]:
+            ruta_sec = f"sec{i}"
+            partes.append(
+                f'<section showlabel="true" showbar="false" IsUserDefined="0" '
+                f'id="{guid(datos["nombre"], ruta_sec)}" labelid="{guid(datos["nombre"], ruta_sec, "label")}" '
+                f'columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">'
+                f'{_labels(s["titulo"], idiomas)}<rows>')
+            if "campos" in s:
+                for j, campo in enumerate(s["campos"]):
+                    columna = nombre_de_campo(campo)
+                    partes.append("<row>" + _celda(datos, f"{ruta_sec}.{j}", columna, etiquetas[columna],
+                                                   controles[columna], _solo_lectura_de(campo, solo_lectura),
+                                                   idiomas) + "</row>")
+            elif "webresource" in s:
+                wr = s["webresource"]
+                partes.append("<row>" + _celda_webresource(
+                    datos, f"{ruta_sec}.wr", f"WebResource_{i}", s["titulo"],
+                    wr["nombre"], wr["alto"], idiomas) + "</row>")
+            elif "timeline" in s:
+                partes.append("<row>" + _celda_timeline(
+                    datos, f"{ruta_sec}.timeline", s["titulo"], s["timeline"]["alto"], idiomas) + "</row>")
+            else:
+                sg = s["subgrilla"]
+                resuelta = subgrillas[i]
+                partes.append("<row>" + _celda_subgrilla(
+                    datos, f"{ruta_sec}.grid", f"Subgrid_{i}", s["titulo"], sg["tabla"],
+                    resuelta["vista_id"], resuelta["relacion"], idiomas,
+                    sg.get("registros_por_pagina", REGISTROS_POR_OMISION)) + "</row>")
+            partes.append("</rows></section>")
+            i += 1
+        partes.append("</sections></column></columns></tab>")
+    partes.append("</tabs>")
 
     if clase_de(datos) == "creacion_rapida":
         # Sin `<header>`: un formulario de creación rápida no muestra encabezado de registro.
         # Es justamente lo que lo hace chico.
-        partes.append("</form>")
+        partes += [_xml_bibliotecas_y_eventos(datos), "</form>"]
         return "".join(partes)
 
     # El header tiene exactamente tres huecos; los que no se usan van vacíos.
@@ -360,15 +533,64 @@ def formxml(datos, etiquetas, controles, subgrillas, idiomas):
                   'labelwidth="115" celllabelalignment="Left"><rows><row>')
     for k in range(3):
         if k < len(datos["encabezado"]):
-            columna = datos["encabezado"][k]
-            partes.append(_celda(datos, f"hdr{k}", columna, etiquetas[columna], controles[columna], solo_lectura,
-                                 idiomas))
+            campo = datos["encabezado"][k]
+            columna = nombre_de_campo(campo)
+            partes.append(_celda(datos, f"hdr{k}", columna, etiquetas[columna], controles[columna],
+                                 _solo_lectura_de(campo, solo_lectura), idiomas))
         else:
             partes.append(f'<cell id="{guid(datos["nombre"], f"hdr{k}")}" showlabel="false" '
                           f'labelid="{guid(datos["nombre"], f"hdr{k}", "label")}">'
                           f'{_labels(por_idioma_vacio, idiomas)}</cell>')
-    partes.append("</row></rows></header></form>")
+    partes.append("</row></rows></header>")
+    # Después del encabezado y en este orden: así los trae un formulario real con bibliotecas y eventos (Main de `contact`).
+    partes += [_xml_bibliotecas_y_eventos(datos), "</form>"]
     return "".join(partes)
+
+
+def _celda_timeline(datos, ruta, etiqueta, alto, idiomas):
+    """El control Timeline (`notescontrol`), tal cual lo trae un Main real: celda sin etiqueta visible, con `rowspan`, y el control
+    sin parámetros. La configuración fina del timeline (qué actividades muestra, si muestra notas) NO está en este XML."""
+    return (
+        f'<cell id="{guid(datos["nombre"], ruta, "cell")}" locklevel="0" colspan="1" rowspan="{alto}" auto="false" '
+        f'showlabel="false" labelid="{guid(datos["nombre"], ruta, "label")}">'
+        f'{_labels(etiqueta, idiomas)}'
+        f'<control id="{ID_DEL_TIMELINE}" classid="{CONTROL_TIMELINE}" /></cell>')
+
+
+def _manejadores_declarados(datos):
+    """`[(evento, columna|None, biblioteca, funcion, pasar_contexto)]` en el orden del playbook."""
+    return [(e["evento"], e.get("columna"), e["biblioteca"], e["funcion"], bool(e.get("pasar_contexto", False)))
+            for e in datos.get("eventos", [])]
+
+
+def _xml_bibliotecas_y_eventos(datos):
+    """`<formLibraries>` y `<events>` (vacío si el playbook no declara bibliotecas ni eventos). Un `<event>` por (evento, columna),
+    con sus manejadores en el orden del playbook. Los GUID son deterministas."""
+    nombre = datos["nombre"]
+    salida_xml = []
+    bibliotecas = datos.get("bibliotecas", [])
+    if bibliotecas:
+        salida_xml.append("<formLibraries>" + "".join(
+            f'<Library name={quoteattr(b)} libraryUniqueId="{guid(nombre, "lib", b)}" />' for b in bibliotecas)
+            + "</formLibraries>")
+    grupos = {}
+    for evento, columna, biblioteca, funcion, pasar in _manejadores_declarados(datos):
+        grupos.setdefault((evento, columna), []).append((biblioteca, funcion, pasar))
+    if grupos:
+        salida_xml.append("<events>")
+        for (evento, columna), manejadores in grupos.items():
+            atributo = f" attribute={quoteattr(columna)}" if columna else ""
+            # `active`: el de cambio de columna va activo; los de formulario (carga y guardado), no.
+            salida_xml.append(f'<event name="{evento}" application="false" '
+                              f'active="{"true" if columna else "false"}"{atributo}><Handlers>')
+            for biblioteca, funcion, pasar in manejadores:
+                salida_xml.append(
+                    f'<Handler functionName={quoteattr(funcion)} libraryName={quoteattr(biblioteca)} '
+                    f'handlerUniqueId="{guid(nombre, "handler", evento, columna or "", biblioteca, funcion)}" '
+                    f'enabled="true" parameters="" passExecutionContext="{str(pasar).lower()}" />')
+            salida_xml.append("</Handlers></event>")
+        salida_xml.append("</events>")
+    return "".join(salida_xml)
 
 
 # ---------------------------------------------------------------------------
@@ -424,17 +646,36 @@ def _relacion(dv, tabla_padre, tabla_hija, lookup):
         f"no hay relación de '{tabla_padre}' a '{tabla_hija}' por el lookup '{lookup}'; la subgrilla no se puede armar")
 
 
-def _exigir_webresource(dv, nombre):
+def _exigir_webresource(dv, nombre, tipo=TIPO_HTML):
+    """El web resource que el formulario referencia tiene que existir y ser del tipo que se usa: HTML en un control
+    de sección, JavaScript en una biblioteca. Un nombre que no existe no da error al guardar el formulario."""
     ruta = f"webresourceset?$select=name,webresourcetype&$filter=name eq '{nombre}'"
     filas = exigir_forma(leer_entorno(dv, ruta, C_WEBRESOURCE).get("value"), [dict], C_WEBRESOURCE, "value")
     if len(filas) != 1:
         raise Bloqueado(
             f"el formulario referencia el web resource '{nombre}' y en el entorno hay {len(filas)}; "
             "hay que crearlo primero (`web_resource.py`)")
-    if filas[0].get("webresourcetype") != TIPO_HTML:
+    real = exigir_forma(filas[0].get("webresourcetype"), int, C_WEBRESOURCE, "webresourcetype")
+    if real != tipo:
+        if tipo == TIPO_JS:
+            raise Bloqueado(
+                f"el web resource '{nombre}' no es JavaScript (webresourcetype {real}): "
+                "una biblioteca de formulario solo puede ser un script")
         raise Bloqueado(
             f"el web resource '{nombre}' no es HTML (webresourcetype "
-            f"{filas[0].get('webresourcetype')}): un control de formulario solo muestra HTML")
+            f"{real}): un control de formulario solo muestra HTML")
+
+
+def _exigir_actividades(dv, tabla):
+    """El timeline muestra las actividades (los correos) vinculadas a la fila: sin actividades habilitadas en la tabla el
+    control aparece vacío y nada falla al guardar el formulario."""
+    ruta = f"EntityDefinitions(LogicalName='{tabla}')?$select=HasActivities"
+    cuerpo = leer_entorno(dv, ruta, C_TABLA, admite_404=True)
+    if cuerpo is None:
+        raise Bloqueado(f"la tabla '{tabla}' no existe en el entorno")
+    if not exigir_forma(cuerpo.get("HasActivities"), bool, C_TABLA, "HasActivities"):
+        raise Bloqueado(f"el formulario lleva un timeline y la tabla '{tabla}' no tiene actividades habilitadas "
+                        "(HasActivities = false): el timeline no mostraría los correos")
 
 
 def _leer_formulario(dv, tabla, tipo):
@@ -517,6 +758,49 @@ def _diferencias_de_etiquetas(esperado_xml, real_xml):
     return difs
 
 
+def _scripts_del_xml(formxml):
+    """`(bibliotecas, manejadores)` que trae el `formxml`, solo los de usuario (`<Library>` y `<Handlers>/<Handler>`; los
+    `InternalHandlers` son de la plataforma). Cada manejador es `(evento, columna, biblioteca, funcion, pasar_contexto)`."""
+    raiz = ET.fromstring(formxml or "")
+    bibliotecas = [l.get("name") for l in raiz.findall("./formLibraries/Library")]
+    manejadores = []
+    for e in raiz.findall("./events/event"):
+        for h in e.findall("./Handlers/Handler"):
+            manejadores.append((e.get("name"), e.get("attribute"), h.get("libraryName"), h.get("functionName"),
+                                (h.get("passExecutionContext") or "").lower() == "true"))
+    return bibliotecas, manejadores
+
+
+def _nombre_de_manejador(m):
+    evento, columna, _, funcion, _ = m
+    return f"{evento}[{columna}] {funcion}" if columna else f"{evento} {funcion}"
+
+
+def _diferencias_de_scripts(esperado_xml, real_xml):
+    """Bibliotecas y manejadores, en los dos sentidos y por nombre: lo que falta, lo que sobra y el que difiere solo en
+    pasar el contexto (que es justo lo que decide si una función de guardado recibe el evento)."""
+    try:
+        reales = _scripts_del_xml(real_xml)
+    except ET.ParseError:
+        return []   # `_diferencias_de_etiquetas` ya denuncia el XML inválido
+    libs_e, hand_e = _scripts_del_xml(esperado_xml)
+    libs_r, hand_r = reales
+    difs = [f"falta la biblioteca {b!r}" for b in libs_e if b not in libs_r]
+    difs += [f"sobra la biblioteca {b!r}" for b in libs_r if b not in libs_e]
+    clave = lambda m: m[:4]   # noqa: E731  (evento, columna, biblioteca, funcion)
+    reales_por_clave = {clave(m): m for m in hand_r}
+    esperados_por_clave = {clave(m): m for m in hand_e}
+    for m in hand_e:
+        real = reales_por_clave.get(clave(m))
+        if real is None:
+            difs.append(f"falta el manejador {_nombre_de_manejador(m)}")
+        elif real[4] != m[4]:
+            difs.append(f"el manejador {_nombre_de_manejador(m)} tiene passExecutionContext = {real[4]} "
+                        f"y el playbook dice {m[4]}")
+    difs += [f"sobra el manejador {_nombre_de_manejador(m)}" for m in hand_r if clave(m) not in esperados_por_clave]
+    return difs
+
+
 def _diferencias(datos, form, xml):
     difs, corregibles = [], {}
     for campo, valor in (("name", datos["nombre"]), ("description", datos["descripcion"])):
@@ -525,6 +809,7 @@ def _diferencias(datos, form, xml):
             corregibles[campo] = valor
     if _normalizar_xml(form.get("formxml")) != _normalizar_xml(xml):
         difs.extend(_diferencias_de_etiquetas(xml, form.get("formxml")))
+        difs.extend(_diferencias_de_scripts(xml, form.get("formxml")))
         difs.append("el formxml no coincide con el que genera el playbook")
         corregibles["formxml"] = xml
     if form.get("formactivationstate") != ACTIVO:
@@ -547,7 +832,7 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     metadata_id = exigir_forma(cuerpo.get("MetadataId"), str, C_TABLA, "MetadataId", no_vacio=True)
 
     tipos, etiquetas = _columnas_de(dv, datos["tabla"])
-    declaradas = list(datos["encabezado"]) + [c for s in datos["secciones"] for c in s.get("campos", [])]
+    declaradas = columnas_declaradas(datos)
     faltantes = [c for c in declaradas if c not in tipos]
     if faltantes:
         raise Bloqueado(f"el formulario declara columnas que la tabla no tiene: {faltantes}")
@@ -560,8 +845,10 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     etiquetas = _etiquetas_de_los_campos(declaradas, etiquetas, identidad["idiomas"])
 
     subgrillas = {}
-    for i, s in enumerate(datos["secciones"]):
-        if "subgrilla" in s:
+    for i, s in enumerate(secciones_de(datos)):
+        if "timeline" in s:
+            _exigir_actividades(dv, datos["tabla"])
+        elif "subgrilla" in s:
             sg = s["subgrilla"]
             subgrillas[i] = {"vista_id": _vista_id(dv, sg["tabla"], sg["vista"]),
                              "relacion": _relacion(dv, datos["tabla"], sg["tabla"], sg["lookup"])}
@@ -570,6 +857,9 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
             # abre con un recuadro vacío y nadie se entera hasta que alguien
             # lo mira. Se comprueba antes.
             _exigir_webresource(dv, s["webresource"]["nombre"])
+    for biblioteca in datos.get("bibliotecas", []):
+        # Una biblioteca que no existe tampoco falla al guardar: el formulario carga y el evento no hace nada.
+        _exigir_webresource(dv, biblioteca, TIPO_JS)
 
     xml = formxml(datos, etiquetas, controles, subgrillas, identidad["idiomas"])
     form = _leer_formulario(dv, datos["tabla"], tipo_de_formulario(datos))
@@ -619,10 +909,11 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
         prefijo = "se escribió pero no quedó bien: " if hubo_escritura else ""
         return estado, componente, prefijo + "; ".join(difs)
 
-    cuantas = sum(len(s.get("campos", [])) for s in datos["secciones"])
+    cuantas = sum(len(s.get("campos", [])) for s in secciones_de(datos))
     return estado_de_escritura(hubo_alta, hubo_escritura), componente, (
-        f"formid {id_form}, {len(datos['secciones'])} secciones, {cuantas} campos, "
-        f"{len(subgrillas)} subgrillas, {len(datos['encabezado'])} en el encabezado"
+        f"formid {id_form}, {len(pestanas_de(datos))} pestañas, {len(secciones_de(datos))} secciones, {cuantas} campos, "
+        f"{len(subgrillas)} subgrillas, {len(datos['encabezado'])} en el encabezado, "
+        f"{len(datos.get('bibliotecas', []))} bibliotecas, {len(datos.get('eventos', []))} manejadores"
         f"{', todo de solo lectura' if datos['solo_lectura'] else ''}; viaja dentro de la tabla")
 
 

@@ -22,6 +22,11 @@ DEFECTO de esa tabla. Como el sitemap puede tener varias entradas sobre la
 misma tabla (cada una con su vista), las que nombran una vista se arman con
 `Url` apuntando a su `viewid`.
 
+**Privilegios y dashboard** (diseno/07, G-A1): una entrada admite `privilegios: [{tabla, privilegio}]` (`<Privilege Entity=..
+Privilege=../>` hijo de la `SubArea`, después de los títulos; `privilegio` es uno o varios de Read, Write, Append, AppendTo,
+Create, Delete, Share, Assign, All, separados por coma sin espacios) y, en lugar de `tabla`, `dashboard: "<nombre>"` (se
+resuelve a su `formid` y se abre con `Url=/main.aspx?pagetype=dashboard&id=%7b..%7d`).
+
 **Idiomas**: los títulos del sitemap llevan UNA etiqueta por cada idioma de la
 Identidad (`idiomas`); el bloque de la app no declara idiomas propios. Ese patrón NO se pudo verificar
 contra ningún sitemap del entorno: hay que mirarlo en la app una vez.
@@ -90,6 +95,11 @@ C_COMPONENTES = "la consulta de los componentes de la app (GET RetrieveAppCompon
 
 COMPONENTE_TABLA = 1  # appmodulecomponent.componenttype
 
+# Learn, SiteMap schema (SiteMap.xsd, CRM_PrivilegeId_SiteMap): los de datos de una tabla.
+PRIVILEGIOS_DE_SITEMAP = {"Read", "Write", "Append", "AppendTo", "Create", "Delete", "Share", "Assign", "All"}
+TIPO_DASHBOARD = 0       # systemform.type: 0 = dashboard
+C_DASHBOARD = "la consulta de un dashboard del sitemap (GET systemforms)"
+
 
 # ---------------------------------------------------------------------------
 # Validación sin red
@@ -99,6 +109,32 @@ def _validar_titulos(titulos, idiomas, donde):
     # porque ahí la plataforma no sustituye. El bloque de la app no declara idiomas propios: usa los de la Identidad.
     # Los títulos del sitemap son nombres visibles: sin tildes ni ñ (BP-PP-197), en cada idioma.
     validar_textos_por_idioma(titulos, idiomas, f"{donde}: el titulo")
+
+
+def _validar_privilegios(privilegios, tablas, donde):
+    """`<Privilege Entity=... Privilege=.../>` por tabla: la entrada se muestra solo a quien lo tiene (Learn, "SiteMap schema")."""
+    exigir_forma(privilegios, list, donde, "privilegios", no_vacio=True)
+    vistas = set()
+    for i, p in enumerate(privilegios):
+        aqui = f"{donde}.privilegios[{i}]"
+        exigir_forma(p, dict, donde, f"privilegios[{i}]")
+        faltan, sobran = sorted({"tabla", "privilegio"} - set(p)), sorted(set(p) - {"tabla", "privilegio"})
+        if faltan or sobran:
+            raise ErrorPlaybook(f"{aqui}: faltan {faltan}, sobran {sobran}")
+        tabla = exigir_forma(p["tabla"], str, aqui, "tabla", no_vacio=True)
+        texto = exigir_forma(p["privilegio"], str, aqui, "privilegio", no_vacio=True)
+        if tabla not in tablas:
+            raise ErrorPlaybook(f"{aqui}: la tabla '{tabla}' no está en la lista de tablas de la app")
+        if tabla in vistas:
+            raise ErrorPlaybook(f"{aqui}: la tabla '{tabla}' ya tiene un privilegio en esta entrada (se juntan con comas)")
+        vistas.add(tabla)
+        lista = texto.split(",")
+        malos = [x for x in lista if x not in PRIVILEGIOS_DE_SITEMAP]
+        if malos:
+            raise ErrorPlaybook(f"{aqui}: privilegio {malos} no admitido; los válidos son {sorted(PRIVILEGIOS_DE_SITEMAP)}, "
+                                "separados por comas y sin espacios")
+        if len(set(lista)) != len(lista):
+            raise ErrorPlaybook(f"{aqui}: hay privilegios repetido en {texto!r}")
 
 
 def _validar_estructura(datos, identidad):
@@ -141,21 +177,30 @@ def _validar_estructura(datos, identidad):
             for k, e in enumerate(exigir_forma(grupo["entradas"], list, donde_g, "entradas", no_vacio=True)):
                 donde_e = f"{donde_g}.entrada[{k}]"
                 exigir_forma(e, dict, donde_e, "entrada")
-                sobran_e = sorted(set(e) - {"id", "titulo", "tabla", "vista", "icono"})
-                faltan_e = sorted({"id", "titulo", "tabla", "icono"} - set(e))
+                # Una entrada abre una tabla (con vista opcional) O un dashboard, exactamente uno.
+                sobran_e = sorted(set(e) - {"id", "titulo", "tabla", "vista", "icono", "dashboard", "privilegios"})
+                faltan_e = sorted({"id", "titulo", "icono"} - set(e))
+                if "dashboard" in e and "vista" in e:
+                    sobran_e = sorted(set(sobran_e) | {"vista"})
                 if faltan_e or sobran_e:
                     raise ErrorPlaybook(f"{donde_e}: faltan {faltan_e}, sobran {sobran_e}")
-                for campo in ("id", "tabla", "icono"):
+                if ("tabla" in e) == ("dashboard" in e):
+                    raise ErrorPlaybook(f"{donde_e}: una entrada lleva 'tabla' o 'dashboard', exactamente uno")
+                for campo in ("id", "icono") + (("tabla",) if "tabla" in e else ("dashboard",)):
                     exigir_forma(e[campo], str, donde_e, campo, no_vacio=True)
+                if "dashboard" in e:
+                    exigir_sin_tildes(e["dashboard"], "dashboard")
                 if "vista" in e:
                     exigir_forma(e["vista"], str, donde_e, "vista", no_vacio=True)
                 _validar_titulos(e["titulo"], idiomas, donde_e)
                 if e["id"] in ids:
                     raise ErrorPlaybook(f"{donde_e}: el id '{e['id']}' está repetido en el sitemap")
                 ids.add(e["id"])
-                if e["tabla"] not in datos["tablas"]:
+                if "tabla" in e and e["tabla"] not in datos["tablas"]:
                     raise ErrorPlaybook(
                         f"{donde_e}: la entrada abre '{e['tabla']}', que no está en la lista de tablas de la app")
+                if "privilegios" in e:
+                    _validar_privilegios(e["privilegios"], datos["tablas"], donde_e)
                 entradas += 1
     if entradas == 0:
         raise ErrorPlaybook("el sitemap no tiene ninguna entrada")
@@ -173,10 +218,12 @@ def _titulos(titulos, idiomas):
     return f"<Titles>{partes}</Titles>"
 
 
-def sitemapxml(datos, iconos, vistas, idiomas):
+def sitemapxml(datos, iconos, vistas, idiomas, dashboards=None):
     """`iconos` mapea nombre de web resource → ruta `/WebResources/...`;
     `vistas` mapea (tabla, nombre de vista) → savedqueryid; `idiomas` son los
-    de la Identidad, en el orden en que se escriben los títulos."""
+    de la Identidad, en el orden en que se escriben los títulos; `dashboards`
+    mapea nombre de dashboard → formid."""
+    dashboards = dashboards or {}
     partes = ['<SiteMap IntroducedVersion="7.0.0.0">']
     for i, area in enumerate(datos["areas"]):
         partes.append(
@@ -191,17 +238,26 @@ def sitemapxml(datos, iconos, vistas, idiomas):
                 icono = iconos[e["icono"]]
                 comun = (f'Id={quoteattr(e["id"])} VectorIcon={quoteattr(icono)} Icon={quoteattr(icono)} '
                          f'Client="{CLIENTES}" AvailableOffline="true" PassParams="false" Sku="{SKU}"')
-                if "vista" in e:
+                privilegios = "".join(
+                    f"<Privilege Entity={quoteattr(p['tabla'])} Privilege={quoteattr(p['privilegio'])} />"
+                    for p in e.get("privilegios", []))
+                if "dashboard" in e:
+                    # Se abre por URL con el id del dashboard (`main.aspx?pagetype=dashboard&id=`). [verificar en la app]
+                    url = f"/main.aspx?pagetype=dashboard&amp;id=%7b{dashboards[e['dashboard']]}%7d"
+                    partes.append(f'<SubArea {comun} Url="{url}">' + _titulos(e["titulo"], idiomas) + privilegios
+                                  + "</SubArea>")
+                elif "vista" in e:
                     # `Entity=` abriria la vista POR DEFECTO de la tabla; con
                     # cuatro entradas sobre la misma tabla, las cuatro abririan
                     # lo mismo. Por eso las que nombran una vista van por Url.
                     vista_id = vistas[(e["tabla"], e["vista"])]
                     url = (f"/main.aspx?etn={e['tabla']}&amp;pagetype=entitylist"
                            f"&amp;viewid=%7b{vista_id}%7d&amp;viewtype={VISTA_LISTA}")
-                    partes.append(f'<SubArea {comun} Url="{url}">' + _titulos(e["titulo"], idiomas) + "</SubArea>")
+                    partes.append(f'<SubArea {comun} Url="{url}">' + _titulos(e["titulo"], idiomas) + privilegios
+                                  + "</SubArea>")
                 else:
                     partes.append(f'<SubArea {comun} Entity={quoteattr(e["tabla"])}>'
-                                  + _titulos(e["titulo"], idiomas) + "</SubArea>")
+                                  + _titulos(e["titulo"], idiomas) + privilegios + "</SubArea>")
             partes.append("</Group>")
         partes.append("</Area>")
     partes.append("</SiteMap>")
@@ -226,6 +282,16 @@ def _vista(dv, tabla, nombre):
     if len(filas) != 1:
         raise Bloqueado(f"la entrada de sitemap pide la vista '{nombre}' sobre '{tabla}' y hay {len(filas)}")
     return exigir_forma(filas[0].get("savedqueryid"), str, C_VISTA, "savedqueryid", no_vacio=True)
+
+
+def _dashboard(dv, nombre):
+    """El `formid` del dashboard (un `systemform` de tipo 0) con ese nombre: la entrada del sitemap lo abre por su id."""
+    ruta = f"systemforms?$select=formid&$filter=type eq {TIPO_DASHBOARD} and name eq '{nombre}'"
+    cuerpo = leer_entorno(dv, ruta, C_DASHBOARD)
+    filas = exigir_forma(cuerpo.get("value"), [dict], C_DASHBOARD, "value")
+    if len(filas) != 1:
+        raise Bloqueado(f"la entrada de sitemap pide el dashboard '{nombre}' y hay {len(filas)}; hay que crearlo primero")
+    return exigir_forma(filas[0].get("formid"), str, C_DASHBOARD, "formid", no_vacio=True)
 
 
 def _rol(dv, nombre):
@@ -305,7 +371,14 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
                 if "vista" in e and (e["tabla"], e["vista"]) not in vistas:
                     vistas[(e["tabla"], e["vista"])] = _vista(dv, e["tabla"], e["vista"])
 
-    xml = sitemapxml(datos, iconos, vistas, identidad["idiomas"])
+    dashboards = {}
+    for area in datos["areas"]:
+        for grupo in area["grupos"]:
+            for e in grupo["entradas"]:
+                if "dashboard" in e and e["dashboard"] not in dashboards:
+                    dashboards[e["dashboard"]] = _dashboard(dv, e["dashboard"])
+
+    xml = sitemapxml(datos, iconos, vistas, identidad["idiomas"], dashboards)
     hubo_escritura = False
     hubo_alta = False
 
