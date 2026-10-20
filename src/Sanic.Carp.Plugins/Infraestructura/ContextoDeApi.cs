@@ -29,35 +29,49 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// </summary>
         internal ContextoDeApi(string nombreDeLaApi, string nombreParaLaTraza, IPluginExecutionContext contexto, IOrganizationServiceFactory fabrica, ITracingService traza)
         {
-            throw new NotImplementedException();
+            if (nombreDeLaApi == null) throw new ArgumentNullException(nameof(nombreDeLaApi));
+            if (nombreParaLaTraza == null) throw new ArgumentNullException(nameof(nombreParaLaTraza));
+            if (contexto == null) throw new ArgumentNullException(nameof(contexto));
+            if (fabrica == null) throw new ArgumentNullException(nameof(fabrica));
+            if (traza == null) throw new ArgumentNullException(nameof(traza));
+            if (string.IsNullOrWhiteSpace(nombreDeLaApi)) throw new ArgumentException("El nombre de la API es obligatorio.", nameof(nombreDeLaApi));
+            if (string.IsNullOrWhiteSpace(nombreParaLaTraza)) throw new ArgumentException("El nombre para la traza es obligatorio.", nameof(nombreParaLaTraza));
+            NombreDeLaApi = nombreDeLaApi;
+            _contexto = contexto;
+            // 0.2, A-23: el actor se lee ahora, antes de que nadie cree un servicio elevado.
+            ActorId = contexto.InitiatingUserId;
+            _delStep = new ContextoDeStep(nombreParaLaTraza, contexto, fabrica, traza);
         }
 
+        private readonly IPluginExecutionContext _contexto;
+        private readonly ContextoDeStep _delStep;
+
         /// <summary>El <c>uniquename</c> de la API que se está ejecutando.</summary>
-        public string NombreDeLaApi { get { throw new NotImplementedException(); } }
+        public string NombreDeLaApi { get; }
 
         /// <summary><c>MessageName</c> del contexto de la plataforma: lo que <see cref="BaseDeApi"/> compara con <see cref="NombreDeLaApi"/>.</summary>
-        public string Mensaje { get { throw new NotImplementedException(); } }
+        public string Mensaje { get { return _contexto.MessageName; } }
 
         /// <summary><c>Depth</c> del contexto. SOLO informativa (la traza la imprime); ninguna API decide nada por la profundidad (4.1 "Reglas comunes").</summary>
-        public int Profundidad { get { throw new NotImplementedException(); } }
+        public int Profundidad { get { return _contexto.Depth; } }
 
         /// <summary>
         /// El actor: <c>InitiatingUserId</c> del contexto, capturado al construir (0.2). Es el valor que va a <c>sanic_generadoporid</c>, <c>sanic_finalizadoporid</c> y
         /// <c>sanic_oficialasignadoid</c>. Bajo un servicio elevado la cadena anidada ve SYSTEM; este valor no cambia.
         /// </summary>
-        public Guid ActorId { get { throw new NotImplementedException(); } }
+        public Guid ActorId { get; }
 
         /// <summary><c>fabrica.CreateOrganizationService(InitiatingUserId)</c>, una sola vez por ejecución (la misma instancia en cada lectura). Perezoso.</summary>
-        public IOrganizationService ServicioComoLlamador { get { throw new NotImplementedException(); } }
+        public IOrganizationService ServicioComoLlamador { get { return _delStep.ServicioComoLlamador; } }
 
         /// <summary><c>fabrica.CreateOrganizationService(null)</c>, una sola vez por ejecución. Perezoso: una API que no lo necesita (<c>tomarconversacion</c>) no lo crea nunca (A-23).</summary>
-        public IOrganizationService ServicioComoSistema { get { throw new NotImplementedException(); } }
+        public IOrganizationService ServicioComoSistema { get { return _delStep.ServicioComoSistema; } }
 
         /// <summary>La configuración del área perezosa sobre <see cref="ServicioComoSistema"/>: leer la propiedad no consulta ni crea el servicio. Una por ejecución.</summary>
-        public IConfiguracionDelArea Configuracion { get { throw new NotImplementedException(); } }
+        public IConfiguracionDelArea Configuracion { get { return _delStep.Configuracion; } }
 
         /// <summary>El <c>Reloj</c> de producción. La hora se pide siempre por aquí (0.6).</summary>
-        public IReloj Reloj { get { throw new NotImplementedException(); } }
+        public IReloj Reloj { get { return _delStep.Reloj; } }
 
         /// <summary>
         /// ¿Vino el parámetro de entrada <paramref name="nombre"/> en <c>InputParameters</c>? Una Action no recibe la clave si el llamador la omite (0.1). Una clave presente con valor
@@ -65,7 +79,14 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// </summary>
         public bool TieneEntrada(string nombre)
         {
-            throw new NotImplementedException();
+            return Leer(nombre) != null;
+        }
+
+        private object Leer(string nombre)
+        {
+            if (string.IsNullOrEmpty(nombre)) throw new ArgumentException("El nombre del parámetro es obligatorio.", nameof(nombre));
+            object valor;
+            return _contexto.InputParameters != null && _contexto.InputParameters.TryGetValue(nombre, out valor) ? valor : null;
         }
 
         /// <summary>
@@ -75,7 +96,11 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// </summary>
         public Guid? LeerGuid(string nombre)
         {
-            throw new NotImplementedException();
+            var valor = Leer(nombre);
+            if (valor == null) return null;
+            if (!(valor is Guid)) throw new InvalidOperationException("El parámetro " + nombre + " no es un Guid.");
+            var guid = (Guid)valor;
+            return guid == Guid.Empty ? (Guid?)null : guid;
         }
 
         /// <summary>
@@ -84,7 +109,10 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// </summary>
         public int? LeerEntero(string nombre)
         {
-            throw new NotImplementedException();
+            var valor = Leer(nombre);
+            if (valor == null) return null;
+            if (!(valor is int)) throw new InvalidOperationException("El parámetro " + nombre + " no es un entero.");
+            return (int)valor;
         }
 
         /// <summary>
@@ -94,13 +122,15 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// </summary>
         public void EscribirSalida(string nombre, object valor)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(nombre)) throw new ArgumentException("El nombre del parámetro es obligatorio.", nameof(nombre));
+            if (valor == null) throw new ArgumentNullException(nameof(valor));
+            _contexto.OutputParameters[nombre] = valor;
         }
 
         /// <summary>Escribe una línea de traza con <c>Trace("{0}", "[Clase] " + texto)</c>. Solo ids, códigos y nombres de columna: NUNCA un valor del cliente (0.5). Un texto nulo se traza como vacío.</summary>
         public void Trazar(string texto)
         {
-            throw new NotImplementedException();
+            _delStep.Trazar(texto);
         }
     }
 }

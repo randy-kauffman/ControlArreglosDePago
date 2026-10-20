@@ -1,4 +1,5 @@
 using System;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio.Errores;
 using Sanic.Carp.Plugins.Infraestructura;
 
@@ -44,7 +45,17 @@ namespace Sanic.Carp.Plugins.Api
 
         internal override void Ejecutar(ContextoDeApi contexto)
         {
-            throw new NotImplementedException();
+            var pedido = new PedidoDeUnirConversaciones(contexto.LeerGuid(ParametroOrigenId), contexto.LeerGuid(ParametroDestinoId), contexto.ActorId);
+            // Un servicio de cada tipo: el del llamador solo valida el acceso (paso 2); SYSTEM hace todo lo demás (0.2). El actor ya viaja en el pedido.
+            var sistema = contexto.ServicioComoSistema;
+            var logica = new UnirConversacionesLogica(new ConversacionesDataverse(contexto.ServicioComoLlamador), new ConversacionesDataverse(sistema),
+                new CorreosDataverse(sistema), new ArreglosDataverse(sistema), contexto.Reloj, contexto.Trazar);
+
+            var resultado = logica.Ejecutar(pedido);
+
+            contexto.EscribirSalida(SalidaDestinoId, resultado.DestinoId);
+            contexto.EscribirSalida(SalidaCorreosMovidos, resultado.CorreosMovidos);
+            contexto.EscribirSalida(SalidaArreglosRepunteados, resultado.ArreglosRepunteados);
         }
     }
 }

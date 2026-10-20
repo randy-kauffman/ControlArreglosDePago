@@ -1,4 +1,5 @@
 using System;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio.Errores;
 using Sanic.Carp.Plugins.Infraestructura;
 
@@ -37,7 +38,15 @@ namespace Sanic.Carp.Plugins.Api
 
         internal override void Ejecutar(ContextoDeApi contexto)
         {
-            throw new NotImplementedException();
+            // Dos servicios, uno de cada tipo: el LLAMADOR solo valida el acceso a la conversacion; SYSTEM lee y escribe todo lo demas (1.5, decision 1).
+            var sistema = contexto.ServicioComoSistema;
+            var logica = new IniciarConversacionNuevaLogica(new ConversacionesDataverse(contexto.ServicioComoLlamador), new ConversacionesDataverse(sistema),
+                new CorreosDataverse(sistema), contexto.Configuracion, contexto.Trazar);
+
+            var resultado = logica.Ejecutar(new PedidoDeIniciarConversacionNueva(contexto.LeerGuid(ParametroConversacionId)));
+
+            contexto.EscribirSalida(SalidaNuevaConversacionId, resultado.NuevaConversacionId);
+            contexto.EscribirSalida(SalidaCorreosMovidos, resultado.CorreosMovidos);
         }
     }
 }

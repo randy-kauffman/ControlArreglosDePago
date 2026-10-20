@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
 using Sanic.Carp.Plugins.Dominio.Errores;
 
@@ -73,7 +75,58 @@ namespace Sanic.Carp.Plugins.Infraestructura
         /// <summary>Punto de entrada de la plataforma. No se sobrescribe. Contrato en la descripción de la clase.</summary>
         public void Execute(IServiceProvider serviceProvider)
         {
-            throw new NotImplementedException();
+            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
+
+            var plataforma = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
+            var fabrica = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
+            var traza = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+            // El actor se captura al construir el contexto, antes de que nadie cree un servicio elevado (0.2, A-23).
+            var contexto = new ContextoDeApi(NombreDeLaApi, GetType().Name, plataforma, fabrica, traza);
+
+            // Primero el mensaje: una API mal registrada no debe tocar ni identidad ni configuración (4.1).
+            if (!string.Equals(contexto.Mensaje, NombreDeLaApi, StringComparison.Ordinal))
+            {
+                throw new InvalidPluginExecutionException("La API " + GetType().Name + " está mal registrada en la plataforma: llegó el mensaje '"
+                    + (contexto.Mensaje ?? string.Empty) + "' y se esperaba '" + NombreDeLaApi + "'.");
+            }
+
+            contexto.Trazar("entrada profundidad=" + contexto.Profundidad.ToString(CultureInfo.InvariantCulture));
+            try
+            {
+                Ejecutar(contexto);
+                contexto.Trazar("salida correcta");
+            }
+            // Todo catch termina en throw: una falla de escritura atrapada para seguir aborta la transacción (0x8009000C, 0.5).
+            catch (ErrorDeNegocio error)
+            {
+                contexto.Trazar("rechazo " + error.Codigo);
+                throw new InvalidPluginExecutionException(error.ToString());
+            }
+            catch (InvalidPluginExecutionException)
+            {
+                contexto.Trazar("rechazo propagado");
+                throw;
+            }
+            catch (Exception error)
+            {
+                var falla = (error as FaultException<OrganizationServiceFault>)?.Detail;
+                if (falla != null)
+                {
+                    contexto.Trazar("falla de la plataforma " + error.GetType().Name + " codigo 0x" + falla.ErrorCode.ToString("X8", CultureInfo.InvariantCulture));
+                    // Un step anidado rechazó: ya es "CARP-XXX-NNN: ..." y sale tal cual, sin -900 (0.5).
+                    if (falla.ErrorCode == CodigoDePluginRechazado && !string.IsNullOrEmpty(falla.Message))
+                        throw new InvalidPluginExecutionException(falla.Message);
+                }
+                else
+                {
+                    contexto.Trazar("falla inesperada " + error.GetType().Name);
+                }
+                // El mensaje de la plataforma puede repetir valores del cliente: sale el texto fijo del catálogo (0.5).
+                throw new InvalidPluginExecutionException(ErrorTransitorio.Crear().ToString());
+            }
         }
+
+        // ErrorCode con que la plataforma devuelve la InvalidPluginExecutionException de un plugin anidado (RESULTADO.md sección 4; 0.5).
+        private const int CodigoDePluginRechazado = unchecked((int)0x80040265);
     }
 }

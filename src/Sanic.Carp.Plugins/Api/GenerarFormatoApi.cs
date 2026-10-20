@@ -1,5 +1,6 @@
-using System;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio.Errores;
+using Sanic.Carp.Plugins.Formato;
 using Sanic.Carp.Plugins.Infraestructura;
 
 namespace Sanic.Carp.Plugins.Api
@@ -53,7 +54,24 @@ namespace Sanic.Carp.Plugins.Api
 
         internal override void Ejecutar(ContextoDeApi contexto)
         {
-            throw new NotImplementedException();
+            var pedido = new PedidoDeGenerarFormato(contexto.LeerGuid(ParametroArregloId), contexto.LeerGuid(ParametroVersionPreviaId), contexto.ActorId);
+
+            // Un servicio de cada tipo por ejecución (diseno/03 1.1, decisión 2): lo que se lee va con el llamador, lo que se escribe, con SYSTEM.
+            var llamador = contexto.ServicioComoLlamador;
+            var sistema = contexto.ServicioComoSistema;
+            var logica = new GenerarFormatoLogica(
+                new ArreglosDataverse(llamador), new ArreglosDataverse(sistema), new CuotasDataverse(llamador), new ClientesDataverse(llamador, sistema), new UsuariosDataverse(llamador),
+                new ConsecutivosDataverse(sistema), new VersionesDataverse(sistema), new LecturasDeVersionDataverse(sistema), new AccesosDeFilaDataverse(llamador),
+                new GeneradorOpenXml(contexto.Trazar), contexto.Configuracion, contexto.Reloj, contexto.Trazar, new ClientesDataverse(sistema, sistema));
+
+            var resultado = logica.Ejecutar(pedido);
+
+            // Las cinco salidas, siempre (0.1). Si la lógica lanzó, no se escribió ninguna.
+            contexto.EscribirSalida(SalidaArchivo, resultado.Archivo);
+            contexto.EscribirSalida(SalidaNombreArchivo, resultado.NombreDelArchivo);
+            contexto.EscribirSalida(SalidaNumeroProvisional, resultado.NumeroProvisional);
+            contexto.EscribirSalida(SalidaCongelado, resultado.Congelado);
+            contexto.EscribirSalida(SalidaAdvertencias, resultado.Advertencias);
         }
     }
 }

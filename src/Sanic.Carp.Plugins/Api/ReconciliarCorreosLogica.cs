@@ -1,4 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using Sanic.Carp.Plugins.Dominio;
+using Sanic.Carp.Plugins.Dominio.Errores;
 using Sanic.Carp.Plugins.Dominio.Correo;
 using Sanic.Carp.Plugins.Dominio.Puertos;
 
@@ -35,13 +41,134 @@ namespace Sanic.Carp.Plugins.Api
         /// <summary>Cualquier argumento nulo ⇒ <see cref="ArgumentNullException"/> (<paramref name="trazar"/> puede ser <c>null</c>). No consulta nada al construirse.</summary>
         public ReconciliarCorreosLogica(ICorreos correos, RegistradorDeCorreo registrador, IConfiguracionDelArea configuracion, IReloj reloj, Action<string> trazar)
         {
-            throw new NotImplementedException();
+            if (correos == null) throw new ArgumentNullException(nameof(correos));
+            if (registrador == null) throw new ArgumentNullException(nameof(registrador));
+            if (configuracion == null) throw new ArgumentNullException(nameof(configuracion));
+            if (reloj == null) throw new ArgumentNullException(nameof(reloj));
+            _correos = correos;
+            _registrador = registrador;
+            _configuracion = configuracion;
+            _reloj = reloj;
+            _trazar = trazar;
         }
+
+        private const int MaximoPorDefecto = 20;
+        private const int MaximoAbsoluto = 100;
+        private const int MinutosPorDefecto = 10;
+
+        // Minimo de Dataverse para una fecha (decision 5 del lote 6).
+        private static readonly DateTime FechaMinima = new DateTime(1753, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        private static readonly IReadOnlyCollection<string> ColumnasDelCorreoDirigido =
+            new ReadOnlyCollection<string>(new[] { "directioncode", "regardingobjectid", "owningbusinessunit" });
+
+        private readonly ICorreos _correos;
+        private readonly RegistradorDeCorreo _registrador;
+        private readonly IConfiguracionDelArea _configuracion;
+        private readonly IReloj _reloj;
+        private readonly Action<string> _trazar;
 
         /// <summary>Contrato en la descripción de la clase. <paramref name="pedido"/> nulo ⇒ <see cref="ArgumentNullException"/>.</summary>
         public ResultadoDeReconciliarCorreos Ejecutar(PedidoDeReconciliarCorreos pedido)
         {
-            throw new NotImplementedException();
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            // Paso 1: validar antes de cualquier lectura (PA-REC-07, PA6_REC_16).
+            if (pedido.Maximo.HasValue && pedido.Maximo.Value < 0) throw CodigosDeError.REC_001.Crear();
+            if (pedido.MinutosMinimos.HasValue && pedido.MinutosMinimos.Value < 0) throw CodigosDeError.REC_002.Crear();
+            int maximo = !pedido.Maximo.HasValue || pedido.Maximo.Value == 0 ? MaximoPorDefecto : Math.Min(pedido.Maximo.Value, MaximoAbsoluto);
+            int minutos = pedido.MinutosMinimos ?? MinutosPorDefecto;
+
+            // Paso 2: la BU se lee siempre; un CARP-CFG-* aborta sin escrituras (PA-REC-13).
+            Guid bu = _configuracion.BuId;
+
+            var items = new List<ItemDeReconciliacion>();
+            bool hayMas = false;
+
+            if (pedido.EmailId.HasValue)
+            {
+                items.Add(Dirigido(pedido.EmailId.Value, bu));
+            }
+            else
+            {
+                var candidatos = _correos.EntrantesSinConversacion(bu, CorteDeAntiguedad(_reloj.AhoraUtc, minutos), maximo + 1);
+                hayMas = candidatos.Count > maximo;
+                // Una omision de negocio sigue; una falla de plataforma NO se atrapa: aborta el lote (PA-REC-15).
+                for (int i = 0; i < candidatos.Count && i < maximo; i++)
+                {
+                    items.Add(Registrar(candidatos[i]));
+                }
+            }
+
+            int conError = items.Count(i => i.Resultado == ResultadoDeReconciliacion.Omitido);
+            Trazar("reconciliacion: " + items.Count.ToString(CultureInfo.InvariantCulture) + " procesados, " + conError.ToString(CultureInfo.InvariantCulture) + " omitidos");
+            return new ResultadoDeReconciliarCorreos(items.Count, items.Count - conError, conError, hayMas, DetalleDeReconciliacion.ComoJson(items));
+        }
+
+        // Reintento dirigido (1.2 paso 2 y decision 2): sin antiguedad ni tope; se pregunta primero para no escribir ni atrapar nada.
+        private ItemDeReconciliacion Dirigido(Guid emailId, Guid bu)
+        {
+            var correo = _correos.Leer(emailId, ColumnasDelCorreoDirigido);
+            // Entrante es directioncode explicitamente falso: verdadero o ausente falla cerrado (PA-REC-10).
+            if (correo == null) throw CodigosDeError.REC_003.Crear();
+            var direccion = Valor(correo, "directioncode") as bool?;
+            if (direccion != false) throw CodigosDeError.REC_003.Crear();
+
+            // La BU va antes del corte de "yatenia" para que ese no esconda un correo de otra BU (decision 2).
+            var unidad = Valor(correo, "owningbusinessunit") as ReferenciaDeEntidad;
+            if (unidad == null || unidad.Id != bu)
+            {
+                var omision = CodigosDeError.ENT_004.Crear();
+                Trazar("correo " + Texto(emailId) + ": omitido " + omision.Codigo);
+                return DetalleDeReconciliacion.DeOmision(emailId, omision);
+            }
+
+            // Nota del orquestador en PA-REC-09: con Regarding a la tabla basta; no se lee la conversacion ni se llama al registrador.
+            var regarding = Valor(correo, "regardingobjectid") as ReferenciaDeEntidad;
+            if (regarding != null && string.Equals(regarding.Tabla, TablasDelArea.Conversacion, StringComparison.Ordinal))
+            {
+                Trazar("correo " + Texto(emailId) + ": yatenia " + Texto(regarding.Id));
+                return new ItemDeReconciliacion(emailId, ResultadoDeReconciliacion.YaTenia, regarding.Id, null);
+            }
+
+            return Registrar(emailId);
+        }
+
+        private ItemDeReconciliacion Registrar(Guid emailId)
+        {
+            var resultado = _registrador.Registrar(emailId);
+            switch (resultado.Tipo)
+            {
+                case TipoDeRegistro.Creada: return new ItemDeReconciliacion(emailId, ResultadoDeReconciliacion.Creada, resultado.ConversacionId, null);
+                case TipoDeRegistro.Unida: return new ItemDeReconciliacion(emailId, ResultadoDeReconciliacion.Unida, resultado.ConversacionId, null);
+                case TipoDeRegistro.YaTenia: return new ItemDeReconciliacion(emailId, ResultadoDeReconciliacion.YaTenia, resultado.ConversacionId, null);
+                case TipoDeRegistro.Omitido: return DetalleDeReconciliacion.DeOmision(emailId, resultado.Omision);
+                default: throw new InvalidOperationException("El registrador devolvió un tipo de resultado desconocido.");
+            }
+        }
+
+        // ahora - minutos; si saldria del rango de DateTime o por debajo del minimo de Dataverse, se usa 1753-01-01 UTC (decision 5).
+        private static DateTime CorteDeAntiguedad(DateTime ahora, int minutos)
+        {
+            long resta = (long)minutos * TimeSpan.TicksPerMinute;
+            if (ahora.Ticks - resta < FechaMinima.Ticks) return FechaMinima;
+            return ahora.AddTicks(-resta);
+        }
+
+        private void Trazar(string texto)
+        {
+            if (_trazar != null) _trazar(texto);
+        }
+
+        private static string Texto(Guid id)
+        {
+            return id.ToString("D", CultureInfo.InvariantCulture);
+        }
+
+        private static object Valor(FilaDeDatos fila, string columna)
+        {
+            object valor;
+            return fila.Valores.TryGetValue(columna, out valor) ? valor : null;
         }
     }
 }

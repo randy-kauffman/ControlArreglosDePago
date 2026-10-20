@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using Sanic.Carp.Plugins.Dominio.Errores;
 
 namespace Sanic.Carp.Plugins.Api
@@ -99,13 +101,73 @@ namespace Sanic.Carp.Plugins.Api
         /// </summary>
         public static string ComoJson(IReadOnlyList<ItemDeReconciliacion> items)
         {
-            throw new NotImplementedException();
+            if (items == null) throw new ArgumentNullException(nameof(items));
+
+            // Escrito a mano (diseno/03 1.2, decision 4): la salida debe ser identica byte a byte en net462 y net8.0.
+            var json = new StringBuilder("[");
+            for (int i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                if (item == null) throw new ArgumentException("El detalle no admite elementos nulos.", nameof(items));
+
+                if (i > 0) json.Append(',');
+                json.Append("{\"emailid\":");
+                AgregarGuid(json, item.EmailId);
+                json.Append(",\"resultado\":\"").Append(TextoDelResultado(item.Resultado)).Append("\",\"conversacionid\":");
+                if (item.ConversacionId.HasValue) AgregarGuid(json, item.ConversacionId.Value);
+                else json.Append("null");
+                json.Append(",\"codigo\":");
+                if (item.Codigo == null) json.Append("null");
+                else AgregarTexto(json, item.Codigo);
+                json.Append('}');
+            }
+            return json.Append(']').ToString();
         }
 
         /// <summary>El <see cref="ItemDeReconciliacion"/> de un <c>Omitido</c> del registrador: <c>resultado</c> = <see cref="ResultadoDeReconciliacion.Omitido"/>, sin conversación y con <c>error.Codigo</c>.</summary>
         public static ItemDeReconciliacion DeOmision(Guid emailId, ErrorDeNegocio error)
         {
-            throw new NotImplementedException();
+            if (error == null) throw new ArgumentNullException(nameof(error));
+            return new ItemDeReconciliacion(emailId, ResultadoDeReconciliacion.Omitido, null, error.Codigo);
+        }
+
+        private static string TextoDelResultado(ResultadoDeReconciliacion resultado)
+        {
+            switch (resultado)
+            {
+                case ResultadoDeReconciliacion.Creada: return "creada";
+                case ResultadoDeReconciliacion.Unida: return "unida";
+                case ResultadoDeReconciliacion.YaTenia: return "yatenia";
+                case ResultadoDeReconciliacion.Omitido: return "omitido";
+                default: throw new ArgumentOutOfRangeException(nameof(resultado), "El resultado de la reconciliación no está definido.");
+            }
+        }
+
+        private static void AgregarGuid(StringBuilder json, Guid id)
+        {
+            // Formato D en minuscula, sin depender de la cultura.
+            json.Append('"').Append(id.ToString("D", CultureInfo.InvariantCulture)).Append('"');
+        }
+
+        private static void AgregarTexto(StringBuilder json, string texto)
+        {
+            json.Append('"');
+            foreach (char c in texto)
+            {
+                switch (c)
+                {
+                    case '"': json.Append("\\\""); break;
+                    case '\\': json.Append("\\\\"); break;
+                    case '\n': json.Append("\\n"); break;
+                    case '\r': json.Append("\\r"); break;
+                    case '\t': json.Append("\\t"); break;
+                    default:
+                        if (c < ' ') json.Append("\\u").Append(((int)c).ToString("x4", CultureInfo.InvariantCulture));
+                        else json.Append(c);
+                        break;
+                }
+            }
+            json.Append('"');
         }
     }
 }

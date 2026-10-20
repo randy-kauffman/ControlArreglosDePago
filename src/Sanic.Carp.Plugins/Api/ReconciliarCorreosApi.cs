@@ -1,4 +1,6 @@
 using System;
+using Sanic.Carp.Plugins.Datos;
+using Sanic.Carp.Plugins.Dominio.Correo;
 using Sanic.Carp.Plugins.Dominio.Errores;
 using Sanic.Carp.Plugins.Infraestructura;
 
@@ -54,7 +56,21 @@ namespace Sanic.Carp.Plugins.Api
 
         internal override void Ejecutar(ContextoDeApi contexto)
         {
-            throw new NotImplementedException();
+            // Un solo servicio, el de SYSTEM, como S-34: la cuenta de servicio que llama no se registra (PA-REC-14, decision 1).
+            var servicio = contexto.ServicioComoSistema;
+            var correos = new CorreosDataverse(servicio);
+            var registrador = new RegistradorDeCorreo(correos, new ConversacionesDataverse(servicio), new ClientesDataverse(servicio, servicio), contexto.Configuracion, contexto.Trazar);
+            var logica = new ReconciliarCorreosLogica(correos, registrador, contexto.Configuracion, contexto.Reloj, contexto.Trazar);
+
+            var resultado = logica.Ejecutar(new PedidoDeReconciliarCorreos(
+                contexto.LeerGuid(ParametroEmailId), contexto.LeerEntero(ParametroMaximo), contexto.LeerEntero(ParametroMinutosMinimos)));
+
+            // Las cinco salidas siempre (0.1).
+            contexto.EscribirSalida(SalidaEncontrados, resultado.Encontrados);
+            contexto.EscribirSalida(SalidaRegistrados, resultado.Registrados);
+            contexto.EscribirSalida(SalidaConError, resultado.ConError);
+            contexto.EscribirSalida(SalidaHayMas, resultado.HayMas);
+            contexto.EscribirSalida(SalidaDetalle, resultado.Detalle);
         }
     }
 }

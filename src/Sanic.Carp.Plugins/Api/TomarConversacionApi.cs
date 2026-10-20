@@ -1,4 +1,5 @@
 using System;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio.Errores;
 using Sanic.Carp.Plugins.Infraestructura;
 
@@ -40,7 +41,16 @@ namespace Sanic.Carp.Plugins.Api
 
         internal override void Ejecutar(ContextoDeApi contexto)
         {
-            throw new NotImplementedException();
+            var pedido = new PedidoDeTomarConversacion(contexto.LeerGuid(ParametroConversacionId), contexto.ActorId);
+            // Un solo servicio, el del llamador: esta API no eleva (def. L244, A-23).
+            var llamador = contexto.ServicioComoLlamador;
+            var logica = new TomarConversacionLogica(new ConversacionesDataverse(llamador), new UsuariosDataverse(llamador), contexto.Trazar);
+
+            var resultado = logica.Ejecutar(pedido);
+
+            contexto.EscribirSalida(SalidaOficialAsignadoId, resultado.OficialAsignadoId);
+            contexto.EscribirSalida(SalidaOficialNombre, resultado.OficialNombre);
+            contexto.EscribirSalida(SalidaYaAsignada, resultado.YaAsignada);
         }
     }
 }

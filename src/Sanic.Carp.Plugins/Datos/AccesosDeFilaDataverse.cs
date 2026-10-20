@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Sanic.Carp.Plugins.Dominio.Puertos;
 
@@ -12,14 +13,27 @@ namespace Sanic.Carp.Plugins.Datos
     /// </summary>
     internal sealed class AccesosDeFilaDataverse : IAccesosDeFila
     {
+        private readonly IOrganizationService _servicio;
+
         public AccesosDeFilaDataverse(IOrganizationService servicio)
         {
-            throw new NotImplementedException();
+            if (servicio == null) throw new ArgumentNullException(nameof(servicio));
+            _servicio = servicio;
         }
 
         public bool PuedeEscribir(string tabla, Guid id, Guid usuarioId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(tabla)) throw new ArgumentException("La tabla es obligatoria.", nameof(tabla));
+            if (id == Guid.Empty) throw new ArgumentException("El id de la fila es obligatorio.", nameof(id));
+            if (usuarioId == Guid.Empty) throw new ArgumentException("El id del usuario es obligatorio.", nameof(usuarioId));
+
+            var pedido = new RetrievePrincipalAccessRequest
+            {
+                Target = new EntityReference(tabla, id),
+                Principal = new EntityReference("systemuser", usuarioId)
+            };
+            var respuesta = (RetrievePrincipalAccessResponse)_servicio.Execute(pedido);
+            return respuesta.AccessRights.HasFlag(AccessRights.WriteAccess);
         }
     }
 }
