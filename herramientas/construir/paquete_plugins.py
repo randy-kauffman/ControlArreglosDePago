@@ -22,13 +22,30 @@ borrando a mano, que se lleva puestos ensamblados, tipos y TODOS sus steps.
 Lo único que se puede actualizar es el contenido, y solo si se lo piden con
 `--actualizar-contenido`.
 
+Verificación del binario (antes de escribir en el entorno, cuando se lee el
+.nupkg: en el alta y con `--actualizar-contenido`):
+
+  - el `.nuspec` de adentro dice `id` = `uniquename` y `version` = `version`;
+  - cada dependencia del nuspec que no es de plataforma (Microsoft.CrmSdk.*,
+    Microsoft.Xrm.*, herramientas de compilación) viene como .dll en lib/net462;
+  - los `tipos` están definidos, con namespace completo, en algún .dll de
+    lib/net462 (se lee la tabla TypeDef de la metadata: `_metadata_net.py`).
+
+Verificación del entorno (los tres caminos): el `version` de cada ensamblado
+del paquete es `version_ensamblado` (el AssemblyVersion). Con
+`--actualizar-contenido` se leen `version` y `modifiedon` antes y después del
+PATCH: un 204 no prueba que el sandbox ejecute el binario nuevo, y si
+`modifiedon` no avanzó es `error`.
+
 Última línea de la salida: JSON de una línea con `estado`
 (creado | actualizado | ya_existia | difiere | bloqueado | error), `componente`, `detalle`.
 """
 import base64
+import datetime
 import io
 import os
 import sys
+import xml.etree.ElementTree as ElementTree
 import zipfile
 
 _AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -36,6 +53,7 @@ _RAIZ = os.path.dirname(os.path.dirname(_AQUI))
 sys.path.insert(0, _AQUI)
 sys.path.insert(0, os.path.dirname(_AQUI))
 
+from _metadata_net import NoEsEnsambladoNet, nombres_de_tipos  # noqa: E402
 from _comun import (  # noqa: E402
     Bloqueado,
     ErrorEntorno,
@@ -46,6 +64,7 @@ from _comun import (  # noqa: E402
     escribir_metadatos,
     exigir_forma,
     exigir_sin_tildes,
+    fuera_de_la_solucion,
     leer_entorno,
     leer_texto,
     obtener_componente,
@@ -70,7 +89,22 @@ MENSAJE_FALLO_CLIENTE = (
     "no se expone el detalle porque podría incluir datos de la solicitud de token"
 )
 
-CLAVES = {"tipo": str, "nombre": str, "uniquename": str, "version": str, "nupkg": str, "tipos": list}
+CLAVES = {
+    "tipo": str, "nombre": str, "uniquename": str, "version": str, "version_ensamblado": str, "nupkg": str, "tipos": list,
+}
+
+# El sandbox carga los ensamblados de esta carpeta del paquete y de ninguna otra.
+CARPETA_DEL_SANDBOX = "lib/net462/"
+
+# Dependencias que el sandbox ya trae (el SDK de Dataverse) o que son herramientas de compilación y no viajan al
+# runtime (`Microsoft.PowerApps.MSBuild.Plugin` figura en el nuspec de un paquete real con `exclude="Build,Analyzers"`).
+# Se comparan en minúsculas y con el punto final: `Microsoft.XrmToolkit` no es del SDK.
+PREFIJOS_DE_PLATAFORMA = ("microsoft.crmsdk.", "microsoft.xrm.", "microsoft.powerapps.msbuild.")
+
+
+class ErrorNupkg(Exception):
+    """El .nupkg no es el paquete que el playbook declara (identidad, versión o dependencias).
+    Nunca se llegó a escribir en el entorno; termina en el estado `error`."""
 
 C_PAQUETE = "la consulta del paquete de plugins (GET pluginpackages)"
 C_ENSAMBLADOS = "la consulta de los ensamblados del paquete (GET pluginassemblies)"
@@ -118,10 +152,6 @@ def _validar_estructura(datos, identidad):
     if datos["tipo"] != TIPO:
         raise ErrorPlaybook(f"el bloque del paquete dice tipo = {datos['tipo']!r}, se esperaba {TIPO!r}")
 
-    exigir_sin_tildes(datos["nombre"], "nombre")
-    if len(datos["nombre"]) > LARGO_NOMBRE:
-        raise ErrorPlaybook(f"nombre tiene {len(datos['nombre'])} caracteres; el máximo de la columna es {LARGO_NOMBRE}")
-
     unico = datos["uniquename"]
     if len(unico) > LARGO_UNIQUENAME:
         raise ErrorPlaybook(f"uniquename tiene {len(unico)} caracteres; el máximo de la columna es {LARGO_UNIQUENAME}")
@@ -135,6 +165,16 @@ def _validar_estructura(datos, identidad):
     if not unico.startswith(prefijo):
         raise ErrorPlaybook(f"uniquename = {unico!r} no empieza con el prefijo del publisher {prefijo!r}")
 
+    exigir_sin_tildes(datos["nombre"], "nombre")
+    if len(datos["nombre"]) > LARGO_NOMBRE:
+        raise ErrorPlaybook(f"nombre tiene {len(datos['nombre'])} caracteres; el máximo de la columna es {LARGO_NOMBRE}")
+    # La plataforma rechazó con 400 un `name` en texto libre en los spikes 2026-003 (los paquetes que sí se
+    # registraron llevan `name` = `uniquename`): se frena acá, antes de intentarlo.
+    if datos["nombre"] != unico:
+        raise ErrorPlaybook(
+            f"nombre = {datos['nombre']!r} tiene que ser igual a uniquename = {unico!r}: la plataforma rechaza un name libre"
+        )
+
     if not _version_bien_formada(datos["version"]):
         raise ErrorPlaybook(
             f"version = {datos['version']!r} no tiene la forma esperada (de dos a cuatro números separados por punto); "
@@ -142,6 +182,13 @@ def _validar_estructura(datos, identidad):
         )
     if len(datos["version"]) > LARGO_VERSION:
         raise ErrorPlaybook(f"version tiene {len(datos['version'])} caracteres; el máximo de la columna es {LARGO_VERSION}")
+
+    # `pluginassemblies.version` es el AssemblyVersion del ensamblado: cuatro números. No es la versión del paquete.
+    if not _version_bien_formada(datos["version_ensamblado"]) or datos["version_ensamblado"].count(".") != 3:
+        raise ErrorPlaybook(
+            f"version_ensamblado = {datos['version_ensamblado']!r} no tiene la forma esperada: cuatro números separados por "
+            "punto (el AssemblyVersion, por ejemplo '1.0.0.0'), sin ceros a la izquierda"
+        )
 
     ruta = datos["nupkg"]
     if not ruta.endswith(".nupkg"):
@@ -173,15 +220,114 @@ def validar_playbook(datos, identidad):
         raise ErrorPlaybook(_como_error_de_playbook(e)) from None
 
 
+def _abrir_nupkg(crudo):
+    try:
+        return zipfile.ZipFile(io.BytesIO(crudo))
+    except zipfile.BadZipFile:
+        raise Bloqueado(
+            "el .nupkg no es un .zip válido; es la señal de que `dotnet pack` no lo regeneró "
+            "(MSBuild puede dar `GenerateNuspec` por \"up-to-date\" contra una caché de `obj/` vieja: "
+            "borrar `obj/` y `bin/` a mano y volver a empaquetar)"
+        ) from None
+
+
+def _dlls_del_sandbox(paquete):
+    """Los `.dll` que están DIRECTAMENTE en `lib/net462/`: la única carpeta que el sandbox carga. Un .dll en otro
+    destino (`lib/netstandard2.0/`) o en una subcarpeta no le sirve, aunque tenga los tipos."""
+    dlls = []
+    for nombre in paquete.namelist():
+        resto = nombre[len(CARPETA_DEL_SANDBOX):]
+        if nombre.lower().startswith(CARPETA_DEL_SANDBOX) and resto and "/" not in resto and resto.lower().endswith(".dll"):
+            dlls.append(nombre)
+    return dlls
+
+
+def _sin_espacio_de_nombres(etiqueta):
+    return etiqueta.rsplit("}", 1)[-1]
+
+
+def _hijo(elemento, nombre):
+    for h in elemento:
+        if _sin_espacio_de_nombres(h.tag) == nombre:
+            return h
+    return None
+
+
+def _leer_nuspec(paquete):
+    """(id, version, ids de dependencias) del `.nuspec` de la raíz del paquete. Lanza `ErrorNupkg` si falta, no es
+    XML, declara un DOCTYPE (no se expande: nada de entidades) o no dice `id` o `version`."""
+    nuspecs = sorted(n for n in paquete.namelist() if "/" not in n and n.lower().endswith(".nuspec"))
+    if not nuspecs:
+        raise ErrorNupkg("el .nupkg no trae ningún .nuspec en su raíz; no se puede comprobar qué paquete es")
+    crudo = paquete.read(nuspecs[0])
+    minusculas = crudo.lower()
+    if b"<!doctype" in minusculas or b"<!entity" in minusculas:
+        raise ErrorNupkg(f"el nuspec '{nuspecs[0]}' declara un DOCTYPE o entidades; no se lee (un nuspec de `dotnet pack` no los lleva)")
+    try:
+        raiz = ElementTree.fromstring(crudo)
+    except ElementTree.ParseError as e:
+        raise ErrorNupkg(f"el nuspec '{nuspecs[0]}' no es XML válido: {e}") from None
+    metadata = _hijo(raiz, "metadata")
+    if metadata is None:
+        raise ErrorNupkg(f"el nuspec '{nuspecs[0]}' no tiene <metadata>")
+    valores = {}
+    for clave in ("id", "version"):
+        elemento = _hijo(metadata, clave)
+        texto = (elemento.text or "").strip() if elemento is not None else ""
+        if not texto:
+            raise ErrorNupkg(f"el nuspec '{nuspecs[0]}' no declara <{clave}>")
+        valores[clave] = texto
+    dependencias = {
+        d.get("id", "").strip()
+        for d in metadata.iter()
+        if _sin_espacio_de_nombres(d.tag) == "dependency" and d.get("id", "").strip()
+    }
+    return valores["id"], valores["version"], dependencias
+
+
+def _es_de_plataforma(id_dependencia):
+    return id_dependencia.lower().startswith(PREFIJOS_DE_PLATAFORMA)
+
+
+def _exigir_el_paquete_declarado(paquete, datos):
+    """Lo que el .nupkg dice de sí mismo tiene que ser lo que el playbook declara, y todo lo que el nuspec pide
+    tiene que venir adentro: el sandbox no resuelve paquetes de NuGet, solo carga los .dll del paquete. Se compara
+    el id y la versión EXACTOS (sin normalizar mayúsculas): el unique name es el que la plataforma va a registrar."""
+    id_nuspec, version_nuspec, dependencias = _leer_nuspec(paquete)
+    problemas = []
+    if id_nuspec != datos["uniquename"]:
+        problemas.append(
+            f"el nuspec dice id = {id_nuspec!r} y el playbook dice uniquename = {datos['uniquename']!r} "
+            "(revisar PackageId del proyecto de empaquetado)"
+        )
+    if version_nuspec != datos["version"]:
+        problemas.append(
+            f"el nuspec dice version = {version_nuspec!r} y el playbook dice version = {datos['version']!r} "
+            "(revisar Version del proyecto de empaquetado; la del paquete es inmutable en el servidor)"
+        )
+    if problemas:
+        raise ErrorNupkg("el .nupkg no es el paquete que el playbook declara: " + "; ".join(problemas))
+
+    presentes = {n.rsplit("/", 1)[-1][:-4].lower() for n in _dlls_del_sandbox(paquete)}
+    faltan = sorted(d for d in dependencias if not _es_de_plataforma(d) and d.lower() not in presentes)
+    if faltan:
+        raise ErrorNupkg(
+            f"el nuspec declara dependencias que no vienen como .dll en {CARPETA_DEL_SANDBOX} dentro del paquete: {faltan}. "
+            "El sandbox no resuelve paquetes de NuGet: sin su .dll el plugin falla al cargar. Revisar que el proyecto de "
+            "empaquetado las copie a la salida (y que no estén marcadas PrivateAssets)"
+        )
+
+
 def _tipos_faltantes_en_dll(crudo, tipos_declarados):
-    """Abre el .nupkg como el .zip que es, junta el contenido de todos los
-    `.dll` bajo `lib/` y busca ahí el nombre de clase (último tramo del tipo
-    completo) como cadena terminada en NUL — así se ve en el heap `#Strings`
-    de la metadata .NET, sin necesidad de un parser de IL completo.
+    """Abre el .nupkg como el .zip que es, lee la metadata (tabla `TypeDef`) de
+    cada ensamblado .NET que esté en `lib/net462/` y compara el nombre COMPLETO
+    de cada tipo declarado (namespace + clase). Buscar solo el nombre de la clase
+    daba por bueno `Otro.Namespace.Clase`; ver `_metadata_net.py`.
 
     Devuelve la lista de tipos declarados que NO aparecen. Lanza `Bloqueado`
-    si el archivo no es un .zip válido o si no trae ningún .dll: en los dos
-    casos no tiene sentido seguir, porque no hay contenido que comparar.
+    si el archivo no es un .zip válido o si no trae ningún .dll en esa carpeta: en los dos
+    casos no tiene sentido seguir, porque no hay contenido que comparar. Un .dll
+    que no es un ensamblado .NET (nativo, corrupto) no aporta tipos y se ignora.
 
     Por qué por CONTENIDO y no por fecha: MSBuild puede
     dar `GenerateNuspec` por "up-to-date" contra una caché de `obj/`
@@ -190,31 +336,30 @@ def _tipos_faltantes_en_dll(crudo, tipos_declarados):
     parte de ese target. Eso hizo que se subiera un paquete sin las clases
     nuevas y se midiera código viejo durante un día entero. Una fecha dice que
     el archivo se escribió; solo el contenido dice qué tiene adentro."""
-    try:
-        paquete = zipfile.ZipFile(io.BytesIO(crudo))
-    except zipfile.BadZipFile:
-        raise Bloqueado(
-            "el .nupkg no es un .zip válido; es la señal de que `dotnet pack` no lo regeneró "
-            "(MSBuild puede dar `GenerateNuspec` por \"up-to-date\" contra una caché de `obj/` vieja: "
-            "borrar `obj/` y `bin/` a mano y volver a empaquetar)"
-        )
-    with paquete:
-        dlls = [n for n in paquete.namelist() if n.startswith("lib/") and n.lower().endswith(".dll")]
+    with _abrir_nupkg(crudo) as paquete:
+        dlls = _dlls_del_sandbox(paquete)
         if not dlls:
             raise Bloqueado(
-                "el .nupkg no trae ningún .dll bajo 'lib/'; no se puede verificar que traiga los tipos "
-                "que el playbook declara"
+                f"el .nupkg no trae ningún .dll en '{CARPETA_DEL_SANDBOX}'; no se puede verificar que traiga los tipos "
+                "que el playbook declara (el sandbox carga esa carpeta y ninguna otra)"
             )
-        contenido = b"".join(paquete.read(n) for n in dlls)
-    return [t for t in tipos_declarados if t.rsplit(".", 1)[-1].encode("utf-8") + b"\x00" not in contenido]
+        definidos = set()
+        for nombre in dlls:
+            try:
+                definidos |= nombres_de_tipos(paquete.read(nombre))
+            except NoEsEnsambladoNet:
+                continue
+    return [t for t in tipos_declarados if t not in definidos]
 
 
-def leer_nupkg(ruta_relativa, tipos_declarados):
+def leer_nupkg(ruta_relativa, datos):
     """Lee el .nupkg de la raíz del repositorio y lo devuelve en base64, que es
     como viaja en la columna `content`. Lanza `Bloqueado` si no está armado:
     no es un error del playbook, es que falta correr `dotnet pack`. También
-    lanza `Bloqueado` si el .dll de adentro no trae alguno de los `tipos`
-    declarados: subirlo así sube un paquete que no sirve para nada."""
+    lanza `Bloqueado` si los .dll de adentro no traen alguno de los `tipos`
+    declarados: subirlo así sube un paquete que no sirve para nada. Y `ErrorNupkg`
+    si el nuspec no es el del paquete declarado o le faltan dependencias."""
+    tipos_declarados = datos["tipos"]
     ruta = os.path.join(_RAIZ, ruta_relativa)
     if not os.path.isfile(ruta):
         raise Bloqueado(
@@ -230,6 +375,8 @@ def leer_nupkg(ruta_relativa, tipos_declarados):
             f"el paquete '{ruta_relativa}' pesa {len(crudo)} bytes, más que el tope de {MAXIMO_BYTES_NUPKG}; "
             "casi siempre significa que se coló un ensamblado que ya vive en el sandbox (el SDK de Dataverse)"
         )
+    with _abrir_nupkg(crudo) as paquete:
+        _exigir_el_paquete_declarado(paquete, datos)
     faltan = _tipos_faltantes_en_dll(crudo, tipos_declarados)
     if faltan:
         raise Bloqueado(
@@ -258,23 +405,68 @@ def _leer_paquete(dv, uniquename):
     return filas[0] if filas else None
 
 
-def _tipos_registrados(dv, paquete_id):
-    """Los `plugintype` que la plataforma registró sola a partir del paquete.
-    Devuelve (nombres de ensamblado, {typename: plugintypeid})."""
-    ruta_asm = f"pluginassemblies?$select=pluginassemblyid,name,version&$filter=_packageid_value eq {paquete_id}"
-    cuerpo = leer_entorno(dv, ruta_asm, C_ENSAMBLADOS)
+def _leer_ensamblados(dv, paquete_id):
+    """Los `pluginassembly` que la plataforma registró sola a partir del paquete, con su `version` (el
+    AssemblyVersion) validada por tipo. `modifiedon` viaja en la fila pero solo se valida donde se usa."""
+    ruta = (
+        "pluginassemblies?$select=pluginassemblyid,name,version,modifiedon"
+        f"&$filter=_packageid_value eq {paquete_id}"
+    )
+    cuerpo = leer_entorno(dv, ruta, C_ENSAMBLADOS)
     ensamblados = exigir_forma(cuerpo.get("value"), [dict], C_ENSAMBLADOS, "value")
-
-    nombres, tipos = [], {}
     for asm in ensamblados:
-        asm_id = exigir_forma(asm.get("pluginassemblyid"), str, C_ENSAMBLADOS, "pluginassemblyid", no_vacio=True)
-        nombres.append(exigir_forma(asm.get("name"), str, C_ENSAMBLADOS, "name"))
-        ruta_tipos = f"plugintypes?$select=plugintypeid,typename&$filter=_pluginassemblyid_value eq {asm_id}"
+        exigir_forma(asm.get("pluginassemblyid"), str, C_ENSAMBLADOS, "pluginassemblyid", no_vacio=True)
+        exigir_forma(asm.get("name"), str, C_ENSAMBLADOS, "name")
+        exigir_forma(asm.get("version"), str, C_ENSAMBLADOS, "version")
+    return ensamblados
+
+
+def _fecha_de_modificacion(asm):
+    """`modifiedon` de una fila de ensamblado como fecha. Un valor ausente, que no sea texto o que no sea una
+    fecha ISO 8601 es forma inesperada: no se puede decidir si el binario nuevo se cargó."""
+    texto = exigir_forma(asm.get("modifiedon"), str, C_ENSAMBLADOS, "modifiedon", no_vacio=True)
+    try:
+        fecha = datetime.datetime.fromisoformat(texto)
+    except ValueError:
+        raise ErrorEntorno(
+            f"{C_ENSAMBLADOS} devolvió 200 con forma inesperada: 'modifiedon' debía ser una fecha ISO 8601 y llegó {texto!r}"
+        ) from None
+    return fecha if fecha.tzinfo else fecha.replace(tzinfo=datetime.timezone.utc)
+
+
+def _modificaciones_por_ensamblado(ensamblados):
+    return {asm["name"]: (_fecha_de_modificacion(asm), asm["modifiedon"]) for asm in ensamblados}
+
+
+def _tipos_registrados(dv, ensamblados):
+    """Los `plugintype` que la plataforma registró a partir de esos ensamblados: {typename: plugintypeid}."""
+    tipos = {}
+    for asm in ensamblados:
+        ruta_tipos = f"plugintypes?$select=plugintypeid,typename&$filter=_pluginassemblyid_value eq {asm['pluginassemblyid']}"
         cuerpo_tipos = leer_entorno(dv, ruta_tipos, C_TIPOS)
         for t in exigir_forma(cuerpo_tipos.get("value"), [dict], C_TIPOS, "value"):
             nombre_tipo = exigir_forma(t.get("typename"), str, C_TIPOS, "typename", no_vacio=True)
             tipos[nombre_tipo] = exigir_forma(t.get("plugintypeid"), str, C_TIPOS, "plugintypeid", no_vacio=True)
-    return sorted(nombres), tipos
+    return tipos
+
+
+def _diferencias_de_modificacion(antes, despues):
+    """Tras `--actualizar-contenido`: cada ensamblado que ya existía tiene que haber avanzado su `modifiedon`. Un 204
+    del PATCH solo dice que la plataforma recibió el contenido; si `modifiedon` no se movió, el sandbox sigue con el
+    binario anterior (típicamente porque no subió el AssemblyVersion)."""
+    difs = []
+    for nombre, (fecha_antes, texto_antes) in sorted(antes.items()):
+        if nombre not in despues:
+            difs.append(f"el ensamblado '{nombre}' ya no figura en el paquete después de actualizar el contenido")
+            continue
+        fecha_despues, texto_despues = despues[nombre]
+        if fecha_despues <= fecha_antes:
+            difs.append(
+                f"modifiedon de '{nombre}' no avanzó (antes {texto_antes}, después {texto_despues}): la plataforma pudo "
+                "no cargar el binario nuevo y seguir ejecutando el anterior. Subir el AssemblyVersion (tercer número), "
+                "volver a empaquetar y repetir"
+            )
+    return difs
 
 
 def _componente_de_la_solucion(dv, solution_id, paquete_id):
@@ -295,7 +487,7 @@ def _componente_de_la_solucion(dv, solution_id, paquete_id):
     return filas[0] if filas else None
 
 
-def _verificar(dv, datos, solution_id, paquete):
+def _verificar(dv, datos, solucion, solution_id, paquete):
     """Todo lo que tiene que ser cierto después de subir el paquete. Devuelve
     la lista de diferencias (vacía = está bien) y el detalle para el informe."""
     difs = []
@@ -310,7 +502,18 @@ def _verificar(dv, datos, solution_id, paquete):
     if exigir_forma(paquete.get("ismanaged"), bool, C_PAQUETE, "ismanaged"):
         difs.append("el paquete está managed en este entorno; no se toca desde acá")
 
-    ensamblados, tipos = _tipos_registrados(dv, paquete_id)
+    filas_ensamblados = _leer_ensamblados(dv, paquete_id)
+    ensamblados = sorted(asm["name"] for asm in filas_ensamblados)
+    tipos = _tipos_registrados(dv, filas_ensamblados)
+    # `pluginassemblies.version` es el AssemblyVersion que cargó el sandbox. Si el binario cambió y la versión no,
+    # la plataforma sigue ejecutando el anterior sin avisar (alm.md): por eso se compara en los tres caminos.
+    for asm in sorted(filas_ensamblados, key=lambda a: a["name"]):
+        if asm["version"] != datos["version_ensamblado"]:
+            difs.append(
+                f"el ensamblado '{asm['name']}': version es {asm['version']!r} y el playbook dice "
+                f"version_ensamblado {datos['version_ensamblado']!r} (si el binario cambió, subir el AssemblyVersion del "
+                "proyecto de empaquetado y volver a empaquetar; si no, corregir version_ensamblado)"
+            )
     faltan = [t for t in datos["tipos"] if t not in tipos]
     if faltan:
         difs.append(
@@ -330,23 +533,27 @@ def _verificar(dv, datos, solution_id, paquete):
 
     componente = _componente_de_la_solucion(dv, solution_id, paquete_id)
     if componente is None:
-        difs.append(f"el paquete no figura como componente de la solución (solutionid {solution_id})")
+        difs.append(fuera_de_la_solucion("el paquete", solucion, solution_id))
         tipo_componente = None
     else:
         tipo_componente = componente.get("componenttype")
 
-    return difs, {"paquete_id": paquete_id, "tipos": tipos, "ensamblados": ensamblados, "componenttype": tipo_componente}
+    return difs, {
+        "paquete_id": paquete_id, "tipos": tipos, "ensamblados": ensamblados, "filas_ensamblados": filas_ensamblados,
+        "componenttype": tipo_componente,
+    }
 
 
 def _contra_entorno(dv, datos, identidad, solo_verificar, actualizar_contenido, componente, dormir):
     solucion = identidad["solucion"]
     solution_id = comprobar_solucion_e_idioma(dv, identidad)
     paquete = _leer_paquete(dv, datos["uniquename"])
+    antes = None  # {ensamblado: modifiedon} previo al PATCH; solo existe con --actualizar-contenido
 
     if paquete is None:
         if solo_verificar:
             return "difiere", componente, f"el paquete '{datos['uniquename']}' no existe en el entorno"
-        crudo, contenido = leer_nupkg(datos["nupkg"], datos["tipos"])
+        crudo, contenido = leer_nupkg(datos["nupkg"], datos)
         cuerpo = {
             "name": datos["nombre"],
             "uniquename": datos["uniquename"],
@@ -364,8 +571,11 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, actualizar_contenido, 
     else:
         accion = "ya_existia"
         if actualizar_contenido and not solo_verificar:
-            crudo, contenido = leer_nupkg(datos["nupkg"], datos["tipos"])
+            crudo, contenido = leer_nupkg(datos["nupkg"], datos)
             paquete_id = exigir_forma(paquete.get("pluginpackageid"), str, C_PAQUETE, "pluginpackageid", no_vacio=True)
+            # El estado de los ensamblados ANTES del PATCH (también validado antes de escribir): sin él no hay con qué
+            # comparar para saber si el binario nuevo se cargó.
+            antes = _modificaciones_por_ensamblado(_leer_ensamblados(dv, paquete_id))
             print(f"Actualizo el contenido del paquete: {len(crudo)} bytes ({len(contenido)} en base64).", flush=True)
             est, resp, _ = escribir_metadatos(
                 dv, "PATCH", f"pluginpackages({paquete_id})", {"content": contenido}, dormir=dormir, solucion=solucion
@@ -375,16 +585,25 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, actualizar_contenido, 
             paquete = _leer_paquete(dv, datos["uniquename"])
             accion = "actualizado"  # se reemplazó el contenido de un paquete que ya existía (aprobado 2026-10-01)
 
-    difs, detalle = _verificar(dv, datos, solution_id, paquete)
+    difs, detalle = _verificar(dv, datos, solucion, solution_id, paquete)
+    if antes is not None:
+        difs.extend(_diferencias_de_modificacion(antes, _modificaciones_por_ensamblado(detalle["filas_ensamblados"])))
     if difs:
         estado = "difiere" if accion == "ya_existia" else "error"
         prefijo = "" if accion == "ya_existia" else "se escribió pero no quedó bien: "
         return estado, componente, prefijo + "; ".join(difs)
 
+    fechas = ""
+    if antes is not None:
+        despues = _modificaciones_por_ensamblado(detalle["filas_ensamblados"])
+        fechas = "; " + ", ".join(
+            f"'{nombre}' modifiedon {texto_antes} -> {despues[nombre][1]}" for nombre, (_, texto_antes) in sorted(antes.items())
+        )
     return accion, componente, (
         f"pluginpackageid {detalle['paquete_id']}, version {datos['version']}, "
-        f"ensamblados {detalle['ensamblados']}, {len(detalle['tipos'])} tipos de plugin registrados, "
-        f"en la solución '{solucion}' con componenttype {detalle['componenttype']}"
+        f"ensamblados {detalle['ensamblados']} (version {datos['version_ensamblado']}), "
+        f"{len(detalle['tipos'])} tipos de plugin registrados, "
+        f"en la solución '{solucion}' con componenttype {detalle['componenttype']}{fechas}"
     )
 
 
@@ -426,6 +645,8 @@ def construir(ruta_playbook, solo_verificar, fabrica_cliente, actualizar_conteni
         return _contra_entorno(rastro, datos, identidad, solo_verificar, actualizar_contenido, componente, dormir)
     except Bloqueado as e:
         return "bloqueado", componente, str(e)
+    except ErrorNupkg as e:
+        return "error", componente, str(e)
     except ErrorEntorno as e:
         return "error", componente, str(e)
     except Exception as e:

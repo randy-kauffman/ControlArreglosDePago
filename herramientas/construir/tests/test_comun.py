@@ -445,5 +445,147 @@ class NombreDeArchivo(unittest.TestCase):
                 self.assertEqual(_comun.nombre_de_archivo(nombre), esperado)
 
 
+class UniqueNameDePaquete(unittest.TestCase):
+    """El `paquete` de un step o de una Custom API viaja dentro de un `$filter`: un valor con comillas lo rompería."""
+
+    def test_acepta_letras_digitos_guion_bajo_y_punto(self):
+        for bueno in ("sanic_carp_pkg_plugins", "sanic_Carp.Pkg_2", "a" * 128):
+            with self.subTest(bueno):
+                c.exigir_unique_name_de_paquete(bueno, "paquete")
+
+    def test_rechaza_lo_demas_y_nombra_el_campo(self):
+        for malo in ("", "con espacio", "con'comilla", "guion-medio", "ñandú", "a" * 129, "salto\n", "x' or uniquename ne '"):
+            with self.subTest(malo):
+                with self.assertRaises(c.ErrorPlaybook) as e:
+                    c.exigir_unique_name_de_paquete(malo, "paquete")
+                self.assertIn("paquete = ", str(e.exception))
+
+
+class FueraDeLaSolucion(unittest.TestCase):
+    def test_el_mensaje_dice_de_que_solucion_se_trata_que_falta_y_que_la_herramienta_no_lo_hace(self):
+        m = c.fuera_de_la_solucion("el step 'S'", "mi_solucion", "id-1")
+        self.assertTrue(m.startswith("el step 'S' no figura como componente de la solución 'mi_solucion' (solutionid id-1)"), m)
+        self.assertIn("todavía no agrega componentes a una solución", m)
+        self.assertIn("AddSolutionComponent", m)
+        self.assertIn("a mano", m)
+
+
+class TiposDelPaquete(unittest.TestCase):
+    """Un tipo de plugin solo cuenta si PERTENECE al paquete declarado: en el entorno hay paquetes de spikes con las
+    mismas clases (mismo typename), y apuntar un step o una Custom API a uno de ellos no se nota hasta producción."""
+
+    PAQUETE = "sanic_carp_pkg_plugins"
+    PAQUETE_ID = "pkg-1"
+
+    def armar(self, paquetes=None, ensamblados=None, tipos_por_ensamblado=None):
+        """`tipos_por_ensamblado`: {id de ensamblado: [(typename, plugintypeid)]}. Un ensamblado de OTRO paquete
+        (el de un spike) tiene los mismos typename y no figura entre los del paquete."""
+        cliente = ClienteSimulado()
+        paquetes = [{"pluginpackageid": self.PAQUETE_ID, "uniquename": self.PAQUETE}] if paquetes is None else paquetes
+        ensamblados = [{"pluginassemblyid": "asm-1"}] if ensamblados is None else ensamblados
+        tipos_por_ensamblado = (
+            {"asm-1": [("Sanic.Carp.Plugins.Api.TomarConversacionApi", "t-propio")], "asm-spike": [("Sanic.Carp.Plugins.Api.TomarConversacionApi", "t-spike")]}
+            if tipos_por_ensamblado is None else tipos_por_ensamblado
+        )
+        cliente.responder("GET", lambda r: r.startswith("pluginpackages?"), (200, {"value": paquetes}, {}))
+        cliente.responder("GET", lambda r: r.startswith("pluginassemblies?"), (200, {"value": ensamblados}, {}))
+
+        def responder_tipos(ruta, cuerpo, solucion):
+            for asm, filas in tipos_por_ensamblado.items():
+                if f"_pluginassemblyid_value eq {asm}" in ruta:
+                    return (200, {"value": [{"plugintypeid": i, "typename": t} for t, i in filas]}, {})
+            return (200, {"value": []}, {})
+
+        cliente.responder("GET", lambda r: r.startswith("plugintypes?"), responder_tipos)
+        return cliente
+
+    def paquete(self, cliente):
+        return c.TiposDelPaquete(cliente, self.PAQUETE)
+
+    def test_resuelve_el_tipo_del_paquete_y_no_el_homonimo_de_otro(self):
+        cliente = self.armar()
+        self.assertEqual("t-propio", self.paquete(cliente).id_del_tipo("Sanic.Carp.Plugins.Api.TomarConversacionApi"))
+
+    def test_las_consultas_filtran_por_el_paquete_sus_ensamblados_y_no_por_el_typename(self):
+        cliente = self.armar()
+        self.paquete(cliente).id_del_tipo("Sanic.Carp.Plugins.Api.TomarConversacionApi")
+        rutas = [l["ruta"] for l in cliente.llamadas]
+        self.assertTrue([r for r in rutas if r.startswith("pluginpackages?") and f"uniquename eq '{self.PAQUETE}'" in r])
+        self.assertTrue([r for r in rutas if r.startswith("pluginassemblies?") and f"_packageid_value eq {self.PAQUETE_ID}" in r])
+        self.assertTrue([r for r in rutas if r.startswith("plugintypes?") and "_pluginassemblyid_value eq asm-1" in r])
+        self.assertFalse([r for r in rutas if r.startswith("plugintypes?") and "typename eq" in r])
+
+    def test_un_tipo_que_solo_existe_en_otro_paquete_es_bloqueado_y_nombra_el_paquete(self):
+        cliente = self.armar(tipos_por_ensamblado={"asm-1": [], "asm-spike": [("Sanic.Carp.Plugins.Api.TomarConversacionApi", "t-spike")]})
+        with self.assertRaises(c.Bloqueado) as e:
+            self.paquete(cliente).id_del_tipo("Sanic.Carp.Plugins.Api.TomarConversacionApi")
+        self.assertIn(f"no está registrado en el paquete '{self.PAQUETE}'", str(e.exception))
+        self.assertIn("paquete_plugins.py", str(e.exception))
+
+    def test_un_paquete_que_no_existe_es_bloqueado(self):
+        cliente = self.armar(paquetes=[])
+        with self.assertRaises(c.Bloqueado) as e:
+            self.paquete(cliente).id_del_tipo("X.Y")
+        self.assertIn(f"el paquete de plugins '{self.PAQUETE}' no está registrado", str(e.exception))
+        self.assertIn("paquete_plugins.py", str(e.exception))
+
+    def test_dos_paquetes_con_el_mismo_unique_name_es_forma_inesperada(self):
+        fila = {"pluginpackageid": "a", "uniquename": self.PAQUETE}
+        cliente = self.armar(paquetes=[fila, dict(fila, pluginpackageid="b")])
+        with self.assertRaises(c.ErrorEntorno) as e:
+            self.paquete(cliente).id_del_tipo("X.Y")
+        self.assertIn("la consulta del paquete de plugins (GET pluginpackages) devolvió 2 filas", str(e.exception))
+
+    def test_un_typename_repetido_dentro_del_paquete_es_error(self):
+        t = "Sanic.Carp.Plugins.Api.TomarConversacionApi"
+        cliente = self.armar(ensamblados=[{"pluginassemblyid": "asm-1"}, {"pluginassemblyid": "asm-2"}],
+                             tipos_por_ensamblado={"asm-1": [(t, "a")], "asm-2": [(t, "b")]})
+        with self.assertRaises(c.ErrorEntorno) as e:
+            self.paquete(cliente).id_del_tipo(t)
+        self.assertIn(f"devolvió 2 filas para '{t}'", str(e.exception))
+
+    def test_un_paquete_sin_ensamblados_no_tiene_tipos(self):
+        cliente = self.armar(ensamblados=[])
+        with self.assertRaises(c.Bloqueado) as e:
+            self.paquete(cliente).id_del_tipo("X.Y")
+        self.assertIn("no está registrado en el paquete", str(e.exception))
+
+    def test_cada_consulta_se_hace_una_sola_vez_por_mas_tipos_que_se_pidan(self):
+        cliente = self.armar(tipos_por_ensamblado={"asm-1": [("A.B", "ta"), ("C.D", "tc")]})
+        p = self.paquete(cliente)
+        self.assertEqual(("ta", "tc", "ta"), (p.id_del_tipo("A.B"), p.id_del_tipo("C.D"), p.id_del_tipo("A.B")))
+        rutas = [l["ruta"].split("?")[0] for l in cliente.llamadas]
+        self.assertEqual({"pluginpackages": 1, "pluginassemblies": 1, "plugintypes": 1}, {k: rutas.count(k) for k in set(rutas)})
+
+    def test_todos_devuelve_cada_tipo_del_paquete_con_su_id(self):
+        cliente = self.armar(tipos_por_ensamblado={"asm-1": [("A.B", "ta"), ("C.D", "tc")]})
+        self.assertEqual({"A.B": "ta", "C.D": "tc"}, self.paquete(cliente).todos())
+
+    def test_una_respuesta_con_forma_inesperada_es_error_y_nombra_consulta_y_campo(self):
+        casos = [
+            ("pluginpackages?", {"value": [{"pluginpackageid": None, "uniquename": self.PAQUETE}]}, "pluginpackageid"),
+            ("pluginassemblies?", {"value": [{"pluginassemblyid": 5}]}, "pluginassemblyid"),
+            ("plugintypes?", {"value": [{"plugintypeid": "x", "typename": None}]}, "typename"),
+            ("plugintypes?", {"value": [{"plugintypeid": 7, "typename": "A.B"}]}, "plugintypeid"),
+        ]
+        for prefijo, cuerpo, campo in casos:
+            with self.subTest(prefijo + campo):
+                cliente = self.armar()
+                cliente._reglas.insert(0, ("GET", lambda r, p=prefijo: r.startswith(p), (200, cuerpo, {})))
+                with self.assertRaises(c.ErrorEntorno) as e:
+                    self.paquete(cliente).id_del_tipo("A.B")
+                self.assertIn("devolvió 200 con forma inesperada", str(e.exception))
+                self.assertIn(f"'{campo}'", str(e.exception))
+
+    def test_un_http_no_previsto_es_error_y_nunca_se_toma_por_no_existe(self):
+        for prefijo in ("pluginpackages?", "pluginassemblies?", "plugintypes?"):
+            with self.subTest(prefijo):
+                cliente = self.armar()
+                cliente._reglas.insert(0, ("GET", lambda r, p=prefijo: r.startswith(p), (500, {"error": "boom"}, {})))
+                with self.assertRaises(c.ErrorEntorno) as e:
+                    self.paquete(cliente).id_del_tipo("Sanic.Carp.Plugins.Api.TomarConversacionApi")
+                self.assertIn("HTTP 500", str(e.exception))
+
+
 if __name__ == "__main__":
     unittest.main()

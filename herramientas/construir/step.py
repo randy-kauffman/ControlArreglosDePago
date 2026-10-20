@@ -17,8 +17,16 @@ ella no falla al registrarse — falla con una referencia nula la primera vez
 que alguien guarda un registro. Learn fija las combinaciones posibles y acá se
 comprueban una por una antes de tocar el entorno.
 
-Nunca borra un step ni una imagen. Un step de más se denuncia; sacarlo lo
-decide una persona.
+`paquete` es el unique name del `pluginpackage`: los tipos de plugin se
+resuelven DENTRO de ese paquete (un tipo con el mismo nombre en otro paquete,
+como los de los spikes, no cuenta) y de ahí sale también "lo que sobra".
+
+Nunca borra un step ni una imagen. Lo que sobra se denuncia (`difiere`) y
+sacarlo lo decide una persona: un step del paquete que el playbook no declara, y
+una imagen sobre un step declarado que no es la pre-imagen declarada (una
+post-imagen o una de tipo "ambas"). Escribir sobre un step que ya existe (corregir
+sus campos, agregarle la pre-imagen que falta) solo se hace con `--completar`; un
+step recién creado lleva su pre-imagen como parte del alta.
 
 Última línea de la salida: JSON de una línea con `estado`
 (creado | actualizado | ya_existia | difiere | bloqueado | error), `componente`, `detalle`.
@@ -36,11 +44,14 @@ from _comun import (  # noqa: E402
     ErrorEntorno,
     ErrorPlaybook,
     Rastro,
+    TiposDelPaquete,
     comprobar_solucion_e_idioma,
     dividir_secciones,
     escribir_metadatos,
     exigir_forma,
     exigir_sin_tildes,
+    exigir_unique_name_de_paquete,
+    fuera_de_la_solucion,
     leer_entorno,
     leer_texto,
     obtener_componente,
@@ -58,8 +69,26 @@ MODOS = {"Sincrono": 0, "Asincrono": 1}
 DESPLIEGUE_SOLO_SERVIDOR = 0
 INVOCACION_PADRE = 0
 
-# Learn, tabla SdkMessageProcessingStepImage.
-IMAGEN_PRE, IMAGEN_POST = 0, 1
+# Learn, tabla SdkMessageProcessingStepImage: ImageType = PreImage (0), PostImage (1), Both (2).
+IMAGEN_PRE, IMAGEN_POST, IMAGEN_AMBAS = 0, 1, 2
+NOMBRE_DE_IMAGEN = {
+    IMAGEN_POST: "post-imagen",
+    IMAGEN_AMBAS: "imagen de tipo ambas (pre y post)",
+}
+
+# Las actividades de Dataverse (tablas que heredan de `activitypointer`) comparten una sola clave primaria:
+# `activityid`. No existe `emailid`, `taskid`, etc. Lista corta y cerrada, escrita a mano (sin red).
+ACTIVIDADES = frozenset({
+    "activitypointer", "appointment", "bulkoperation", "campaignactivity", "campaignresponse", "email", "fax",
+    "incidentresolution", "letter", "opportunityclose", "orderclose", "phonecall", "quoteclose",
+    "recurringappointmentmaster", "serviceappointment", "socialactivity", "task",
+})
+
+
+def clave_primaria_de(tabla):
+    """La columna de clave primaria de una tabla: `activityid` para una actividad, `<tabla>id` para el resto."""
+    return "activityid" if tabla in ACTIVIDADES else tabla + "id"
+
 
 # Los ÚNICOS mensajes que admiten imágenes, con el `messagepropertyname` que
 # les corresponde (Learn, "Messages that support entity images"). Los mensajes
@@ -89,7 +118,7 @@ CLAVES_STEP = {
 }
 CLAVES_IMAGEN = {"alias": str, "columnas": list}
 
-C_TIPO_PLUGIN = "la consulta del tipo de plugin (GET plugintypes)"
+C_STEPS_DEL_PAQUETE = "la consulta de los steps del paquete (GET sdkmessageprocessingsteps)"
 C_MENSAJE = "la consulta del mensaje (GET sdkmessages)"
 C_FILTRO = "la consulta del filtro de mensaje (GET sdkmessagefilters)"
 C_STEPS = "la consulta de los steps (GET sdkmessageprocessingsteps)"
@@ -164,13 +193,19 @@ def _validar_step(s, indice, nombres, naturales):
         )
     if len(set(filtro)) != len(filtro):
         raise ErrorPlaybook(f"{donde}: el filtro de atributos tiene columnas repetidas")
+    clave_primaria = clave_primaria_de(s["tabla"])
     for columna in filtro:
         # Learn: la primary key viene SIEMPRE en el Target, así que meterla en
         # el filtro lo anula para todo lo demás. Es el error clásico.
-        if columna.endswith("id") and columna == s["tabla"] + "id":
+        if columna == clave_primaria:
             raise ErrorPlaybook(
                 f"{donde}: el filtro no puede incluir la clave primaria '{columna}': viene siempre en el Target "
                 "y deja el filtro sin efecto para el resto de las columnas"
+            )
+        if s["tabla"] in ACTIVIDADES and columna == s["tabla"] + "id":
+            raise ErrorPlaybook(
+                f"{donde}: la clave primaria de la actividad '{s['tabla']}' es '{clave_primaria}', no '{columna}' "
+                f"(esa columna no existe); y la clave primaria no va en el filtro"
             )
 
     natural = (s["plugintype"], s["mensaje"], s["tabla"])
@@ -190,10 +225,25 @@ def _validar_estructura(datos):
     if datos["tipo"] != TIPO:
         raise ErrorPlaybook(f"el bloque de los steps dice tipo = {datos['tipo']!r}, se esperaba {TIPO!r}")
 
+    exigir_unique_name_de_paquete(datos["paquete"], "paquete")
+
     nombres, naturales = set(), set()
     for i, s in enumerate(datos["steps"]):
         exigir_forma(s, dict, "el bloque de los steps", f"steps[{i}]")
         _validar_step(s, i, nombres, naturales)
+
+    # BP-PP-060: dos steps sobre el mismo mensaje, tabla y etapa compiten por el `rank`; con el mismo valor el orden de
+    # ejecución lo decide la plataforma, no el diseño. Se mira después de validar cada step, para que un step mal armado
+    # se denuncie por lo suyo. (Entre playbooks distintos del mismo paquete no se puede mirar sin red: ver `step.md`.)
+    ordenes = {}
+    for s in datos["steps"]:
+        lugar = (s["mensaje"], s["tabla"], s["etapa"])
+        previo = ordenes.setdefault((lugar, s["orden"]), s["nombre"])
+        if previo != s["nombre"]:
+            raise ErrorPlaybook(
+                f"el orden {s['orden']} está repetido entre {previo!r} y {s['nombre']!r} ({lugar[0]}, {lugar[1]}, {lugar[2]}): "
+                "dos steps sobre el mismo mensaje, tabla y etapa necesitan órdenes distintos y deliberados (BP-PP-060)"
+            )
 
 
 def _como_error_de_playbook(e):
@@ -224,24 +274,14 @@ class Catalogo:
     """Resuelve y cachea los identificadores del entorno. Cada mensaje y cada
     tabla se consultan UNA vez, por más steps que los usen."""
 
-    def __init__(self, dv):
+    def __init__(self, dv, paquete):
         self._dv = dv
-        self._tipos, self._mensajes, self._filtros = {}, {}, {}
+        self.tipos = TiposDelPaquete(dv, paquete)
+        self._mensajes, self._filtros = {}, {}
 
     def tipo_de_plugin(self, typename):
-        if typename not in self._tipos:
-            ruta = f"plugintypes?$select=plugintypeid,typename&$filter=typename eq '{typename}'"
-            cuerpo = leer_entorno(self._dv, ruta, C_TIPO_PLUGIN)
-            filas = exigir_forma(cuerpo.get("value"), [dict], C_TIPO_PLUGIN, "value")
-            if not filas:
-                raise Bloqueado(
-                    f"el tipo de plugin '{typename}' no está registrado; "
-                    "primero hay que registrar el paquete con `herramientas/construir/paquete_plugins.py`"
-                )
-            if len(filas) > 1:
-                raise ErrorEntorno(f"{C_TIPO_PLUGIN} devolvió {len(filas)} filas para '{typename}'")
-            self._tipos[typename] = exigir_forma(filas[0].get("plugintypeid"), str, C_TIPO_PLUGIN, "plugintypeid", no_vacio=True)
-        return self._tipos[typename]
+        """El `plugintypeid` del tipo, buscado DENTRO del paquete declarado."""
+        return self.tipos.id_del_tipo(typename)
 
     def mensaje(self, nombre):
         if nombre not in self._mensajes:
@@ -304,7 +344,36 @@ def _leer_imagenes(dv, step_id):
         f"&$filter=_sdkmessageprocessingstepid_value eq {step_id}"
     )
     cuerpo = leer_entorno(dv, ruta, C_IMAGENES)
-    return exigir_forma(cuerpo.get("value"), [dict], C_IMAGENES, "value")
+    imagenes = exigir_forma(cuerpo.get("value"), [dict], C_IMAGENES, "value")
+    for imagen in imagenes:
+        # El tipo decide qué es la imagen (pre, post, ambas): sin él no se puede saber si sobra.
+        exigir_forma(imagen.get("imagetype"), int, C_IMAGENES, "imagetype")
+    return imagenes
+
+
+def _steps_del_paquete(dv, tipos):
+    """Cada step registrado sobre un tipo del paquete: [(typename, id, name)]. Es la mitad que faltaba de la
+    verificación ("lo que sobra"): comparar solo lo declarado miente si el paquete tiene steps de una derivación previa."""
+    encontrados = []
+    for typename, tipo_id in sorted(tipos.items()):
+        ruta = f"sdkmessageprocessingsteps?$select=sdkmessageprocessingstepid,name,stage,rank&$filter=_plugintypeid_value eq {tipo_id}"
+        cuerpo = leer_entorno(dv, ruta, C_STEPS_DEL_PAQUETE)
+        for fila in exigir_forma(cuerpo.get("value"), [dict], C_STEPS_DEL_PAQUETE, "value"):
+            encontrados.append((
+                typename,
+                exigir_forma(fila.get("sdkmessageprocessingstepid"), str, C_STEPS_DEL_PAQUETE, "sdkmessageprocessingstepid", no_vacio=True),
+                exigir_forma(fila.get("name"), str, C_STEPS_DEL_PAQUETE, "name"),
+            ))
+    return encontrados
+
+
+def _steps_que_sobran(dv, catalogo, declarados):
+    """Los steps del paquete cuyo id no es el de ninguno de los `declarados` (ids de los steps del playbook que existen)."""
+    return sorted(
+        (typename, step_id, nombre)
+        for typename, step_id, nombre in _steps_del_paquete(dv, catalogo.tipos.todos())
+        if step_id not in declarados
+    )
 
 
 def _cuerpo_step(s, plugintype_id, mensaje_id, filtro_id):
@@ -366,12 +435,26 @@ def _diferencias_de_imagen(s, imagenes):
     registrada revienta en producción, no acá."""
     difs = []
     pre = [i for i in imagenes if i.get("imagetype") == IMAGEN_PRE]
+    # Lo que sobra: este formato solo declara pre-imágenes. Una post-imagen o una de tipo "ambas" sobre un step declarado
+    # es superficie viva que nadie decidió, y una "ambas" tampoco hace de pre-imagen declarada. Nunca se borran.
+    otras = [i for i in imagenes if i.get("imagetype") != IMAGEN_PRE]
+    for imagen in otras:
+        que = NOMBRE_DE_IMAGEN.get(imagen.get("imagetype"), f"imagen de tipo {imagen.get('imagetype')}")
+        difs.append(f"tiene una {que} {imagen.get('entityalias')!r} que el playbook no declara (esta herramienta nunca borra)")
     if s["preimagen"] is None:
         if pre:
             difs.append(f"tiene {len(pre)} pre-imagen(es) que el playbook no declara (esta herramienta nunca borra)")
         return difs, False
     if not pre:
-        return ["le falta la pre-imagen, y el plugin la lee: sin ella revienta al primer guardado"], True
+        ocupada = [i for i in otras if i.get("entityalias") == s["preimagen"]["alias"]]
+        if ocupada:
+            # No se intenta crearla: la plataforma rechaza un alias repetido, y sacar la otra imagen es borrar.
+            return (
+                [f"le falta la pre-imagen, y el plugin la lee: sin ella revienta al primer guardado. Su alias "
+                 f"{s['preimagen']['alias']!r} lo ocupa una imagen de otro tipo; hay que sacarla a mano"] + difs,
+                False,
+            )
+        return ["le falta la pre-imagen, y el plugin la lee: sin ella revienta al primer guardado"] + difs, True
     if len(pre) > 1:
         difs.append(f"tiene {len(pre)} pre-imágenes; el playbook declara una")
     imagen, declarada = pre[0], s["preimagen"]
@@ -415,7 +498,8 @@ def _cuerpo_corregible(s):
 
 
 def _procesar_step(dv, catalogo, s, solution_id, solucion, escribir, completar, dormir):
-    """Devuelve (accion, difs). `accion` es 'creado', 'ya_existia' o 'difiere'."""
+    """Devuelve (accion, difs, id del step). `accion` es 'creado', 'actualizado', 'ya_existia', 'difiere' o 'error'; el
+    id es `None` si el step no existe (todavía) en el entorno."""
     plugintype_id = catalogo.tipo_de_plugin(s["plugintype"])
     mensaje_id = catalogo.mensaje(s["mensaje"])
     filtro_id = catalogo.filtro_de_mensaje(s["mensaje"], s["tabla"])
@@ -426,14 +510,14 @@ def _procesar_step(dv, catalogo, s, solution_id, solucion, escribir, completar, 
 
     if fila is None:
         if not escribir:
-            return "difiere", [f"{s['nombre']}: no existe en el entorno"]
+            return "difiere", [f"{s['nombre']}: no existe en el entorno"], None
         cuerpo = _cuerpo_step(s, plugintype_id, mensaje_id, filtro_id)
         est, resp, _ = escribir_metadatos(dv, "POST", "sdkmessageprocessingsteps", cuerpo, dormir=dormir, solucion=solucion)
         if est not in (200, 201, 204):
-            return "error", [f"{s['nombre']}: el alta devolvió HTTP {est} (se esperaba 204): {resp}"]
+            return "error", [f"{s['nombre']}: el alta devolvió HTTP {est} (se esperaba 204): {resp}"], None
         fila = _leer_step(dv, plugintype_id, mensaje_id, filtro_id)
         if fila is None:
-            return "error", [f"{s['nombre']}: el alta no dio error pero el step no aparece al releer"]
+            return "error", [f"{s['nombre']}: el alta no dio error pero el step no aparece al releer"], None
         hubo_escritura = True
         hubo_alta = True
 
@@ -445,48 +529,60 @@ def _procesar_step(dv, catalogo, s, solution_id, solucion, escribir, completar, 
             dv, "PATCH", f"sdkmessageprocessingsteps({step_id})", _cuerpo_corregible(s), dormir=dormir, solucion=solucion
         )
         if est not in (200, 204):
-            return "error", [f"{s['nombre']}: la corrección devolvió HTTP {est} (se esperaba 204): {resp}"]
+            return "error", [f"{s['nombre']}: la corrección devolvió HTTP {est} (se esperaba 204): {resp}"], step_id
         hubo_escritura = True
         fila = _leer_step(dv, plugintype_id, mensaje_id, filtro_id)
         if fila is None:
-            return "error", [f"{s['nombre']}: el step desapareció al releer después de corregirlo"]
+            return "error", [f"{s['nombre']}: el step desapareció al releer después de corregirlo"], step_id
 
     imagenes = _leer_imagenes(dv, step_id)
     _, falta_imagen = _diferencias_de_imagen(s, imagenes)
-    # Una pre-imagen que falta se agrega SIEMPRE que se esté escribiendo,
-    # incluso sin `--completar`: no es un ajuste de gusto, es la diferencia
-    # entre que el plugin ande y que reviente al primer guardado.
-    if falta_imagen and escribir:
+    # Agregarle la pre-imagen a un step que YA existía es una reparación, y las reparaciones llevan bandera explícita
+    # (`--completar`): sin ella solo se denuncia. Un step recién creado la lleva como parte del alta, no hay nada que reparar.
+    if falta_imagen and escribir and (completar or hubo_alta):
         est, resp, _ = escribir_metadatos(
             dv, "POST", "sdkmessageprocessingstepimages", _cuerpo_imagen(s, step_id), dormir=dormir, solucion=solucion
         )
         if est not in (200, 201, 204):
-            return "error", [f"{s['nombre']}: el alta de la pre-imagen devolvió HTTP {est}: {resp}"]
+            return "error", [f"{s['nombre']}: el alta de la pre-imagen devolvió HTTP {est}: {resp}"], step_id
         hubo_escritura = True
         imagenes = _leer_imagenes(dv, step_id)
 
     difs = [f"{s['nombre']}: {d}" for d in _diferencias_del_step(s, fila)]
-    d_imagen, _ = _diferencias_de_imagen(s, imagenes)
-    difs.extend(f"{s['nombre']}: {d}" for d in d_imagen)
+    d_imagen, sigue_faltando = _diferencias_de_imagen(s, imagenes)
+    for d in d_imagen:
+        if sigue_faltando and d.startswith("le falta la pre-imagen"):
+            d += " (agregarla a un step que ya existe requiere correr sin --solo-verificar y con --completar)"
+        difs.append(f"{s['nombre']}: {d}")
     if _en_la_solucion(dv, solution_id, step_id) is None:
-        difs.append(f"{s['nombre']}: no figura como componente de la solución")
+        difs.append(fuera_de_la_solucion(f"{s['nombre']}:", solucion, solution_id))
 
     if difs:
-        return ("error" if hubo_escritura else "difiere"), difs
-    return estado_de_escritura(hubo_alta, hubo_escritura), []
+        return ("error" if hubo_escritura else "difiere"), difs, step_id
+    return estado_de_escritura(hubo_alta, hubo_escritura), [], step_id
+
+
+def _texto_de_lo_que_sobra(paquete, sobran):
+    lista = ", ".join(f"'{nombre}' (tipo {typename}, id {step_id})" for typename, step_id, nombre in sobran)
+    return (
+        f"el paquete '{paquete}' tiene steps que el playbook no declara (sobran): {lista}. "
+        "Esta herramienta nunca borra: o se declaran en el playbook, o una persona los elimina"
+    )
 
 
 def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente, dormir):
     solucion = identidad["solucion"]
     solution_id = comprobar_solucion_e_idioma(dv, identidad)
-    catalogo = Catalogo(dv)
+    catalogo = Catalogo(dv, datos["paquete"])
     escribir = not solo_verificar
 
-    creados, actualizados, existian, difs = [], [], [], []
+    creados, actualizados, existian, difs, declarados = [], [], [], [], set()
     for s in datos["steps"]:
-        accion, d = _procesar_step(dv, catalogo, s, solution_id, solucion, escribir, completar, dormir)
+        accion, d, step_id = _procesar_step(dv, catalogo, s, solution_id, solucion, escribir, completar, dormir)
         if accion == "error":
             return "error", componente, "; ".join(d)
+        if step_id is not None:
+            declarados.add(step_id)
         if d:
             difs.extend(d)
         elif accion == "creado":
@@ -496,10 +592,20 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
         else:
             existian.append(s["nombre"])
 
+    # La otra mitad de la verificación: lo que el entorno tiene y el playbook no declara. No se borra, se denuncia.
+    sobran = _steps_que_sobran(dv, catalogo, declarados)
+    escribio = bool(creados or actualizados)
     if difs:
-        estado = "error" if creados or actualizados else "difiere"
-        prefijo = "se escribió pero no quedó bien: " if creados or actualizados else ""
-        return estado, componente, prefijo + "; ".join(difs)
+        estado = "error" if escribio else "difiere"
+        prefijo = "se escribió pero no quedó bien: " if escribio else ""
+        detalle = prefijo + "; ".join(difs)
+        if sobran:
+            detalle += "; " + _texto_de_lo_que_sobra(datos["paquete"], sobran)
+        return estado, componente, detalle
+    if sobran:
+        # Lo declarado quedó bien (si se escribió, se releyó y coincide), pero el entorno tiene de más: no se da por verificado.
+        prefijo = "se registró lo declarado, pero " if escribio else ""
+        return "difiere", componente, prefijo + _texto_de_lo_que_sobra(datos["paquete"], sobran)
 
     resumen = (f"{len(creados)} registrados, {len(actualizados)} actualizados y {len(existian)} que ya estaban, "
                f"de {len(datos['steps'])}, en la solución '{solucion}'")

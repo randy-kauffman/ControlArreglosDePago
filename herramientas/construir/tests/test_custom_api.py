@@ -30,7 +30,10 @@ IDENT = dict(IDENTIDAD_VALIDA, tipo_playbook="custom-api", inventario="8.1")
 
 API_ID = "55555555-5555-5555-5555-555555555555"
 TIPO_ID = "66666666-6666-6666-6666-666666666666"
+PAQUETE_ID = "77777777-7777-7777-7777-777777777777"
+ASM_ID = "88888888-8888-8888-8888-888888888888"
 TYPENAME = "Sanic.Carp.Plugins.Api.GenerarFormatoApi"
+PAQUETE = "sanic_carp_pkg_plugins"
 
 # Dominio de este proyecto (convenciones, seccion 2): la Custom API que genera el formato de un arreglo.
 COMPONENTE = {
@@ -38,6 +41,7 @@ COMPONENTE = {
     "nombre": "sanic_carp_capi_generarformato",
     "displayname": "CAPI - CARP - Generar formato",
     "descripcion": "Genera el formato del arreglo de pago a partir de la version vigente de la plantilla y deja registrada la generacion.",
+    "paquete": PAQUETE,
     "plugintype": TYPENAME,
     "esfuncion": False,
     "esprivada": True,
@@ -77,10 +81,6 @@ def playbook(componente=None, identidad=None):
 
 def es_ruta_apis(ruta):
     return ruta.startswith("customapis?")
-
-
-def es_ruta_tipos(ruta):
-    return ruta.startswith("plugintypes?")
 
 
 def fila_parametro(p, es_salida, datos=None):
@@ -135,13 +135,23 @@ class Base(unittest.TestCase):
             f.write(playbook(componente, identidad))
         return self.ruta
 
+    def responder_paquete(self, cliente, tipos=None):
+        """El paquete del playbook, su único ensamblado y los tipos que trajo (`tipos`: filas de `plugintypes`). Los tipos
+        se piden por el ensamblado del paquete: un tipo de OTRO paquete con el mismo nombre no aparece acá."""
+        if tipos is None:
+            tipos = [{"plugintypeid": TIPO_ID, "typename": TYPENAME}]
+        cliente.responder("GET", lambda r: r.startswith("pluginpackages?") and f"uniquename eq '{PAQUETE}'" in r,
+                          (200, {"value": [{"pluginpackageid": PAQUETE_ID, "uniquename": PAQUETE}]}, {}))
+        cliente.responder("GET", lambda r: r.startswith("pluginassemblies?") and f"_packageid_value eq {PAQUETE_ID}" in r,
+                          (200, {"value": [{"pluginassemblyid": ASM_ID}]}, {}))
+        cliente.responder("GET", lambda r: r.startswith("plugintypes?") and f"_pluginassemblyid_value eq {ASM_ID}" in r,
+                          (200, {"value": tipos}, {}))
+
     def armar(self, cliente, apis, tipos=None, componentes=None):
         """`apis` es la SECUENCIA de respuestas de `GET customapis` (una por
         lectura): así se simula el antes y el después de una escritura."""
         armar_cliente_precondiciones_ok(cliente, IDENT)
-        if tipos is None:
-            tipos = [{"plugintypeid": TIPO_ID, "typename": TYPENAME}]
-        cliente.responder("GET", es_ruta_tipos, (200, {"value": tipos}, {}))
+        self.responder_paquete(cliente, tipos)
         pendientes = list(apis)
 
         def responder_api(ruta, cuerpo, solucion):
@@ -267,7 +277,7 @@ class ValidacionOffline(Base):
         self.rechaza(comp(nombre=justo + "a"), "el máximo de la columna es 128")
 
     def test_un_texto_vacio_se_rechaza_en_cada_campo_menos_el_privilegio(self):
-        for clave in ("nombre", "displayname", "descripcion", "plugintype", "binding", "pasosdeterceros"):
+        for clave in ("nombre", "displayname", "descripcion", "paquete", "plugintype", "binding", "pasosdeterceros"):
             with self.subTest(clave):
                 self.rechaza(comp(**{clave: ""}), clave)
         for clave in ("nombre", "displayname", "descripcion", "tipo"):
@@ -277,7 +287,8 @@ class ValidacionOffline(Base):
                 self.rechaza(comp(salida=[dict(COMPONENTE["salida"][0], **{clave: ""})]), clave)
 
     def test_cada_clave_tiene_que_ser_del_tipo_que_corresponde(self):
-        for clave, valor in (("esfuncion", "no"), ("esprivada", 1), ("habilitadaenflujos", None), ("entrada", {}), ("salida", "x"), ("privilegio", 3)):
+        for clave, valor in (("esfuncion", "no"), ("esprivada", 1), ("habilitadaenflujos", None), ("entrada", {}), ("salida", "x"), ("privilegio", 3),
+                             ("paquete", 7), ("paquete", None), ("plugintype", 7)):
             with self.subTest(clave):
                 self.rechaza(comp(**{clave: valor}), clave)
         self.rechaza(comp(entrada=[dict(COMPONENTE["entrada"][0], opcional="no")]), "opcional")
@@ -298,6 +309,18 @@ class ValidacionOffline(Base):
 
     def test_el_tipo_del_plugin_tiene_que_ser_un_nombre_dotnet_completo(self):
         self.rechaza(comp(plugintype="GenerarFormatoApi"), "no parece un nombre de tipo .NET completo")
+
+    def test_el_bloque_exige_el_paquete_del_plugin(self):
+        sin_paquete = {k: v for k, v in COMPONENTE.items() if k != "paquete"}
+        self.rechaza(sin_paquete, "faltan ['paquete']")
+
+    def test_el_paquete_solo_admite_caracteres_de_un_unique_name(self):
+        # El `paquete` viaja dentro de un `$filter`: una comilla lo rompería (o lo reescribiría).
+        for malo in ("sanic_carp_pkg' or uniquename ne '", "sanic carp", "sanic_carp_pkg-plugins", "sanic_ñ", "a" * 129):
+            with self.subTest(malo):
+                self.rechaza(comp(paquete=malo), "paquete = ")
+        for bueno in ("sanic_carp_pkg_plugins", "sanic_Carp.Pkg_2"):
+            ca.validar_playbook(comp(paquete=bueno), IDENT)
 
     def test_pasos_de_terceros_se_nombra_no_se_numera(self):
         self.rechaza(comp(pasosdeterceros="0"), "no es válido")
@@ -346,7 +369,10 @@ class ContraElEntorno(Base):
         cliente = self.armar(ClienteSimulado(), [fila_api()])
         ca.construir(self.escribir(), False, lambda: cliente)
         rutas = [l["ruta"] for l in cliente.llamadas]
-        self.assertTrue([r for r in rutas if r.startswith("plugintypes?") and f"typename eq '{TYPENAME}'" in r])
+        self.assertTrue([r for r in rutas if r.startswith("pluginpackages?") and f"uniquename eq '{PAQUETE}'" in r])
+        self.assertTrue([r for r in rutas if r.startswith("pluginassemblies?") and f"_packageid_value eq {PAQUETE_ID}" in r])
+        self.assertTrue([r for r in rutas if r.startswith("plugintypes?") and f"_pluginassemblyid_value eq {ASM_ID}" in r])
+        self.assertFalse([r for r in rutas if r.startswith("plugintypes?") and "typename eq" in r], "el tipo se resuelve dentro del paquete, no por su nombre")
         self.assertTrue([r for r in rutas if r.startswith("customapis?") and f"uniquename eq '{COMPONENTE['nombre']}'" in r])
         pertenencia = [r for r in rutas if r.startswith("solutioncomponents?")]
         self.assertEqual(len(pertenencia), 1)
@@ -441,6 +467,85 @@ class ContraElEntorno(Base):
         estado, _, detalle = ca.construir(self.escribir(), False, lambda: cliente, completar=True)
         self.assertEqual("actualizado", estado, detalle)
         self.assertEqual([l["cuerpo"] for l in cliente.llamadas if l["metodo"] == "PATCH"], [{"PluginTypeId@odata.bind": f"/plugintypes({TIPO_ID})"}])
+
+    def test_un_plugin_asociado_con_el_mismo_nombre_pero_de_otro_paquete_difiere(self):
+        # El caso de los spikes: la Custom API quedó apuntando a la clase homónima de otro paquete. El nombre coincide, el tipo no.
+        del_spike = fila_api(PluginTypeId={"plugintypeid": "t-del-spike", "typename": TYPENAME})
+        cliente = self.armar(ClienteSimulado(), [del_spike])
+        estado, _, detalle = ca.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn(f"el plugin asociado es el tipo '{TYPENAME}' de otro paquete (plugintypeid t-del-spike)", detalle)
+        self.assertIn(f"el del paquete '{PAQUETE}' (plugintypeid {TIPO_ID})", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_completar_reapunta_un_plugin_homonimo_de_otro_paquete_al_del_paquete(self):
+        del_spike = fila_api(PluginTypeId={"plugintypeid": "t-del-spike", "typename": TYPENAME})
+        cliente = self.armar(ClienteSimulado(), [del_spike, fila_api()])
+        cliente.responder("PATCH", lambda r: r.startswith("customapis("), (204, {}, {}))
+        estado, _, detalle = ca.construir(self.escribir(), False, lambda: cliente, completar=True)
+        self.assertEqual("actualizado", estado, detalle)
+        self.assertEqual([l["cuerpo"] for l in cliente.llamadas if l["metodo"] == "PATCH"], [{"PluginTypeId@odata.bind": f"/plugintypes({TIPO_ID})"}])
+
+    def test_el_plugin_asociado_ausente_o_mal_tipado_en_la_api_es_forma_inesperada(self):
+        for valor in ({"plugintypeid": None, "typename": TYPENAME}, {"plugintypeid": TIPO_ID, "typename": 5}, "texto", []):
+            with self.subTest(valor):
+                cliente = self.armar(ClienteSimulado(), [fila_api(PluginTypeId=valor)])
+                estado, _, detalle = ca.construir(self.escribir(), False, lambda: cliente)
+                self.assertEqual("error", estado, detalle)
+                self.assertIn("la consulta de la Custom API (GET customapis) devolvió 200 con forma inesperada", detalle)
+                self.assertIn("PluginTypeId", detalle)
+                self.assertNotIn("fallo inesperado", detalle)
+                self.assertFalse(cliente.hubo_escritura())
+
+    def test_un_tipo_que_solo_existe_en_otro_paquete_bloquea_y_no_se_usa(self):
+        cliente = self.armar(ClienteSimulado(), [None], tipos=[])
+        cliente.responder("GET", lambda r: r.startswith("plugintypes?") and "typename eq" in r,
+                          (200, {"value": [{"plugintypeid": "t-del-spike", "typename": TYPENAME}]}, {}))
+        estado, _, detalle = ca.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("bloqueado", estado, detalle)
+        self.assertIn(f"no está registrado en el paquete '{PAQUETE}'", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_el_paquete_que_no_existe_bloquea_antes_de_escribir(self):
+        cliente = self.armar(ClienteSimulado(), [None])
+        cliente._reglas.insert(0, ("GET", lambda r: r.startswith("pluginpackages?"), (200, {"value": []}, {})))
+        estado, _, detalle = ca.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("bloqueado", estado, detalle)
+        self.assertIn(f"el paquete de plugins '{PAQUETE}' no está registrado", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_un_http_no_previsto_al_resolver_el_paquete_es_error_y_no_bloqueado(self):
+        for prefijo in ("pluginpackages?", "pluginassemblies?", "plugintypes?"):
+            with self.subTest(prefijo):
+                cliente = self.armar(ClienteSimulado(), [None])
+                cliente._reglas.insert(0, ("GET", lambda r, p=prefijo: r.startswith(p), (500, {"error": "boom"}, {})))
+                estado, _, detalle = ca.construir(self.escribir(), False, lambda: cliente)
+                self.assertEqual("error", estado, detalle)
+                self.assertIn("HTTP 500", detalle)
+                self.assertFalse(cliente.hubo_escritura())
+
+    def test_una_api_sin_plugin_asociado_difiere_en_vez_de_romper(self):
+        cliente = self.armar(ClienteSimulado(), [fila_api(PluginTypeId=None)])
+        estado, _, detalle = ca.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn(f"el plugin asociado es None y el playbook dice {TYPENAME!r}", detalle)
+
+    def test_el_tipo_se_resuelve_una_sola_vez_por_ejecucion(self):
+        cliente = self.armar(ClienteSimulado(), [fila_api()])
+        ca.construir(self.escribir(), False, lambda: cliente)
+        rutas = [l["ruta"].split("?")[0] for l in cliente.llamadas]
+        self.assertEqual((1, 1, 1), (rutas.count("pluginpackages"), rutas.count("pluginassemblies"), rutas.count("plugintypes")))
+
+    def test_una_api_fuera_de_la_solucion_dice_que_solucion_y_que_la_herramienta_no_la_agrega(self):
+        cliente = self.armar(ClienteSimulado(), [fila_api()], componentes=[])
+        estado, _, detalle = ca.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("la Custom API no figura como componente de la solución", detalle)
+        self.assertIn(f"'{IDENT['solucion']}'", detalle)
+        self.assertIn(f"solutionid {SOLUTION_ID}", detalle)
+        self.assertIn("AddSolutionComponent", detalle)
+        self.assertIn("a mano", detalle)
+        self.assertFalse(cliente.hubo_escritura(), "no agrega el componente a la solución: está pendiente de ensayar en Dev")
 
     def test_sin_completar_o_con_solo_verificar_una_diferencia_modificable_no_se_toca(self):
         for completar, solo_verificar in ((False, False), (True, True), (False, True)):

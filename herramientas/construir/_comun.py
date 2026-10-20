@@ -401,6 +401,103 @@ def leer_entorno(dv, ruta, consulta, admite_404=False):
     return exigir_forma(cuerpo, dict, consulta, "cuerpo")
 
 
+def exigir_unique_name_de_paquete(valor, campo):
+    """El unique name de un paquete de plugins que un playbook nombra (`paquete`): letras y dígitos ASCII, guion bajo y
+    punto, hasta 128. Va dentro de un `$filter` de OData: una comilla lo rompería. Por rango de caracteres, no con
+    `str.isalnum()`, que acepta letras de cualquier alfabeto."""
+    if not valor or len(valor) > 128 or not all(
+        ("a" <= ch <= "z") or ("A" <= ch <= "Z") or ("0" <= ch <= "9") or ch in "_." for ch in valor
+    ):
+        raise ErrorPlaybook(
+            f"{campo} = {valor!r} no es un unique name de paquete de plugins: solo letras y dígitos ASCII, guion bajo y "
+            "punto, hasta 128 caracteres"
+        )
+
+
+def fuera_de_la_solucion(que, solucion, solution_id):
+    """La diferencia "el componente no está en la solución", dicha de forma que se entienda qué hacer. Esta herramienta
+    todavía no agrega componentes a una solución (AddSolutionComponent se ensaya primero en Dev con descartables)."""
+    return (
+        f"{que} no figura como componente de la solución '{solucion}' (solutionid {solution_id}); esta herramienta "
+        "todavía no agrega componentes a una solución (pendiente: AddSolutionComponent). Hay que agregarlo a mano a la "
+        "solución y volver a verificar"
+    )
+
+
+C_PAQUETE_DE_PLUGINS = "la consulta del paquete de plugins (GET pluginpackages)"
+C_ENSAMBLADOS_DEL_PAQUETE = "la consulta de los ensamblados del paquete (GET pluginassemblies)"
+C_TIPOS_DE_PLUGIN = "la consulta del tipo de plugin (GET plugintypes)"
+
+
+class TiposDelPaquete:
+    """Los `plugintype` que pertenecen a UN paquete de plugins, por su unique name.
+
+    Un step o una Custom API apunta a un tipo de plugin. Resolverlo por su `typename` a secas es un error esperando
+    a pasar: en el entorno de desarrollo hay paquetes de spikes que registran las mismas clases, y el step quedaría
+    apuntando a un binario que no es el del proyecto sin que nada lo avise. Acá un tipo existe solo si lo trajo el
+    paquete declarado: paquete -> sus ensamblados (`_packageid_value`) -> los tipos de cada ensamblado
+    (`_pluginassemblyid_value`). Cada consulta se hace UNA vez por instancia.
+
+    Qué es de negocio y qué es técnico, según el contrato: el paquete que no existe y el tipo que el paquete no trae
+    son `Bloqueado` (la consulta respondió bien: falta registrar el paquete); un HTTP no previsto, una forma
+    inesperada, dos paquetes con el mismo unique name o un `typename` repetido dentro del paquete son `ErrorEntorno`."""
+
+    def __init__(self, dv, uniquename):
+        self._dv = dv
+        self.uniquename = uniquename
+        self._tipos = None
+        self._repetidos = set()
+
+    def _cargar(self):
+        ruta = f"pluginpackages?$select=pluginpackageid,uniquename&$filter=uniquename eq '{self.uniquename}'"
+        filas = exigir_forma(leer_entorno(self._dv, ruta, C_PAQUETE_DE_PLUGINS).get("value"), [dict], C_PAQUETE_DE_PLUGINS, "value")
+        if len(filas) > 1:
+            raise ErrorEntorno(
+                f"{C_PAQUETE_DE_PLUGINS} devolvió {len(filas)} filas para el unique name '{self.uniquename}'; se esperaba a lo sumo una"
+            )
+        if not filas:
+            raise Bloqueado(
+                f"el paquete de plugins '{self.uniquename}' no está registrado en el entorno; "
+                "primero hay que registrarlo con `herramientas/construir/paquete_plugins.py`"
+            )
+        paquete_id = exigir_forma(filas[0].get("pluginpackageid"), str, C_PAQUETE_DE_PLUGINS, "pluginpackageid", no_vacio=True)
+
+        ruta = f"pluginassemblies?$select=pluginassemblyid&$filter=_packageid_value eq {paquete_id}"
+        ensamblados = exigir_forma(
+            leer_entorno(self._dv, ruta, C_ENSAMBLADOS_DEL_PAQUETE).get("value"), [dict], C_ENSAMBLADOS_DEL_PAQUETE, "value"
+        )
+        tipos, repetidos = {}, set()
+        for asm in ensamblados:
+            asm_id = exigir_forma(asm.get("pluginassemblyid"), str, C_ENSAMBLADOS_DEL_PAQUETE, "pluginassemblyid", no_vacio=True)
+            ruta = f"plugintypes?$select=plugintypeid,typename&$filter=_pluginassemblyid_value eq {asm_id}"
+            for t in exigir_forma(leer_entorno(self._dv, ruta, C_TIPOS_DE_PLUGIN).get("value"), [dict], C_TIPOS_DE_PLUGIN, "value"):
+                nombre = exigir_forma(t.get("typename"), str, C_TIPOS_DE_PLUGIN, "typename", no_vacio=True)
+                if nombre in tipos:
+                    repetidos.add(nombre)
+                tipos[nombre] = exigir_forma(t.get("plugintypeid"), str, C_TIPOS_DE_PLUGIN, "plugintypeid", no_vacio=True)
+        self._tipos, self._repetidos = tipos, repetidos
+
+    def todos(self):
+        """{typename: plugintypeid} de todo lo que trajo el paquete."""
+        if self._tipos is None:
+            self._cargar()
+        return dict(self._tipos)
+
+    def id_del_tipo(self, typename):
+        if self._tipos is None:
+            self._cargar()
+        if typename in self._repetidos:
+            raise ErrorEntorno(
+                f"{C_TIPOS_DE_PLUGIN} devolvió 2 filas para '{typename}' dentro del paquete '{self.uniquename}'; se esperaba una"
+            )
+        if typename not in self._tipos:
+            raise Bloqueado(
+                f"el tipo de plugin '{typename}' no está registrado en el paquete '{self.uniquename}' (un tipo con el mismo "
+                "nombre en otro paquete no cuenta); primero hay que registrar el paquete con `herramientas/construir/paquete_plugins.py`"
+            )
+        return self._tipos[typename]
+
+
 def valor_administrado(objeto, tipo, consulta, campo):
     """Valor de una propiedad administrada del Web API (`{Value, CanBeChanged, …}`)."""
     exigir_forma(objeto, dict, consulta, campo)

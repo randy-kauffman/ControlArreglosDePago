@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(_AQUI))
 
 import paquete_plugins as pp  # noqa: E402
 from cliente_simulado import ClienteSimulado, FabricaCentinela  # noqa: E402
+from dll_de_mentira import dll_dotnet  # noqa: E402
 from fixtures import (  # noqa: E402
     IDENTIDAD_VALIDA,
     SOLUTION_ID,
@@ -31,9 +32,11 @@ IDENT = dict(IDENTIDAD_VALIDA, tipo_playbook="paquete-plugins", inventario="8.0"
 # `Sanic.Carp.Plugins`; sus tipos son la Custom API de generar formato y los plugins de los steps.
 COMPONENTE = {
     "tipo": "paquete-plugins",
-    "nombre": "Paquete de plugins CARP",
+    # `nombre` == `uniquename`: la plataforma rechazó un `name` libre en los spikes 2026-003.
+    "nombre": "sanic_carp_pkg_plugins",
     "uniquename": "sanic_carp_pkg_plugins",
     "version": "1.0.0",
+    "version_ensamblado": "1.0.0.0",
     "nupkg": "src/Sanic.Carp.Plugins/bin/Release/Sanic.Carp.Plugins.1.0.0.nupkg",
     "tipos": [
         "Sanic.Carp.Plugins.Api.GenerarFormatoApi",
@@ -48,26 +51,39 @@ ASM_ID = "44444444-4444-4444-4444-444444444444"
 
 
 def _dll_de_mentira(tipos):
-    """Bytes de un ".dll" de juguete que "trae" esos tipos: el nombre de clase
-    (el último tramo del tipo completo) aparece como cadena terminada en NUL,
-    igual que el heap #Strings de la metadata .NET — sin necesidad de un
-    ensamblado real para probar la verificación por contenido."""
-    cuerpo = b"esto hace de cabecera de un PE de mentira"
-    for t in tipos:
-        clase = t.rsplit(".", 1)[-1]
-        cuerpo += clase.encode("utf-8") + b"\x00"
-    return cuerpo
+    """Un ensamblado .NET mínimo (metadata de verdad: PE + CLI + `TypeDef`) que define esos tipos con su
+    nombre COMPLETO. Ver `dll_de_mentira.py`: la herramienta lee la tabla `TypeDef`, así que un relleno de
+    bytes con el nombre de la clase ya no sirve."""
+    return dll_dotnet(tipos)
 
 
-def _nupkg_de_mentira(tipos, nombre_dll="Sanic.Carp.Plugins.dll", con_dll=True):
-    """Un .nupkg de verdad (es un .zip) con un .dll de mentira adentro, para
+def _nuspec(id_paquete=None, version=None, dependencias=(), grupo=True):
+    """El `.nuspec` que escribe `dotnet pack`, con su espacio de nombres. `dependencias` son ids de NuGet."""
+    id_paquete = COMPONENTE["uniquename"] if id_paquete is None else id_paquete
+    version = COMPONENTE["version"] if version is None else version
+    deps = "".join(f'<dependency id="{d}" version="1.0.0" exclude="Build,Analyzers" />' for d in dependencias)
+    if grupo and deps:
+        deps = f'<group targetFramework=".NETFramework4.6.2">{deps}</group>'
+    return (
+        '<?xml version="1.0" encoding="utf-8"?>'
+        '<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd"><metadata>'
+        f"<id>{id_paquete}</id><version>{version}</version><authors>Pruebas</authors>"
+        f"<dependencies>{deps}</dependencies></metadata></package>"
+    )
+
+
+def _nupkg_de_mentira(tipos, nombre_dll="Sanic.Carp.Plugins.dll", con_dll=True, nuspec=None, extras=None, carpeta="lib/net462"):
+    """Un .nupkg de verdad (es un .zip) con un ensamblado .NET de mentira adentro, para
     poder probar que la verificación abre el paquete y mira el contenido del
-    ensamblado en vez de confiar en la fecha del archivo."""
+    ensamblado en vez de confiar en la fecha del archivo. `extras` es {ruta: bytes} de archivos
+    adicionales; `nuspec` es el texto del nuspec (por defecto el que coincide con el playbook)."""
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w") as z:
         if con_dll:
-            z.writestr(f"lib/net462/{nombre_dll}", _dll_de_mentira(tipos))
-        z.writestr("sanic_carp_pkg_plugins.nuspec", "<package></package>")
+            z.writestr(f"{carpeta}/{nombre_dll}", _dll_de_mentira(tipos))
+        z.writestr("sanic_carp_pkg_plugins.nuspec", _nuspec() if nuspec is None else nuspec)
+        for ruta, contenido in (extras or {}).items():
+            z.writestr(ruta, contenido)
     return buf.getvalue()
 
 
@@ -121,6 +137,25 @@ def fila_paquete(**cambios):
     return fila
 
 
+def fila_ensamblado(**cambios):
+    fila = {
+        "pluginassemblyid": ASM_ID,
+        "name": "Sanic.Carp.Plugins",
+        "version": COMPONENTE["version_ensamblado"],
+        "modifiedon": "2026-10-20T10:00:00Z",
+    }
+    fila.update(cambios)
+    return fila
+
+
+# Lo que devuelve `pluginassemblies` antes y después de actualizar el contenido cuando todo salió bien:
+# `modifiedon` avanzó y la versión es la del playbook.
+ANTES_Y_DESPUES_BIEN = [
+    [fila_ensamblado(modifiedon="2026-10-20T10:00:00Z")],
+    [fila_ensamblado(modifiedon="2026-10-20T10:05:00Z")],
+]
+
+
 class Base(unittest.TestCase):
     """Cada prueba corre con su propio directorio temporal haciendo de raíz del
     repositorio, así el .nupkg de mentira no ensucia el repo de verdad."""
@@ -146,15 +181,36 @@ class Base(unittest.TestCase):
             f.write(contenido)
         return destino
 
-    def armar(self, cliente, paquete=None, tipos=None, componentes=None, ensamblados=None):
+    def armar_alta(self, cliente=None, **kw):
+        """El paquete no existe en la primera lectura y sí después del POST."""
+        cliente = ClienteSimulado() if cliente is None else cliente
+        respuestas = [(200, {"value": []}, {})]
+        cliente.responder(
+            "GET", es_ruta_paquetes,
+            lambda r, c, s: respuestas.pop(0) if respuestas else (200, {"value": [fila_paquete()]}, {}),
+        )
+        self.armar(cliente, paquete=fila_paquete(), **kw)
+        cliente.responder("POST", "pluginpackages", (204, {}, {"OData-EntityId": f"x(  {PAQUETE_ID})"}))
+        return cliente
+
+    def armar(self, cliente, paquete=None, tipos=None, componentes=None, ensamblados=None, ensamblados_en_orden=None):
         """Configura las respuestas del entorno: precondiciones felices, el
-        paquete (o su ausencia), sus ensamblados, sus tipos y su pertenencia."""
+        paquete (o su ausencia), sus ensamblados, sus tipos y su pertenencia.
+        `ensamblados_en_orden` es una lista de respuestas de ensamblados, una por lectura (la última
+        se repite): así se simula el antes y el después de actualizar el contenido."""
         armar_cliente_precondiciones_ok(cliente, IDENT)
         filas = [] if paquete is None else [paquete]
         cliente.responder("GET", es_ruta_paquetes, (200, {"value": filas}, {}))
         if ensamblados is None:
-            ensamblados = [{"pluginassemblyid": ASM_ID, "name": "Sanic.Carp.Plugins", "version": "1.0.0.0"}]
-        cliente.responder("GET", es_ruta_ensamblados, (200, {"value": ensamblados}, {}))
+            ensamblados = [fila_ensamblado()]
+        if ensamblados_en_orden is None:
+            cliente.responder("GET", es_ruta_ensamblados, (200, {"value": ensamblados}, {}))
+        else:
+            pendientes = list(ensamblados_en_orden)
+            cliente.responder(
+                "GET", es_ruta_ensamblados,
+                lambda r, c, s: (200, {"value": pendientes.pop(0) if len(pendientes) > 1 else pendientes[0]}, {}),
+            )
         tipos = COMPONENTE["tipos"] if tipos is None else tipos
         cliente.responder(
             "GET", es_ruta_tipos,
@@ -200,7 +256,7 @@ class ValidacionOffline(Base):
     def test_el_uniquename_admite_letras_mayusculas_digitos_guion_bajo_y_punto(self):
         for bueno in ["sanic_Carp_Pkg_2", "sanic_carp.pkg.plugins", "sanic_CARP"]:
             with self.subTest(bueno):
-                pp.validar_playbook(comp(uniquename=bueno), IDENT)
+                pp.validar_playbook(comp(uniquename=bueno, nombre=bueno), IDENT)
 
     def test_el_uniquename_no_admite_cualquier_caracter(self):
         for malo in ["sanic_carp_pkg plugins", "sanic_carp_pkg-plugins", "sanic_carp_pkgñ"]:
@@ -232,19 +288,25 @@ class ValidacionOffline(Base):
     def test_los_largos_de_cada_columna_aceptan_exactamente_el_maximo(self):
         # Los maximos de la plataforma (Learn, tabla PluginPackage) escritos a mano: si se leyeran de las constantes, la prueba no atraparia un cambio de ellas.
         self.assertEqual((pp.LARGO_NOMBRE, pp.LARGO_UNIQUENAME, pp.LARGO_VERSION), (100, 128, 100))
-        pp.validar_playbook(comp(nombre="a" * 100), IDENT)
-        self.rechaza(comp(nombre="a" * 101), "el máximo de la columna es 100")
-        pp.validar_playbook(comp(uniquename="sanic_" + "a" * (128 - len("sanic_"))), IDENT)
-        self.rechaza(comp(uniquename="sanic_" + "a" * (129 - len("sanic_"))), "el máximo de la columna es 128")
+        # `nombre` tiene que ser igual a `uniquename` (ver más abajo), así que el tope efectivo de los dos es el MENOR: 100.
+        igual_a_cien = "sanic_" + "a" * (100 - len("sanic_"))
+        pp.validar_playbook(comp(nombre=igual_a_cien, uniquename=igual_a_cien), IDENT)
+        igual_a_ciento_uno = igual_a_cien + "a"
+        self.rechaza(comp(nombre=igual_a_ciento_uno, uniquename=igual_a_ciento_uno), "nombre tiene 101 caracteres; el máximo de la columna es 100")
+        # El tope de 128 del unique name se sigue haciendo valer por su cuenta (se comprueba antes que el nombre).
+        self.rechaza(comp(uniquename="sanic_" + "a" * (129 - len("sanic_"))), "uniquename tiene 129 caracteres; el máximo de la columna es 128")
         casi = "1." + "9" * 98
         self.assertEqual(len(casi), 100)
         pp.validar_playbook(comp(version=casi), IDENT)
         self.rechaza(comp(version=casi + "9"), "el máximo de la columna es 100")
 
     def test_un_texto_vacio_o_un_tipo_equivocado_se_rechaza_en_cada_clave(self):
-        for clave in ("nombre", "uniquename", "version", "nupkg"):
+        for clave in ("nombre", "uniquename", "version", "version_ensamblado", "nupkg"):
             with self.subTest(clave):
                 self.rechaza(comp(**{clave: ""}), clave)
+            # Presente y con el tipo equivocado: un número donde va un texto.
+            with self.subTest(f"{clave} como número"):
+                self.rechaza(comp(**{clave: 7}), clave)
         self.rechaza(comp(tipos="Sanic.Carp.Plugins.Api.GenerarFormatoApi"), "tipos")
         self.rechaza(comp(tipos=[3]), "tipos[0]")
         self.rechaza(comp(tipos=[""]), "tipos[0]")
@@ -265,6 +327,25 @@ class ValidacionOffline(Base):
 
     def test_el_nombre_visible_va_sin_tildes(self):
         self.rechaza(comp(nombre="Paquete de código"), "fuera de ASCII")
+
+    def test_el_nombre_tiene_que_ser_igual_al_uniquename(self):
+        # La plataforma rechazó con 400 un `name` libre en los spikes 2026-003: se frena antes de intentarlo.
+        self.rechaza(comp(nombre="Paquete de plugins CARP"), "nombre = 'Paquete de plugins CARP' tiene que ser igual a uniquename = 'sanic_carp_pkg_plugins'")
+        self.rechaza(comp(nombre="sanic_carp_pkg_otro"), "tiene que ser igual a uniquename")
+        pp.validar_playbook(comp(), IDENT)
+
+    def test_la_version_del_ensamblado_son_cuatro_numeros(self):
+        # `pluginassemblies.version` es el AssemblyVersion: cuatro números. No es la versión del paquete.
+        for buena in ["1.0.0.0", "1.0.1.0", "10.20.30.40", "0.0.0.0"]:
+            with self.subTest(buena):
+                pp.validar_playbook(comp(version_ensamblado=buena), IDENT)
+        for mala in ["1.0.0", "1.0", "1.0.0.0.0", "1.0.0.a", "01.0.0.0", "1.0.0.", "v1.0.0.0", "1..0.0"]:
+            with self.subTest(mala):
+                self.rechaza(comp(version_ensamblado=mala), "version_ensamblado")
+
+    def test_sin_la_version_del_ensamblado_el_bloque_no_valida(self):
+        sin = {k: v for k, v in COMPONENTE.items() if k != "version_ensamblado"}
+        self.rechaza(sin, "faltan ['version_ensamblado']")
 
     def test_el_largo_de_cada_columna_se_respeta(self):
         self.rechaza(comp(nombre="a" * (pp.LARGO_NOMBRE + 1)), f"el máximo de la columna es {pp.LARGO_NOMBRE}")
@@ -371,6 +452,7 @@ class ContenidoDelNupkg(Base):
         with zipfile.ZipFile(buf, "w") as z:
             z.writestr("tools/Otro.dll", _dll_de_mentira(COMPONENTE["tipos"]))
             z.writestr("lib/net462/Uno.dll", _dll_de_mentira(COMPONENTE["tipos"][:1]))
+            z.writestr("sanic_carp_pkg_plugins.nuspec", _nuspec())
         self.escribir_nupkg(buf.getvalue())
         cliente = self.armar(ClienteSimulado(), paquete=None)
         estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente)
@@ -411,16 +493,204 @@ class ContenidoDelNupkg(Base):
         self.assertIn(ULTIMO_TIPO, detalle)
         self.assertFalse(cliente.hubo_escritura())
 
+    def test_solo_cuentan_los_dll_de_lib_net462_no_los_de_otros_destinos(self):
+        # El sandbox carga lib/net462: un tipo en lib/netstandard2.0 (o en cualquier otro destino) no le sirve.
+        for carpeta in ("lib/netstandard2.0", "lib/net8.0", "lib/net462/sub", "lib"):
+            with self.subTest(carpeta):
+                buf = io.BytesIO()
+                with zipfile.ZipFile(buf, "w") as z:
+                    z.writestr(f"{carpeta}/Sanic.Carp.Plugins.dll", _dll_de_mentira(COMPONENTE["tipos"]))
+                with self.assertRaises(pp.Bloqueado) as e:
+                    pp._tipos_faltantes_en_dll(buf.getvalue(), COMPONENTE["tipos"])
+                self.assertIn("lib/net462/", str(e.exception))
+        # Y un nupkg con dll solo en otro destino queda bloqueado por eso, no por "falta un dll": el mensaje dice dónde se busca.
+        self.escribir_nupkg(_nupkg_de_mentira(COMPONENTE["tipos"], carpeta="lib/netstandard2.0"))
+        cliente = self.armar(ClienteSimulado(), paquete=None)
+        estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente)
+        self.assertEqual("bloqueado", estado, detalle)
+        self.assertIn("lib/net462", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_el_nombre_completo_con_namespace_es_lo_que_cuenta(self):
+        # Misma clase, otro namespace: no satisface al tipo declarado. Una búsqueda por el último tramo lo daba por bueno.
+        impostor = ["Otro.Namespace.GenerarFormatoApi"] + COMPONENTE["tipos"][1:]
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("lib/net462/Sanic.Carp.Plugins.dll", _dll_de_mentira(impostor))
+        self.assertEqual(pp._tipos_faltantes_en_dll(buf.getvalue(), COMPONENTE["tipos"]), COMPONENTE["tipos"][:1])
+
+    def test_un_namespace_parecido_tampoco_alcanza(self):
+        parecido = ["Sanic.Carp.Plugins.Api.Extra.GenerarFormatoApi", "Sanic.Carp.Plugins.GenerarFormatoApi"] + COMPONENTE["tipos"][1:]
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("lib/net462/Sanic.Carp.Plugins.dll", _dll_de_mentira(parecido))
+        self.assertEqual(pp._tipos_faltantes_en_dll(buf.getvalue(), COMPONENTE["tipos"]), COMPONENTE["tipos"][:1])
+
+    def test_un_dll_que_no_es_un_ensamblado_net_no_aporta_tipos_ni_rompe(self):
+        # Un nativo (o corrupto) en lib/net462 no es un ensamblado: se ignora y los tipos quedan sin cubrir.
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("lib/net462/Nativo.dll", b"MZ" + b"\x00" * 200)
+            z.writestr("lib/net462/Sanic.Carp.Plugins.dll", _dll_de_mentira(COMPONENTE["tipos"]))
+        self.assertEqual(pp._tipos_faltantes_en_dll(buf.getvalue(), COMPONENTE["tipos"]), [])
+
+
+# ---------------------------------------------------------------------------
+# El binario por dentro: el .nuspec dice qué paquete es, y sus dependencias
+# tienen que venir como .dll adentro (el sandbox no las resuelve de NuGet).
+# Cualquier discrepancia es `error` y se frena ANTES de escribir en el entorno.
+# ---------------------------------------------------------------------------
+class VerificacionDelBinario(Base):
+    def correr(self, nupkg, existente=False, **kw):
+        self.escribir_nupkg(nupkg)
+        cliente = self.armar(ClienteSimulado(), paquete=fila_paquete()) if existente else self.armar_alta()
+        estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente, dormir=lambda s: None, **kw)
+        return estado, detalle, cliente
+
+    def afirma_error(self, estado, detalle, cliente, *fragmentos):
+        self.assertEqual("error", estado, detalle)
+        for f in fragmentos:
+            self.assertIn(f, detalle)
+        self.assertNotIn("fallo inesperado", detalle)
+        self.assertFalse(cliente.hubo_escritura(), "no tenía que escribir nada en el entorno")
+
+    def test_el_id_del_nuspec_tiene_que_ser_el_uniquename(self):
+        estado, detalle, cliente = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=_nuspec(id_paquete="SanicCarpPlugins")))
+        self.afirma_error(estado, detalle, cliente, "nuspec", "id = 'SanicCarpPlugins'", "uniquename = 'sanic_carp_pkg_plugins'")
+
+    def test_la_version_del_nuspec_tiene_que_ser_la_del_playbook(self):
+        estado, detalle, cliente = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=_nuspec(version="0.9.0")))
+        self.afirma_error(estado, detalle, cliente, "nuspec", "version = '0.9.0'", "version = '1.0.0'")
+
+    def test_el_id_y_la_version_buenos_dejan_pasar(self):
+        estado, detalle, _ = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"]))
+        self.assertEqual("creado", estado, detalle)
+
+    def test_id_y_version_se_comparan_exactos_sin_normalizar_mayusculas(self):
+        estado, detalle, cliente = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=_nuspec(id_paquete="SANIC_CARP_PKG_PLUGINS")))
+        self.afirma_error(estado, detalle, cliente, "id = 'SANIC_CARP_PKG_PLUGINS'")
+
+    def test_un_nupkg_sin_nuspec_es_error(self):
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("lib/net462/Sanic.Carp.Plugins.dll", _dll_de_mentira(COMPONENTE["tipos"]))
+        estado, detalle, cliente = self.correr(buf.getvalue())
+        self.afirma_error(estado, detalle, cliente, "no trae ningún .nuspec")
+
+    def test_un_nuspec_que_no_es_xml_es_error(self):
+        estado, detalle, cliente = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec="<package><metadata>"))
+        self.afirma_error(estado, detalle, cliente, "nuspec", "no es XML válido")
+
+    def test_un_nuspec_sin_id_o_sin_version_es_error(self):
+        sin_id = '<package><metadata><version>1.0.0</version></metadata></package>'
+        sin_version = '<package><metadata><id>sanic_carp_pkg_plugins</id></metadata></package>'
+        for texto, falta in ((sin_id, "id"), (sin_version, "version")):
+            with self.subTest(falta):
+                estado, detalle, cliente = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=texto))
+                self.afirma_error(estado, detalle, cliente, "nuspec", f"no declara <{falta}>")
+
+    def test_un_nuspec_con_doctype_o_entidades_se_rechaza_sin_expandirlo(self):
+        bomba = '<?xml version="1.0"?><!DOCTYPE p [<!ENTITY a "aaaa">]><package><metadata><id>&a;</id></metadata></package>'
+        estado, detalle, cliente = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=bomba))
+        self.afirma_error(estado, detalle, cliente, "nuspec", "DOCTYPE")
+
+    def test_el_nuspec_se_lee_sin_importar_el_espacio_de_nombres(self):
+        sin_espacio = "<package><metadata><id>sanic_carp_pkg_plugins</id><version>1.0.0</version></metadata></package>"
+        estado, detalle, _ = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=sin_espacio))
+        self.assertEqual("creado", estado, detalle)
+
+    def test_actualizar_contenido_tambien_compara_el_nuspec_y_no_hace_patch(self):
+        estado, detalle, cliente = self.correr(
+            _nupkg_de_mentira(COMPONENTE["tipos"], nuspec=_nuspec(version="0.9.0")), existente=True, actualizar_contenido=True
+        )
+        self.afirma_error(estado, detalle, cliente, "nuspec", "version = '0.9.0'")
+
+    def test_el_nuspec_de_un_paquete_que_ya_existe_no_se_lee_sin_la_bandera(self):
+        # Sin `--actualizar-contenido` el binario no se toca: la herramienta ni lo abre (la verificación mira el entorno).
+        self.escribir_nupkg(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=_nuspec(id_paquete="otro")))
+        cliente = self.armar(ClienteSimulado(), paquete=fila_paquete())
+        estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente)
+        self.assertEqual("ya_existia", estado, detalle)
+
+    # --- dependencias -------------------------------------------------------
+    def test_una_dependencia_del_nuspec_sin_su_dll_es_error_y_la_nombra(self):
+        nupkg = _nupkg_de_mentira(COMPONENTE["tipos"], nuspec=_nuspec(dependencias=["DocumentFormat.OpenXml"]))
+        estado, detalle, cliente = self.correr(nupkg)
+        self.afirma_error(estado, detalle, cliente, "DocumentFormat.OpenXml", "lib/net462")
+
+    def test_una_dependencia_con_su_dll_en_lib_net462_pasa(self):
+        nupkg = _nupkg_de_mentira(
+            COMPONENTE["tipos"], nuspec=_nuspec(dependencias=["DocumentFormat.OpenXml"]),
+            extras={"lib/net462/DocumentFormat.OpenXml.dll": b"MZ"},
+        )
+        estado, detalle, _ = self.correr(nupkg)
+        self.assertEqual("creado", estado, detalle)
+
+    def test_el_dll_de_la_dependencia_se_busca_sin_distinguir_mayusculas(self):
+        nupkg = _nupkg_de_mentira(
+            COMPONENTE["tipos"], nuspec=_nuspec(dependencias=["DocumentFormat.OpenXml"]),
+            extras={"lib/net462/documentformat.openxml.DLL": b"MZ"},
+        )
+        estado, detalle, _ = self.correr(nupkg)
+        self.assertEqual("creado", estado, detalle)
+
+    def test_el_dll_de_una_dependencia_en_otro_destino_no_cuenta(self):
+        nupkg = _nupkg_de_mentira(
+            COMPONENTE["tipos"], nuspec=_nuspec(dependencias=["DocumentFormat.OpenXml"]),
+            extras={"lib/netstandard2.0/DocumentFormat.OpenXml.dll": b"MZ", "tools/DocumentFormat.OpenXml.dll": b"MZ"},
+        )
+        estado, detalle, cliente = self.correr(nupkg)
+        self.afirma_error(estado, detalle, cliente, "DocumentFormat.OpenXml")
+
+    def test_se_nombran_todas_las_dependencias_que_faltan(self):
+        nupkg = _nupkg_de_mentira(
+            COMPONENTE["tipos"], nuspec=_nuspec(dependencias=["Zeta.Lib", "Alfa.Lib", "Presente.Lib"]),
+            extras={"lib/net462/Presente.Lib.dll": b"MZ"},
+        )
+        estado, detalle, cliente = self.correr(nupkg)
+        self.afirma_error(estado, detalle, cliente, "['Alfa.Lib', 'Zeta.Lib']")
+        self.assertNotIn("Presente.Lib", detalle)
+
+    def test_las_dependencias_de_plataforma_no_necesitan_dll(self):
+        # El sandbox ya trae el SDK de Dataverse; y las de compilación (herramientas de MSBuild) no viajan al runtime.
+        plataforma = ["Microsoft.CrmSdk.CoreAssemblies", "Microsoft.Xrm.Sdk", "microsoft.crmsdk.workflow", "Microsoft.PowerApps.MSBuild.Plugin"]
+        estado, detalle, _ = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=_nuspec(dependencias=plataforma)))
+        self.assertEqual("creado", estado, detalle)
+
+    def test_el_prefijo_de_plataforma_no_exime_a_un_id_que_solo_se_le_parece(self):
+        # "Microsoft.Xrm" sin punto final, o "MicrosoftXrm.Foo", no son del SDK.
+        for falso in ("Microsoft.XrmToolkit", "Contoso.Microsoft.Xrm.Sdk", "Microsoft.CrmSdkFalso"):
+            with self.subTest(falso):
+                estado, detalle, cliente = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=_nuspec(dependencias=[falso])))
+                self.afirma_error(estado, detalle, cliente, falso)
+
+    def test_las_dependencias_sueltas_o_en_varios_grupos_se_leen_todas(self):
+        suelta = _nuspec(dependencias=["Suelta.Lib"], grupo=False)
+        estado, detalle, cliente = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=suelta))
+        self.afirma_error(estado, detalle, cliente, "Suelta.Lib")
+        dos_grupos = (
+            '<package><metadata><id>sanic_carp_pkg_plugins</id><version>1.0.0</version><dependencies>'
+            '<group targetFramework=".NETFramework4.6.2"><dependency id="Uno.Lib" version="1.0.0" /></group>'
+            '<group targetFramework=".NETStandard2.0"><dependency id="Dos.Lib" version="1.0.0" /></group>'
+            "</dependencies></metadata></package>"
+        )
+        estado, detalle, cliente = self.correr(_nupkg_de_mentira(COMPONENTE["tipos"], nuspec=dos_grupos))
+        self.afirma_error(estado, detalle, cliente, "['Dos.Lib', 'Uno.Lib']")
+
+    def test_actualizar_contenido_tambien_exige_los_dll_de_las_dependencias(self):
+        nupkg = _nupkg_de_mentira(COMPONENTE["tipos"], nuspec=_nuspec(dependencias=["DocumentFormat.OpenXml"]))
+        estado, detalle, cliente = self.correr(nupkg, existente=True, actualizar_contenido=True)
+        self.afirma_error(estado, detalle, cliente, "DocumentFormat.OpenXml")
+
 
 # ---------------------------------------------------------------------------
 # Contra el entorno
 # ---------------------------------------------------------------------------
 class ContraElEntorno(Base):
-    def test_el_componente_informado_es_el_uniquename_y_no_el_nombre_visible(self):
+    def test_el_componente_informado_es_el_uniquename(self):
         cliente = self.armar(ClienteSimulado(), paquete=None)
         _, componente, _ = pp.construir(self.escribir_playbook(), False, lambda: cliente)
         self.assertEqual(componente, "sanic_carp_pkg_plugins")
-        self.assertNotEqual(COMPONENTE["nombre"], COMPONENTE["uniquename"])
 
     def test_el_alta_sube_el_nupkg_en_base64_dentro_de_la_solucion(self):
         self.escribir_nupkg()
@@ -621,6 +891,11 @@ class ContraElEntorno(Base):
         estado, _, detalle = pp.construir(ruta, False, lambda: cliente)
         self.assertEqual("difiere", estado, detalle)
         self.assertIn(SOLUTION_ID, detalle)
+        self.assertIn("el paquete no figura como componente de la solución", detalle)
+        self.assertIn(f"'{IDENT['solucion']}'", detalle)
+        self.assertIn("AddSolutionComponent", detalle)
+        self.assertIn("a mano", detalle)
+        self.assertFalse(cliente.hubo_escritura(), "no agrega el componente a la solución: está pendiente de ensayar en Dev")
 
     def test_un_paquete_managed_no_se_toca(self):
         self.escribir_nupkg()
@@ -647,7 +922,7 @@ class ContraElEntorno(Base):
         nuevo = _nupkg_de_mentira(COMPONENTE["tipos"])
         self.escribir_nupkg(nuevo)
         ruta = self.escribir_playbook()
-        cliente = self.armar(ClienteSimulado(), paquete=fila_paquete())
+        cliente = self.armar(ClienteSimulado(), paquete=fila_paquete(), ensamblados_en_orden=ANTES_Y_DESPUES_BIEN)
         cliente.responder("PATCH", lambda r: r.startswith("pluginpackages("), (204, {}, {}))
 
         estado, _, detalle = pp.construir(ruta, False, lambda: cliente, actualizar_contenido=True)
@@ -688,6 +963,164 @@ class ContraElEntorno(Base):
         estado, _, detalle = pp.construir(ruta, False, lambda: cliente, dormir=lambda s: None)
         self.assertEqual("error", estado, detalle)
         self.assertIn("HTTP 400", detalle)
+
+
+# ---------------------------------------------------------------------------
+# La versión del ensamblado y `modifiedon`: un 204 del PATCH no prueba que el sandbox ejecute el binario nuevo.
+# Si el AssemblyVersion no subió, la plataforma sigue con el anterior (alm.md); lo que se lee DESPUÉS lo delata.
+# ---------------------------------------------------------------------------
+class VersionDelEnsamblado(Base):
+    def actualizar(self, antes, despues, **armar):
+        self.escribir_nupkg()
+        cliente = self.armar(ClienteSimulado(), paquete=fila_paquete(), ensamblados_en_orden=[antes, despues], **armar)
+        cliente.responder("PATCH", lambda r: r.startswith("pluginpackages("), (204, {}, {}))
+        estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente, actualizar_contenido=True, dormir=lambda s: None)
+        return estado, detalle, cliente
+
+    def test_un_ensamblado_con_otra_version_difiere_y_pide_subir_el_assemblyversion(self):
+        self.escribir_nupkg()
+        cliente = self.armar(ClienteSimulado(), paquete=fila_paquete(), ensamblados=[fila_ensamblado(version="0.9.0.0")])
+        estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("'Sanic.Carp.Plugins'", detalle)
+        self.assertIn("version es '0.9.0.0' y el playbook dice version_ensamblado '1.0.0.0'", detalle)
+        self.assertIn("AssemblyVersion", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_solo_verificar_tambien_compara_la_version_del_ensamblado(self):
+        self.escribir_nupkg()
+        cliente = self.armar(ClienteSimulado(), paquete=fila_paquete(), ensamblados=[fila_ensamblado(version="0.9.0.0")])
+        estado, _, detalle = pp.construir(self.escribir_playbook(), True, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("version_ensamblado", detalle)
+
+    def test_tras_el_alta_una_version_distinta_es_error_y_no_difiere(self):
+        self.escribir_nupkg()
+        cliente = self.armar_alta(ensamblados=[fila_ensamblado(version="2.0.0.0")])
+        estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente)
+        self.assertEqual("error", estado, detalle)
+        self.assertTrue(detalle.startswith("se escribió pero no quedó bien: "), detalle)
+        self.assertIn("version es '2.0.0.0'", detalle)
+
+    def test_con_cada_ensamblado_del_paquete_se_compara_la_version(self):
+        self.escribir_nupkg()
+        asms = [fila_ensamblado(), fila_ensamblado(pluginassemblyid="otro", name="Otro.Ensamblado", version="3.0.0.0")]
+        cliente = self.armar(ClienteSimulado(), paquete=fila_paquete(), ensamblados=asms)
+        estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("'Otro.Ensamblado'", detalle)
+        self.assertNotIn("'Sanic.Carp.Plugins': version", detalle)
+
+    def test_la_version_del_ensamblado_ausente_o_mal_tipada_es_forma_inesperada(self):
+        for valor in (None, 1, ["1.0.0.0"]):
+            with self.subTest(valor):
+                self.escribir_nupkg()
+                cliente = self.armar(ClienteSimulado(), paquete=fila_paquete(), ensamblados=[fila_ensamblado(version=valor)])
+                estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente)
+                self.assertEqual("error", estado, detalle)
+                self.assertIn("la consulta de los ensamblados del paquete (GET pluginassemblies) devolvió 200 con forma inesperada: 'version'", detalle)
+                self.assertNotIn("fallo inesperado", detalle)
+
+    # --- actualizar el contenido ---------------------------------------------------
+    def test_si_modifiedon_avanzo_y_la_version_es_la_esperada_se_informa_actualizado(self):
+        estado, detalle, cliente = self.actualizar(
+            [fila_ensamblado(modifiedon="2026-10-20T10:00:00Z")], [fila_ensamblado(modifiedon="2026-10-20T10:05:00Z")]
+        )
+        self.assertEqual("actualizado", estado, detalle)
+        self.assertIn("modifiedon 2026-10-20T10:00:00Z -> 2026-10-20T10:05:00Z", detalle)
+
+    def test_si_modifiedon_no_avanzo_es_error_aunque_el_patch_diera_204(self):
+        mismo = fila_ensamblado(modifiedon="2026-10-20T10:00:00Z")
+        estado, detalle, cliente = self.actualizar([mismo], [mismo])
+        self.assertEqual("error", estado, detalle)
+        self.assertTrue(detalle.startswith("se escribió pero no quedó bien: "), detalle)
+        self.assertIn("modifiedon de 'Sanic.Carp.Plugins' no avanzó", detalle)
+        self.assertIn("2026-10-20T10:00:00Z", detalle)
+        self.assertEqual(1, len([l for l in cliente.llamadas if l["metodo"] == "PATCH"]))
+
+    def test_si_modifiedon_retrocede_tampoco_cuenta_como_avanzar(self):
+        estado, detalle, _ = self.actualizar(
+            [fila_ensamblado(modifiedon="2026-10-20T10:05:00Z")], [fila_ensamblado(modifiedon="2026-10-20T10:00:00Z")]
+        )
+        self.assertEqual("error", estado, detalle)
+        self.assertIn("no avanzó", detalle)
+
+    def test_las_fechas_se_comparan_como_fechas_no_como_texto(self):
+        # Con fracciones de segundo de largo distinto el orden alfabético se equivoca; el cronológico no.
+        estado, detalle, _ = self.actualizar(
+            [fila_ensamblado(modifiedon="2026-10-20T10:00:00.5Z")], [fila_ensamblado(modifiedon="2026-10-20T10:00:00.25Z")]
+        )
+        self.assertEqual("error", estado, detalle)
+        estado, detalle, _ = self.actualizar(
+            [fila_ensamblado(modifiedon="2026-10-20T10:00:00.25Z")], [fila_ensamblado(modifiedon="2026-10-20T10:00:00.5Z")]
+        )
+        self.assertEqual("actualizado", estado, detalle)
+
+    def test_si_modifiedon_avanzo_pero_la_version_no_es_la_esperada_es_error(self):
+        estado, detalle, _ = self.actualizar(
+            [fila_ensamblado(modifiedon="2026-10-20T10:00:00Z")],
+            [fila_ensamblado(modifiedon="2026-10-20T10:05:00Z", version="0.9.0.0")],
+        )
+        self.assertEqual("error", estado, detalle)
+        self.assertIn("version es '0.9.0.0'", detalle)
+
+    def test_si_se_vuelve_a_subir_con_la_misma_version_del_entorno_se_denuncia_el_assemblyversion(self):
+        # La causa típica: el binario nuevo conserva el AssemblyVersion y el sandbox sigue con el anterior.
+        mismo = fila_ensamblado(version="1.0.0.0", modifiedon="2026-10-20T10:00:00Z")
+        estado, detalle, _ = self.actualizar([mismo], [mismo])
+        self.assertEqual("error", estado, detalle)
+        self.assertIn("AssemblyVersion", detalle)
+
+    def test_todos_los_ensamblados_que_ya_existian_tienen_que_avanzar(self):
+        otro_antes = fila_ensamblado(pluginassemblyid="otro", name="Otro.Ensamblado", modifiedon="2026-10-20T10:00:00Z")
+        otro_igual = dict(otro_antes)
+        estado, detalle, _ = self.actualizar(
+            [fila_ensamblado(modifiedon="2026-10-20T10:00:00Z"), otro_antes],
+            [fila_ensamblado(modifiedon="2026-10-20T10:05:00Z"), otro_igual],
+        )
+        self.assertEqual("error", estado, detalle)
+        self.assertIn("'Otro.Ensamblado'", detalle)
+        self.assertNotIn("modifiedon de 'Sanic.Carp.Plugins' no avanzó", detalle)
+
+    def test_un_ensamblado_que_desaparece_tras_actualizar_es_error(self):
+        estado, detalle, _ = self.actualizar([fila_ensamblado()], [])
+        self.assertEqual("error", estado, detalle)
+
+    def test_un_ensamblado_nuevo_tras_actualizar_no_exige_fecha_anterior(self):
+        estado, detalle, _ = self.actualizar(
+            [fila_ensamblado(modifiedon="2026-10-20T10:00:00Z")],
+            [fila_ensamblado(modifiedon="2026-10-20T10:05:00Z"), fila_ensamblado(pluginassemblyid="nuevo", name="Nuevo", modifiedon="2026-10-20T10:05:00Z")],
+        )
+        # El nuevo tiene otra versión del playbook? No: comparte la del playbook, así que todo cuadra.
+        self.assertEqual("actualizado", estado, detalle)
+
+    def test_modifiedon_ausente_o_mal_tipado_es_forma_inesperada_y_no_se_escribe(self):
+        for valor in (None, 20261020, "ayer"):
+            with self.subTest(valor):
+                self.escribir_nupkg()
+                cliente = self.armar(
+                    ClienteSimulado(), paquete=fila_paquete(), ensamblados_en_orden=[[fila_ensamblado(modifiedon=valor)]]
+                )
+                estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente, actualizar_contenido=True)
+                self.assertEqual("error", estado, detalle)
+                self.assertIn("'modifiedon'", detalle)
+                self.assertNotIn("fallo inesperado", detalle)
+                self.assertFalse(cliente.hubo_escritura(), "la lectura de antes falla ANTES del PATCH")
+
+    def test_antes_del_patch_se_lee_el_estado_y_despues_se_vuelve_a_leer(self):
+        estado, detalle, cliente = self.actualizar(
+            [fila_ensamblado(modifiedon="2026-10-20T10:00:00Z")], [fila_ensamblado(modifiedon="2026-10-20T10:05:00Z")]
+        )
+        pasos = [("GET" if l["ruta"].startswith("pluginassemblies?") else l["metodo"]) for l in cliente.llamadas if l["metodo"] == "PATCH" or l["ruta"].startswith("pluginassemblies?")]
+        self.assertEqual(["GET", "PATCH", "GET"], pasos)
+
+    def test_sin_actualizar_contenido_no_se_pide_ni_se_valida_modifiedon(self):
+        self.escribir_nupkg()
+        fila = fila_ensamblado()
+        del fila["modifiedon"]
+        cliente = self.armar(ClienteSimulado(), paquete=fila_paquete(), ensamblados=[fila])
+        estado, _, detalle = pp.construir(self.escribir_playbook(), False, lambda: cliente)
+        self.assertEqual("ya_existia", estado, detalle)
 
 
 class Uso(Base):

@@ -20,6 +20,11 @@ API entera y rehacerla con todos sus parámetros. Por eso el playbook se valida
 entero sin red antes de tocar nada, y por eso una diferencia en un campo
 inmutable se informa como `difiere` diciendo explícitamente que hay que borrar.
 
+`paquete` es el unique name del `pluginpackage` que trae el plugin: el tipo se
+resuelve DENTRO de ese paquete. Un tipo con el mismo `typename` en otro paquete
+(en Dev hay paquetes de spikes con las mismas clases) no cuenta, ni al crear ni
+al verificar a qué plugin apunta la API.
+
 `--completar` solo toca lo que SÍ se puede cambiar (displayname, descripción,
 privilegio de ejecución, isprivate, el plugin asociado) y agrega los parámetros
 que falten. Nunca borra ni pisa un campo inmutable.
@@ -40,11 +45,14 @@ from _comun import (  # noqa: E402
     ErrorEntorno,
     ErrorPlaybook,
     Rastro,
+    TiposDelPaquete,
     comprobar_solucion_e_idioma,
     dividir_secciones,
     escribir_metadatos,
     exigir_forma,
     exigir_sin_tildes,
+    exigir_unique_name_de_paquete,
+    fuera_de_la_solucion,
     leer_entorno,
     leer_texto,
     obtener_componente,
@@ -83,7 +91,7 @@ MENSAJE_FALLO_CLIENTE = (
 )
 
 CLAVES = {
-    "tipo": str, "nombre": str, "displayname": str, "descripcion": str, "plugintype": str,
+    "tipo": str, "nombre": str, "displayname": str, "descripcion": str, "paquete": str, "plugintype": str,
     "esfuncion": bool, "esprivada": bool, "binding": str, "pasosdeterceros": str,
     "habilitadaenflujos": bool, "entrada": list, "salida": list,
 }
@@ -100,7 +108,6 @@ CLAVES_PARAMETRO = {"nombre": str, "displayname": str, "descripcion": str, "tipo
 CLAVES_SALIDA = {"nombre": str, "displayname": str, "descripcion": str, "tipo": str}
 
 C_API = "la consulta de la Custom API (GET customapis)"
-C_TIPO_PLUGIN = "la consulta del tipo de plugin (GET plugintypes)"
 C_COMPONENTES = "la consulta de pertenencia a la solución (GET solutioncomponents)"
 
 # Campos que NO se pueden cambiar después de guardados (Learn). Se comparan
@@ -202,6 +209,7 @@ def _validar_estructura(datos, identidad):
         raise ErrorPlaybook(
             f"pasosdeterceros = {datos['pasosdeterceros']!r} no es válido; los válidos son {sorted(PASOS_DE_TERCEROS)}"
         )
+    exigir_unique_name_de_paquete(datos["paquete"], "paquete")
     if "." not in datos["plugintype"]:
         raise ErrorPlaybook(f"plugintype = {datos['plugintype']!r} no parece un nombre de tipo .NET completo")
 
@@ -246,20 +254,6 @@ def nombre_largo(api_uniquename, identidad, es_salida, nombre_corto):
 # ---------------------------------------------------------------------------
 # Contra el entorno
 # ---------------------------------------------------------------------------
-def _id_del_tipo_de_plugin(dv, typename):
-    ruta = f"plugintypes?$select=plugintypeid,typename&$filter=typename eq '{typename}'"
-    cuerpo = leer_entorno(dv, ruta, C_TIPO_PLUGIN)
-    filas = exigir_forma(cuerpo.get("value"), [dict], C_TIPO_PLUGIN, "value")
-    if not filas:
-        raise Bloqueado(
-            f"el tipo de plugin '{typename}' no está registrado en el entorno; "
-            "primero hay que registrar el paquete con `herramientas/construir/paquete_plugins.py`"
-        )
-    if len(filas) > 1:
-        raise ErrorEntorno(f"{C_TIPO_PLUGIN} devolvió {len(filas)} filas para '{typename}'; se esperaba una")
-    return exigir_forma(filas[0].get("plugintypeid"), str, C_TIPO_PLUGIN, "plugintypeid", no_vacio=True)
-
-
 def _leer_api(dv, uniquename):
     ruta = (
         "customapis?$select=customapiid,uniquename,name,displayname,description,executeprivilegename,"
@@ -380,9 +374,24 @@ def _diferencias_de_la_api(datos, api, plugintype_id):
             difs.append(f"{campo} es {actual!r} y el playbook dice {valor!r}")
             corregibles[campo] = valor
 
-    tipo = api.get("PluginTypeId") or {}
-    if tipo.get("typename") != datos["plugintype"]:
-        difs.append(f"el plugin asociado es {tipo.get('typename')!r} y el playbook dice {datos['plugintype']!r}")
+    # Una API sin plugin asociado (`null`) es una respuesta legítima de la plataforma; cualquier otra cosa que no sea un
+    # objeto con textos es forma inesperada.
+    tipo = api.get("PluginTypeId")
+    if tipo is None:
+        typename_actual = tipo_actual_id = None
+    else:
+        exigir_forma(tipo, dict, C_API, "PluginTypeId")
+        typename_actual = exigir_forma(tipo.get("typename"), str, C_API, "PluginTypeId.typename")
+        tipo_actual_id = exigir_forma(tipo.get("plugintypeid"), str, C_API, "PluginTypeId.plugintypeid", no_vacio=True)
+    if typename_actual != datos["plugintype"]:
+        difs.append(f"el plugin asociado es {typename_actual!r} y el playbook dice {datos['plugintype']!r}")
+        corregibles["PluginTypeId@odata.bind"] = f"/plugintypes({plugintype_id})"
+    elif tipo_actual_id != plugintype_id:
+        # Mismo nombre, otro tipo: la API apunta a la clase homónima de otro paquete (o de un ensamblado suelto).
+        difs.append(
+            f"el plugin asociado es el tipo {typename_actual!r} de otro paquete (plugintypeid {tipo_actual_id}) y el playbook "
+            f"dice el del paquete '{datos['paquete']}' (plugintypeid {plugintype_id})"
+        )
         corregibles["PluginTypeId@odata.bind"] = f"/plugintypes({plugintype_id})"
 
     if api.get("ismanaged"):
@@ -416,7 +425,7 @@ def _crear_parametros(dv, datos, identidad, api_id, solucion, faltantes, es_sali
 def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente, dormir):
     solucion = identidad["solucion"]
     solution_id = comprobar_solucion_e_idioma(dv, identidad)
-    plugintype_id = _id_del_tipo_de_plugin(dv, datos["plugintype"])
+    plugintype_id = TiposDelPaquete(dv, datos["paquete"]).id_del_tipo(datos["plugintype"])
     api = _leer_api(dv, datos["nombre"])
 
     hubo_escritura = False
@@ -478,7 +487,7 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
 
     fila = _en_la_solucion(dv, solution_id, api_id)
     if fila is None:
-        difs.append(f"la Custom API no figura como componente de la solución (solutionid {solution_id})")
+        difs.append(fuera_de_la_solucion("la Custom API", solucion, solution_id))
 
     if difs:
         estado = "error" if accion != "ya_existia" else "difiere"
