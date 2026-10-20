@@ -287,6 +287,7 @@ class ControlDecimal(tf.Base):
             return (204, {}, {})
 
         cliente.responder("POST", "systemforms", crear)
+        cliente.responder("POST", "PublishXml", (204, {}, {}))   # el alta también publica
         estado, _, detalle = fo.construir(self.escribir(datos), False, lambda: cliente, dormir=lambda s: None)
         self.assertEqual("creado", estado, detalle)
         self.assertEqual("{C3EFE0C3-0EC6-42be-8349-CBD9079DFD8E}", controles_de(self.form["formxml"])["sanic_saldo"].get("classid"))
@@ -430,6 +431,7 @@ class ContraElEntorno(tf.Base):
             return (204, {}, {})
 
         cliente.responder("POST", "systemforms", crear)
+        cliente.responder("POST", "PublishXml", (204, {}, {}))   # el alta también publica
         estado, _, detalle = self.correr(cliente)
         self.assertEqual("creado", estado, detalle)
         post = next(l for l in cliente.llamadas if l["metodo"] == "POST")

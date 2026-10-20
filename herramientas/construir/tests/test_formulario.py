@@ -475,6 +475,7 @@ class EtiquetasPorIdioma(Base):
             return (204, {}, {})
 
         cliente.responder("POST", "systemforms", crear)
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
         estado, _, detalle = fo.construir(self.escribir(datos, identidad), False, lambda: cliente)
         self.assertEqual("creado", estado, detalle)
         enviado = next(l["cuerpo"]["formxml"] for l in cliente.llamadas if l["metodo"] == "POST")
@@ -514,12 +515,14 @@ class EtiquetasPorIdioma(Base):
     def test_un_formulario_con_una_sola_etiqueta_por_texto_difiere_y_dice_que_idioma_falta(self):
         viejo = fila_form(formxml=_sin_idioma(xml_de(), 3082))
         cliente = self.armar(ClienteSimulado(), form=viejo)
+        cliente.responder("POST", "ExportSolution", _exportacion(_sin_idioma(xml_de(), 3082)))
         estado, _, detalle = fo.construir(self.escribir(), True, lambda: cliente)
         self.assertEqual("difiere", estado, detalle)
         self.assertIn("falta la etiqueta 3082", detalle)
         self.assertIn("la pestaña", detalle)
         self.assertIn("el control 'sanic_asunto'", detalle)
-        self.assertFalse(cliente.hubo_escritura())
+        # `ExportSolution` es un POST pero solo lee: no se escribió nada.
+        self.assertEqual(["ExportSolution"], [l["ruta"] for l in cliente.llamadas if l["metodo"] != "GET"])
 
     def test_una_etiqueta_de_3082_distinta_en_el_entorno_difiere(self):
         distinto = xml_de().replace('<label description="General" languagecode="3082" />',
@@ -563,17 +566,164 @@ class EtiquetasPorIdioma(Base):
 
     def test_completar_reescribe_el_xml_con_las_etiquetas_de_todos_los_idiomas(self):
         cliente = self.armar(ClienteSimulado(), form=fila_form(formxml=_sin_idioma(xml_de(), 3082)))
+        guardado = {"xml": _sin_idioma(xml_de(), 3082)}
 
         def corregir(ruta, cuerpo, solucion):
-            self.form = fila_form(formxml=cuerpo["formxml"])
+            self.form = fila_form(formxml=_solo_idioma(cuerpo["formxml"], 1033))
+            guardado["xml"] = cuerpo["formxml"]
             return (204, {}, {})
 
+        cliente.responder("POST", "ExportSolution", lambda r, c, s: _exportacion(guardado["xml"]))
         cliente.responder("PATCH", lambda r: r.startswith("systemforms("), corregir)
         cliente.responder("POST", "PublishXml", (204, {}, {}))
         estado, _, detalle = fo.construir(self.escribir(), False, lambda: cliente, completar=True)
         self.assertEqual("actualizado", estado, detalle)
         patch = next(l for l in cliente.llamadas if l["metodo"] == "PATCH")
         self.assertEqual(xml_de(), patch["cuerpo"]["formxml"])
+
+
+def _solo_idioma(xml, lcid):
+    """Lo que devuelve `GET systemforms`: el formxml con las etiquetas del idioma del usuario que lee (1033) y SIN las
+    demás, aunque estén guardadas (verificado en Dev el 2026-10-20 contra la exportación de la solución)."""
+    import re
+    return re.sub(rf'<label description="[^"]*" languagecode="(?!{lcid})\d+" />', "", xml)
+
+
+def _exportacion(xml, form_id=FORM_ID, con_ids_de_la_plataforma=True):
+    """La respuesta de `ExportSolution` con un `customizations.xml` que trae el formulario como lo escribe la
+    plataforma: dentro de `<systemform>`, con `{formid}` en minúscula y llaves, y SIN las etiquetas vacías de 3082."""
+    import base64
+    import io
+    import re
+    import zipfile
+    sin_vacias = re.sub(r'<label description="" languagecode="(?!1033)\d+" />', "", xml)
+    cust = ("<ImportExportXml><Entities><Entity><Name>x</Name><FormXml><forms type=\"main\"><systemform>"
+            f"<formid>{{{form_id}}}</formid>{sin_vacias}</systemform></forms></FormXml></Entity></Entities></ImportExportXml>")
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("customizations.xml", cust)
+    return (200, {"ExportSolutionFile": base64.b64encode(buf.getvalue()).decode("ascii")}, {})
+
+
+class EtiquetasEnIdiomasQueLaLecturaNoDevuelve(Base):
+    """`GET systemforms` devuelve el formxml en el idioma del usuario que lee: las etiquetas 3082 SE GUARDAN pero no
+    vienen. Se leen de donde están (la solución exportada) y se comparan una por una."""
+
+    def armar_realista(self, guardado=None):
+        """La plataforma como es: la lectura trae solo 1033; la exportación trae lo guardado (`guardado`, por omisión el
+        formxml completo del playbook)."""
+        cliente = self.armar(ClienteSimulado(), form=fila_form(formxml=_solo_idioma(xml_de(), 1033)))
+        self.exportaciones = 0
+
+        def exportar(ruta, cuerpo, solucion):
+            self.exportaciones += 1
+            return _exportacion(xml_de() if guardado is None else guardado)
+
+        cliente.responder("POST", "ExportSolution", exportar)
+        return cliente
+
+    def test_con_las_3082_guardadas_aunque_la_lectura_no_las_traiga_ya_existia(self):
+        cliente = self.armar_realista()
+        estado, _, detalle = fo.construir(self.escribir(), True, lambda: cliente)
+        self.assertEqual("ya_existia", estado, detalle)
+        self.assertEqual(1, self.exportaciones)
+        self.assertFalse([l for l in cliente.llamadas if l["metodo"] == "PATCH"])
+
+    def test_la_exportacion_se_pide_de_la_solucion_unmanaged(self):
+        cliente = self.armar_realista()
+        fo.construir(self.escribir(), True, lambda: cliente)
+        pedido = next(l for l in cliente.llamadas if l["ruta"] == "ExportSolution")
+        self.assertEqual({"SolutionName": IDENT["solucion"], "Managed": False}, pedido["cuerpo"])
+
+    def test_si_la_3082_no_esta_guardada_difiere_y_lo_dice(self):
+        cliente = self.armar_realista(guardado=_sin_idioma(xml_de(), 3082))
+        estado, _, detalle = fo.construir(self.escribir(), True, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("falta la etiqueta 3082", detalle)
+        self.assertIn("la pestaña", detalle)
+
+    def test_una_3082_distinta_en_lo_guardado_difiere(self):
+        distinto = xml_de().replace('<label description="General" languagecode="3082" />',
+                                    '<label description="Otro" languagecode="3082" />')
+        cliente = self.armar_realista(guardado=distinto)
+        estado, _, detalle = fo.construir(self.escribir(), True, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("la etiqueta 3082 es 'Otro' y el playbook dice 'General'", detalle)
+
+    def test_las_etiquetas_vacias_de_las_celdas_de_relleno_no_cuentan(self):
+        # La plataforma guarda la celda de relleno solo con su etiqueta vacía 1033: no es una diferencia.
+        cliente = self.armar_realista()
+        estado, _, detalle = fo.construir(self.escribir(), True, lambda: cliente)
+        self.assertEqual("ya_existia", estado, detalle)
+
+    def test_el_formulario_que_no_esta_en_la_exportacion_difiere(self):
+        cliente = self.armar_realista()
+        cliente._reglas.insert(0, ("POST", "ExportSolution", _exportacion(xml_de(), form_id="00000000-0000-0000-0000-000000000000")))
+        estado, _, detalle = fo.construir(self.escribir(), True, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("no aparece en la solución exportada", detalle)
+
+    def test_si_la_lectura_ya_trae_todos_los_idiomas_no_se_exporta(self):
+        cliente = self.armar(ClienteSimulado(), form=fila_form())
+        estado, _, detalle = fo.construir(self.escribir(), True, lambda: cliente)
+        self.assertEqual("ya_existia", estado, detalle)
+        self.assertNotIn("ExportSolution", [l["ruta"] for l in cliente.llamadas])
+
+    def test_completar_repara_la_3082_que_solo_falta_en_lo_guardado(self):
+        # La lectura (1033) coincide con el playbook, pero la 3082 guardada no: el XML entero "coincide" y sin embargo
+        # hay que reescribirlo. Después de publicar se vuelve a exportar y se comprueba.
+        estados = {"guardado": _sin_idioma(xml_de(), 3082)}
+        cliente = self.armar_realista(guardado=estados["guardado"])
+
+        def exportar(ruta, cuerpo, solucion):
+            return _exportacion(estados["guardado"])
+
+        def corregir(ruta, cuerpo, solucion):
+            estados["guardado"] = cuerpo["formxml"]
+            return (204, {}, {})
+
+        cliente._reglas.insert(0, ("POST", "ExportSolution", exportar))
+        cliente.responder("PATCH", lambda r: r.startswith("systemforms("), corregir)
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
+        estado, _, detalle = fo.construir(self.escribir(), False, lambda: cliente, completar=True)
+        self.assertEqual("actualizado", estado, detalle)
+        self.assertEqual(xml_de(), next(l for l in cliente.llamadas if l["metodo"] == "PATCH")["cuerpo"]["formxml"])
+        self.assertIn("PublishXml", [l["ruta"] for l in cliente.llamadas])
+
+    def test_el_alta_tambien_publica(self):
+        # El alta no publicaba (solo el PATCH): el formulario quedaba sin publicar hasta un PublishAllXml a mano.
+        cliente = self.armar(ClienteSimulado(), form=None)
+        guardado = {}
+
+        def crear(ruta, cuerpo, solucion):
+            guardado["xml"] = cuerpo["formxml"]
+            self.form = fila_form(formxml=_solo_idioma(cuerpo["formxml"], 1033))
+            return (204, {}, {})
+
+        cliente.responder("POST", "systemforms", crear)
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
+        cliente.responder("POST", "ExportSolution", lambda r, c, s: _exportacion(guardado["xml"]))
+        estado, _, detalle = fo.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("creado", estado, detalle)
+        rutas = [l["ruta"] for l in cliente.llamadas if l["metodo"] == "POST"]
+        self.assertLess(rutas.index("systemforms"), rutas.index("PublishXml"))
+        publicacion = next(l for l in cliente.llamadas if l["ruta"] == "PublishXml")
+        self.assertIn(f"<entity>{TABLA}</entity>", publicacion["cuerpo"]["ParameterXml"])
+        # La exportación va DESPUÉS de publicar: lo que se verifica es lo publicado.
+        self.assertLess(rutas.index("PublishXml"), rutas.index("ExportSolution"))
+
+    def test_si_el_alta_no_se_pudo_publicar_es_error(self):
+        cliente = self.armar(ClienteSimulado(), form=None)
+
+        def crear(ruta, cuerpo, solucion):
+            self.form = fila_form()
+            return (204, {}, {})
+
+        cliente.responder("POST", "systemforms", crear)
+        cliente.responder("POST", "PublishXml", (500, {"error": "x"}, {}))
+        estado, _, detalle = fo.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("error", estado, detalle)
+        self.assertIn("publicación", detalle)
 
 
 class Uso(Base):

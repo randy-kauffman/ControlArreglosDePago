@@ -1138,6 +1138,14 @@ def _contra_entorno_nucleo(dv, datos, identidad, solo_verificar, componente, for
         + (AVISO_REGENERAR if ribbons else ""))
 
 
+def importar_tablas_de_la_app(dv, identidad, app, sitemap, tablas, componente):
+    """Mete `tablas` en la app `app` por `ImportSolution` (el único camino: `AddAppComponents` no sabe agregar tablas) y
+    verifica lo que quedó. Es lo que usa `app.py` para no dejar la app sin tablas. Devuelve `(estado, componente, detalle)`
+    como `_contra_entorno_nucleo`: `creado` si importó, `ya_existia` si no faltaba nada, `error` si no quedó bien."""
+    datos = {"cambios": [{"clase": "app_componentes", "app": app, "sitemap": sitemap, "tablas": list(tablas)}]}
+    return _contra_entorno_nucleo(dv, datos, identidad, False, componente)
+
+
 def construir(ruta_playbook, solo_verificar, fabrica_cliente, dormir=None, forzar=False):
     """Nunca lanza: siempre devuelve `(estado, componente, detalle)`."""
     componente = os.path.basename(ruta_playbook)

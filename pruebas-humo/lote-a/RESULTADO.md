@@ -5,20 +5,20 @@
 | Componente | Estado | Nota |
 |---|---|---|
 | `sanic_carp_wr_js_comandos` y 4 SVG (accion, alerta, app, lista) | `ya_existia` (verificado) | Hecho. |
-| Formulario Mapeo de celda, Cuota, Version de plantilla, Arreglo, Conversacion, Cliente | Creados y publicados; la herramienta da `difiere` | `formulario.py` exige la etiqueta 3082 embebida en el `formxml`; la plataforma solo conserva la 1033. Bibliotecas y manejadores confirmados a mano en el `formxml` publicado. |
-| Sitemap `sanic_carp_sm_controlarreglospago` | Creado, publicado, 13 entradas, `isappaware` true | Coincide con el generado. |
-| App `sanic_carp_mda_controlarreglospago` | Creada y publicada; la herramienta da `difiere` | `AddAppComponents` devolvió 204 y no agregó las 8 tablas; solo figuran el sitemap y un componente de tipo tabla (`entity`). |
+| Formulario Mapeo de celda, Cuota, Version de plantilla, Arreglo, Conversacion, Cliente | `ya_existia` (verificado con `--solo-verificar`) | Las etiquetas 3082 están guardadas: `GET systemforms` devuelve solo las del idioma del usuario (1033). `formulario.py` las verifica contra la solución exportada. |
+| Sitemap `sanic_carp_sm_controlarreglospago` | `ya_existia`, 13 entradas, `isappaware` true | Coincide con el generado. |
+| App `sanic_carp_mda_controlarreglospago` | `ya_existia` (verificado con `--solo-verificar`) | Las 8 tablas están en la app (agregadas por `ImportSolution`); `ValidateApp` sin errores. |
 
-Defectos, para quien mantiene las herramientas:
+Defectos de las herramientas (corregidos el 2026-10-20):
 
-1. `formulario.py`: la verificación de etiquetas por idioma no puede pasar contra `systemforms` (la plataforma descarta las etiquetas 3082 del `formxml`). El alta no publica; se publicó con `PublishAllXml`.
-2. `app.py`: las 8 tablas no quedan en la app (ya documentado en el código como comportamiento de `AddAppComponents`). Hay que agregarlas por el diseñador de apps o por importación de solución (fila 12.28 propuesta en `diseno/07` §11).
+1. `formulario.py`: la verificación exigía la etiqueta 3082 dentro del `formxml` de `systemforms`, que solo trae el idioma del usuario. Ahora lee los idiomas que la lectura no devuelve de la solución exportada, compara etiqueta por etiqueta (ignora las vacías de las celdas de relleno) y el alta también publica.
+2. `app.py`: `AddAppComponents` con `Microsoft.Dynamics.CRM.entity` ignora el GUID y agrega siempre la tabla de metadatos `entity`. Las tablas entran ahora por `ImportSolution` (`importar_solucion.importar_tablas_de_la_app`). La verificación con `RetrieveAppComponents` se mantiene.
 
 ## Prueba manual en el navegador
 
 URL de la app: https://org36e60d9d.crm.dynamics.com/main.aspx?appid=f13895ff-9bcc-f111-a05b-00224808ffcd
 
-Primero comprobar si el diseñador de apps muestra las 8 tablas; si no, agregarlas (defecto 2) y publicar la app antes de seguir.
+Las 8 tablas ya están en la app y está publicada: no hace falta ningún paso manual en el diseñador.
 
 1. Abrir la app "MDA - CARP - Control de Arreglos de Pago" con un usuario Oficial: debe cargar sin error y mostrar el icono de la app.
 2. Navegar las 4 áreas y abrir cada una de las 13 entradas: cada vista carga y no da error. Con el Oficial, no deben verse Supervisión ni Administración del formato (§12 punto 6); con el Jefe, sí.

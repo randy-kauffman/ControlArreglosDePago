@@ -30,11 +30,13 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 2 | 3 | 2 |
 | 11 | Flujos | 3 | 0 | 2 | 1 |
-| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 8 | 17 | 0 |
+| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 26 | 16 | 10 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
-| **Total** | | **127** | **49** | **67** | **11** |
+| **Total** | | **128** | **57** | **60** | **11** |
 
 Notas del resumen:
+
+- 2026-10-20 (Dev, cierre del lote A de app): 12.17 a 12.21, 12.23, 12.25 y la fila 12.26 (formulario de Cuota, que `diseno/07` DA-09 agregó y esta tabla no tenía) pasaron a `hecho`, las 8 verificadas `ya_existia` con `--solo-verificar`. Las dos causas de que quedaran en `difiere` eran de las herramientas, no del entorno: (1) `GET systemforms` devuelve el `formxml` solo con las etiquetas del idioma del usuario (1033); las 3082 SÍ estaban guardadas (la solución exportada trae las dos), y `formulario.py` ahora las verifica contra la exportación y publica también en el alta; (2) `AddAppComponents` con la tabla `entity` ignora el GUID y agrega siempre la tabla de metadatos `entity`, así que `app.py` ya no lo usa para tablas: las mete por `ImportSolution` (`importar_solucion.importar_tablas_de_la_app`). El grupo 12 pasó de 8 hechas y 17 pendientes (25 filas) a 16 y 10 (26 filas); el total, de 49 y 67 (127 filas) a 57 y 60 (128). Detalle en `pruebas-humo/lote-a/RESULTADO.md`.
 
 - 2026-10-20 (Dev, construcción del lote A de app): 12.22 pasó a `hecho` (el JS y los 4 SVG, verificados `ya_existia`; los SVG no tienen fila propia, ver la fila 12.27 propuesta). El grupo 12 pasó de 7 hechas y 18 pendientes a 8 y 17 (el total, de 48 y 68 a 49 y 67). Las filas 12.17 a 12.21 (6 formularios), 12.23 (sitemap) y 12.25 (app) **se construyeron y publicaron en Dev pero siguen `pendiente`** porque la herramienta no las da por verificadas: `formulario.py` exige la etiqueta embebida 3082 y la plataforma solo conserva la 1033 en el `formxml` de `systemforms`; `app.py` ve el sitemap bien pero `AddAppComponents` devuelve 204 sin agregar las 8 tablas. Detalle en `pruebas-humo/lote-a/RESULTADO.md`.
 
@@ -297,24 +299,25 @@ Los gráficos agregan promedios por oficial; las vistas no (D-27). En el proyect
 
 ### 12.3 Formularios principales
 
-Nombre: `FRM - CARP - Tabla - Tipo`. La definición no nombra un formulario para Cuota (los pagos se registran sobre la cuota) ni para Generación de formato (bitácora); no se listan. La Conversación muestra el timeline con el editor de correo nativo, y avisa si el cliente tiene otra conversación abierta.
+Nombre: `FRM - CARP - Tabla - Tipo`. La definición no nombra un formulario para Cuota (los pagos se registran sobre la cuota; el diseño lo agrega como 12.26, `diseno/07` DA-09) ni para Generación de formato (bitácora); ese no se lista. La Conversación muestra el timeline con el editor de correo nativo, y avisa si el cliente tiene otra conversación abierta.
 
 | # | Formulario | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 12.17 | `FRM - CARP - Cliente - Principal` (subgrid 12.12) | `playbooks/formulario/cliente.md` | 3.1, 12.12 | RF-05, RF-13 | pendiente (diseño completo en `diseno/07` §4.3) |
-| 12.18 | `FRM - CARP - Conversacion - Principal` (timeline, aviso de otra conversación abierta) | `playbooks/formulario/conversacion.md` | 3.2, 3.8 | RF-01, RF-03, RF-14 | pendiente (diseño completo en `diseno/07` §4.2) |
-| 12.19 | `FRM - CARP - Arreglo - Principal` (subgrid de cuotas) | `playbooks/formulario/arreglo.md` | 3.3, 3.4 | RF-06, RF-10, RF-16 | pendiente (diseño completo en `diseno/07` §4.4) |
-| 12.20 | `FRM - CARP - Version de plantilla - Principal` (subgrid de mapeo) | `playbooks/formulario/versionplantilla.md` | 3.5, 3.6 | RF-09 | pendiente (diseño completo en `diseno/07` §4.5) |
-| 12.21 | `FRM - CARP - Mapeo de celda - Principal` | `playbooks/formulario/mapeocelda.md` | 3.6 | RF-09 | pendiente (diseño completo en `diseno/07` §4.6) |
+| 12.17 | `FRM - CARP - Cliente - Principal` (subgrid 12.12) | `playbooks/formulario/cliente.md` | 3.1, 12.12 | RF-05, RF-13 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.3) |
+| 12.18 | `FRM - CARP - Conversacion - Principal` (timeline, aviso de otra conversación abierta) | `playbooks/formulario/conversacion.md` | 3.2, 3.8 | RF-01, RF-03, RF-14 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.2) |
+| 12.19 | `FRM - CARP - Arreglo - Principal` (subgrid de cuotas) | `playbooks/formulario/arreglo.md` | 3.3, 3.4 | RF-06, RF-10, RF-16 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.4) |
+| 12.20 | `FRM - CARP - Version de plantilla - Principal` (subgrid de mapeo) | `playbooks/formulario/versionplantilla.md` | 3.5, 3.6 | RF-09 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.5) |
+| 12.21 | `FRM - CARP - Mapeo de celda - Principal` | `playbooks/formulario/mapeocelda.md` | 3.6 | RF-09 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.6) |
+| 12.26 | `FRM - CARP - Cuota - Principal` (registro de pago: fecha y monto pagado juntos; el resto de solo lectura) | `playbooks/formulario/cuota.md` | 3.4, 12.13 | RF-10 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.7) |
 
 ### 12.4 Web resource, comandos, sitemap y app
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
 | 12.22 | Web resource JavaScript mínimo `WR - CARP - JS - Comandos` *(prov.; `sanic_carp_wr_js_comandos`)*: solo invoca las Custom API, pide la confirmación previa y dispara la descarga. Sin lógica de negocio | `playbooks/web-resource/js_comandos.md` | 8.2 a 8.6 | D-17, §6 Componentes | hecho (Dev, 2026-10-20) |
-| 12.23 | Sitemap `sanic_carp_sm_controlarreglospago` (cuatro áreas, arriba) | `playbooks/app/controlarreglospago.md` (comparte con 12.25) | 12.1 a 12.13, 12.14, 12.17 a 12.21 | §6 Componentes (app) | pendiente (diseño completo en `diseno/07` §7.2) |
+| 12.23 | Sitemap `sanic_carp_sm_controlarreglospago` (cuatro áreas, arriba) | `playbooks/app/controlarreglospago.md` (comparte con 12.25) | 12.1 a 12.13, 12.14, 12.17 a 12.21 | §6 Componentes (app) | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §7.2) |
 | 12.24 | Comandos del command bar para los gestos de abajo (un solo playbook). El mecanismo de cada gesto (botón, captura de motivo, confirmación) no está definido | `playbooks/importacion/comandos.md` (ruta a confirmar) | 12.22, 8.2 a 8.6, 7.12, 7.14 a 7.16 | D-17, RF-02, RF-14 a RF-16 | pendiente (diseño completo en `diseno/07` §5.4 a §5.6) |
-| 12.25 | App `sanic_carp_mda_controlarreglospago` (`MDA - CARP - Control de Arreglos de Pago`), una sola app para oficial y jefe | `playbooks/app/controlarreglospago.md` | 12.23, 12.24, 6.2 a 6.5 | D-01, RNF-04 | pendiente (diseño completo en `diseno/07` §7.1) |
+| 12.25 | App `sanic_carp_mda_controlarreglospago` (`MDA - CARP - Control de Arreglos de Pago`), una sola app para oficial y jefe | `playbooks/app/controlarreglospago.md` | 12.23, 12.24, 6.2 a 6.5 | D-01, RNF-04 | hecho (Dev, 2026-10-20) (las 8 tablas entran por `ImportSolution`, no por `AddAppComponents`; diseño completo en `diseno/07` §7.1) |
 
 Gestos que la definición nombra (contenido de 12.24, no suman filas):
 

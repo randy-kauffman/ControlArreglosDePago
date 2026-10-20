@@ -91,6 +91,21 @@ class Base(unittest.TestCase):
         self.dir = tempfile.TemporaryDirectory()
         self.addCleanup(self.dir.cleanup)
         self.ruta = os.path.join(self.dir.name, "playbook.md")
+        # Las tablas de una app NO entran por `AddAppComponents` (agrega siempre la tabla `entity` y nada más): entran por
+        # `ImportSolution`, que hace `importar_solucion`. Acá se reemplaza por un doble que anota el pedido.
+        self.importaciones = []
+        self.resultado_importacion = ("creado", "x", "importada")
+        self.importa_las_tablas = True
+        real = ap.importar_tablas
+        self.addCleanup(setattr, ap, "importar_tablas", real)
+
+        def importar(dv, identidad, app, sitemap, tablas, componente):
+            self.importaciones.append({"app": app, "sitemap": sitemap, "tablas": list(tablas), "identidad": identidad})
+            if self.importa_las_tablas:
+                self.puestas = list(tablas)
+            return self.resultado_importacion
+
+        ap.importar_tablas = importar
 
     def escribir(self, componente=None, identidad=None):
         with open(self.ruta, "w", encoding="utf-8") as f:
@@ -305,8 +320,8 @@ class ContraElEntorno(Base):
         # "designed for the legacy web client" (visto en Dev el 2026-09-23).
         alta = next(l["cuerpo"] for l in cliente.llamadas if l["ruta"] == "appmodules")
         self.assertEqual(4, alta["clienttype"], "4 = Unified Interface")
-        # Un AddAppComponents por el sitemap y uno por cada tabla.
-        self.assertEqual(1 + len(COMPONENTE["tablas"]), rutas.count("AddAppComponents"))
+        # UN solo AddAppComponents: el del sitemap. Uno por tabla agregaba la tabla `entity` (basura) y ninguna de las nuestras.
+        self.assertEqual(1, rutas.count("AddAppComponents"))
         self.assertTrue(any("appmoduleroles_association" in r for r in rutas))
         self.assertIn("PublishXml", rutas)
         # OData exige un URI ABSOLUTO en el `@odata.id` de un `$ref`.
@@ -315,15 +330,74 @@ class ContraElEntorno(Base):
         self.assertTrue(rol["@odata.id"].endswith("roles(rol-1)"), rol["@odata.id"])
         sm = next(l["cuerpo"] for l in cliente.llamadas if l["ruta"] == "sitemaps")
         self.assertIs(True, sm["isappaware"])
-        # El tipo `entity` lleva `entityid`, no `MetadataId`: con `MetadataId`
-        # la plataforma responde 400 (verificado en Dev el 2026-09-22).
-        tablas = [l["cuerpo"] for l in cliente.llamadas if l["ruta"] == "AddAppComponents"
-                  and l["cuerpo"]["Components"][0]["@odata.type"].endswith(".entity")]
-        self.assertEqual(len(COMPONENTE["tablas"]), len(tablas))
-        self.assertEqual(["md-" + t for t in COMPONENTE["tablas"]],
-                         [c["Components"][0]["entityid"] for c in tablas])
-        for cuerpo in tablas:
-            self.assertNotIn("MetadataId", cuerpo["Components"][0])
+        componentes = next(l["cuerpo"] for l in cliente.llamadas if l["ruta"] == "AddAppComponents")["Components"]
+        self.assertEqual(["Microsoft.Dynamics.CRM.sitemap"], [c["@odata.type"] for c in componentes])
+
+    def test_nunca_se_agregan_tablas_con_AddAppComponents(self):
+        # Verificado en Dev (2026-09-22 y 2026-10-20): con `Microsoft.Dynamics.CRM.entity` la plataforma responde 204 e
+        # ignora el GUID: agrega SIEMPRE la tabla de metadatos `entity` (objectid 9d0f025b-...). No se manda.
+        cliente = self.armar(ClienteSimulado(), puestas=[],
+                             sitemap={"sitemapid": SITEMAP_ID, "sitemapxml": xml_de(), "isappaware": True},
+                             app={"appmoduleid": APP_ID, "ismanaged": False})
+        cliente.responder("POST", "AddAppComponents", (204, {}, {}))
+        cliente.responder("POST", lambda r: "appmoduleroles_association" in r, (204, {}, {}))
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
+        ap.construir(self.escribir(), False, lambda: cliente)
+        for l in cliente.llamadas:
+            if l["ruta"] == "AddAppComponents":
+                for c in l["cuerpo"]["Components"]:
+                    self.assertNotIn("entityid", c)
+                    self.assertFalse(c["@odata.type"].endswith(".entity"), c)
+
+    def test_las_tablas_que_faltan_entran_por_la_importacion_y_se_publica_antes(self):
+        cliente = self.armar(ClienteSimulado(), puestas=[],
+                             sitemap={"sitemapid": SITEMAP_ID, "sitemapxml": xml_de(), "isappaware": True},
+                             app={"appmoduleid": APP_ID, "ismanaged": False})
+        cliente.responder("POST", "AddAppComponents", (204, {}, {}))
+        cliente.responder("POST", lambda r: "appmoduleroles_association" in r, (204, {}, {}))
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
+        estado, _, detalle = ap.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("actualizado", estado, detalle)
+        self.assertEqual(1, len(self.importaciones))
+        pedido = self.importaciones[0]
+        self.assertEqual(COMPONENTE["uniquename"], pedido["app"])
+        self.assertEqual(COMPONENTE["sitemap"], pedido["sitemap"])
+        self.assertEqual(COMPONENTE["tablas"], pedido["tablas"])
+        self.assertEqual(IDENT["solucion"], pedido["identidad"]["solucion"])
+
+    def test_si_las_tablas_ya_estan_no_se_importa_nada(self):
+        cliente = self.armar(ClienteSimulado(),
+                             sitemap={"sitemapid": SITEMAP_ID, "sitemapxml": xml_de(), "isappaware": True},
+                             app={"appmoduleid": APP_ID, "ismanaged": False})
+        cliente.responder("POST", "AddAppComponents", (204, {}, {}))
+        cliente.responder("POST", lambda r: "appmoduleroles_association" in r, (204, {}, {}))
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
+        estado, _, detalle = ap.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("actualizado", estado, detalle)
+        self.assertEqual([], self.importaciones)
+
+    def test_si_la_importacion_falla_es_error_y_dice_por_que(self):
+        self.resultado_importacion = ("error", "x", "ImportSolution devolvió HTTP 500")
+        self.importa_las_tablas = False
+        cliente = self.armar(ClienteSimulado(), puestas=[],
+                             sitemap={"sitemapid": SITEMAP_ID, "sitemapxml": xml_de(), "isappaware": True},
+                             app={"appmoduleid": APP_ID, "ismanaged": False})
+        cliente.responder("POST", "AddAppComponents", (204, {}, {}))
+        cliente.responder("POST", lambda r: "appmoduleroles_association" in r, (204, {}, {}))
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
+        estado, _, detalle = ap.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("error", estado, detalle)
+        self.assertIn("ImportSolution devolvió HTTP 500", detalle)
+
+    def test_solo_verificar_con_tablas_que_faltan_difiere_y_no_importa(self):
+        cliente = self.armar(ClienteSimulado(), puestas=[],
+                             sitemap={"sitemapid": SITEMAP_ID, "sitemapxml": xml_de(), "isappaware": True},
+                             app={"appmoduleid": APP_ID, "ismanaged": False})
+        estado, _, detalle = ap.construir(self.escribir(), True, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("no incluye 3 de las 3 tablas", detalle)
+        self.assertEqual([], self.importaciones)
+        self.assertFalse(cliente.hubo_escritura())
 
     def test_el_sitemap_se_escribe_en_los_idiomas_de_la_identidad(self):
         idiomas = [1033, 3082, 1034]
@@ -380,6 +454,7 @@ class ContraElEntorno(Base):
                    "sitemapxml": xml_de(), "isappaware": True}
         app = {"appmoduleid": APP_ID, "uniquename": COMPONENTE["uniquename"],
                "name": COMPONENTE["nombre"], "description": COMPONENTE["descripcion"], "ismanaged": False}
+        self.importa_las_tablas = False   # el importador responde bien pero las tablas siguen sin estar
         cliente = self.armar(ClienteSimulado(), sitemap=sitemap, app=app,
                              puestas=[COMPONENTE["tablas"][0]])
         cliente.responder("POST", "AddAppComponents", (204, {}, {}))

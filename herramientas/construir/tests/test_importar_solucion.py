@@ -734,6 +734,21 @@ class ContraElEntorno(Base):
         self.assertIn("no están provisionados", detalle)
         self.assertFalse(cliente.hubo_escritura())
 
+    def test_importar_tablas_de_la_app_importa_lo_que_falta_sin_necesitar_un_playbook(self):
+        # Es la puerta que usa `app.py`: mismo camino (exportar, reemplazar el bloque, importar, publicar, releer).
+        cliente = self.armar(ClienteSimulado(), puestas_antes=[])
+        estado, _, detalle = imp.importar_tablas_de_la_app(cliente, IDENT, APP, SITEMAP, TABLAS, "x")
+        self.assertEqual("creado", estado, detalle)
+        rutas = [l["ruta"] for l in cliente.llamadas if l["metodo"] == "POST"]
+        self.assertEqual(1, rutas.count("ImportSolution"))
+        self.assertIn(f'<AppModuleComponent type="1" schemaName="{TABLAS[0]}" />', self.cust_enviado())
+
+    def test_importar_tablas_de_la_app_no_importa_si_no_falta_nada(self):
+        cliente = self.armar(ClienteSimulado(), puestas_antes=TABLAS)
+        estado, _, _ = imp.importar_tablas_de_la_app(cliente, IDENT, APP, SITEMAP, TABLAS, "x")
+        self.assertEqual("ya_existia", estado)
+        self.assertNotIn("ImportSolution", [l["ruta"] for l in cliente.llamadas])
+
     def test_si_ya_estan_las_tablas_no_se_importa_nada(self):
         # Reimportar la solución entera al pedo es lo más caro que puede hacer
         # esta herramienta.

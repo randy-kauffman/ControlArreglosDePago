@@ -30,6 +30,13 @@ VEZ POR CADA idioma de la Identidad, en ese orden: ahí la plataforma no cae al 
 tildes (BP-PP-197); la etiqueta de cada campo sale del `DisplayName` de la columna, un texto por idioma, y si la
 columna no tiene alguno queda `bloqueado`. La verificación compara cada idioma en los dos sentidos.
 
+**Dónde se leen las etiquetas de cada idioma.** `GET systemforms` devuelve el `formxml` SOLO con las etiquetas del idioma
+del usuario que lee (1033): las de 3082 SE GUARDAN pero no vienen (verificado en Dev el 2026-10-20: la solución
+exportada trae las dos y la lectura trae una, con o sin `Accept-Language`). Por eso los idiomas que la lectura no
+devuelve se verifican contra la solución exportada (`ExportSolution`, igual que `muestra_rol.py`), etiqueta por etiqueta;
+las etiquetas vacías de las celdas de relleno no cuentan (la plataforma las guarda solo en el idioma base). Tanto el alta
+como la corrección publican (`PublishXml` de la tabla) ANTES de verificar.
+
 **Formato ampliado (diseno/07).** `pestanas: [{titulo, secciones}]` reemplaza a `pestana` + `secciones` (una forma o la otra; el XML
 de una sola pestaña no cambia). Un campo (de `campos` o de `encabezado`) es `"col"` o `{"nombre": "col", "solo_lectura": bool}`, y el
 del campo manda sobre el `solo_lectura` del formulario. Una sección `{titulo, timeline: {alto}}` pone el control Timeline
@@ -45,10 +52,13 @@ así que uno equivocado no falla al guardar y se ve roto recién en la app.
 Última línea de la salida: JSON de una línea con `estado`
 (creado | actualizado | ya_existia | difiere | bloqueado | error), `componente`, `detalle`.
 """
+import base64
+import io
 import os
 import re
 import sys
 import uuid
+import zipfile
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import quoteattr
 
@@ -169,6 +179,7 @@ C_WEBRESOURCE = "la consulta del web resource del formulario (GET webresourceset
 C_VISTA = "la consulta de la vista de la subgrilla (GET savedqueries)"
 C_RELACION = "la consulta de la relación de la subgrilla (GET OneToManyRelationships)"
 C_COMPONENTES = "la consulta de pertenencia a la solución (GET solutioncomponents)"
+C_EXPORTACION = "la exportación de la solución (POST ExportSolution)"
 
 COMPONENTE_TABLA = 1
 INCLUYE_SUBCOMPONENTES = 0
@@ -758,6 +769,81 @@ def _diferencias_de_etiquetas(esperado_xml, real_xml):
     return difs
 
 
+def _idiomas_del_xml(formxml):
+    """Los `languagecode` que trae un `formxml` (los idiomas en que la lectura devolvió etiquetas)."""
+    return set(re.findall(r'languagecode="(\d+)"', formxml or ""))
+
+
+def _solo_idiomas(xml, conservar):
+    """El `xml` sin las `<label>` de los idiomas que no están en `conservar`: lo que habría que ver en la lectura de
+    `systemforms`. Con `conservar` vacío no toca nada."""
+    if not conservar:
+        return xml
+    return re.sub(r'<label\s[^>]*?languagecode="(\d+)"[^>]*/>',
+                  lambda m: m.group(0) if m.group(1) in conservar else "", xml)
+
+
+def _formxml_exportado(dv, solucion, form_id):
+    """El `<form>` del formulario tal como está GUARDADO, de `customizations.xml` de la solución exportada (unmanaged).
+    `None` si el formulario no aparece."""
+    est, resp, _ = dv.call("POST", "ExportSolution", {"SolutionName": solucion, "Managed": False}, timeout=900)
+    if est != 200 or not isinstance(resp, dict) or not isinstance(resp.get("ExportSolutionFile"), str):
+        raise ErrorEntorno(f"{C_EXPORTACION} devolvió HTTP {est} o una forma inesperada")
+    try:
+        archivo = zipfile.ZipFile(io.BytesIO(base64.b64decode(resp["ExportSolutionFile"])))
+        raiz = ET.fromstring(archivo.read("customizations.xml"))
+    except (ValueError, KeyError, zipfile.BadZipFile, ET.ParseError) as e:
+        raise ErrorEntorno(f"{C_EXPORTACION} no devolvió un customizations.xml legible: {type(e).__name__}") from e
+    buscado = form_id.strip("{} ").lower()
+    for sf in raiz.iter("systemform"):
+        if (sf.findtext("formid") or "").strip("{} ").lower() == buscado:
+            formulario = sf.find("form")
+            return None if formulario is None else ET.tostring(formulario, encoding="unicode")
+    return None
+
+
+def _diferencias_de_idiomas_no_leidos(esperado_xml, exportado_xml, ausentes, declarados):
+    """Etiquetas de los idiomas `ausentes` (los que la lectura no devuelve) contra lo GUARDADO. Las vacías no cuentan.
+    También denuncia las de un idioma que la Identidad no declara."""
+    try:
+        guardadas = {(t, str(i).upper()): v for (t, i), v in _etiquetas_del_xml(exportado_xml).items()}
+    except ET.ParseError:
+        return ["el formxml guardado (de la solución exportada) no es XML válido"]
+    difs = []
+    for (tag, id_), (donde, textos) in _etiquetas_del_xml(esperado_xml).items():
+        actuales = guardadas.get((tag, str(id_).upper()))
+        if actuales is None:
+            continue
+        actuales = actuales[1]
+        for lcid in ausentes:
+            texto = textos.get(lcid, "")
+            if not texto:
+                continue
+            if actuales.get(lcid) is None:
+                difs.append(f"{donde}: falta la etiqueta {lcid} en lo guardado")
+            elif actuales[lcid] != texto:
+                difs.append(f"{donde}: la etiqueta {lcid} es {actuales[lcid]!r} y el playbook dice {texto!r}")
+        for lcid, texto in actuales.items():
+            if lcid not in declarados and lcid not in ausentes and texto and lcid not in textos:
+                difs.append(f"{donde}: trae una etiqueta en el idioma {lcid}, que la Identidad no declara")
+    return difs
+
+
+def _idiomas_no_leidos(dv, solucion, identidad, form, xml):
+    """Diferencias en los idiomas de la Identidad que `GET systemforms` no devolvió, leídas de la solución exportada.
+    Vacía si la lectura ya los trae todos (o no trae etiqueta alguna: ahí manda la comparación del XML entero)."""
+    leidos = _idiomas_del_xml(form.get("formxml"))
+    declarados = [str(i) for i in identidad["idiomas"]]
+    ausentes = [i for i in declarados if i not in leidos]
+    if not leidos or not ausentes:
+        return []
+    guardado = _formxml_exportado(dv, solucion, exigir_forma(form.get("formid"), str, C_FORM, "formid", no_vacio=True))
+    if guardado is None:
+        return ["el formulario no aparece en la solución exportada, así que no se pueden comprobar las etiquetas "
+                f"{', '.join(ausentes)} guardadas"]
+    return _diferencias_de_idiomas_no_leidos(xml, guardado, ausentes, declarados)
+
+
 def _scripts_del_xml(formxml):
     """`(bibliotecas, manejadores)` que trae el `formxml`, solo los de usuario (`<Library>` y `<Handlers>/<Handler>`; los
     `InternalHandlers` son de la plataforma). Cada manejador es `(evento, columna, biblioteca, funcion, pasar_contexto)`."""
@@ -801,16 +887,21 @@ def _diferencias_de_scripts(esperado_xml, real_xml):
     return difs
 
 
-def _diferencias(datos, form, xml):
+def _diferencias(datos, form, xml, de_idiomas_no_leidos=()):
     difs, corregibles = [], {}
     for campo, valor in (("name", datos["nombre"]), ("description", datos["descripcion"])):
         if form.get(campo) != valor:
             difs.append(f"{campo} es {form.get(campo)!r} y el playbook dice {valor!r}")
             corregibles[campo] = valor
-    if _normalizar_xml(form.get("formxml")) != _normalizar_xml(xml):
-        difs.extend(_diferencias_de_etiquetas(xml, form.get("formxml")))
+    # La lectura trae solo las etiquetas del idioma del usuario: se compara contra lo que HABRÍA que ver en esos idiomas.
+    esperado_leido = _solo_idiomas(xml, _idiomas_del_xml(form.get("formxml")))
+    if _normalizar_xml(form.get("formxml")) != _normalizar_xml(esperado_leido):
+        difs.extend(_diferencias_de_etiquetas(esperado_leido, form.get("formxml")))
         difs.extend(_diferencias_de_scripts(xml, form.get("formxml")))
         difs.append("el formxml no coincide con el que genera el playbook")
+        corregibles["formxml"] = xml
+    if de_idiomas_no_leidos:
+        difs.extend(de_idiomas_no_leidos)
         corregibles["formxml"] = xml
     if form.get("formactivationstate") != ACTIVO:
         difs.append(f"el formulario está inactivo (formactivationstate {form.get('formactivationstate')!r})")
@@ -865,6 +956,7 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     form = _leer_formulario(dv, datos["tabla"], tipo_de_formulario(datos))
     hubo_escritura = False
     hubo_alta = False
+    de_idiomas = None   # diferencias en los idiomas que la lectura no devuelve (se calculan al comparar)
 
     if form is None:
         if solo_verificar:
@@ -875,13 +967,18 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
         est, resp, _ = escribir_metadatos(dv, "POST", "systemforms", cuerpo, dormir=dormir, solucion=solucion)
         if est not in (200, 201, 204):
             return "error", componente, f"el alta devolvió HTTP {est} (se esperaba 204): {resp}"
+        # El alta también publica: sin publicar el formulario no se ve y lo exportado puede no traerlo.
+        est, resp, _ = _publicar(dv, datos["tabla"], dormir)
+        if est not in (200, 204):
+            return "error", componente, f"se creó pero la publicación devolvió HTTP {est}: {resp}"
         form = _leer_formulario(dv, datos["tabla"], tipo_de_formulario(datos))
         if form is None:
             return "error", componente, "el alta no dio error pero el formulario no aparece al releer"
         hubo_escritura = True
         hubo_alta = True
     else:
-        difs, corregibles = _diferencias(datos, form, xml)
+        de_idiomas = _idiomas_no_leidos(dv, solucion, identidad, form, xml)
+        difs, corregibles = _diferencias(datos, form, xml, de_idiomas)
         if corregibles and not solo_verificar:
             id_form = exigir_forma(form.get("formid"), str, C_FORM, "formid", no_vacio=True)
             est, resp, _ = escribir_metadatos(
@@ -893,9 +990,12 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
                 return "error", componente, f"se corrigió pero la publicación devolvió HTTP {est}: {resp}"
             form = _leer_formulario(dv, datos["tabla"], tipo_de_formulario(datos))
             hubo_escritura = True
+            de_idiomas = None   # lo guardado cambió: se vuelve a exportar
 
     id_form = exigir_forma(form.get("formid"), str, C_FORM, "formid", no_vacio=True)
-    difs, _ = _diferencias(datos, form, xml)
+    if de_idiomas is None:
+        de_idiomas = _idiomas_no_leidos(dv, solucion, identidad, form, xml)
+    difs, _ = _diferencias(datos, form, xml, de_idiomas)
     fila = _tabla_en_la_solucion(dv, solution_id, metadata_id)
     if fila is None:
         difs.append(f"la tabla '{datos['tabla']}' no figura en la solución (solutionid {solution_id}), "

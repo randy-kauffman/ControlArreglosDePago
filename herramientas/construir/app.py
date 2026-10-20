@@ -7,8 +7,17 @@ model-driven apps using code".
 
 Van en UNA herramienta porque son una sola cosa: un sitemap sin app no lo abre
 nadie, y una app sin sitemap no navega a ningún lado. La secuencia
-(`sitemap` → `appmodule` → `AddAppComponents` → roles → `ValidateApp` →
-`PublishXml`) conviene que se ejecute junta y se verifique junta.
+(`sitemap` → `appmodule` → `AddAppComponents` del sitemap → roles → `PublishXml` → tablas por `ImportSolution` →
+`ValidateApp`) conviene que se ejecute junta y se verifique junta.
+
+**Las TABLAS de la app no entran por `AddAppComponents`.** Con `{"@odata.type": "Microsoft.Dynamics.CRM.entity",
+"entityid": "<MetadataId>"}` la plataforma responde 204 e IGNORA el GUID: agrega siempre la tabla de metadatos `entity`
+(`objectid` 9d0f025b-…) y nunca la pedida (reproducido en Dev el 2026-09-22 y el 2026-10-20, con y sin `#` en el tipo,
+con el tipo de la tabla y con la `@odata.type` primero; Learn solo documenta el ejemplo de vista y formulario). Las apps
+reales del entorno tienen sus tablas como componentes tipo 1 cuyo `objectid` es el MetadataId, pero llegan por solución.
+Por eso, si después de publicar faltan tablas, se meten con `importar_solucion.importar_tablas_de_la_app` (exporta la
+solución, reemplaza el bloque `<AppModuleComponents>` de la app, importa, publica y relee). Esa importación reemplaza la
+lista de componentes de la app: también se lleva la referencia basura a `entity` que dejó el intento anterior.
 
 El `sitemapxml` se genera del playbook. Su esquema no está publicado en Learn:
 se sacó leyendo un sitemap real del entorno (2026-09-22).
@@ -60,6 +69,7 @@ from _comun import (  # noqa: E402
     salida,
     validar_textos_por_idioma,
 )
+from importar_solucion import importar_tablas_de_la_app as importar_tablas  # noqa: E402
 
 TIPO = "app"
 
@@ -447,21 +457,6 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
             return "error", componente, f"AddAppComponents del sitemap devolvió HTTP {est}: {resp}"
         hubo_escritura = True
 
-        for tabla in datos["tablas"]:
-            definicion = leer_entorno(dv, f"EntityDefinitions(LogicalName='{tabla}')?$select=MetadataId",
-                                      "la consulta de la tabla (GET EntityDefinitions)", admite_404=True)
-            if definicion is None:
-                raise Bloqueado(f"la app incluye la tabla '{tabla}', que no existe en el entorno")
-            # La propiedad es `entityid`, NO `MetadataId`: el tipo OData
-            # `Microsoft.Dynamics.CRM.entity` no tiene `MetadataId` y devuelve
-            # HTTP 400. El VALOR sí es el MetadataId de la tabla.
-            est, resp, _ = escribir_metadatos(
-                dv, "POST", "AddAppComponents",
-                {"AppId": id_app, "Components": [{"entityid": definicion["MetadataId"],
-                                                  "@odata.type": "Microsoft.Dynamics.CRM.entity"}]}, dormir=dormir)
-            if est not in (200, 204):
-                return "error", componente, f"AddAppComponents de la tabla '{tabla}' devolvió HTTP {est}: {resp}"
-
         # --- roles ---
         for nombre_rol in datos["roles"]:
             id_rol = _rol(dv, nombre_rol)
@@ -482,6 +477,16 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
         if est not in (200, 204):
             return "error", componente, f"la publicación de la app devolvió HTTP {est}: {resp}"
 
+        # --- tablas: por ImportSolution, no por AddAppComponents (ver el docstring) ---
+        faltan_antes = [t for t in datos["tablas"] if t not in _tablas_de_la_app(dv, id_app)]
+        if faltan_antes:
+            est_i, _, detalle_i = importar_tablas(
+                dv, identidad, datos["uniquename"], datos["sitemap"], datos["tablas"], componente)
+            if est_i not in ("creado", "ya_existia"):
+                return "error", componente, (
+                    f"faltaban {len(faltan_antes)} tablas en la app y la importación terminó en '{est_i}': {detalle_i}")
+            hubo_escritura = True
+
     # --- validación de la propia plataforma ---
     est, resp, _ = dv.call("GET", f"ValidateApp(AppModuleId={id_app})")
     problemas = []
@@ -492,10 +497,8 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     else:
         problemas.append(f"ValidateApp devolvió HTTP {est}: {resp}")
 
-    # `AddAppComponents` devuelve 204 aunque no agregue NADA (verificado en Dev
-    # el 2026-09-22: diez altas de tabla, diez 204, cero componentes). Y
-    # `ValidateApp` tampoco se queja. Contar lo que pide el playbook y darlo
-    # por hecho sería mentir: se cuenta lo que quedó.
+    # Un 2xx no es una verificación: `AddAppComponents` devolvía 204 sin agregar la tabla pedida (verificado en Dev
+    # el 2026-09-22 y el 2026-10-20), y `ValidateApp` tampoco se queja. Se cuenta lo que quedó.
     tablas_puestas = _tablas_de_la_app(dv, id_app)
     faltan_tablas = [t for t in datos["tablas"] if t not in tablas_puestas]
 
@@ -503,7 +506,8 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     if faltan_tablas:
         difs.append(
             f"la app no incluye {len(faltan_tablas)} de las {len(datos['tablas'])} tablas del playbook "
-            f"(faltan {faltan_tablas}); AddAppComponents devolvió 204 sin agregarlas")
+            f"(faltan {faltan_tablas}); `AddAppComponents` no las agrega: hay que correr app.py sin --solo-verificar "
+            "(las mete por ImportSolution)")
     if _normalizar_xml(sitemap.get("sitemapxml")) != _normalizar_xml(xml):
         difs.append("el sitemapxml no coincide con el que genera el playbook")
     if not sitemap.get("isappaware"):
