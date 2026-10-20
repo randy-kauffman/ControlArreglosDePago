@@ -1,0 +1,69 @@
+{
+ "fecha": "2026-10-20",
+ "solo_verificar": true,
+ "graficos": [
+  {
+   "nombre": "CHT - CARP - Promedio por respuesta",
+   "id": "dd7dcd22-b2cc-f111-a05b-00224808ffcd",
+   "estado": "ya_existia",
+   "solucion": "en la solución",
+   "consulta_http": 200,
+   "filas_de_la_consulta": 0,
+   "consulta": []
+  },
+  {
+   "nombre": "CHT - CARP - Tiempo total",
+   "id": "e17dcd22-b2cc-f111-a05b-00224808ffcd",
+   "estado": "ya_existia",
+   "solucion": "en la solución (con su tabla, que incluye todos los subcomponentes)",
+   "consulta_http": 200,
+   "filas_de_la_consulta": 1,
+   "consulta": [
+    {
+     "categoria": null,
+     "promedio": 347
+    }
+   ]
+  }
+ ],
+ "panel": {
+  "nombre": "DASH - CARP - Supervision",
+  "id": "e47dcd22-b2cc-f111-a05b-00224808ffcd",
+  "estado": "ya_existia",
+  "solucion": "en la solución",
+  "huella_publicada": {
+   "vistas": [
+    "02b209a3-9acc-f111-a05b-00224808ffcd",
+    "7cd8b2a9-9acc-f111-a05b-00224808ffcd",
+    "a2a74bb8-9acc-f111-a05b-00224808ffcd",
+    "b6dad7a1-a1cc-f111-a05b-00224808ffcd"
+   ],
+   "graficos": [
+    "dd7dcd22-b2cc-f111-a05b-00224808ffcd",
+    "e17dcd22-b2cc-f111-a05b-00224808ffcd"
+   ],
+   "modos": [
+    "Chart",
+    "Chart",
+    "Grid",
+    "Grid"
+   ],
+   "tablas": [
+    "email",
+    "email",
+    "sanic_carp_tbl_conversacion",
+    "sanic_carp_tbl_conversacion"
+   ],
+   "roles": [
+    "ca75358f-4ec4-f111-a05a-7ced8d3c456b"
+   ],
+   "titulos": [
+    "Average minutes per reply, by officer",
+    "Average total time, by officer",
+    "Replies with send errors",
+    "Unanswered emails"
+   ]
+  },
+  "coincide_con_playbook": true
+ }
+}

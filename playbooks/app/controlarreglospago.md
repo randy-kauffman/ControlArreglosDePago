@@ -101,7 +101,8 @@ Advertencias: los títulos de sitemap van una vez por idioma de la Identidad, en
             {"id": "cierres", "titulo": {"1033": "Finalizadas sin respuesta", "3082": "Finalizadas sin respuesta"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Finalizadas sin respuesta", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
             {"id": "errores", "titulo": {"1033": "Respuestas con error de envio", "3082": "Respuestas con error de envio"}, "tabla": "email", "vista": "Respuestas con error de envio", "icono": "sanic_carp_wr_svg_alerta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
             {"id": "respenviadas", "titulo": {"1033": "Respuestas enviadas", "3082": "Respuestas enviadas"}, "tabla": "email", "vista": "Respuestas enviadas", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
-            {"id": "borradoressinmov", "titulo": {"1033": "Borradores sin movimiento", "3082": "Borradores sin movimiento"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Borradores sin movimiento", "icono": "sanic_carp_wr_svg_alerta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]}
+            {"id": "borradoressinmov", "titulo": {"1033": "Borradores sin movimiento", "3082": "Borradores sin movimiento"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Borradores sin movimiento", "icono": "sanic_carp_wr_svg_alerta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
+            {"id": "panel", "titulo": {"1033": "Panel de supervision", "3082": "Panel de supervision"}, "dashboard": "DASH - CARP - Supervision", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]}
           ]
         }
       ]
@@ -127,7 +128,7 @@ Las siete entradas del jefe (lote A: `sinrespuesta`, `respenviadas`, `plantillas
 
 ### Entradas diferidas
 
-Las seis entradas del lote C (`enriesgo`, `prestamo`, `tarjeta`, `cierres`, `errores`, `borradoressinmov`) ya están en el JSON (sus vistas se construyeron en el lote C). Queda diferida solo la del lote E:
+Las seis entradas del lote C (`enriesgo`, `prestamo`, `tarjeta`, `cierres`, `errores`, `borradoressinmov`) ya están en el JSON (sus vistas se construyeron en el lote C). La del lote E (`panel`) se agregó el 2026-10-20, cuando se construyó el dashboard; `app.py` también lo agrega como componente de la app (tipo 60). Ya no queda ninguna diferida:
 
 | Lote | Área › grupo | `id` | Tabla | Vista o dashboard | Ícono | Privilegio |
 |---|---|---|---|---|---|---|

@@ -1,0 +1,36 @@
+{
+ "dashboard_en_la_app": true,
+ "vistas_del_panel": {
+  "Correos sin respuesta": {
+   "http": 200,
+   "filas": 10
+  },
+  "Respuestas con error de envio": {
+   "http": 200,
+   "filas": 0
+  },
+  "Respuestas enviadas": {
+   "http": 200,
+   "filas": 0
+  },
+  "Conversaciones finalizadas": {
+   "http": 200,
+   "filas": 5
+  }
+ },
+ "exportacion": {
+  "CHT - CARP - Promedio por respuesta": true,
+  "CHT - CARP - Tiempo total": true,
+  "DASH - CARP - Supervision": true,
+  "etiquetas_3082_del_panel": [
+   "Correos sin respuesta",
+   "Pestana",
+   "Promedio de minutos por respuesta, por oficial",
+   "Respuestas con error de envio",
+   "Seccion",
+   "Tiempo total promedio, por oficial"
+  ],
+  "panel_en_appmodule": true,
+  "nota": "customizations.xml exportado trae <AppModuleComponent type=\"60\" id=\"{e47dcd22-b2cc-f111-a05b-00224808ffcd}\" /> en la app (la primera lectura buscaba en archivos appmodules/ del zip, que no existen)."
+ }
+}

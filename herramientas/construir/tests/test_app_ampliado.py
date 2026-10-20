@@ -196,5 +196,75 @@ class DashboardContraElEntorno(ta.Base):
         self.assertFalse(cliente.hubo_escritura())
 
 
+class DashboardEnLaApp(DashboardContraElEntorno):
+    """El dashboard de una entrada tiene que ser componente de la app (`componenttype` 60), no solo una URL del sitemap.
+    Verificado en Dev el 2026-10-20: `AddAppComponents` con `Microsoft.Dynamics.CRM.systemform` SÍ agrega el dashboard
+    (a diferencia de `entity`), y `RetrieveAppComponents` lo muestra después de publicar la app."""
+
+    def armar_app(self, dash_puestos, sitemap_xml=None):
+        cliente = self.armar_dashboard([{"formid": DASH_ID}])
+        self.sitemap = {"sitemapid": ta.SITEMAP_ID, "isappaware": True,
+                        "sitemapxml": xml_de(self.datos()) if sitemap_xml is None else sitemap_xml}
+        self.app = {"appmoduleid": ta.APP_ID, "ismanaged": False}
+        self.dash_puestos = dash_puestos
+        cliente._reglas.insert(0, ("GET", lambda r: r.startswith("RetrieveAppComponents("),
+                                   lambda r, c, s: (200, {"value": [{"componenttype": 1, "objectid": "md-" + t}
+                                                                    for t in self.puestas]
+                                                      + [{"componenttype": 60, "objectid": d}
+                                                         for d in self.dash_puestos]}, {})))
+        cliente.responder("POST", "AddAppComponents", (204, {}, {}))
+        cliente.responder("POST", lambda r: "appmoduleroles_association" in r, (204, {}, {}))
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
+        return cliente
+
+    def test_el_dashboard_entra_por_AddAppComponents_como_systemform(self):
+        cliente = self.armar_app([])
+        self.correr(cliente, solo_verificar=False)
+        pedidos = [c for l in cliente.llamadas if l["ruta"] == "AddAppComponents" for c in l["cuerpo"]["Components"]]
+        self.assertIn({"formid": DASH_ID, "@odata.type": "Microsoft.Dynamics.CRM.systemform"}, pedidos)
+
+    def test_un_dashboard_que_no_quedo_en_la_app_es_error(self):
+        cliente = self.armar_app([])
+        estado, _, detalle = self.correr(cliente, solo_verificar=False)
+        self.assertEqual("error", estado, detalle)
+        self.assertIn("DASH - CARP - Supervision", detalle)
+
+    def test_solo_verificar_sin_el_dashboard_en_la_app_difiere_y_no_escribe(self):
+        cliente = self.armar_app([])
+        estado, _, detalle = self.correr(cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("no incluye el dashboard", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_con_el_dashboard_en_la_app_ya_existia(self):
+        cliente = self.armar_app([DASH_ID])
+        estado, _, detalle = self.correr(cliente)
+        self.assertEqual("ya_existia", estado, detalle)
+
+    def test_el_sitemap_se_compara_despues_de_publicar(self):
+        # Verificado en Dev el 2026-10-20: tras el PATCH del sitemap, `GET sitemaps?` sigue devolviendo el XML
+        # publicado hasta que `PublishXml` publica la app. Releer antes de publicar daba un "error" falso.
+        viejo = xml_de(con_entradas(sub_con_privilegio()))
+        cliente = self.armar_app([DASH_ID], sitemap_xml=viejo)
+        self.pendiente = None
+
+        def patch(r, c, s):
+            self.pendiente = c["sitemapxml"]
+            return (204, {}, {})
+
+        def publicar(r, c, s):
+            if self.pendiente is not None:
+                self.sitemap["sitemapxml"] = self.pendiente
+            return (204, {}, {})
+
+        # Copia en cada lectura: la plataforma devuelve una foto, no un objeto que cambie solo después de publicar.
+        cliente._reglas.insert(0, ("GET", lambda r: r.startswith("sitemaps?"),
+                                   lambda r, c, s: (200, {"value": [dict(self.sitemap)]}, {})))
+        cliente._reglas.insert(0, ("PATCH", lambda r: r.startswith("sitemaps("), patch))
+        cliente._reglas.insert(0, ("POST", "PublishXml", publicar))
+        estado, _, detalle = self.correr(cliente, solo_verificar=False)
+        self.assertEqual("actualizado", estado, detalle)
+
+
 if __name__ == "__main__":
     unittest.main()

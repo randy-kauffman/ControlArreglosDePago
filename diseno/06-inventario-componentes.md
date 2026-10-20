@@ -30,12 +30,13 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 9 | Datos semilla y de configuración | 3 | 2 | 0 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 3 | 2 | 2 |
 | 11 | Flujos | 3 | 0 | 2 | 1 |
-| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 26 | 23 | 3 | 0 |
+| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 26 | 26 | 0 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
-| **Total** | | **128** | **67** | **50** | **11** |
+| **Total** | | **128** | **70** | **47** | **11** |
 
 Notas del resumen:
 
+- 2026-10-20 (Dev, lote E de app): 12.14 (`DASH - CARP - Supervision`), 12.15 (`CHT - CARP - Promedio por respuesta`) y 12.16 (`CHT - CARP - Tiempo total`) pasaron a `hecho`, construidos por Web API con un script versionado (DA-05 cambiada) y verificados `ya_existia`; la solución exportada trae los dos gráficos, el dashboard con sus etiquetas 3082 y el dashboard como componente de la app. La entrada `panel` del sitemap quedó con `app.py` (20 entradas, `ya_existia`). El grupo 12 pasó de 23 hechas y 3 pendientes a 26 y 0; el total, de 67 y 50 a 70 y 47 (`pruebas-humo/lote-e/RESULTADO.md`).
 - 2026-10-20 (Dev, lote 0, correo): 13.4 y 13.5 quedaron **hechas en Dev** (queue y mailbox sobre el buzón de prueba 1, entrada y salida Success, `pruebas-humo/lote-0/RESULTADO.md`). Como 13.1 a 13.3, siguen contando como `pendiente` porque faltan Test y Prod: el resumen no cambia (67 hechas, 50 pendientes). Para destrabar 13.4 se agregó `prvReadMailbox` Básico a `SR - CARP - Oficial` (decisión del usuario, opción A; `04` §3 y §8).
 - 2026-10-20 (Dev, lote 0): 9.1 y 9.2 pasaron a `hecho` (v07 aprobada por Héctor cargada y publicada como Vigente, la v95 de humo pasó a Histórica; 28 de 28 mapeos `ya_existia`; el formato generado llena las 28 celdas, `pruebas-humo/lote-0/RESULTADO-plantilla.md`) y 10.8 también. El grupo 9 pasó de 0 hechas y 2 pendientes a 2 y 0; el grupo 10, de 2 y 3 a 3 y 2; el total, de 64 y 53 a 67 y 50. 13.4 quedó bloqueada: el dueño de una queue tiene que poder leer su Mailbox (403 sin `prvReadMailbox`) y el team del sistema solo tiene el rol Oficial, sin acceso al Mailbox según `04`; espera decisión del usuario (`pruebas-humo/lote-0/RESULTADO.md`).
 
@@ -300,9 +301,9 @@ Los gráficos agregan promedios por oficial; las vistas no (D-27). En el proyect
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 12.14 | `DASH - CARP - Supervision` (dashboard del jefe) | `playbooks/dashboard/supervision.md` | 12.15, 12.16 | RF-04, D-27 | pendiente (diseño completo en `diseno/07` §6) |
-| 12.15 | `CHT - CARP - Promedio por respuesta` *(prov.)*: promedio de `sanic_tiemporespuesta` sobre Email, agrupado por `sanic_respondidoporid` | `playbooks/grafico/promedio_por_respuesta.md` | 3.8, 4.19 | RF-03, RF-04, D-27 | pendiente (diseño completo en `diseno/07` §6) |
-| 12.16 | `CHT - CARP - Tiempo total` *(prov.)*: promedio de `sanic_tiempototal` sobre Conversación, agrupado por oficial asignado, sin las finalizadas "Sin respuesta" (a confirmar con negocio) | `playbooks/grafico/tiempo_total.md` | 3.2, 4.10 | RF-04, D-27 | pendiente (diseño completo en `diseno/07` §6) |
+| 12.14 | `DASH - CARP - Supervision` (dashboard del jefe) | `playbooks/dashboard/supervision.md` | 12.15, 12.16 | RF-04, D-27 | hecho (2026-10-20, Dev, lote E: script `pruebas-humo/lote-e/scripts/e01_graficos_panel.py`, `ya_existia` con `--solo-verificar`, en la solución exportada) |
+| 12.15 | `CHT - CARP - Promedio por respuesta` *(prov.)*: promedio de `sanic_tiemporespuesta` sobre Email, agrupado por `sanic_respondidoporid` | `playbooks/grafico/promedio_por_respuesta.md` | 3.8, 4.19 | RF-03, RF-04, D-27 | hecho (2026-10-20, Dev, lote E: script `pruebas-humo/lote-e/scripts/e01_graficos_panel.py`, `ya_existia` con `--solo-verificar`, en la solución exportada) |
+| 12.16 | `CHT - CARP - Tiempo total` *(prov.)*: promedio de `sanic_tiempototal` sobre Conversación, agrupado por oficial asignado, sin las finalizadas "Sin respuesta" (a confirmar con negocio) | `playbooks/grafico/tiempo_total.md` | 3.2, 4.10 | RF-04, D-27 | hecho (2026-10-20, Dev, lote E: script `pruebas-humo/lote-e/scripts/e01_graficos_panel.py`, `ya_existia` con `--solo-verificar`, en la solución exportada) |
 
 ### 12.3 Formularios principales
 

@@ -34,7 +34,8 @@ misma tabla (cada una con su vista), las que nombran una vista se arman con
 **Privilegios y dashboard** (diseno/07, G-A1): una entrada admite `privilegios: [{tabla, privilegio}]` (`<Privilege Entity=..
 Privilege=../>` hijo de la `SubArea`, después de los títulos; `privilegio` es uno o varios de Read, Write, Append, AppendTo,
 Create, Delete, Share, Assign, All, separados por coma sin espacios) y, en lugar de `tabla`, `dashboard: "<nombre>"` (se
-resuelve a su `formid` y se abre con `Url=/main.aspx?pagetype=dashboard&id=%7b..%7d`).
+resuelve a su `formid` y se abre con `Url=/main.aspx?pagetype=dashboard&id=%7b..%7d`). El dashboard entra además como
+componente de la app (`AddAppComponents` con `systemform`, componente 60) y la verificación cuenta que haya quedado.
 
 **Idiomas**: los títulos del sitemap llevan UNA etiqueta por cada idioma de la
 Identidad (`idiomas`); el bloque de la app no declara idiomas propios. Ese patrón NO se pudo verificar
@@ -104,6 +105,7 @@ C_ROL = "la consulta de un rol (GET roles)"
 C_COMPONENTES = "la consulta de los componentes de la app (GET RetrieveAppComponents)"
 
 COMPONENTE_TABLA = 1  # appmodulecomponent.componenttype
+COMPONENTE_DASHBOARD = 60  # appmodulecomponent.componenttype de un systemform (el dashboard es un systemform de tipo 0)
 
 # Learn, SiteMap schema (SiteMap.xsd, CRM_PrivilegeId_SiteMap): los de datos de una tabla.
 PRIVILEGIOS_DE_SITEMAP = {"Read", "Write", "Append", "AppendTo", "Create", "Delete", "Share", "Assign", "All"}
@@ -358,6 +360,14 @@ def _tablas_de_la_app(dv, id_app):
     return nombres
 
 
+def _dashboards_de_la_app(dv, id_app):
+    """`formid` de los systemform (dashboards) que la app REALMENTE incluye. `AddAppComponents` con
+    `Microsoft.Dynamics.CRM.systemform` sí los agrega (verificado en Dev el 2026-10-20), pero se cuentan igual."""
+    cuerpo = leer_entorno(dv, f"RetrieveAppComponents(AppModuleId={id_app})", C_COMPONENTES)
+    return {str(f.get("objectid")).lower() for f in exigir_forma(cuerpo.get("value"), [dict], C_COMPONENTES, "value")
+            if f.get("componenttype") == COMPONENTE_DASHBOARD}
+
+
 def _normalizar_xml(texto):
     return "".join((texto or "").split())
 
@@ -451,6 +461,9 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     # --- componentes: sitemap y tablas ---
     if not solo_verificar:
         componentes = [{"sitemapid": id_sitemap, "@odata.type": "Microsoft.Dynamics.CRM.sitemap"}]
+        # El dashboard de una entrada tiene que ser componente de la app, no solo una URL del sitemap.
+        componentes += [{"formid": fid, "@odata.type": "Microsoft.Dynamics.CRM.systemform"}
+                        for fid in dashboards.values()]
         est, resp, _ = escribir_metadatos(
             dv, "POST", "AddAppComponents", {"AppId": id_app, "Components": componentes}, dormir=dormir)
         if est not in (200, 204):
@@ -487,6 +500,11 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
                     f"faltaban {len(faltan_antes)} tablas en la app y la importación terminó en '{est_i}': {detalle_i}")
             hubo_escritura = True
 
+    if not solo_verificar:
+        # Tras el PATCH, `GET sitemaps?` sigue devolviendo el XML publicado hasta que `PublishXml` publica la app
+        # (verificado en Dev el 2026-10-20): la comparación final se hace con lo que quedó después de publicar.
+        sitemap = _leer_sitemap(dv, datos["sitemap"]) or sitemap
+
     # --- validación de la propia plataforma ---
     est, resp, _ = dv.call("GET", f"ValidateApp(AppModuleId={id_app})")
     problemas = []
@@ -503,6 +521,12 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
     faltan_tablas = [t for t in datos["tablas"] if t not in tablas_puestas]
 
     difs = list(problemas)
+    if dashboards:
+        puestos = _dashboards_de_la_app(dv, id_app)
+        for nombre, fid in dashboards.items():
+            if str(fid).lower() not in puestos:
+                difs.append(f"la app no incluye el dashboard '{nombre}' (componente {COMPONENTE_DASHBOARD}); "
+                            "hay que correr app.py sin --solo-verificar (lo agrega con AddAppComponents)")
     if faltan_tablas:
         difs.append(
             f"la app no incluye {len(faltan_tablas)} de las {len(datos['tablas'])} tablas del playbook "
