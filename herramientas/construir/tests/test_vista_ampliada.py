@@ -283,6 +283,25 @@ class BusquedaRapidaContraElEntorno(tv.Base):
         patch = next(l for l in cliente.llamadas if l["metodo"] == "PATCH")
         self.assertIn('isquickfindfields="1"', patch["cuerpo"]["fetchxml"])
 
+    def test_completar_manda_los_cuatro_campos_juntos_aunque_solo_difiera_el_fetchxml(self):
+        # Defecto A: la plataforma da 400 si el PATCH de una quick find no lleva {fetchxml, layoutxml, name, returnedtypecode}.
+        cliente = self.armar_busqueda(self.fila(fetchxml="<fetch/>"))
+        cliente.responder("PATCH", lambda r: r.startswith("savedqueries("), (204, {}, {}))
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
+        self.correr(cliente, completar=True)
+        patch = next(l for l in cliente.llamadas if l["metodo"] == "PATCH")
+        self.assertEqual({"fetchxml", "layoutxml", "name", "returnedtypecode"}, set(patch["cuerpo"]))
+        self.assertEqual(BUSQUEDA["nombre"], patch["cuerpo"]["name"])
+        self.assertEqual(BUSQUEDA["tabla"], patch["cuerpo"]["returnedtypecode"])
+
+    def test_completar_en_busqueda_rapida_con_solo_otra_descripcion_tambien_manda_los_cuatro(self):
+        cliente = self.armar_busqueda(self.fila(description="otra"))
+        cliente.responder("PATCH", lambda r: r.startswith("savedqueries("), (204, {}, {}))
+        cliente.responder("POST", "PublishXml", (204, {}, {}))
+        self.correr(cliente, completar=True)
+        patch = next(l for l in cliente.llamadas if l["metodo"] == "PATCH")
+        self.assertEqual({"description", "fetchxml", "layoutxml", "name", "returnedtypecode"}, set(patch["cuerpo"]))
+
     def test_una_busqueda_rapida_inexistente_no_se_crea_y_dice_cuales_hay(self):
         # Una segunda quick find no se usa (solo cuenta la de la tabla): el nombre se toma de Dev.
         cliente = self.armar_busqueda(None, otras=[tv.fila_vista(BUSQUEDA, name="Quick Find Active Arreglos")])

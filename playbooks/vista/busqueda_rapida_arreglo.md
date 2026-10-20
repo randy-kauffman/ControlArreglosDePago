@@ -1,6 +1,6 @@
 # Playbook: vista · Quick Find Active Arreglos
 
-> **BLOQUEADA (2026-10-20, sin construir).** `vista.py --completar` termina en `error` con HTTP 400 `An unexpected error occurred.` al corregir el `fetchxml` de la búsqueda rápida de fábrica. Causa, probada en Dev con un `PATCH` de ida y vuelta del mismo `fetchxml` (400 aun sin cambios, con y sin la cabecera de solución): un `PATCH` que lleva solo `{fetchxml}` sobre una vista `querytype 4` siempre da 400; hay que mandar `{fetchxml, layoutxml, name, returnedtypecode}` juntos (`spikes/plataforma/RESULTADO.md`, línea 167: con esos cuatro devuelve 204). `vista.py` manda solo los campos que difieren. Es un defecto de la herramienta (`_contra_entorno`, rama `completar`), no del playbook, que valida y está completo. Hasta que se corrija la herramienta no se construye por otro camino.
+> **Construida en Dev el 2026-10-20.** El defecto de `vista.py` (el `PATCH` de una búsqueda rápida exige `{fetchxml, layoutxml, name, returnedtypecode}` juntos) se corrigió y `--completar` ahora los manda siempre para `BusquedaRapida`.
 
 ## 1. Identidad
 

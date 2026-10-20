@@ -1,6 +1,6 @@
 # Playbook: vista · Arreglos del cliente
 
-> **HUECO (sin construir).** El diseño pide ordenar por `createdon` descendente y su lista de columnas (§3.4) no incluye `createdon`. `vista.py` solo ordena por una columna visible (regla de validación: «se ordena por … que la vista no muestra»). Este playbook queda tal como lo dice el diseño y por eso NO valida. Para construirlo hay que decidir una de dos cosas: agregar la columna `createdon` a la vista, u ordenar por una columna ya visible (por ejemplo `sanic_fechainicio`, que es nula en los borradores). Decisión del arquitecto; no se inventa acá.
+> **Decisión del orquestador (2026-10-20):** el diseño ordena por `createdon` descendente y su lista de columnas no la incluía; `vista.py` solo ordena por una columna visible. Se agrega `createdon` («Creado») como ÚLTIMA columna, con 150 px (el ancho de las demás fechas del diseño), y se ordena por ella descendente.
 
 ## 1. Identidad
 
@@ -82,6 +82,10 @@ Advertencias: `idiomas` solo cumple el formato común; una vista tiene un único
     {
       "nombre": "sanic_oficialid",
       "ancho": 160
+    },
+    {
+      "nombre": "createdon",
+      "ancho": 150
     }
   ],
   "orden": [
@@ -104,7 +108,7 @@ Viene del diseño (`diseno/07` §3.4), no lo decide este playbook:
 
 - Tabla: `sanic_carp_tbl_arreglo`. Clase: `Publica`. Perfil que la encuentra: Ninguno (subgrilla de 12.17 y 12.18; DA-19) (lo decide el sitemap; la vista no tiene seguridad propia).
 - Filtro: ninguno (todos los estados). Orden: `createdon` descendente.
-- Anchos en píxeles y orden de columnas: los de la tabla de columnas de §3.2 a §3.5.
+- Anchos en píxeles y orden de columnas: los de la tabla de columnas de §3.2 a §3.5, más `createdon` 150 como última columna (decisión del orquestador, 2026-10-20, ver la nota de arriba).
 
 Decisiones que este playbook toma y el diseño no traía:
 
@@ -118,7 +122,7 @@ Decisiones que este playbook toma y el diseño no traía:
 |---|---|---|
 | 1 | La solución existe, no es managed, su publisher coincide y cada idioma está provisionado | los de la sección 1 |
 | 2 | La tabla existe y figura en la solución con `rootcomponentbehavior` 0 (la vista viaja dentro de ella) | `sanic_carp_tbl_arreglo` |
-| 3 | Cada columna del playbook existe en la tabla | las de la sección 2 |
+| 3 | Cada columna del playbook existe en la tabla (`createdon` es estándar de toda tabla) | las de la sección 2 |
 
 Si alguna falla: estado `bloqueado`, no se crea nada.
 

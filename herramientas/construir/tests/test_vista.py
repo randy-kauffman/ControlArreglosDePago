@@ -118,7 +118,8 @@ class Base(unittest.TestCase):
         # su tabla. Lo que se consulta es la fila de la TABLA.
         fila_tabla = [{"componenttype": 1, "rootcomponentbehavior": self.comportamiento, "objectid": METADATA_ID}]
         cliente.responder("GET", es_ruta_solutioncomponents,
-                          (200, {"value": fila_tabla if en_solucion else []}, {}))
+                          lambda r, c, s: (200, {"value": [] if "componenttype eq 26" in r
+                                                 else (fila_tabla if en_solucion else [])}, {}))
         return cliente
 
 
@@ -364,6 +365,37 @@ class ContraElEntorno(Base):
         self.assertIn("no viajaría", detalle)
 
     def test_si_la_tabla_esta_sin_subcomponentes_la_vista_no_viajaria(self):
+        cliente = self.armar(ClienteSimulado(), vista=fila_vista(), comportamiento=1)
+        estado, _, detalle = vi.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("rootcomponentbehavior", detalle)
+
+    def _con_fila_propia(self, cliente, comportamiento_tabla):
+        """Defecto B: con una tabla estándar (p. ej. `email`) en la solución con rootcomponentbehavior 1, la vista
+        tiene su PROPIA fila (componenttype 26, objectid = savedqueryid)."""
+        propia = [{"componenttype": 26, "rootcomponentbehavior": 0, "objectid": VISTA_ID}]
+        tabla = [{"componenttype": 1, "rootcomponentbehavior": comportamiento_tabla, "objectid": METADATA_ID}]
+        cliente._reglas.insert(0, ("GET", es_ruta_solutioncomponents,
+                                   lambda r, c, s: (200, {"value": propia if "componenttype eq 26" in r else tabla}, {})))
+
+    def test_la_vista_con_fila_propia_en_la_solucion_pertenece_aunque_la_tabla_tenga_comportamiento_1(self):
+        cliente = self.armar(ClienteSimulado(), vista=fila_vista(), comportamiento=1)
+        self._con_fila_propia(cliente, 1)
+        estado, _, detalle = vi.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("ya_existia", estado, detalle)
+        consulta = next(l["ruta"] for l in cliente.llamadas if "componenttype eq 26" in l["ruta"])
+        self.assertIn(f"objectid eq {VISTA_ID}", consulta)
+        self.assertIn(f"_solutionid_value eq {SOLUTION_ID}", consulta)
+
+    def test_la_vista_con_fila_propia_pertenece_aunque_la_tabla_no_figure(self):
+        cliente = self.armar(ClienteSimulado(), vista=fila_vista(), en_solucion=False)
+        propia = [{"componenttype": 26, "rootcomponentbehavior": 0, "objectid": VISTA_ID}]
+        cliente._reglas.insert(0, ("GET", es_ruta_solutioncomponents, lambda r, c, s: (
+            200, {"value": propia if "componenttype eq 26" in r else []}, {})))
+        estado, _, detalle = vi.construir(self.escribir(), False, lambda: cliente)
+        self.assertEqual("ya_existia", estado, detalle)
+
+    def test_sin_fila_propia_y_con_la_tabla_en_comportamiento_1_sigue_difiriendo(self):
         cliente = self.armar(ClienteSimulado(), vista=fila_vista(), comportamiento=1)
         estado, _, detalle = vi.construir(self.escribir(), False, lambda: cliente)
         self.assertEqual("difiere", estado, detalle)

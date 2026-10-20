@@ -464,15 +464,28 @@ def _diferencias(datos, vista, fetch, layout):
 
 
 COMPONENTE_TABLA = 1
+COMPONENTE_VISTA = 26
 INCLUYE_SUBCOMPONENTES = 0
 
 
+def _vista_en_la_solucion(dv, solution_id, id_vista):
+    """La fila PROPIA de la vista (`componenttype 26`, `objectid` = savedqueryid). Existe cuando la tabla está en la
+    solución sin incluir subcomponentes (p. ej. la estándar `email`, rootcomponentbehavior 1): ahí la vista es un
+    componente suelto y esta fila es la única prueba de que viaja. Con la tabla en 0 no hay fila propia (la vista
+    viaja dentro de la tabla)."""
+    ruta = ("solutioncomponents?$select=componenttype,rootcomponentbehavior,objectid"
+            f"&$filter=_solutionid_value eq {solution_id} and objectid eq {id_vista} "
+            f"and componenttype eq {COMPONENTE_VISTA}")
+    cuerpo = leer_entorno(dv, ruta, C_COMPONENTES)
+    filas = exigir_forma(cuerpo.get("value"), [dict], C_COMPONENTES, "value")
+    return filas[0] if filas else None
+
+
 def _tabla_en_la_solucion(dv, solution_id, metadata_id):
-    """Una vista **no tiene fila propia** en `solutioncomponents`: viaja dentro
-    de su tabla, igual que una clave alternativa o una relación (verificado en
-    Dev el 2026-09-22). Lo que hay que comprobar es que la TABLA esté en la
-    solución con `rootcomponentbehavior = 0` (incluir subcomponentes); si
-    estuviera con otro comportamiento, la vista no viajaría."""
+    """Con la tabla en la solución con `rootcomponentbehavior = 0` la vista **no
+    tiene fila propia** en `solutioncomponents`: viaja dentro de su tabla
+    (verificado en Dev el 2026-09-22). Es el respaldo cuando `_vista_en_la_solucion`
+    no encuentra fila propia; con otro comportamiento la vista no viajaría."""
     ruta = ("solutioncomponents?$select=componenttype,rootcomponentbehavior,objectid"
             f"&$filter=_solutionid_value eq {solution_id} and objectid eq {metadata_id} "
             f"and componenttype eq {COMPONENTE_TABLA}")
@@ -547,6 +560,11 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
         difs, corregibles = _diferencias(datos, vista, fetch, layout)
         if not [d for d in difs if "INMUTABLE" in d] and corregibles:
             id_vista = exigir_forma(vista.get("savedqueryid"), str, C_VISTA, "savedqueryid", no_vacio=True)
+            if datos["clase"] == "BusquedaRapida":
+                # La plataforma rechaza (400 "An unexpected error occurred") un PATCH de una búsqueda rápida que no
+                # lleve estos cuatro campos juntos (spikes/plataforma/RESULTADO.md).
+                corregibles = dict(corregibles, fetchxml=fetch, layoutxml=layout, name=datos["nombre"],
+                                   returnedtypecode=datos["tabla"])
             est, resp, _ = escribir_metadatos(
                 dv, "PATCH", f"savedqueries({id_vista})", corregibles, dormir=dormir, solucion=solucion)
             if est not in (200, 204):
@@ -592,14 +610,17 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
         if sobrantes:
             difs.append(f"la tabla tiene otras vistas de búsqueda rápida ({', '.join(repr(n) for n in sobrantes)}); "
                         "solo cuenta una y no se borran desde acá")
-    fila = _tabla_en_la_solucion(dv, solution_id, metadata_id)
-    if fila is None:
-        difs.append(f"la tabla '{datos['tabla']}' no figura en la solución (solutionid {solution_id}), "
-                    "así que la vista no viajaría con ella")
-    elif fila.get("rootcomponentbehavior") != INCLUYE_SUBCOMPONENTES:
-        difs.append(f"la tabla '{datos['tabla']}' está en la solución con rootcomponentbehavior "
-                    f"{fila.get('rootcomponentbehavior')!r} y no {INCLUYE_SUBCOMPONENTES} (incluir subcomponentes): "
-                    "la vista no viajaría con ella")
+    propia = _vista_en_la_solucion(dv, solution_id, id_vista)
+    fila = None
+    if propia is None:
+        fila = _tabla_en_la_solucion(dv, solution_id, metadata_id)
+        if fila is None:
+            difs.append(f"ni la vista ni la tabla '{datos['tabla']}' figuran en la solución (solutionid {solution_id}), "
+                        "así que la vista no viajaría")
+        elif fila.get("rootcomponentbehavior") != INCLUYE_SUBCOMPONENTES:
+            difs.append(f"la tabla '{datos['tabla']}' está en la solución con rootcomponentbehavior "
+                        f"{fila.get('rootcomponentbehavior')!r} y no {INCLUYE_SUBCOMPONENTES} (incluir subcomponentes), "
+                        "y la vista no tiene fila propia en la solución: no viajaría")
 
     if difs:
         estado = "error" if hubo_escritura else "difiere"
@@ -608,8 +629,10 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, completar, componente,
 
     return estado_de_escritura(hubo_alta, hubo_escritura), componente, (
         f"savedqueryid {id_vista}, {datos['clase']} sobre {datos['tabla']}, {len(datos['columnas'])} columnas"
-        f"{', por defecto' if datos['pordefecto'] else ''}; viaja dentro de la tabla, que está en la solución "
-        f"'{solucion}' con rootcomponentbehavior {fila.get('rootcomponentbehavior')}")
+        f"{', por defecto' if datos['pordefecto'] else ''}; "
+        + (f"figura en la solución '{solucion}' con fila propia (componenttype {COMPONENTE_VISTA})" if propia is not None
+           else f"viaja dentro de la tabla, que está en la solución '{solucion}' "
+                f"con rootcomponentbehavior {fila.get('rootcomponentbehavior')}"))
 
 
 def construir(ruta_playbook, solo_verificar, fabrica_cliente, completar=False, dormir=None):
