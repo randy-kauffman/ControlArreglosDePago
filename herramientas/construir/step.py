@@ -24,7 +24,8 @@ como los de los spikes, no cuenta) y de ahí sale también "lo que sobra".
 Nunca borra un step ni una imagen. Lo que sobra se denuncia (`difiere`) y
 sacarlo lo decide una persona: un step del paquete que el playbook no declara, y
 una imagen sobre un step declarado que no es la pre-imagen declarada (una
-post-imagen o una de tipo "ambas"). Escribir sobre un step que ya existe (corregir
+post-imagen o una de tipo "ambas"). Una excepción, por datos: la plataforma crea sola, por cada Custom API, un step de
+implementación (stage 30, sobre el mensaje de esa Custom API cuyo plugin es un tipo del paquete); ese no sobra. Escribir sobre un step que ya existe (corregir
 sus campos, agregarle la pre-imagen que falta) solo se hace con `--completar`; un
 step recién creado lleva su pre-imagen como parte del alta.
 
@@ -66,6 +67,8 @@ TIPO = "steps"
 # o está deprecado aunque el picklist técnicamente los acepte.
 ETAPAS = {"PreValidation": 10, "PreOperation": 20, "PostOperation": 40}
 MODOS = {"Sincrono": 0, "Asincrono": 1}
+# stage 30 (MainOperation): no se registra a mano; es donde la plataforma pone la implementación de cada Custom API.
+ETAPA_PRINCIPAL = 30
 DESPLIEGUE_SOLO_SERVIDOR = 0
 INVOCACION_PADRE = 0
 
@@ -123,7 +126,8 @@ C_MENSAJE = "la consulta del mensaje (GET sdkmessages)"
 C_FILTRO = "la consulta del filtro de mensaje (GET sdkmessagefilters)"
 C_STEPS = "la consulta de los steps (GET sdkmessageprocessingsteps)"
 C_IMAGENES = "la consulta de las imágenes (GET sdkmessageprocessingstepimages)"
-C_COMPONENTES = "la consulta de pertenencia a la solución (GET solutioncomponents)"
+C_CUSTOM_APIS = "la consulta de las Custom API del paquete (GET customapis)"
+C_COMPONENTES ="la consulta de pertenencia a la solución (GET solutioncomponents)"
 
 
 # ---------------------------------------------------------------------------
@@ -352,28 +356,56 @@ def _leer_imagenes(dv, step_id):
 
 
 def _steps_del_paquete(dv, tipos):
-    """Cada step registrado sobre un tipo del paquete: [(typename, id, name)]. Es la mitad que faltaba de la
-    verificación ("lo que sobra"): comparar solo lo declarado miente si el paquete tiene steps de una derivación previa."""
+    """Cada step registrado sobre un tipo del paquete: [(typename, tipo_id, id, name, stage, sdkmessageid)]. Es la mitad
+    que faltaba de la verificación ("lo que sobra"): comparar solo lo declarado miente si el paquete tiene steps de una
+    derivación previa. `sdkmessageid` es `None` si la fila no lo trae (solo hace falta para los de stage 30)."""
     encontrados = []
     for typename, tipo_id in sorted(tipos.items()):
-        ruta = f"sdkmessageprocessingsteps?$select=sdkmessageprocessingstepid,name,stage,rank&$filter=_plugintypeid_value eq {tipo_id}"
+        ruta = (
+            "sdkmessageprocessingsteps?$select=sdkmessageprocessingstepid,name,stage,rank,_sdkmessageid_value"
+            f"&$filter=_plugintypeid_value eq {tipo_id}"
+        )
         cuerpo = leer_entorno(dv, ruta, C_STEPS_DEL_PAQUETE)
         for fila in exigir_forma(cuerpo.get("value"), [dict], C_STEPS_DEL_PAQUETE, "value"):
+            mensaje = fila.get("_sdkmessageid_value")
             encontrados.append((
                 typename,
+                tipo_id,
                 exigir_forma(fila.get("sdkmessageprocessingstepid"), str, C_STEPS_DEL_PAQUETE, "sdkmessageprocessingstepid", no_vacio=True),
                 exigir_forma(fila.get("name"), str, C_STEPS_DEL_PAQUETE, "name"),
+                fila.get("stage"),
+                None if mensaje is None else exigir_forma(mensaje, str, C_STEPS_DEL_PAQUETE, "_sdkmessageid_value", no_vacio=True),
             ))
     return encontrados
 
 
+def _mensajes_de_custom_api(dv, tipo_id):
+    """Los `sdkmessageid` de las Custom API cuyo plugin es este tipo. La plataforma le crea a cada Custom API un
+    mensaje propio y, sobre ese mensaje, un step de implementación en stage 30 (MainOperation) que nadie declara."""
+    ruta = f"customapis?$select=customapiid,_sdkmessageid_value&$filter=_plugintypeid_value eq {tipo_id}"
+    cuerpo = leer_entorno(dv, ruta, C_CUSTOM_APIS)
+    mensajes = set()
+    for fila in exigir_forma(cuerpo.get("value"), [dict], C_CUSTOM_APIS, "value"):
+        mensajes.add(exigir_forma(fila.get("_sdkmessageid_value"), str, C_CUSTOM_APIS, "_sdkmessageid_value", no_vacio=True))
+    return mensajes
+
+
 def _steps_que_sobran(dv, catalogo, declarados):
-    """Los steps del paquete cuyo id no es el de ninguno de los `declarados` (ids de los steps del playbook que existen)."""
-    return sorted(
-        (typename, step_id, nombre)
-        for typename, step_id, nombre in _steps_del_paquete(dv, catalogo.tipos.todos())
-        if step_id not in declarados
-    )
+    """Los steps del paquete cuyo id no es el de ninguno de los `declarados` (ids de los steps del playbook que existen),
+    salvo la implementación de una Custom API: stage 30 y sobre el mensaje de una Custom API cuyo plugin es ese tipo.
+    Se reconoce por esos DATOS, nunca por el texto del nombre; un stage 30 que no cumple las dos cosas sigue sobrando."""
+    de_custom_api = {}  # tipo_id -> mensajes de sus Custom API; se consulta solo si aparece un stage 30
+    sobran = []
+    for typename, tipo_id, step_id, nombre, stage, mensaje in _steps_del_paquete(dv, catalogo.tipos.todos()):
+        if step_id in declarados:
+            continue
+        if stage == ETAPA_PRINCIPAL and mensaje is not None:
+            if tipo_id not in de_custom_api:
+                de_custom_api[tipo_id] = _mensajes_de_custom_api(dv, tipo_id)
+            if mensaje in de_custom_api[tipo_id]:
+                continue
+        sobran.append((typename, step_id, nombre))
+    return sorted(sobran)
 
 
 def _cuerpo_step(s, plugintype_id, mensaje_id, filtro_id):

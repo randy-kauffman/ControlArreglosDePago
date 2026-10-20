@@ -1170,7 +1170,7 @@ class ContraElEntorno(Base):
     def test_la_consulta_de_lo_que_sobra_filtra_por_cada_tipo_del_paquete(self):
         cliente = self.entorno_correcto()
         st.construir(self.escribir(), True, lambda: cliente)
-        rutas = [l["ruta"] for l in cliente.llamadas if l["ruta"].startswith("sdkmessageprocessingsteps?") and "_sdkmessageid_value" not in l["ruta"]]
+        rutas = [l["ruta"] for l in cliente.llamadas if l["ruta"].startswith("sdkmessageprocessingsteps?") and "_sdkmessageid_value eq" not in l["ruta"]]
         self.assertEqual(2, len(rutas))
         for tid in IDS.values():
             self.assertTrue([r for r in rutas if r.endswith(f"_plugintypeid_value eq {tid}")], tid)
@@ -1188,6 +1188,94 @@ class ContraElEntorno(Base):
                 self.assertEqual("error", estado, detalle)
                 self.assertIn(fragmento, detalle)
                 self.assertIn("la consulta de los steps del paquete (GET sdkmessageprocessingsteps)", detalle)
+                self.assertNotIn("fallo inesperado", detalle)
+
+    # --- lo que sobra NO incluye la implementacion de una Custom API (la crea la plataforma sola) -----------------------
+    # Se identifica por DATOS: stage 30 (MainOperation) y sdkmessageid = el mensaje de una Custom API cuyo plugintypeid
+    # es ese tipo del paquete. El nombre ("CustomApi '<x>' implementation") no cuenta.
+    IMPL = {"sdkmessageprocessingstepid": "step-impl", "name": "CustomApi 'sanic_carp_api_x' implementation",
+            "stage": 30, "rank": 1, "_sdkmessageid_value": "m-api-x"}
+
+    def custom_apis(self, cliente, por_tipo):
+        """`por_tipo` es {plugintypeid: [(customapiid, sdkmessageid)]}: las Custom API cuyo plugin es ese tipo."""
+        def responder(ruta, cuerpo, solucion):
+            for tid, apis in por_tipo.items():
+                if ruta.endswith(f"_plugintypeid_value eq {tid}"):
+                    return (200, {"value": [{"customapiid": a, "_sdkmessageid_value": m} for a, m in apis]}, {})
+            return (200, {"value": []}, {})
+        cliente._reglas.insert(0, ("GET", lambda r: r.startswith("customapis?"), responder))
+        return cliente
+
+    def verificar(self, cliente):
+        return st.construir(self.escribir(), True, lambda: cliente)
+
+    def test_el_step_de_implementacion_de_una_custom_api_del_paquete_no_sobra(self):
+        cliente = self.custom_apis(self.entorno_correcto(otros_steps={TIPO_CORREO: [self.IMPL]}), {"t-correo": [("api-x", "m-api-x")]})
+        estado, _, detalle = self.verificar(cliente)
+        self.assertEqual("ya_existia", estado, detalle)
+        self.assertNotIn("sobran", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_el_nombre_no_decide_un_stage_30_sin_custom_api_sigue_sobrando(self):
+        # Se llama como el de la plataforma, pero su sdkmessageid no es el de ninguna Custom API del tipo.
+        cliente = self.custom_apis(self.entorno_correcto(otros_steps={TIPO_CORREO: [self.IMPL]}), {"t-correo": [("api-y", "m-api-y")]})
+        estado, _, detalle = self.verificar(cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn(f"'{self.IMPL['name']}' (tipo {TIPO_CORREO}", detalle)
+
+    def test_un_stage_30_sin_ninguna_custom_api_en_el_tipo_sobra(self):
+        cliente = self.custom_apis(self.entorno_correcto(otros_steps={TIPO_CORREO: [self.IMPL]}), {})
+        estado, _, detalle = self.verificar(cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("step-impl", detalle)
+
+    def test_con_el_mensaje_de_una_custom_api_pero_en_otra_etapa_sobra(self):
+        otro = dict(self.IMPL, name="Residuo en PreOperation", stage=20)
+        cliente = self.custom_apis(self.entorno_correcto(otros_steps={TIPO_CORREO: [otro]}), {"t-correo": [("api-x", "m-api-x")]})
+        estado, _, detalle = self.verificar(cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("'Residuo en PreOperation'", detalle)
+
+    def test_la_custom_api_tiene_que_ser_de_este_tipo_y_no_de_otro_del_paquete(self):
+        # El mensaje es de una Custom API cuyo plugin es OTRO tipo: ese step no es la implementacion de la de este tipo.
+        cliente = self.custom_apis(self.entorno_correcto(otros_steps={TIPO_CORREO: [self.IMPL]}), {"t-conversacion": [("api-x", "m-api-x")]})
+        estado, _, detalle = self.verificar(cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("step-impl", detalle)
+
+    def test_solo_sobra_lo_que_no_es_implementacion_cuando_hay_de_las_dos_clases(self):
+        residuo = dict(self.OTRO, stage=30, _sdkmessageid_value="m-otro")
+        cliente = self.custom_apis(self.entorno_correcto(otros_steps={TIPO_CORREO: [self.IMPL, residuo]}), {"t-correo": [("api-x", "m-api-x")]})
+        estado, _, detalle = self.verificar(cliente)
+        self.assertEqual("difiere", estado, detalle)
+        self.assertIn("step-otro", detalle)
+        self.assertNotIn("step-impl", detalle)
+
+    def test_sin_steps_de_stage_30_no_se_consultan_las_custom_api(self):
+        cliente = self.entorno_correcto(otros_steps={TIPO_CORREO: [self.OTRO]})
+        self.verificar(cliente)
+        self.assertEqual([], [l["ruta"] for l in cliente.llamadas if l["ruta"].startswith("customapis")])
+
+    def test_la_consulta_de_las_custom_api_filtra_por_el_tipo_y_trae_el_mensaje(self):
+        cliente = self.custom_apis(self.entorno_correcto(otros_steps={TIPO_CORREO: [self.IMPL]}), {"t-correo": [("api-x", "m-api-x")]})
+        self.verificar(cliente)
+        rutas = [l["ruta"] for l in cliente.llamadas if l["ruta"].startswith("customapis")]
+        self.assertEqual(1, len(rutas), rutas)
+        self.assertIn("_sdkmessageid_value", rutas[0])
+        self.assertTrue(rutas[0].endswith("_plugintypeid_value eq t-correo"), rutas[0])
+
+    def test_la_consulta_de_las_custom_api_respeta_http_y_forma(self):
+        malos = [((500, {"error": "boom"}, {}), "HTTP 500"),
+                 ((200, {"value": [{"customapiid": "a", "_sdkmessageid_value": 7}]}, {}), "'_sdkmessageid_value'"),
+                 ((200, {"value": "no"}, {}), "'value'")]
+        for respuesta, fragmento in malos:
+            with self.subTest(fragmento):
+                cliente = self.entorno_correcto(otros_steps={TIPO_CORREO: [self.IMPL]})
+                cliente._reglas.insert(0, ("GET", lambda r: r.startswith("customapis?"), respuesta))
+                estado, _, detalle = self.verificar(cliente)
+                self.assertEqual("error", estado, detalle)
+                self.assertIn(fragmento, detalle)
+                self.assertIn("la consulta de las Custom API del paquete (GET customapis)", detalle)
                 self.assertNotIn("fallo inesperado", detalle)
 
     def test_un_http_inesperado_en_el_alta_no_se_confunde_con_exito(self):
