@@ -29,12 +29,14 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 8 | Registro de paquete, Custom API y steps | 7 | 7 | 0 | 0 |
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 2 | 3 | 2 |
-| 11 | Flujos | 3 | 0 | 0 | 3 |
-| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 0 | 0 | 25 |
+| 11 | Flujos | 3 | 0 | 2 | 1 |
+| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 0 | 25 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
-| **Total** | | **127** | **41** | **48** | **38** |
+| **Total** | | **127** | **41** | **75** | **11** |
 
 Notas del resumen:
+
+- 2026-10-20: `diseno/07-diseno-app-y-flujos.md` cierra el diseño detallado de los grupos 11 y 12. Las filas 11.1, 11.2 y 12.1 a 12.25 pasaron de `diseño detallado pendiente` a `pendiente`; el total pasó de 48 pendientes y 38 de diseño detallado pendiente a 75 y 11 (127 filas, 41 hechas, sin cambio). 11.3 sigue como condicional (no se construye). «Pendiente» no quiere decir que el playbook se pueda escribir ya: varias filas necesitan antes una extensión de herramienta (`diseno/07` §2, G-V1 a G-I3). El diseño propone tres filas nuevas que **no suman** hasta que se confirmen: 12.26 formulario de Cuota, 12.27 cuatro iconos SVG y 12.28 importación de las tablas de la app (`diseno/07` §11).
 
 - 2026-10-20 (Dev): el grupo 8 (8.1 a 8.7) pasó a 7 hechas: paquete 1.0.0, 5 Custom API y 37 steps registrados y verificados `ya_existia`. Además se cargaron las variables 10.1 (`sanic_carp_ev_nombrebu`) y 10.2 (`sanic_carp_ev_nombreteamjefatura`), que pasaron de `diseño detallado pendiente` a hechas. El total cambió de 32 hechas, 55 pendientes y 40 de diseño detallado pendiente a 41, 48 y 38 (127 filas, sin cambio). Quedan sin cargar 10.8 (`sanic_carp_ev_buzonarea`, depende del buzón real de la cola del área; la exigen los correos salientes, no S-34), 10.3 y 10.4 (sin valor definido).
 
@@ -219,7 +221,7 @@ La BU, los teams, la queue, el mailbox y las versiones de plantilla con su mapeo
 | # | Qué | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
 | 9.1 | Versión de plantilla v07 (fila y archivo `.xlsx`), publicada como Vigente por el flujo normal de publicación. v07 aprobada por Héctor Romero el 2026-10-09. En Prod el script crea la versión en Borrador y sube el archivo; el jefe publica y se compara la huella con la de Test (OA-4, 2026-10-10) | `playbooks/datos/versionplantilla.md` | 3.5, 8.7 (publicación), 9.2 | RF-09, C-01, D-15 | pendiente |
-| 9.2 | Mapeo de celda de v07 (el diccionario §9 cuenta unas 27 filas). El mismo script lo carga en Prod antes de que el jefe publique (OA-4, 2026-10-10) | `playbooks/datos/mapeocelda.md` | 3.6, 2.8, 2.9, 4.8 | RF-09, D-14, D-16 | pendiente |
+| 9.2 | Mapeo de celda de v07 (28 filas: `MAP_V07` del mockup, medido en la tanda 1 de humo del 2026-10-20). El mismo script lo carga en Prod antes de que el jefe publique (OA-4, 2026-10-10) | `playbooks/datos/mapeocelda.md` | 3.6, 2.8, 2.9, 4.8 | RF-09, D-14, D-16 | pendiente |
 | 9.3 | Datos de prueba para Dev y Test (nunca datos reales de Prod). Contenido no definido | `playbooks/datos/humo_*.md` | 3.1 a 3.7, 4.x | Definición §6 Seguridad (Datos en entornos no productivos) | diseño detallado pendiente |
 
 ## 10. Configuración entre entornos
@@ -245,8 +247,8 @@ Solo monitoreo. La captura de correos no pasa por flujos (D-21). Son propiedad d
 
 | # | Componente | Disparador | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|---|
-| 11.1 | `Cloud Flow - CARP - COD - Avisar estado del mailbox` *(prov.; `COD` por definir)*: avisa por Outlook al jefe y al equipo cuando la entrada o la salida del buzón pasan a fallo | cambio de estado del Mailbox | `playbooks/flujo/<cod>.md` | 10.1 a 10.6, 6.4, 13.5, 13.6 | D-21, §6 Operación | diseño detallado pendiente |
-| 11.2 | `Cloud Flow - CARP - SAL - Salud del buzon` (ID `CARP-SAL`): cada 30 minutos en horario hábil comprueba correos entrantes recientes, correos sin conversación, respuestas con error de envío y **trabajos de eliminación masiva fallidos en las últimas 24 h** (cuarta comprobación, OA-3, 2026-10-10); si hay correos sin conversación invoca 8.3. El privilegio con que `SR - CARP - Servicio` lee esos trabajos está PENDIENTE de verificar en Dev al construir este flujo (`04-matriz-privilegios.md`, duda D-09). Hasta que el flujo exista, revisión manual semanal de System Jobs | recurrente | `playbooks/flujo/carp-sal.md` | 8.3, 10.3 a 10.6, 6.4, 13.5, 13.6 | D-21, RNF-08, §6 Operación | diseño detallado pendiente |
+| 11.1 | `Cloud Flow - CARP - COD - Avisar estado del mailbox` *(prov.; `COD` por definir)*: avisa por Outlook al jefe y al equipo cuando la entrada o la salida del buzón pasan a fallo | cambio de estado del Mailbox | `playbooks/flujo/<cod>.md` | 10.1 a 10.6, 6.4, 13.5, 13.6 | D-21, §6 Operación | pendiente (diseño completo en `diseno/07` §8.3) |
+| 11.2 | `Cloud Flow - CARP - SAL - Salud del buzon` (ID `CARP-SAL`): cada 30 minutos en horario hábil comprueba correos entrantes recientes, correos sin conversación, respuestas con error de envío y **trabajos de eliminación masiva fallidos en las últimas 24 h** (cuarta comprobación, OA-3, 2026-10-10); si hay correos sin conversación invoca 8.3. El privilegio con que `SR - CARP - Servicio` lee esos trabajos está PENDIENTE de verificar en Dev al construir este flujo (`04-matriz-privilegios.md`, duda D-09). Hasta que el flujo exista, revisión manual semanal de System Jobs | recurrente | `playbooks/flujo/carp-sal.md` | 8.3, 10.3 a 10.6, 6.4, 13.5, 13.6 | D-21, RNF-08, §6 Operación | pendiente (diseño completo en `diseno/07` §8.4) |
 | 11.3 | Flujo diario de marcado de cuotas vencidas sin pago (respaldo de D-11). **Condicional: no se activa**, el spike 2 mostró que el operador de fecha relativa sirve. Requeriría una Custom API que la definición no lista entre las cinco | recurrente diario | — | D-11, D-21; escribe Cuota con rol Servicio | diseño detallado pendiente (condicional; no se construye salvo que se active) |
 
 ## 12. App model-driven
@@ -261,19 +263,19 @@ Nombre de vista: texto de negocio, sin prefijo y sin tildes. Los nombres son *(p
 
 | # | Vista | Tabla | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|---|
-| 12.1 | Correos sin respuesta (todo `sanic_sinrespuestadesde` no vacío; para el jefe; incluye las finalizadas con correo nuevo, OA-2) | Conversación | `playbooks/vista/correos_sin_respuesta.md` | 3.2 (incluye `sanic_antiguedad`) | RF-04, D-27 | diseño detallado pendiente |
-| 12.2 | Correos llegados a conversaciones finalizadas (indicador = sí; para el oficial, OA-2) | Conversación | `playbooks/vista/correos_en_finalizadas.md` | 3.2 | RF-15, D-32 | diseño detallado pendiente |
-| 12.3 | Finalizadas sin respuesta (resultado = Sin respuesta) | Conversación | `playbooks/vista/finalizadas_sin_respuesta.md` | 3.2 | RF-04, D-06 | diseño detallado pendiente |
-| 12.4 | Respuestas con error de envio | Email | `playbooks/vista/respuestas_con_error_de_envio.md` | 3.8 | RF-03, §6 Lógica ítem 3 | diseño detallado pendiente |
-| 12.5 | Borradores | Arreglo | `playbooks/vista/borradores.md` | 3.3 | RF-16 | diseño detallado pendiente |
-| 12.6 | Borradores sin movimiento (más de 30 días sin cambios; vista aparte de 12.5, OA-2) | Arreglo | `playbooks/vista/borradores_sin_movimiento.md` | 3.3 | RF-16, D-22, §6 Operación | diseño detallado pendiente |
-| 12.7 | Arreglos en riesgo (vigentes con una cuota vencida sin pago; filtro relacionado, `olderthan-x-days 1` o `yesterday`) | Arreglo | `playbooks/vista/arreglos_en_riesgo.md` | 3.3, 3.4, 4.5 | RF-11, D-11 | diseño detallado pendiente |
-| 12.8 | Arreglos de prestamo | Arreglo | `playbooks/vista/arreglos_de_prestamo.md` | 3.3, 2.3 | RF-17, D-35 | diseño detallado pendiente |
-| 12.9 | Arreglos de tarjeta | Arreglo | `playbooks/vista/arreglos_de_tarjeta.md` | 3.3, 2.3 | RF-17, D-35 | diseño detallado pendiente |
-| 12.10 | Busqueda rapida de Cliente (cédula, nombre, correo, celular) | Cliente | `playbooks/vista/busqueda_rapida_cliente.md` | 3.1, 6.1 | RF-13, D-12 | diseño detallado pendiente |
-| 12.11 | Busqueda rapida de Arreglo (número de producto) | Arreglo | `playbooks/vista/busqueda_rapida_arreglo.md` | 3.3 | RF-13, D-12 | diseño detallado pendiente |
-| 12.12 | Arreglos del cliente (subgrid con todos los estados) | Arreglo | `playbooks/vista/arreglos_del_cliente.md` | 3.3, 4.2 | RF-13, ítem 13 | diseño detallado pendiente |
-| 12.13 | Otras vistas "por perfil" (oficial y jefe). La definición no las enumera | varias | `playbooks/vista/` (por definir) | 3.x, 4.x | §6 Componentes (app) | diseño detallado pendiente |
+| 12.1 | Correos sin respuesta (todo `sanic_sinrespuestadesde` no vacío; para el jefe; incluye las finalizadas con correo nuevo, OA-2) | Conversación | `playbooks/vista/correos_sin_respuesta.md` | 3.2 (incluye `sanic_antiguedad`) | RF-04, D-27 | pendiente (diseño completo en `diseno/07` §3.2) |
+| 12.2 | Correos llegados a conversaciones finalizadas (indicador = sí; para el oficial, OA-2) | Conversación | `playbooks/vista/correos_en_finalizadas.md` | 3.2 | RF-15, D-32 | pendiente (diseño completo en `diseno/07` §3.2) |
+| 12.3 | Finalizadas sin respuesta (resultado = Sin respuesta) | Conversación | `playbooks/vista/finalizadas_sin_respuesta.md` | 3.2 | RF-04, D-06 | pendiente (diseño completo en `diseno/07` §3.2) |
+| 12.4 | Respuestas con error de envio | Email | `playbooks/vista/respuestas_con_error_de_envio.md` | 3.8 | RF-03, §6 Lógica ítem 3 | pendiente (diseño completo en `diseno/07` §3.3) |
+| 12.5 | Borradores | Arreglo | `playbooks/vista/borradores.md` | 3.3 | RF-16 | pendiente (diseño completo en `diseno/07` §3.4) |
+| 12.6 | Borradores sin movimiento (más de 30 días sin cambios; vista aparte de 12.5, OA-2) | Arreglo | `playbooks/vista/borradores_sin_movimiento.md` | 3.3 | RF-16, D-22, §6 Operación | pendiente (diseño completo en `diseno/07` §3.4) |
+| 12.7 | Arreglos en riesgo (vigentes con una cuota vencida sin pago; filtro relacionado, `olderthan-x-days 1` o `yesterday`) | Arreglo | `playbooks/vista/arreglos_en_riesgo.md` | 3.3, 3.4, 4.5 | RF-11, D-11 | pendiente (diseño completo en `diseno/07` §3.4) |
+| 12.8 | Arreglos de prestamo | Arreglo | `playbooks/vista/arreglos_de_prestamo.md` | 3.3, 2.3 | RF-17, D-35 | pendiente (diseño completo en `diseno/07` §3.4) |
+| 12.9 | Arreglos de tarjeta | Arreglo | `playbooks/vista/arreglos_de_tarjeta.md` | 3.3, 2.3 | RF-17, D-35 | pendiente (diseño completo en `diseno/07` §3.4) |
+| 12.10 | Busqueda rapida de Cliente (cédula, nombre, correo, celular) | Cliente | `playbooks/vista/busqueda_rapida_cliente.md` | 3.1, 6.1 | RF-13, D-12 | pendiente (diseño completo en `diseno/07` §3.5) |
+| 12.11 | Busqueda rapida de Arreglo (número de producto) | Arreglo | `playbooks/vista/busqueda_rapida_arreglo.md` | 3.3 | RF-13, D-12 | pendiente (diseño completo en `diseno/07` §3.4) |
+| 12.12 | Arreglos del cliente (subgrid con todos los estados) | Arreglo | `playbooks/vista/arreglos_del_cliente.md` | 3.3, 4.2 | RF-13, ítem 13 | pendiente (diseño completo en `diseno/07` §3.4) |
+| 12.13 | Otras vistas "por perfil" (oficial y jefe). La definición no las enumera | varias | `playbooks/vista/` (por definir) | 3.x, 4.x | §6 Componentes (app) | pendiente (diseño completo en `diseno/07` §3.5 y §3.6 (14 vistas)) |
 
 ### 12.2 Dashboard y gráficos
 
@@ -281,9 +283,9 @@ Los gráficos agregan promedios por oficial; las vistas no (D-27). En el proyect
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 12.14 | `DASH - CARP - Supervision` (dashboard del jefe) | `playbooks/dashboard/supervision.md` | 12.15, 12.16 | RF-04, D-27 | diseño detallado pendiente |
-| 12.15 | `CHT - CARP - Promedio por respuesta` *(prov.)*: promedio de `sanic_tiemporespuesta` sobre Email, agrupado por `sanic_respondidoporid` | `playbooks/grafico/promedio_por_respuesta.md` | 3.8, 4.19 | RF-03, RF-04, D-27 | diseño detallado pendiente |
-| 12.16 | `CHT - CARP - Tiempo total` *(prov.)*: promedio de `sanic_tiempototal` sobre Conversación, agrupado por oficial asignado, sin las finalizadas "Sin respuesta" (a confirmar con negocio) | `playbooks/grafico/tiempo_total.md` | 3.2, 4.10 | RF-04, D-27 | diseño detallado pendiente |
+| 12.14 | `DASH - CARP - Supervision` (dashboard del jefe) | `playbooks/dashboard/supervision.md` | 12.15, 12.16 | RF-04, D-27 | pendiente (diseño completo en `diseno/07` §6) |
+| 12.15 | `CHT - CARP - Promedio por respuesta` *(prov.)*: promedio de `sanic_tiemporespuesta` sobre Email, agrupado por `sanic_respondidoporid` | `playbooks/grafico/promedio_por_respuesta.md` | 3.8, 4.19 | RF-03, RF-04, D-27 | pendiente (diseño completo en `diseno/07` §6) |
+| 12.16 | `CHT - CARP - Tiempo total` *(prov.)*: promedio de `sanic_tiempototal` sobre Conversación, agrupado por oficial asignado, sin las finalizadas "Sin respuesta" (a confirmar con negocio) | `playbooks/grafico/tiempo_total.md` | 3.2, 4.10 | RF-04, D-27 | pendiente (diseño completo en `diseno/07` §6) |
 
 ### 12.3 Formularios principales
 
@@ -291,20 +293,20 @@ Nombre: `FRM - CARP - Tabla - Tipo`. La definición no nombra un formulario para
 
 | # | Formulario | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 12.17 | `FRM - CARP - Cliente - Principal` (subgrid 12.12) | `playbooks/formulario/cliente.md` | 3.1, 12.12 | RF-05, RF-13 | diseño detallado pendiente |
-| 12.18 | `FRM - CARP - Conversacion - Principal` (timeline, aviso de otra conversación abierta) | `playbooks/formulario/conversacion.md` | 3.2, 3.8 | RF-01, RF-03, RF-14 | diseño detallado pendiente |
-| 12.19 | `FRM - CARP - Arreglo - Principal` (subgrid de cuotas) | `playbooks/formulario/arreglo.md` | 3.3, 3.4 | RF-06, RF-10, RF-16 | diseño detallado pendiente |
-| 12.20 | `FRM - CARP - Version de plantilla - Principal` (subgrid de mapeo) | `playbooks/formulario/versionplantilla.md` | 3.5, 3.6 | RF-09 | diseño detallado pendiente |
-| 12.21 | `FRM - CARP - Mapeo de celda - Principal` | `playbooks/formulario/mapeocelda.md` | 3.6 | RF-09 | diseño detallado pendiente |
+| 12.17 | `FRM - CARP - Cliente - Principal` (subgrid 12.12) | `playbooks/formulario/cliente.md` | 3.1, 12.12 | RF-05, RF-13 | pendiente (diseño completo en `diseno/07` §4.3) |
+| 12.18 | `FRM - CARP - Conversacion - Principal` (timeline, aviso de otra conversación abierta) | `playbooks/formulario/conversacion.md` | 3.2, 3.8 | RF-01, RF-03, RF-14 | pendiente (diseño completo en `diseno/07` §4.2) |
+| 12.19 | `FRM - CARP - Arreglo - Principal` (subgrid de cuotas) | `playbooks/formulario/arreglo.md` | 3.3, 3.4 | RF-06, RF-10, RF-16 | pendiente (diseño completo en `diseno/07` §4.4) |
+| 12.20 | `FRM - CARP - Version de plantilla - Principal` (subgrid de mapeo) | `playbooks/formulario/versionplantilla.md` | 3.5, 3.6 | RF-09 | pendiente (diseño completo en `diseno/07` §4.5) |
+| 12.21 | `FRM - CARP - Mapeo de celda - Principal` | `playbooks/formulario/mapeocelda.md` | 3.6 | RF-09 | pendiente (diseño completo en `diseno/07` §4.6) |
 
 ### 12.4 Web resource, comandos, sitemap y app
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 12.22 | Web resource JavaScript mínimo `WR - CARP - JS - Comandos` *(prov.; `sanic_carp_wr_js_comandos`)*: solo invoca las Custom API, pide la confirmación previa y dispara la descarga. Sin lógica de negocio | `playbooks/web-resource/js_comandos.md` | 8.2 a 8.6 | D-17, §6 Componentes | diseño detallado pendiente |
-| 12.23 | Sitemap `sanic_carp_sm_controlarreglospago` (cuatro áreas, arriba) | `playbooks/app/controlarreglospago.md` (comparte con 12.25) | 12.1 a 12.13, 12.14, 12.17 a 12.21 | §6 Componentes (app) | diseño detallado pendiente |
-| 12.24 | Comandos del command bar para los gestos de abajo (un solo playbook). El mecanismo de cada gesto (botón, captura de motivo, confirmación) no está definido | `playbooks/importacion/comandos.md` (ruta a confirmar) | 12.22, 8.2 a 8.6, 7.12, 7.14 a 7.16 | D-17, RF-02, RF-14 a RF-16 | diseño detallado pendiente |
-| 12.25 | App `sanic_carp_mda_controlarreglospago` (`MDA - CARP - Control de Arreglos de Pago`), una sola app para oficial y jefe | `playbooks/app/controlarreglospago.md` | 12.23, 12.24, 6.2 a 6.5 | D-01, RNF-04 | diseño detallado pendiente |
+| 12.22 | Web resource JavaScript mínimo `WR - CARP - JS - Comandos` *(prov.; `sanic_carp_wr_js_comandos`)*: solo invoca las Custom API, pide la confirmación previa y dispara la descarga. Sin lógica de negocio | `playbooks/web-resource/js_comandos.md` | 8.2 a 8.6 | D-17, §6 Componentes | pendiente (diseño completo en `diseno/07` §5.1 a §5.3) |
+| 12.23 | Sitemap `sanic_carp_sm_controlarreglospago` (cuatro áreas, arriba) | `playbooks/app/controlarreglospago.md` (comparte con 12.25) | 12.1 a 12.13, 12.14, 12.17 a 12.21 | §6 Componentes (app) | pendiente (diseño completo en `diseno/07` §7.2) |
+| 12.24 | Comandos del command bar para los gestos de abajo (un solo playbook). El mecanismo de cada gesto (botón, captura de motivo, confirmación) no está definido | `playbooks/importacion/comandos.md` (ruta a confirmar) | 12.22, 8.2 a 8.6, 7.12, 7.14 a 7.16 | D-17, RF-02, RF-14 a RF-16 | pendiente (diseño completo en `diseno/07` §5.4 a §5.6) |
+| 12.25 | App `sanic_carp_mda_controlarreglospago` (`MDA - CARP - Control de Arreglos de Pago`), una sola app para oficial y jefe | `playbooks/app/controlarreglospago.md` | 12.23, 12.24, 6.2 a 6.5 | D-01, RNF-04 | pendiente (diseño completo en `diseno/07` §7.1) |
 
 Gestos que la definición nombra (contenido de 12.24, no suman filas):
 
