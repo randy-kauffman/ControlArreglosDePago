@@ -1,0 +1,426 @@
+[
+ {
+  "gesto": "1 Tomar",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_tomarconversacion",
+  "payload": {
+   "conversacionid": "eb60b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "oficialasignadoid": "ffc778df-d287-f111-8075-70a8a5af5a32",
+   "oficialnombre": "# PowerPlatform-Dev",
+   "yaasignada": false
+  },
+  "seg": 0.48
+ },
+ {
+  "gesto": "1 Tomar (otra vez)",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_tomarconversacion",
+  "payload": {
+   "conversacionid": "eb60b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "oficialasignadoid": "ffc778df-d287-f111-8075-70a8a5af5a32",
+   "oficialnombre": "# PowerPlatform-Dev",
+   "yaasignada": true
+  },
+  "seg": 0.5
+ },
+ {
+  "gesto": "2 Finalizar (sin respuesta + motivo + detalle)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_conversacion",
+  "payload": {
+   "statecode": 1,
+   "statuscode": 2,
+   "sanic_resultado": 159460003,
+   "sanic_motivosinrespuesta": 159460002,
+   "sanic_detallesinrespuesta": "HUMO lote B: sin respuesta"
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "3 Reabrir conversacion",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_conversacion",
+  "payload": {
+   "statecode": 0,
+   "statuscode": 1
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "2 Finalizar (con arreglo, sin motivo ni detalle)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_conversacion",
+  "payload": {
+   "statecode": 1,
+   "statuscode": 2,
+   "sanic_resultado": 159460001
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "2 Finalizar (sin resultado: sanic_resultado null)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_conversacion",
+  "payload": {
+   "statecode": 1,
+   "statuscode": 2,
+   "sanic_resultado": null
+  },
+  "http": 400,
+  "respuesta": {
+   "error": "CARP-CNV-003: Para finalizar la conversación hay que indicar el resultado."
+  }
+ },
+ {
+  "gesto": "2 Finalizar (preparacion de iniciar nueva)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_conversacion",
+  "payload": {
+   "statecode": 1,
+   "statuscode": 2,
+   "sanic_resultado": 159460001
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "5 Iniciar conversacion nueva",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_iniciarconversacionnueva",
+  "payload": {
+   "conversacionid": "f560b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 400,
+  "respuesta": {
+   "error": "CARP-INI-003: Solo una conversación finalizada con correos nuevos puede iniciar una conversación nueva."
+  },
+  "seg": 0.27
+ },
+ {
+  "gesto": "4 Unir",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_unirconversaciones",
+  "payload": {
+   "origenid": "f860b9ce-a0cc-f111-a05b-00224808ffcd",
+   "destinoid": "fa60b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "destinoid": "fa60b9ce-a0cc-f111-a05b-00224808ffcd",
+   "correosmovidos": 0,
+   "arreglosrepunteados": 0
+  },
+  "seg": 0.55
+ },
+ {
+  "gesto": "6 Generar formato (Borrador)",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_generarformato",
+  "payload": {
+   "arregloid": "fd60b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "archivo": "<base64 42900 caracteres>",
+   "nombrearchivo": "F-NIC-0000052-ARR-001072.xlsx",
+   "numeroprovisional": 1,
+   "congelado": true,
+   "advertencias": ""
+  },
+  "seg": 2.17
+ },
+ {
+  "gesto": "7 Desbloquear",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "sanic_fechacongelamiento": null
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "7 Desbloquear (sobre Borrador ya sin congelar)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "sanic_fechacongelamiento": null
+  },
+  "http": 400,
+  "respuesta": {
+   "error": "CARP-ARR-017: El arreglo no está congelado: no hay nada que desbloquear o reabrir."
+  }
+ },
+ {
+  "gesto": "6 Generar formato (Borrador, de nuevo)",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_generarformato",
+  "payload": {
+   "arregloid": "fd60b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "archivo": "<base64 42900 caracteres>",
+   "nombrearchivo": "F-NIC-0000052-ARR-001072.xlsx",
+   "numeroprovisional": 1,
+   "congelado": true,
+   "advertencias": ""
+  },
+  "seg": 1.26
+ },
+ {
+  "gesto": "8 Formalizar",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "statecode": 0,
+   "statuscode": 159460001
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "6 Generar formato (Vigente congelado)",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_generarformato",
+  "payload": {
+   "arregloid": "fd60b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "archivo": "<base64 42900 caracteres>",
+   "nombrearchivo": "F-NIC-0000052-ARR-001072.xlsx",
+   "numeroprovisional": 0,
+   "congelado": true,
+   "advertencias": ""
+  },
+  "seg": 0.57
+ },
+ {
+  "gesto": "9 Descartar (motivo vacio: el JS manda null)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "statecode": 1,
+   "statuscode": 159460003,
+   "sanic_motivodescarte": null
+  },
+  "http": 400,
+  "respuesta": {
+   "error": "CARP-ARR-013: Para descartar el borrador hay que indicar el motivo."
+  }
+ },
+ {
+  "gesto": "9 Descartar",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "statecode": 1,
+   "statuscode": 159460003,
+   "sanic_motivodescarte": "HUMO lote B: descarte"
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "6 Generar formato (preparacion de anular)",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_generarformato",
+  "payload": {
+   "arregloid": "0961b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "archivo": "<base64 42900 caracteres>",
+   "nombrearchivo": "F-NIC-0000052-ARR-001074.xlsx",
+   "numeroprovisional": 1,
+   "congelado": true,
+   "advertencias": ""
+  },
+  "seg": 0.71
+ },
+ {
+  "gesto": "8 Formalizar (preparacion de anular)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "statecode": 0,
+   "statuscode": 159460001
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "10 Anular (motivo vacio: el JS manda null)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "statecode": 1,
+   "statuscode": 159460002,
+   "sanic_motivoanulacion": null
+  },
+  "http": 400,
+  "respuesta": {
+   "error": "CARP-ARR-014: Para anular el arreglo hay que indicar el motivo."
+  }
+ },
+ {
+  "gesto": "10 Anular",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "statecode": 1,
+   "statuscode": 159460002,
+   "sanic_motivoanulacion": "HUMO lote B: anulacion"
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "6 Generar formato (Anulado)",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_generarformato",
+  "payload": {
+   "arregloid": "0961b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "archivo": "<base64 42900 caracteres>",
+   "nombrearchivo": "F-NIC-0000052-ARR-001074.xlsx",
+   "numeroprovisional": 0,
+   "congelado": true,
+   "advertencias": ""
+  },
+  "seg": 0.57
+ },
+ {
+  "gesto": "6 Generar formato (preparacion a4)",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_generarformato",
+  "payload": {
+   "arregloid": "0f61b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "archivo": "<base64 42872 caracteres>",
+   "nombrearchivo": "F-NIC-0000052-ARR-001075.xlsx",
+   "numeroprovisional": 1,
+   "congelado": true,
+   "advertencias": ""
+  },
+  "seg": 0.85
+ },
+ {
+  "gesto": "8 Formalizar (preparacion a4)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "statecode": 0,
+   "statuscode": 159460001
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "12 Registrar pago (guardar nativo de la cuota)",
+  "tipo": "PATCH",
+  "tabla": "sanic_carp_tbl_cuota",
+  "payload": {
+   "sanic_fechapago": "2026-11-05",
+   "sanic_montopagado": 500
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "12 Registrar pago (guardar nativo de la cuota)",
+  "tipo": "PATCH",
+  "tabla": "sanic_carp_tbl_cuota",
+  "payload": {
+   "sanic_fechapago": "2026-12-05",
+   "sanic_montopagado": 500
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "11 Reabrir arreglo (Vigente congelado: solo el motivo)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "sanic_motivoreapertura": "HUMO lote B: reapertura"
+  },
+  "http": 400,
+  "respuesta": {
+   "error": "CARP-ARR-016: Solo la jefatura puede reabrir un arreglo."
+  }
+ },
+ {
+  "gesto": "11 Reabrir arreglo (Terminado: Vigente + motivo)",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_arreglo",
+  "payload": {
+   "sanic_motivoreapertura": "HUMO lote B: reapertura",
+   "statecode": 0,
+   "statuscode": 159460001
+  },
+  "http": 400,
+  "respuesta": {
+   "error": "CARP-ARR-016: Solo la jefatura puede reabrir un arreglo."
+  }
+ },
+ {
+  "gesto": "14 Vista previa",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_generarformato",
+  "payload": {
+   "arregloid": "0961b9ce-a0cc-f111-a05b-00224808ffcd",
+   "versionpreviaid": "19a6acda-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "archivo": "<base64 42900 caracteres>",
+   "nombrearchivo": "F-NIC-0000052-ARR-001074.xlsx",
+   "numeroprovisional": 0,
+   "congelado": true,
+   "advertencias": ""
+  },
+  "seg": 0.69
+ },
+ {
+  "gesto": "13 Publicar version",
+  "tipo": "updateRecord",
+  "tabla": "sanic_carp_tbl_versionplantilla",
+  "payload": {
+   "sanic_estado": 159460002
+  },
+  "http": 204,
+  "respuesta": "204"
+ },
+ {
+  "gesto": "6 Generar formato (con la v95 Vigente)",
+  "tipo": "customapi",
+  "api": "sanic_carp_capi_generarformato",
+  "payload": {
+   "arregloid": "0961b9ce-a0cc-f111-a05b-00224808ffcd"
+  },
+  "http": 200,
+  "respuesta": {
+   "archivo": "<base64 42900 caracteres>",
+   "nombrearchivo": "F-NIC-0000052-ARR-001074.xlsx",
+   "numeroprovisional": 0,
+   "congelado": true,
+   "advertencias": ""
+  },
+  "seg": 0.58
+ }
+]

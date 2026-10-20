@@ -1,0 +1,36 @@
+{
+ "versiones": [
+  {
+   "sanic_estado": 159460001,
+   "sanic_carp_tbl_versionplantillaid": "3dd84729-91cc-f111-a05b-00224808ffcd",
+   "statecode": 0,
+   "sanic_nombre": "v92",
+   "createdon": "2026-10-20T14:18:47Z",
+   "sanic_archivo_name": "HUMO-v92.xlsx"
+  },
+  {
+   "sanic_estado": 159460003,
+   "sanic_carp_tbl_versionplantillaid": "40d84729-91cc-f111-a05b-00224808ffcd",
+   "statecode": 0,
+   "sanic_nombre": "v90",
+   "createdon": "2026-10-20T14:18:48Z",
+   "sanic_archivo_name": "HUMO-v90.xlsx"
+  },
+  {
+   "sanic_estado": 159460002,
+   "sanic_carp_tbl_versionplantillaid": "1cdc492f-91cc-f111-a05b-00224808ffcd",
+   "statecode": 0,
+   "sanic_nombre": "v91",
+   "createdon": "2026-10-20T14:19:05Z",
+   "sanic_archivo_name": "HUMO-v91.xlsx"
+  },
+  {
+   "sanic_estado": 159460001,
+   "sanic_carp_tbl_versionplantillaid": "c1effe81-91cc-f111-a05b-00224808ffcd",
+   "statecode": 0,
+   "sanic_nombre": "v94",
+   "createdon": "2026-10-20T14:21:16Z",
+   "sanic_archivo_name": "HUMO-T2-jefe-2.xlsx"
+  }
+ ]
+}

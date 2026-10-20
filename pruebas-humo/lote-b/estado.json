@@ -1,0 +1,294 @@
+{
+ "filas": [
+  {
+   "clave": "lb-conv-1",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "11fc98bf-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-2",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "16fc98bf-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-2b",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "19fc98bf-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-3",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "1bfc98bf-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-u1",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "1efc98bf-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-u2",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "20fc98bf-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-1",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "eb60b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-2",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "f060b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-2b",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "f360b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-3",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "f560b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-u1",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "f860b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-conv-u2",
+   "conjunto": "sanic_carp_tbl_conversacions",
+   "id": "fa60b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-arr-1",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "fd60b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-arr-2",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "0361b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-arr-3",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "0961b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-arr-4",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "0f61b9ce-a0cc-f111-a05b-00224808ffcd",
+   "nota": "lote B"
+  },
+  {
+   "clave": "lb-cuota-1-de-arr4",
+   "conjunto": "sanic_carp_tbl_cuotas",
+   "id": "9d31b4d4-a0cc-f111-a05b-00224808ffcd",
+   "nota": "cuota generada por el servidor; el lote B la modifica (pago)"
+  },
+  {
+   "clave": "lb-cuota-2-de-arr4",
+   "conjunto": "sanic_carp_tbl_cuotas",
+   "id": "9e31b4d4-a0cc-f111-a05b-00224808ffcd",
+   "nota": "cuota generada por el servidor; el lote B la modifica (pago)"
+  },
+  {
+   "clave": "version-v95",
+   "conjunto": "sanic_carp_tbl_versionplantillas",
+   "id": "19a6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "version de humo"
+  },
+  {
+   "clave": "mapeo-v95-00",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "1ca6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-01",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "1ea6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-02",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "20a6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-03",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "22a6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-04",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "24a6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-05",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "26a6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-06",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "28a6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-07",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "2aa6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-08",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "2ca6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-09",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "2ea6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-10",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "30a6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-11",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "32a6acda-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-12",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "36b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-13",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "38b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-14",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "3ab7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-15",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "3cb7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-16",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "3eb7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-17",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "40b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-18",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "42b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-19",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "44b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-20",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "46b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-21",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "48b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-22",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "4ab7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-23",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "4cb7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-24",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "4eb7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-25",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "50b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-26",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "52b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  },
+  {
+   "clave": "mapeo-v95-27",
+   "conjunto": "sanic_carp_tbl_mapeoceldas",
+   "id": "54b7aee0-a0cc-f111-a05b-00224808ffcd",
+   "nota": "mapeo de humo"
+  }
+ ],
+ "modificadas": [
+  {
+   "clave": "version-v91",
+   "conjunto": "sanic_carp_tbl_versionplantillas",
+   "id": "1cdc492f-91cc-f111-a05b-00224808ffcd",
+   "nota": "lote B: pasa de Vigente a Historica al publicar v95"
+  }
+ ]
+}

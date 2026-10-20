@@ -30,11 +30,13 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 2 | 3 | 2 |
 | 11 | Flujos | 3 | 0 | 2 | 1 |
-| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 26 | 16 | 10 | 0 |
+| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 26 | 17 | 9 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
-| **Total** | | **128** | **57** | **60** | **11** |
+| **Total** | | **128** | **58** | **59** | **11** |
 
 Notas del resumen:
+
+- 2026-10-20 (Dev, lote B de app): 12.24 pasó a `hecho`: el web resource se actualizó con los 14 gestos (`difiere` por contenido y descripción, `--completar`, `actualizado`, `ya_existia`, publicado) y el ribbon se importó con `importar_solucion.py` (`difiere`, `creado`, `ya_existia`): 13 botones en Conversación (5), Arreglo (6) y Versión de plantilla (2), con comando, `PrimaryControl` en los de Form y regla, y las 26 funciones referenciadas existen en el JS publicado. 12.22 sigue `hecho` (contenido actualizado). El grupo 12 pasó de 16 hechas y 10 pendientes a 17 y 9; el total, de 57 y 60 a 58 y 59. Pendiente fuera de la fila: el paso manual de regenerar la metadata del ribbon y la prueba en el navegador. Prueba funcional por Web API: 28 de 30 comprobaciones; no se pudo probar con el administrador Reabrir arreglo (CARP-ARR-016, solo jefatura) ni el camino feliz de Iniciar conversación nueva (necesita un correo real). Detalle en `pruebas-humo/lote-b/RESULTADO.md`.
 
 - 2026-10-20 (Dev, cierre del lote A de app): 12.17 a 12.21, 12.23, 12.25 y la fila 12.26 (formulario de Cuota, que `diseno/07` DA-09 agregó y esta tabla no tenía) pasaron a `hecho`, las 8 verificadas `ya_existia` con `--solo-verificar`. Las dos causas de que quedaran en `difiere` eran de las herramientas, no del entorno: (1) `GET systemforms` devuelve el `formxml` solo con las etiquetas del idioma del usuario (1033); las 3082 SÍ estaban guardadas (la solución exportada trae las dos), y `formulario.py` ahora las verifica contra la exportación y publica también en el alta; (2) `AddAppComponents` con la tabla `entity` ignora el GUID y agrega siempre la tabla de metadatos `entity`, así que `app.py` ya no lo usa para tablas: las mete por `ImportSolution` (`importar_solucion.importar_tablas_de_la_app`). El grupo 12 pasó de 8 hechas y 17 pendientes (25 filas) a 16 y 10 (26 filas); el total, de 49 y 67 (127 filas) a 57 y 60 (128). Detalle en `pruebas-humo/lote-a/RESULTADO.md`.
 
@@ -314,9 +316,9 @@ Nombre: `FRM - CARP - Tabla - Tipo`. La definición no nombra un formulario para
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 12.22 | Web resource JavaScript mínimo `WR - CARP - JS - Comandos` *(prov.; `sanic_carp_wr_js_comandos`)*: solo invoca las Custom API, pide la confirmación previa y dispara la descarga. Sin lógica de negocio | `playbooks/web-resource/js_comandos.md` | 8.2 a 8.6 | D-17, §6 Componentes | hecho (Dev, 2026-10-20) |
+| 12.22 | Web resource JavaScript mínimo `WR - CARP - JS - Comandos` *(prov.; `sanic_carp_wr_js_comandos`)*: solo invoca las Custom API, pide la confirmación previa y dispara la descarga. Sin lógica de negocio | `playbooks/web-resource/js_comandos.md` | 8.2 a 8.6 | D-17, §6 Componentes | hecho (Dev, 2026-10-20; actualizado el mismo día con las funciones de los 14 gestos, 35193 bytes, `ya_existia` con `--solo-verificar`, publicado) |
 | 12.23 | Sitemap `sanic_carp_sm_controlarreglospago` (cuatro áreas, arriba) | `playbooks/app/controlarreglospago.md` (comparte con 12.25) | 12.1 a 12.13, 12.14, 12.17 a 12.21 | §6 Componentes (app) | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §7.2) |
-| 12.24 | Comandos del command bar para los gestos de abajo (un solo playbook). El mecanismo de cada gesto (botón, captura de motivo, confirmación) no está definido | `playbooks/importacion/comandos.md` (ruta a confirmar) | 12.22, 8.2 a 8.6, 7.12, 7.14 a 7.16 | D-17, RF-02, RF-14 a RF-16 | pendiente (diseño completo en `diseno/07` §5.4 a §5.6) |
+| 12.24 | Comandos del command bar para los gestos de abajo (un solo playbook). El mecanismo de cada gesto (botón, captura de motivo, confirmación) no está definido | `playbooks/importacion/comandos.md` | 12.22, 8.2 a 8.6, 7.12, 7.14 a 7.16 | D-17, RF-02, RF-14 a RF-16 | hecho (Dev, 2026-10-20): 13 botones en 3 tablas (14 elementos `Button`: Tomar va en Form y en grilla), `ya_existia` con `--solo-verificar`; falta la prueba manual en el navegador y el paso manual de regenerar la metadata del ribbon (`pruebas-humo/lote-b/RESULTADO.md`) (diseño completo en `diseno/07` §5.4 a §5.6) |
 | 12.25 | App `sanic_carp_mda_controlarreglospago` (`MDA - CARP - Control de Arreglos de Pago`), una sola app para oficial y jefe | `playbooks/app/controlarreglospago.md` | 12.23, 12.24, 6.2 a 6.5 | D-01, RNF-04 | hecho (Dev, 2026-10-20) (las 8 tablas entran por `ImportSolution`, no por `AddAppComponents`; diseño completo en `diseno/07` §7.1) |
 
 Gestos que la definición nombra (contenido de 12.24, no suman filas):

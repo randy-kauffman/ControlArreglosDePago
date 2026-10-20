@@ -1,0 +1,602 @@
+[
+ {
+  "prueba": "G1 Tomar",
+  "sub": "Custom API tomarconversacion",
+  "ok": true,
+  "esperado": "200, oficial=yo, yaasignada=false",
+  "obtenido": [
+   [
+    200,
+    null,
+    ""
+   ],
+   {
+    "oficialasignadoid": "ffc778df-d287-f111-8075-70a8a5af5a32",
+    "oficialnombre": "# PowerPlatform-Dev",
+    "yaasignada": false
+   },
+   0.48
+  ]
+ },
+ {
+  "prueba": "G1 Tomar",
+  "sub": "segunda vez: idempotente (yaasignada=true; el JS muestra 'Ya era suya.')",
+  "ok": true,
+  "esperado": "200 yaasignada=true",
+  "obtenido": [
+   [
+    200,
+    null,
+    ""
+   ],
+   true
+  ]
+ },
+ {
+  "prueba": "G2 Finalizar",
+  "sub": "updateRecord con resultado, motivo y detalle",
+  "ok": true,
+  "esperado": "204, Finalizada 1/2, resultado 159460003, finalizadopor=yo, fecha",
+  "obtenido": [
+   [
+    204,
+    null,
+    ""
+   ],
+   {
+    "_sanic_finalizadoporid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+    "_sanic_unidaaid_value": null,
+    "_sanic_oficialasignadoid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+    "sanic_carp_tbl_conversacionid": "eb60b9ce-a0cc-f111-a05b-00224808ffcd",
+    "sanic_correonuevoenfinalizada": false,
+    "sanic_resultado": 159460003,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": "HUMO lote B: sin respuesta",
+    "sanic_motivosinrespuesta": 159460002,
+    "sanic_fechafinalizacion": "2026-10-20T16:10:47Z",
+    "statuscode": 2
+   }
+  ]
+ },
+ {
+  "prueba": "G3 Reabrir",
+  "sub": "updateRecord con SOLO statecode/statuscode: queda Abierta y limpia resultado y finalizacion",
+  "ok": true,
+  "esperado": "204, Abierta, resultado/fecha/finalizadopor nulos",
+  "obtenido": [
+   [
+    204,
+    null,
+    ""
+   ],
+   {
+    "_sanic_finalizadoporid_value": null,
+    "_sanic_unidaaid_value": null,
+    "_sanic_oficialasignadoid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+    "sanic_carp_tbl_conversacionid": "eb60b9ce-a0cc-f111-a05b-00224808ffcd",
+    "sanic_correonuevoenfinalizada": false,
+    "sanic_resultado": null,
+    "statecode": 0,
+    "sanic_detallesinrespuesta": null,
+    "sanic_motivosinrespuesta": null,
+    "sanic_fechafinalizacion": null,
+    "statuscode": 1
+   }
+  ]
+ },
+ {
+  "prueba": "G2 Finalizar",
+  "sub": "variante: solo resultado Con arreglo de pago (motivo y detalle no se mandan)",
+  "ok": true,
+  "esperado": "204, Finalizada",
+  "obtenido": [
+   [
+    204,
+    null,
+    ""
+   ],
+   {
+    "_sanic_finalizadoporid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+    "_sanic_unidaaid_value": null,
+    "_sanic_oficialasignadoid_value": null,
+    "sanic_carp_tbl_conversacionid": "f060b9ce-a0cc-f111-a05b-00224808ffcd",
+    "sanic_correonuevoenfinalizada": false,
+    "sanic_resultado": 159460001,
+    "statecode": 1,
+    "sanic_detallesinrespuesta": null,
+    "sanic_motivosinrespuesta": null,
+    "sanic_fechafinalizacion": "2026-10-20T16:10:49Z",
+    "statuscode": 2
+   }
+  ]
+ },
+ {
+  "prueba": "G2 Finalizar",
+  "sub": "sin resultado (el JS manda sanic_resultado:null): el servidor lo rechaza con codigo del catalogo",
+  "ok": true,
+  "esperado": "400 CARP-xxx",
+  "obtenido": [
+   400,
+   "CARP-CNV-003",
+   "CARP-CNV-003: Para finalizar la conversación hay que indicar el resultado."
+  ]
+ },
+ {
+  "prueba": "G5 Iniciar nueva",
+  "sub": "preparacion: sembrar sanic_correonuevoenfinalizada=true en una Abierta",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": [
+   400,
+   "CARP-CNV-001",
+   "CARP-CNV-001: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_correonuevoenfinalizada."
+  ]
+ },
+ {
+  "prueba": "G5 Iniciar nueva",
+  "sub": "NO PROBADO el camino feliz: el indicador lo prende solo el plugin al llegar un correo real (sembrarlo da CARP-CNV-001) y no se crean correos. Se confirma el contrato del rechazo: Finalizada sin correos nuevos",
+  "ok": true,
+  "esperado": "400 CARP-INI-003",
+  "obtenido": [
+   [
+    400,
+    "CARP-INI-003",
+    "CARP-INI-003: Solo una conversación finalizada con correos nuevos puede iniciar una conversación nueva."
+   ],
+   0.27
+  ]
+ },
+ {
+  "prueba": "G4 Unir",
+  "sub": "Custom API unirconversaciones (dos conversaciones HUMO): origen Unida",
+  "ok": true,
+  "esperado": "200, origen 1/Unida, unidaaid=destino",
+  "obtenido": [
+   [
+    200,
+    null,
+    ""
+   ],
+   {
+    "destinoid": "fa60b9ce-a0cc-f111-a05b-00224808ffcd",
+    "correosmovidos": 0,
+    "arreglosrepunteados": 0
+   },
+   {
+    "statecode": 1,
+    "statuscode": 159460001,
+    "_sanic_unidaaid_value": "fa60b9ce-a0cc-f111-a05b-00224808ffcd"
+   },
+   0.55
+  ]
+ },
+ {
+  "prueba": "G6 Generar",
+  "sub": "Custom API generarformato sobre un Borrador: devuelve el xlsx y congela",
+  "ok": true,
+  "esperado": "200, archivo .xlsx (PK), congelado con numero provisional",
+  "obtenido": [
+   [
+    200,
+    null,
+    ""
+   ],
+   {
+    "nombrearchivo": "F-NIC-0000052-ARR-001072.xlsx",
+    "numeroprovisional": 1,
+    "congelado": true,
+    "advertencias": ""
+   },
+   "g6_borrador_F-NIC-0000052-ARR-001072.xlsx",
+   [
+    "g6_borrador_F-NIC-0000052-ARR-001072.xlsx",
+    32173,
+    true
+   ],
+   {
+    "statuscode": 1,
+    "sanic_fechacongelamiento": "2026-10-20T16:10:57Z",
+    "sanic_numeroprovisional": 1
+   },
+   2.17
+  ],
+  "segundos": 2.17
+ },
+ {
+  "prueba": "G7 Desbloquear",
+  "sub": "updateRecord con SOLO sanic_fechacongelamiento:null",
+  "ok": true,
+  "esperado": "204, descongelado, instantaneas y provisional nulos",
+  "obtenido": [
+   [
+    204,
+    null,
+    ""
+   ],
+   {
+    "sanic_instantaneanombre": null,
+    "statuscode": 1,
+    "sanic_fechacongelamiento": null,
+    "_sanic_reabiertoporid_value": null,
+    "sanic_carp_tbl_arregloid": "fd60b9ce-a0cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": null,
+    "sanic_numeroarreglo": null,
+    "statecode": 0,
+    "sanic_numeroprovisional": null,
+    "sanic_cantidadreaperturas": 0,
+    "sanic_motivoreapertura": null,
+    "sanic_motivoanulacion": null,
+    "sanic_motivodescarte": null
+   }
+  ]
+ },
+ {
+  "prueba": "G7 Desbloquear",
+  "sub": "repetido sobre un Borrador sin congelar: lo rechaza el servidor (CARP-ARR-017, lo que el JS muestra tal cual)",
+  "ok": true,
+  "esperado": "400 CARP-ARR-017",
+  "obtenido": [
+   400,
+   "CARP-ARR-017",
+   "CARP-ARR-017: El arreglo no está congelado: no hay nada que desbloquear o reabrir."
+  ]
+ },
+ {
+  "prueba": "G6 Generar",
+  "sub": "segunda generacion del mismo Borrador tras desbloquear",
+  "ok": true,
+  "esperado": "200 + xlsx",
+  "obtenido": [
+   [
+    200,
+    null,
+    ""
+   ],
+   "g6_borrador2_F-NIC-0000052-ARR-001072.xlsx"
+  ]
+ },
+ {
+  "prueba": "G8 Formalizar",
+  "sub": "updateRecord con SOLO statecode 0 / statuscode Vigente: queda Vigente con numero de arreglo y congelado",
+  "ok": true,
+  "esperado": "204, Vigente, numeroarreglo asignado",
+  "obtenido": [
+   [
+    204,
+    null,
+    ""
+   ],
+   {
+    "sanic_instantaneanombre": "HUMO Cliente 01",
+    "statuscode": 159460001,
+    "sanic_fechacongelamiento": "2026-10-20T16:11:00Z",
+    "_sanic_reabiertoporid_value": null,
+    "sanic_carp_tbl_arregloid": "fd60b9ce-a0cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": null,
+    "sanic_numeroarreglo": 1,
+    "statecode": 0,
+    "sanic_numeroprovisional": 1,
+    "sanic_cantidadreaperturas": 0,
+    "sanic_motivoreapertura": null,
+    "sanic_motivoanulacion": null,
+    "sanic_motivodescarte": null
+   }
+  ]
+ },
+ {
+  "prueba": "G6 Generar",
+  "sub": "sobre un Vigente congelado: genera sin cambiar el arreglo",
+  "ok": true,
+  "esperado": "200 + xlsx, sigue Vigente",
+  "obtenido": [
+   [
+    200,
+    null,
+    ""
+   ],
+   "g6_vigente_F-NIC-0000052-ARR-001072.xlsx"
+  ]
+ },
+ {
+  "prueba": "G9 Descartar",
+  "sub": "motivo vacio: el servidor lo rechaza con CARP-ARR-013",
+  "ok": true,
+  "esperado": "400 CARP-ARR-013",
+  "obtenido": [
+   400,
+   "CARP-ARR-013",
+   "CARP-ARR-013: Para descartar el borrador hay que indicar el motivo."
+  ]
+ },
+ {
+  "prueba": "G9 Descartar",
+  "sub": "updateRecord con estado Descartado + motivo: queda Descartado sin consumir numero",
+  "ok": true,
+  "esperado": "204, Descartado 1/159460003, sin numero",
+  "obtenido": [
+   [
+    204,
+    null,
+    ""
+   ],
+   {
+    "sanic_instantaneanombre": null,
+    "statuscode": 159460003,
+    "sanic_fechacongelamiento": null,
+    "_sanic_reabiertoporid_value": null,
+    "sanic_carp_tbl_arregloid": "0361b9ce-a0cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": "2026-10-20T16:11:04Z",
+    "sanic_numeroarreglo": null,
+    "statecode": 1,
+    "sanic_numeroprovisional": null,
+    "sanic_cantidadreaperturas": 0,
+    "sanic_motivoreapertura": null,
+    "sanic_motivoanulacion": null,
+    "sanic_motivodescarte": "HUMO lote B: descarte"
+   }
+  ]
+ },
+ {
+  "prueba": "G10 Anular",
+  "sub": "motivo vacio: el servidor lo rechaza con CARP-ARR-014",
+  "ok": true,
+  "esperado": "400 CARP-ARR-014",
+  "obtenido": [
+   400,
+   "CARP-ARR-014",
+   "CARP-ARR-014: Para anular el arreglo hay que indicar el motivo."
+  ]
+ },
+ {
+  "prueba": "G10 Anular",
+  "sub": "updateRecord con estado Anulado + motivo",
+  "ok": true,
+  "esperado": "204, Anulado 1/159460002",
+  "obtenido": [
+   [
+    204,
+    null,
+    ""
+   ],
+   {
+    "sanic_instantaneanombre": "HUMO Cliente 01",
+    "statuscode": 159460002,
+    "sanic_fechacongelamiento": "2026-10-20T16:11:04Z",
+    "_sanic_reabiertoporid_value": null,
+    "sanic_carp_tbl_arregloid": "0961b9ce-a0cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": "2026-10-20T16:11:06Z",
+    "sanic_numeroarreglo": 1,
+    "statecode": 1,
+    "sanic_numeroprovisional": 1,
+    "sanic_cantidadreaperturas": 0,
+    "sanic_motivoreapertura": null,
+    "sanic_motivoanulacion": "HUMO lote B: anulacion",
+    "sanic_motivodescarte": null
+   }
+  ]
+ },
+ {
+  "prueba": "G6 Generar",
+  "sub": "sobre un Anulado: el boton esta siempre disponible; el servidor decide",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": [
+   [
+    200,
+    null,
+    ""
+   ],
+   "g6_anulado_F-NIC-0000052-ARR-001074.xlsx"
+  ]
+ },
+ {
+  "prueba": "G12 Registrar pago",
+  "sub": "cuota 1: fecha de pago + monto pagado juntos",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "G12 Registrar pago",
+  "sub": "cuota 2: fecha de pago + monto pagado juntos",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "G12 Registrar pago",
+  "sub": "pagada la ultima cuota el arreglo pasa a Terminado",
+  "ok": true,
+  "esperado": "Terminado 1/2",
+  "obtenido": {
+   "sanic_instantaneanombre": "HUMO Cliente 01",
+   "statuscode": 2,
+   "sanic_fechacongelamiento": "2026-10-20T16:11:07Z",
+   "_sanic_reabiertoporid_value": null,
+   "sanic_carp_tbl_arregloid": "0f61b9ce-a0cc-f111-a05b-00224808ffcd",
+   "sanic_fechatermino": "2026-10-20T16:11:09Z",
+   "sanic_numeroarreglo": 1,
+   "statecode": 1,
+   "sanic_numeroprovisional": 1,
+   "sanic_cantidadreaperturas": 0,
+   "sanic_motivoreapertura": null,
+   "sanic_motivoanulacion": null,
+   "sanic_motivodescarte": null
+  }
+ },
+ {
+  "prueba": "G11 Reabrir arreglo",
+  "sub": "Vigente congelado, SOLO el motivo, con el usuario administrador",
+  "ok": false,
+  "esperado": "204, descongelado, reaperturas 1",
+  "obtenido": [
+   [
+    400,
+    "CARP-ARR-016",
+    "CARP-ARR-016: Solo la jefatura puede reabrir un arreglo."
+   ],
+   {
+    "sanic_instantaneanombre": "HUMO Cliente 01",
+    "statuscode": 159460001,
+    "sanic_fechacongelamiento": "2026-10-20T16:11:00Z",
+    "_sanic_reabiertoporid_value": null,
+    "sanic_carp_tbl_arregloid": "fd60b9ce-a0cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": null,
+    "sanic_numeroarreglo": 1,
+    "statecode": 0,
+    "sanic_numeroprovisional": 1,
+    "sanic_cantidadreaperturas": 0,
+    "sanic_motivoreapertura": null,
+    "sanic_motivoanulacion": null,
+    "sanic_motivodescarte": null
+   }
+  ]
+ },
+ {
+  "prueba": "G11 Reabrir arreglo",
+  "sub": "Terminado -> Vigente + motivo, con el usuario administrador",
+  "ok": false,
+  "esperado": "204, Vigente",
+  "obtenido": [
+   [
+    400,
+    "CARP-ARR-016",
+    "CARP-ARR-016: Solo la jefatura puede reabrir un arreglo."
+   ],
+   {
+    "sanic_instantaneanombre": "HUMO Cliente 01",
+    "statuscode": 2,
+    "sanic_fechacongelamiento": "2026-10-20T16:11:07Z",
+    "_sanic_reabiertoporid_value": null,
+    "sanic_carp_tbl_arregloid": "0f61b9ce-a0cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": "2026-10-20T16:11:09Z",
+    "sanic_numeroarreglo": 1,
+    "statecode": 1,
+    "sanic_numeroprovisional": 1,
+    "sanic_cantidadreaperturas": 0,
+    "sanic_motivoreapertura": null,
+    "sanic_motivoanulacion": null,
+    "sanic_motivodescarte": null
+   }
+  ]
+ },
+ {
+  "prueba": "G13 Publicar",
+  "sub": "preparacion: v95 Borrador con archivo y 28 mapeos",
+  "ok": true,
+  "esperado": 28,
+  "obtenido": 28
+ },
+ {
+  "prueba": "G14 Vista previa",
+  "sub": "generarformato con versionpreviaid de un Borrador: devuelve el xlsx y no cambia el arreglo",
+  "ok": true,
+  "esperado": "200 + xlsx, arreglo igual",
+  "obtenido": [
+   [
+    200,
+    null,
+    ""
+   ],
+   "g14_vistaprevia_F-NIC-0000052-ARR-001074.xlsx",
+   "arreglo sin cambios"
+  ],
+  "segundos": 0.69
+ },
+ {
+  "prueba": "G13 Publicar",
+  "sub": "updateRecord con SOLO sanic_estado=Vigente: v95 Vigente con huella, la anterior pasa a Historica",
+  "ok": true,
+  "esperado": "204, v95 Vigente, v91 Historica",
+  "obtenido": [
+   [
+    204,
+    null,
+    ""
+   ],
+   {
+    "sanic_fechaaprobacion": "2026-10-20T16:11:23Z",
+    "sanic_huella": "8f6b4dd58f422ee55ba548f8bcbbf9432dbc59eb9564894d659c9a2367d4f63a",
+    "_sanic_aprobadoporid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+    "sanic_estado": 159460002,
+    "sanic_carp_tbl_versionplantillaid": "19a6acda-a0cc-f111-a05b-00224808ffcd",
+    "statecode": 0
+   },
+   {
+    "sanic_estado": 159460003,
+    "sanic_carp_tbl_versionplantillaid": "1cdc492f-91cc-f111-a05b-00224808ffcd",
+    "statecode": 0
+   }
+  ]
+ },
+ {
+  "prueba": "G6 Generar",
+  "sub": "tras publicar, generarformato usa la Vigente v95",
+  "ok": true,
+  "esperado": "200 + xlsx",
+  "obtenido": [
+   [
+    200,
+    null,
+    ""
+   ],
+   "g6_v95_F-NIC-0000052-ARR-001074.xlsx"
+  ]
+ },
+ {
+  "prueba": "xlsx",
+  "sub": "los archivos generados son zip/OOXML validos (cabecera PK)",
+  "ok": true,
+  "esperado": "todos PK",
+  "obtenido": [
+   [
+    "g6_borrador_F-NIC-0000052-ARR-001072.xlsx",
+    32173,
+    true
+   ],
+   [
+    "g6_borrador2_F-NIC-0000052-ARR-001072.xlsx",
+    32173,
+    true
+   ],
+   [
+    "g6_vigente_F-NIC-0000052-ARR-001072.xlsx",
+    32173,
+    true
+   ],
+   [
+    "g6_a3_F-NIC-0000052-ARR-001074.xlsx",
+    32174,
+    true
+   ],
+   [
+    "g6_anulado_F-NIC-0000052-ARR-001074.xlsx",
+    32174,
+    true
+   ],
+   [
+    "g6_a4_F-NIC-0000052-ARR-001075.xlsx",
+    32154,
+    true
+   ],
+   [
+    "g14_vistaprevia_F-NIC-0000052-ARR-001074.xlsx",
+    32174,
+    true
+   ],
+   [
+    "g6_v95_F-NIC-0000052-ARR-001074.xlsx",
+    32174,
+    true
+   ]
+  ]
+ }
+]
