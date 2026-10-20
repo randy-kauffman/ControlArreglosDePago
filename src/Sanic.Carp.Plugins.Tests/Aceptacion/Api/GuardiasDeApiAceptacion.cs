@@ -173,6 +173,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
                 if (!string.Equals(fuente.Key, ArchivoDelGenerador, StringComparison.Ordinal)) indebidos.Add(fuente.Key + ": catch");
                 else if (CatchQueNoSonDelGenerador(fuente.Value) > 0) indebidos.Add(fuente.Key + ": catch de algo que no es una de las cuatro excepciones del generador");
                 else if (Atrapa.Matches(fuente.Value).Count > 4) indebidos.Add(fuente.Key + ": más de cuatro catch");
+                // Orquestador, cierre del lote 6 (hallazgo del revisor): los cuatro del generador también terminan en throw, como los de la base (PA6_GRD_07).
+                else if (CatchQueSeTragan(fuente.Value) > 0) indebidos.Add(fuente.Key + ": un catch del generador no termina en throw");
             }
 
             Assert.True(indebidos.Count == 0, string.Join("; ", indebidos));

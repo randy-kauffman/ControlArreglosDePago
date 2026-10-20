@@ -59,7 +59,7 @@ namespace Sanic.Carp.Plugins.Api
             if (fila == null) throw CodigosDeError.TOM_002.Crear();
 
             // El -003 va antes que la idempotencia (1.3 decisión 2, PA-TOM-07).
-            if (EstadoDeFila.DeConversacion(fila) !=EstadoDeConversacion.Abierta) throw CodigosDeError.TOM_003.Crear();
+            if (EstadoDeFila.DeConversacion(fila) != EstadoDeConversacion.Abierta) throw CodigosDeError.TOM_003.Crear();
 
             object valorOficial;
             var asignado = fila.Valores.TryGetValue(ColOficial, out valorOficial) ? valorOficial as ReferenciaDeEntidad : null;
