@@ -123,6 +123,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
         public static readonly DefinicionDeError ENT_001 = new DefinicionDeError("CARP-ENT-001", "El correo no es entrante.");
         public static readonly DefinicionDeError ENT_002 = new DefinicionDeError("CARP-ENT-002", "No se encontró el correo.");
         public static readonly DefinicionDeError ENT_003 = new DefinicionDeError("CARP-ENT-003", "La cadena de conversaciones unidas no termina en una conversación activa.");
+        public static readonly DefinicionDeError ENT_004 = new DefinicionDeError("CARP-ENT-004", "El correo no pertenece a la unidad de negocio del área.");
         public static readonly DefinicionDeError CFG_001 = new DefinicionDeError("CARP-CFG-001", "No se encontró la unidad de negocio del área, o hay más de una con ese nombre. Revise la variable de entorno sanic_carp_ev_nombrebu.");
         public static readonly DefinicionDeError CFG_002 = new DefinicionDeError("CARP-CFG-002", "No se encontró un único equipo propietario predeterminado en la unidad de negocio del área.");
         public static readonly DefinicionDeError CFG_003 = new DefinicionDeError("CARP-CFG-003", "No se encontró el equipo de jefatura en la unidad de negocio del área, o hay más de uno con ese nombre. Revise la variable de entorno sanic_carp_ev_nombreteamjefatura.");
@@ -239,6 +240,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
             ENT_001,
             ENT_002,
             ENT_003,
+            ENT_004,
             CFG_001,
             CFG_002,
             CFG_003,

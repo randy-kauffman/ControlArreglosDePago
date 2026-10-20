@@ -1013,7 +1013,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioCorreo
             var resultado = Registrador(e, null, configuracion).Registrar(id);
 
             Assert.Equal(TipoDeRegistro.Omitido, resultado.Tipo);
-            Assert.Equal(CodigosDeError.ENT_002.Codigo, resultado.Omision.Codigo);
+            Assert.Equal(CodigosDeError.ENT_004.Codigo, resultado.Omision.Codigo); // orquestador, cierre del 5f: código propio para otra BU
             Assert.Null(resultado.ConversacionId);
             AssertSinEscrituras(e);
             Assert.Empty(Conversaciones(e));
@@ -1054,7 +1054,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioCorreo
             var propio = Registrador(e, null, configuracion).Registrar(deLaBuConfigurada);
 
             Assert.Equal(TipoDeRegistro.Omitido, ajeno.Tipo);
-            Assert.Equal(CodigosDeError.ENT_002.Codigo, ajeno.Omision.Codigo);
+            Assert.Equal(CodigosDeError.ENT_004.Codigo, ajeno.Omision.Codigo); // orquestador, cierre del 5f: código propio para otra BU
             Assert.Equal(TipoDeRegistro.Creada, propio.Tipo);
             Assert.Single(Conversaciones(e));
             Assert.False(e.Fila(CorreoTabla, deLaBuPorDefecto).Contains("regardingobjectid"));

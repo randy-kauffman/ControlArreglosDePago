@@ -312,7 +312,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var lineas = EjecutarDirectoConTraza(e, new RegistrarCorreoEntranteStep(), "Create", id, e.Oficial);
 
-            Assert.Contains(lineas, linea => linea.IndexOf(CodigosDeError.ENT_002.Codigo, StringComparison.Ordinal) >= 0);
+            Assert.Contains(lineas, linea => linea.IndexOf(CodigosDeError.ENT_004.Codigo, StringComparison.Ordinal) >= 0); // orquestador, cierre del 5f
             AssertSinEscrituras(e);
             Assert.Empty(Conversaciones(e));
         }
