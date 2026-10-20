@@ -82,3 +82,20 @@ Antes de empezar: abrir la app con `&ribbondebug=true` en la URL, Command Checke
 11. **Publicar versión** (Jefe, Versión en Borrador): confirma, pasa a Vigente, la anterior a Histórica. **Vista previa**: selector de arreglo (cualquier estado), descarga el `.xlsx`, no cambia nada.
 12. **Guardia de OnSave al navegar** (§12 punto 17): escribir un motivo sin pulsar el botón, intentar navegar o "Guardar y nuevo": avisa y no rompe la navegación. Durante un gesto, el guardado no se cancela.
 13. Consola (F12): sin errores de `sanic_carp_wr_js_comandos`; tooltips en español con el usuario en 3082.
+
+## 2026-10-20: defecto en el navegador, "Cannot convert the literal 'undefined' to the expected type 'Edm.Guid'"
+
+**Síntoma (reportado por el usuario):** Tomar (conversación) y Generar formato (arreglo) devolvían ese error de deserialización (Activity Id `d8498f7a-…` y `2da3a8de-…`). Afectaba a los **5 gestos que llaman Custom API**: Tomar, Generar formato, Unir, Iniciar conversación nueva y Vista previa, porque todos pasan por `SanicCarp.Comun.ejecutarApi`.
+
+**Causa raíz:** el serializador de `Xrm.WebApi.online.execute` toma el valor de un parámetro `Edm.Guid` (structuralProperty 1) de la propiedad `guid` del objeto (`{ guid: "…" }`, como en el ejemplo de Inogic, "Work with all available parameter types in Custom API"). `ejecutarApi` pasaba el Guid como texto suelto, así que `texto.guid` daba `undefined` y viajaba el literal `'undefined'`. Descartado con evidencia: el web resource publicado era idéntico al del repositorio; el ribbon publicado pasa `PrimaryControl` (formulario) y `SelectedControlSelectedItemIds` + `SelectedControl` (grilla) a las funciones correctas; `$metadata` declara `conversacionid`, `arregloid` y `versionpreviaid` como `Edm.Guid`, con los mismos nombres que usa el JS. La validación offline del lote B probó el contrato por Web API (Python), no el serializador de Xrm: por eso no lo detectó.
+
+**Corrección (`webresources/js/comandos.js`, `ejecutarApi`):** el Guid va como `{ guid: id }`; un parámetro sin valor (null/undefined) se omite; un Guid mal formado se rechaza antes de llamar (mensaje genérico, nunca se manda `'undefined'`). Primera suite JS del repositorio, `webresources/js/tests/comandos.test.js` (`node --test webresources/js/tests/comandos.test.js`), con un Xrm simulado que serializa como el real: 3 de 4 pruebas fallaron antes del cambio con el mismo mensaje del navegador; ahora 4 de 4 OK. Subido con `web_resource.py`: `difiere` → `--completar` (`actualizado`, publicado) → `ya_existia`.
+
+**Verificación en Dev (`b20_guid_execute.py`, evidencia `evidencia/20_guid_execute.json`, como User 8):** el cuerpo del defecto (`"undefined"`) reproduce el 400; el cuerpo que arma ahora Xrm da 200 en `tomarconversacion` (conversación de la tanda 3, `yaasignada` true) y en `generarformato` (`arreglo-l0-v07b`, `.xlsx` devuelto).
+
+**Para reintentar en el navegador:**
+1. Cerrar las pestañas de la app y recargar con **Ctrl+F5** (o borrar la caché del sitio): el navegador guarda la versión anterior del web resource.
+2. Entrar como User 8: abrir una conversación Abierta sin oficial → **Tomar**; también desde la grilla, con una fila seleccionada.
+3. Abrir un arreglo guardado → **Generar formato**: confirma, descarga el `.xlsx` y muestra las advertencias si las hay.
+4. Si da tiempo: **Unir**, **Iniciar conversación nueva** (en una Finalizada con correo nuevo) y, como User 9, **Vista previa** en una versión de plantilla.
+5. Si algo falla, F12 → Consola y Red: mandar el cuerpo del POST a la API y el Activity Id.

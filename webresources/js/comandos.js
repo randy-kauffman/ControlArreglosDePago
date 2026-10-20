@@ -220,16 +220,28 @@ SanicCarp.Comun = (function () {
         }
     }
 
+    var PATRON_GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
     /**
      * Llama a una Custom API global (unbound) con parametros Guid. `parametros` = {nombre: guid}.
+     * Un parametro sin valor (null/undefined) se omite: es opcional y el plugin tiene su propio codigo para el nulo.
+     * Xrm serializa un Edm.Guid desde `valor.guid`: un texto suelto viaja como 'undefined' (error real en Dev, 2026-10-20).
+     * Un Guid mal formado se rechaza aqui, sin llamar al servidor.
      * Devuelve el cuerpo JSON con las salidas. Un HTTP de error se vuelve una excepcion con su mensaje.
      */
     async function ejecutarApi(nombre, parametros) {
         var tipos = {};
         var peticion = {};
         Object.keys(parametros).forEach(function (clave) {
+            if (parametros[clave] === null || parametros[clave] === undefined) {
+                return;
+            }
+            var guid = idLimpio(parametros[clave]);
+            if (!PATRON_GUID.test(guid)) {
+                throw { message: "" };   // id invalido: mensaje generico; nunca se manda 'undefined' al servidor
+            }
             tipos[clave] = { typeName: "Edm.Guid", structuralProperty: 1 };
-            peticion[clave] = idLimpio(parametros[clave]);
+            peticion[clave] = { guid: guid };
         });
         peticion.getMetadata = function () {
             return { boundParameter: null, operationType: 0, operationName: nombre, parameterTypes: tipos };

@@ -1,0 +1,29 @@
+{
+ "fecha": "2026-10-20",
+ "caller": "User 8",
+ "conversacion": "tanda3 caso_c",
+ "arreglo": "arreglo-l0-v07b",
+ "bug_tomar": {
+  "http": 400,
+  "error": "Error identified in Payload provided by the user for Entity :'', For more information on this error please follow this help link https://go.microsoft.com/fwlink"
+ },
+ "tomar": {
+  "http": 200,
+  "seg": 0.64,
+  "salida": {
+   "oficialasignadoid": "fab4b6ed-6116-f111-8342-000d3a316609",
+   "oficialnombre": "# User 8",
+   "yaasignada": true
+  }
+ },
+ "generar": {
+  "http": 200,
+  "seg": 2.2,
+  "salida": {
+   "nombrearchivo": "F-NIC-0000052-ARR-001077.xlsx",
+   "bytes_base64": 42992,
+   "congelado": true,
+   "advertencias": "En la hoja 'CONTROL DE PAGOS' se escribieron 1 fechas en la columna D (desde D7) cuyo formato de celda no es de fecha: Excel las mostrará como número."
+  }
+ }
+}
