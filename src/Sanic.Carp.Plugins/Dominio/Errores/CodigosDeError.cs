@@ -22,6 +22,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
         public static readonly DefinicionDeError GEN_009 = new DefinicionDeError("CARP-GEN-009", "El archivo de la plantilla no es un libro de Excel válido.");
         public static readonly DefinicionDeError GEN_010 = new DefinicionDeError("CARP-GEN-010", "El mapeo de la versión es inválido: {detalle}.");
         public static readonly DefinicionDeError GEN_011 = new DefinicionDeError("CARP-GEN-011", "Los datos del arreglo no sirven para esta plantilla: {detalle}.");
+        public static readonly DefinicionDeError GEN_012 = new DefinicionDeError("CARP-GEN-012", "No tiene permiso para ver los datos sensibles del cliente que lleva el formato. Pida a su administrador que lo agreguen al perfil de datos sensibles del área.");
         public static readonly DefinicionDeError GEN_900 = new DefinicionDeError("CARP-GEN-900", "No se pudo generar el formato. No se guardó ningún cambio. Intente de nuevo.");
         public static readonly DefinicionDeError REC_001 = new DefinicionDeError("CARP-REC-001", "El máximo de correos no puede ser negativo.");
         public static readonly DefinicionDeError REC_002 = new DefinicionDeError("CARP-REC-002", "Los minutos mínimos no pueden ser negativos.");
@@ -42,6 +43,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
         public static readonly DefinicionDeError UNI_008 = new DefinicionDeError("CARP-UNI-008", "La conversación de origen ya recibió otras conversaciones. Una unión sobre otra unión no está permitida: una el destino sobre el origen o elija otro destino.");
         public static readonly DefinicionDeError UNI_009 = new DefinicionDeError("CARP-UNI-009", "La conversación de origen tiene más de 1.000 correos y no se puede unir en una sola operación.");
         public static readonly DefinicionDeError UNI_010 = new DefinicionDeError("CARP-UNI-010", "Las dos conversaciones son de clientes distintos. Solo se pueden unir conversaciones del mismo cliente.");
+        public static readonly DefinicionDeError UNI_011 = new DefinicionDeError("CARP-UNI-011", "La conversación de destino tiene demasiados correos para recalcular sus tiempos en una sola operación.");
         public static readonly DefinicionDeError UNI_900 = new DefinicionDeError("CARP-UNI-900", "No se pudo unir. No se guardó ningún cambio. Intente de nuevo.");
         public static readonly DefinicionDeError INI_001 = new DefinicionDeError("CARP-INI-001", "Falta la conversación.");
         public static readonly DefinicionDeError INI_002 = new DefinicionDeError("CARP-INI-002", "No se encontró la conversación o no tiene acceso a ella.");
@@ -144,6 +146,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
             GEN_009,
             GEN_010,
             GEN_011,
+            GEN_012,
             GEN_900,
             REC_001,
             REC_002,
@@ -164,6 +167,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
             UNI_008,
             UNI_009,
             UNI_010,
+            UNI_011,
             UNI_900,
             INI_001,
             INI_002,

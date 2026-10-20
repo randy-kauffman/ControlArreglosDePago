@@ -124,7 +124,7 @@ Los mensajes `CARP-CFG-*` nombran la variable o el elemento que falta, nunca un 
 - Formato: `CARP-<ÁREA>-<NNN>: <texto>`. El texto está en español con ortografía completa, sin datos sensibles (cédula, cuenta, cuerpo de correo) y sin traza de pila (def. L412; `seguridad.md`).
 - `001` a `899`: fallo de negocio o de configuración. **No se reintenta**; se corrige la causa.
 - `900` a `999`: transitorio (concurrencia, tiempo). **Quien llama puede reintentar**.
-- Un error de la plataforma que el código no previó se relanza como `CARP-<ÁREA>-900` con el mensaje de la plataforma recortado a 300 caracteres; la traza completa va a `ITracingService` (sin datos sensibles).
+- Un error de la plataforma que el código no previó se relanza como `CARP-<ÁREA>-900` con el mensaje de la plataforma recortado a 300 caracteres; la traza completa va a `ITracingService` (sin datos sensibles). **Lote 6 (decisión del orquestador, 2026-10-19):** esto vale para los **steps**, que no tienen un `-900` propio en el catálogo. Las **Custom API** sí lo tienen (`CARP-GEN-900`, `CARP-REC-900`, …, con un texto escrito para quien llama, por ejemplo "No se guardó ningún cambio del lote") y usan ese texto fijo; el tipo de la excepción y su código hexadecimal van a la traza. Así quien llama una API ve un mensaje que entiende y que no repite valores de la plataforma.
 - **Cierre del sublote 5a (2026-10-19): un rechazo de negocio anidado no es `-900`.** Dentro del sandbox, cuando el step A escribe y un step B anidado lanza `InvalidPluginExecutionException`, el servicio de A recibe una `FaultException<OrganizationServiceFault>` con `ErrorCode` `0x80040265` y el texto del plugin (`RESULTADO.md` sección 4 y fila (i): nunca envuelta). `BaseDeStep` la relanza como `InvalidPluginExecutionException` con el mensaje de la falla **tal cual** (ya es `CARP-XXX-NNN: …`; ni `-900` ni recorte): es un rechazo de negocio y no se presenta como reintentable. Cualquier otra `FaultException` sigue saliendo `CARP-<ÁREA>-900` con el mensaje recortado a 300. Detalle en 4.1, "Cierre del sublote 5a".
 - Dentro de un plugin una operación de datos que falla **revierte toda la transacción** aunque el código la atrape (`patrones.md` §3). Por eso: se valida en memoria antes de escribir, y el código no "sigue adelante" tras un fallo de escritura. Las excepciones esperables de negocio son resultados, no excepciones (patrón `Resultado<T>` de `patrones.md`).
 - Excepción: la clave alterna K-01 en la creación de una conversación (`ErrorCode` de duplicado). Se evita preguntando primero; el reintento del job asíncrono es la red (ver 2.10).
@@ -258,7 +258,7 @@ La tabla "opción ⇒ clave" vive en `Formato/ClavesDelGenerador`, y ahí tambi�
 **Comportamiento paso a paso**
 
 1. Leer parámetros. `arregloid` ausente o vacío ⇒ `CARP-GEN-001`. Capturar `actor = InitiatingUserId` y `ahora`.
-2. Crear dos servicios: `llamador` (`CreateOrganizationService(context.UserId)`) y `sistema` (`CreateOrganizationService(null)`).
+2. Crear dos servicios: `llamador` (`CreateOrganizationService(context.InitiatingUserId)`; ~~`context.UserId`~~, lote 6: el mismo criterio que los steps, 0.3; con una llamada directa son iguales) y `sistema` (`CreateOrganizationService(null)`).
 3. Leer el arreglo con `llamador` (columnas nombradas, sin `ColumnSet(true)`). No existe **o** no se puede leer ⇒ `CARP-GEN-002`, el mismo mensaje en los dos casos (no revelar existencia).
 4. Leer las cuotas del arreglo con `llamador`, orden `sanic_numero`. Deben ser exactamente `sanic_plazo`, numeradas 1..plazo ⇒ si no, `CARP-GEN-005` (un arreglo sin calendario no puede existir, def. ítem 8).
 5. Datos del cliente: instantánea si `sanic_fechacongelamiento` no es nulo; si no, leer el Cliente con `llamador` (necesita el perfil de columna para la cédula; un usuario sin perfil vería `null`, spike 4).
@@ -289,6 +289,7 @@ La tabla "opción ⇒ clave" vive en `Formato/ClavesDelGenerador`, y ahí tambi�
 | `CARP-GEN-009` | El archivo de la plantilla no es un libro de Excel válido. | no |
 | `CARP-GEN-010` | El mapeo de la versión es inválido: {detalle}. | no |
 | `CARP-GEN-011` | Los datos del arreglo no sirven para esta plantilla: {detalle}. | no |
+| `CARP-GEN-012` | No tiene permiso para ver los datos sensibles del cliente que lleva el formato. Pida a su administrador que lo agreguen al perfil de datos sensibles del área. | no |
 | `CARP-GEN-900` | No se pudo generar el formato. No se guardó ningún cambio. Intente de nuevo. | sí |
 
 `{detalle}` lista los errores del generador (hoja, celda y campo); no incluye valores de datos del cliente. Los errores de forma de la llamada (parámetro de tipo equivocado) los devuelve la capa OData antes del plugin con texto técnico (spike 1b §6): el web resource no lo muestra tal cual.
@@ -338,7 +339,7 @@ La tabla "opción ⇒ clave" vive en `Formato/ClavesDelGenerador`, y ahí tambi�
 5. **Actor.** `Pedido.ActorId` = `InitiatingUserId` capturado al construir el `ContextoDeApi`, antes de crear ningún servicio; es el valor de `sanic_generadoporid`. Ninguna lectura de identidad bajo SYSTEM.
 6. **Errores.** El único `catch` de la lógica es el de las cuatro excepciones del generador (pasos 9 y 10 todavía no escriben nada); toda `FaultException` de la plataforma sube y `BaseDeApi` la vuelve `CARP-GEN-900` con el texto fijo del catálogo. El rechazo de un step anidado (0x80040265) sale tal cual.
 7. **Salidas.** `numeroprovisional` es el número impreso si el arreglo es Borrador y `0` en los demás estados; `congelado` es el estado al terminar (un arreglo inactivo sin congelar da `false`). `advertencias` nunca es `null`.
-8. **Riesgos sin medir.** (a) H-19 (a): los steps de Arreglo y de Generación aceptan las dos escrituras porque ven `InitiatingUserId` = SYSTEM; el doble lo modela, Dev no se midió. (b) H-21 (c): la descarga de la plantilla real de 5 MB en bloques dentro de los 2 minutos. (c) H-4: con un Oficial sin el perfil de columna, `sanic_cuentadebitar`, `sanic_instantaneacedula` y la cédula del Cliente llegan AUSENTES al leer con el llamador, y la congelación copiaría una instantánea sin cédula; el paso 5 no lo rechaza (el diseño pide leer con el llamador). Va a "Para el orquestador".
+8. **Riesgos sin medir.** (a) H-19 (a): los steps de Arreglo y de Generación aceptan las dos escrituras porque ven `InitiatingUserId` = SYSTEM; el doble lo modela, Dev no se midió. (b) H-21 (c): la descarga de la plantilla real de 5 MB en bloques dentro de los 2 minutos. (c) H-4: con un Oficial sin el perfil de columna, `sanic_cuentadebitar`, `sanic_instantaneacedula` y la cédula del Cliente llegan AUSENTES al leer con el llamador, y la congelación copiaría una instantánea sin cédula. **Decisión del orquestador (2026-10-19):** falla cerrado. Si después de leer con el llamador falta alguna de esas columnas y la fila la tiene con valor (se comprueba con una lectura SYSTEM de solo esas columnas, sin devolver los valores a quien llama), se rechaza con `CARP-GEN-012` antes de la primera escritura. Un formato del banco nunca sale sin la cédula ni la cuenta por un problema de permisos, y el mensaje dice qué hacer. Si la columna está vacía en la fila, no es falta de permiso y sigue la regla de faltantes que ya existe.
 
 ### 1.2 `sanic_carp_capi_reconciliarcorreos` (inv. 8.3, 7.19)
 
@@ -499,6 +500,7 @@ Mueve los correos de una conversación de origen a una de destino. Fuente: def. 
 | `CARP-UNI-008` | La conversación de origen ya recibió otras conversaciones. Una unión sobre otra unión no está permitida: una el destino sobre el origen o elija otro destino. | no |
 | `CARP-UNI-009` | La conversación de origen tiene más de 1.000 correos y no se puede unir en una sola operación. | no |
 | `CARP-UNI-010` | Las dos conversaciones son de clientes distintos. Solo se pueden unir conversaciones del mismo cliente. | no |
+| `CARP-UNI-011` | La conversación de destino tiene demasiados correos para recalcular sus tiempos en una sola operación. | no |
 | `CARP-UNI-900` | No se pudo unir. No se guardó ningún cambio. Intente de nuevo. | sí |
 
 **Pruebas de aceptación** (`Aceptacion/UnirConversacionesAceptacion.cs`)
@@ -537,7 +539,7 @@ Mueve los correos de una conversación de origen a una de destino. Fuente: def. 
 2. **Orden de rechazos.** `-001`, `-002`, `-003`, `-004`, `-005`, `-010`, ciclo `-007`, cadena `-006`, `-008`, `-009`. Todas las lecturas (correos del origen con tope 1.001, correos del destino, ids de arreglos) preceden a la primera escritura; el recálculo se hace en memoria con `RecalcularTrasUnion` sobre origen y destino.
 3. **Orden de escritura.** Correos del origen, arreglos, destino (solo columnas que cambian, sin versión de fila; sin cambios no hay `Update`), origen al final con `IfRowVersionMatches`. El origen sin `VersionDeFila` lanza antes de escribir.
 4. **Fallas.** Versión de fila que no coincide y cualquier otra falla ⇒ `CARP-UNI-900` y la plataforma revierte los correos movidos. Un rechazo de un step anidado sale tal cual.
-5. **Límite sin código.** `ICorreos.DeConversacion` admite como máximo 5.000: si el destino devuelve 5.000 el recálculo no es confiable y se lanza `InvalidOperationException` (`CARP-UNI-900`, que no es el mensaje correcto). Va a "Para el orquestador".
+5. **Destino con 5.000 correos o más.** `ICorreos.DeConversacion` admite como máximo 5.000: se piden 5.000 y, si vuelven 5.000, el recálculo no es confiable y se rechaza con `CARP-UNI-011`, **antes de la primera escritura** (decisión del orquestador, 2026-10-19: un `-900` invitaría a reintentar algo que nunca va a pasar). Es inalcanzable en la práctica, pero falla cerrado y con un mensaje honesto.
 6. **Riesgos sin medir.** H-19 (a) (los steps ven SYSTEM en las escrituras anidadas) y el tiempo de hasta 2.000 `Update` secuenciales dentro de los 2 minutos (H-30).
 
 ### 1.5 `sanic_carp_capi_iniciarconversacionnueva` (inv. 8.6, 7.22)
