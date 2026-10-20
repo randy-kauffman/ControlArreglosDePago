@@ -1,0 +1,50 @@
+[
+ {
+  "inicio": "2026-10-20T14:37:58.987Z",
+  "tipo": "GenerarFormatoApi",
+  "msg": "sanic_carp_capi_generarformato",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 297,
+  "corr": "20224d47",
+  "lineas": [
+   "[GenerarFormatoApi] entrada profundidad=1",
+   "[GenerarFormatoApi] generarformato arreglo=adb8d4bb-93cc-f111-a05b-00224808ffcd vistaPrevia=no",
+   "[GenerarFormatoApi] rechazo CARP-GEN-012"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-GEN-012: No tiene permiso para ver los datos sensibles del cliente que lleva el formato. Pida a su administrador que lo agreguen al perfil de datos sensibles del área.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFa"
+ },
+ {
+  "inicio": "2026-10-20T14:37:59.537Z",
+  "tipo": "GenerarFormatoApi",
+  "msg": "sanic_carp_capi_generarformato",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "b68e5a5f",
+  "lineas": [
+   "[GenerarFormatoApi] entrada profundidad=1",
+   "[GenerarFormatoApi] generarformato arreglo=a7b8d4bb-93cc-f111-a05b-00224808ffcd vistaPrevia=no",
+   "[GenerarFormatoApi] rechazo CARP-GEN-012"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-GEN-012: No tiene permiso para ver los datos sensibles del cliente que lleva el formato. Pida a su administrador que lo agreguen al perfil de datos sensibles del área.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFa"
+ },
+ {
+  "inicio": "2026-10-20T14:38:16.317Z",
+  "tipo": "GenerarFormatoApi",
+  "msg": "sanic_carp_capi_generarformato",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 234,
+  "corr": "40f090b6",
+  "lineas": [
+   "[GenerarFormatoApi] entrada profundidad=1",
+   "[GenerarFormatoApi] generarformato arreglo=a1b8d4bb-93cc-f111-a05b-00224808ffcd vistaPrevia=no",
+   "[GenerarFormatoApi] rechazo CARP-GEN-012"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-GEN-012: No tiene permiso para ver los datos sensibles del cliente que lleva el formato. Pida a su administrador que lo agreguen al perfil de datos sensibles del área.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFa"
+ }
+]

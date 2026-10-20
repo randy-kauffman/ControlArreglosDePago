@@ -1,0 +1,150 @@
+[
+ {
+  "prueba": "H-32",
+  "sub": "lectura directa (Web API) del Cliente propiedad del admin: sin acceso",
+  "ok": false,
+  "esperado": "4xx",
+  "obtenido": [
+   200,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-32",
+  "sub": "lectura directa del Arreglo propiedad del admin: sin acceso",
+  "ok": false,
+  "esperado": "4xx",
+  "obtenido": [
+   200,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-32",
+  "sub": "lectura directa del Arreglo h32cli (propiedad del team): legible",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": [
+   200,
+   "ok"
+  ]
+ },
+ {
+  "prueba": "H-32",
+  "sub": "GenerarFormato sobre un Arreglo que el llamador no puede leer: el Retrieve falla, LeerOMenos lo atrapa y sale CARP-GEN-002 (no GEN-900)",
+  "ok": false,
+  "esperado": "4xx CARP-GEN-002",
+  "obtenido": [
+   400,
+   "CARP-GEN-012",
+   "CARP-GEN-012: No tiene permiso para ver los datos sensibles del cliente que lleva el formato. Pida a su administrador que lo agreguen al perfil de datos sensibles del área.",
+   0.53
+  ]
+ },
+ {
+  "prueba": "H-32",
+  "sub": "GenerarFormato con el Cliente ilegible (arreglo legible): el Retrieve del Cliente falla, se atrapa y sale CARP-GEN-002",
+  "ok": false,
+  "esperado": "4xx CARP-GEN-002",
+  "obtenido": [
+   400,
+   "CARP-GEN-012",
+   "CARP-GEN-012: No tiene permiso para ver los datos sensibles del cliente que lleva el formato. Pida a su administrador que lo agreguen al perfil de datos sensibles del área.",
+   0.32
+  ]
+ },
+ {
+  "prueba": "H-32",
+  "sub": "tras el rechazo no queda congelamiento ni bitacora (la transaccion se revirtio entera)",
+  "ok": true,
+  "esperado": "sin congelar",
+  "obtenido": null
+ },
+ {
+  "prueba": "H-4",
+  "sub": "SIN perfil de columna: generarformato del Oficial sobre un Borrador legible rechaza con CARP-GEN-012 (la cuenta falta en su lectura y SYSTEM la ve)",
+  "ok": true,
+  "esperado": "4xx CARP-GEN-012",
+  "obtenido": [
+   400,
+   "CARP-GEN-012",
+   "CARP-GEN-012: No tiene permiso para ver los datos sensibles del cliente que lleva el formato. Pida a su administrador que lo agreguen al perfil de datos sensibles del área.",
+   0.47
+  ]
+ },
+ {
+  "prueba": "H-4",
+  "sub": "el rechazo GEN-012 no congela el arreglo",
+  "ok": true,
+  "esperado": "sin congelar",
+  "obtenido": null
+ },
+ {
+  "prueba": "H-13",
+  "sub": "linea base SIN perfil: lectura directa de las dos columnas protegidas viene nula",
+  "ok": true,
+  "esperado": "ambas null",
+  "obtenido": {
+   "sanic_cuentadebitar": null,
+   "sanic_instantaneacedula": null
+  }
+ },
+ {
+  "prueba": "H-16",
+  "sub": "(c) SIN perfil, Update con la columna protegida Y una solo-sistema (CARP-ARR-009 de S-21): que falla primero",
+  "ok": true,
+  "esperado": "medicion",
+  "obtenido": [
+   400,
+   "CARP-ARR-009",
+   "CARP-ARR-009: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_numeroarreglo."
+  ]
+ },
+ {
+  "prueba": "H-16",
+  "sub": "(c) SIN perfil, Update solo de la columna protegida",
+  "ok": true,
+  "esperado": "medicion",
+  "obtenido": [
+   403,
+   null,
+   "Caller user with Id 32122bbd-56c3-f111-a05a-000d3a35abca does not have update permissions to a Cuenta a debitar secured field on entity Arreglo. The requested operation could not be completed."
+  ]
+ },
+ {
+  "prueba": "H-16",
+  "sub": "(c) S-21 se ejecuto en el Update con columna protegida + solo-sistema? (si hay traza 'rechazo CARP-ARR-009' el step corrio antes que el chequeo de columna)",
+  "ok": true,
+  "esperado": "medicion",
+  "obtenido": {
+   "trazas_S21": 0,
+   "lineas": []
+  }
+ },
+ {
+  "prueba": "H-13",
+  "sub": "SIN perfil: 6 PATCH de comentarios pasan; duracion de S-21 (ms) como linea base",
+  "ok": true,
+  "esperado": "204 x6",
+  "obtenido": {
+   "http": [
+    204,
+    204,
+    204,
+    204,
+    204,
+    204
+   ],
+   "s21_ms": [
+    31,
+    46,
+    15,
+    15,
+    31,
+    31,
+    15,
+    31
+   ]
+  }
+ }
+]

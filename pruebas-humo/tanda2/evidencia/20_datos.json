@@ -1,0 +1,130 @@
+[
+ {
+  "prueba": "datos",
+  "sub": "cliente-t2-adm (propiedad del admin)",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": [
+   201,
+   null,
+   "a0b8d4bb-93cc-f111-a05b-00224808ffcd"
+  ]
+ },
+ {
+  "prueba": "datos",
+  "sub": "arreglo-t2-gen",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": [
+   201,
+   null,
+   "a1b8d4bb-93cc-f111-a05b-00224808ffcd"
+  ]
+ },
+ {
+  "prueba": "datos",
+  "sub": "arreglo-t2-h32cli",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": [
+   201,
+   null,
+   "a7b8d4bb-93cc-f111-a05b-00224808ffcd"
+  ]
+ },
+ {
+  "prueba": "datos",
+  "sub": "arreglo-t2-h32arr",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": [
+   201,
+   null,
+   "adb8d4bb-93cc-f111-a05b-00224808ffcd"
+  ]
+ },
+ {
+  "prueba": "datos",
+  "sub": "arreglo-t2-h8",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": [
+   201,
+   null,
+   "b3b8d4bb-93cc-f111-a05b-00224808ffcd"
+  ]
+ },
+ {
+  "prueba": "datos",
+  "sub": "arreglo-t2-h19",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": [
+   201,
+   null,
+   "b7b8d4bb-93cc-f111-a05b-00224808ffcd"
+  ]
+ },
+ {
+  "prueba": "datos",
+  "sub": "h8: generar formato (admin)",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": [
+   200,
+   null,
+   {
+    "numeroprovisional": 1,
+    "congelado": true
+   }
+  ]
+ },
+ {
+  "prueba": "datos",
+  "sub": "h8: formalizar -> Vigente congelado",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   {
+    "statuscode": 159460001,
+    "sanic_fechacongelamiento": "2026-10-20T14:37:21Z",
+    "sanic_carp_tbl_arregloid": "b3b8d4bb-93cc-f111-a05b-00224808ffcd",
+    "sanic_numeroarreglo": 1,
+    "statecode": 0
+   }
+  ]
+ },
+ {
+  "prueba": "datos",
+  "sub": "h19: generar formato (admin)",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": [
+   200,
+   null,
+   {
+    "numeroprovisional": 1,
+    "congelado": true
+   }
+  ]
+ },
+ {
+  "prueba": "datos",
+  "sub": "h19: formalizar -> Vigente congelado",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   {
+    "statuscode": 159460001,
+    "sanic_fechacongelamiento": "2026-10-20T14:37:22Z",
+    "sanic_carp_tbl_arregloid": "b7b8d4bb-93cc-f111-a05b-00224808ffcd",
+    "sanic_numeroarreglo": 1,
+    "statecode": 0
+   }
+  ]
+ }
+]

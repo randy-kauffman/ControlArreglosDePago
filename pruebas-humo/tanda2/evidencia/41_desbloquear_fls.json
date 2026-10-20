@@ -1,0 +1,16 @@
+[
+ {
+  "prueba": "FLS",
+  "sub": "Oficial no admin: Desbloquear un Borrador congelado (S-21 vacia las 4 instantaneas y el provisional)",
+  "ok": false,
+  "esperado": "204 (hallazgo si es 403)",
+  "obtenido": [
+   403,
+   null,
+   "Caller user with Id 32122bbd-56c3-f111-a05a-000d3a35abca does not have update permissions to a Cliente al congelar: cedula secured field on entity Arreglo. The requested operation could not be completed.",
+   "congelado antes/despues:",
+   true,
+   true
+  ]
+ }
+]

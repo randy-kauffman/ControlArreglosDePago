@@ -1,0 +1,44 @@
+[
+ {
+  "prueba": "H-32",
+  "sub": "reasignar cliente-t2-adm a un usuario de la BU raiz",
+  "ok": false,
+  "esperado": 204,
+  "obtenido": [
+   400,
+   "CARP-PRO-001",
+   "CARP-PRO-001: Los registros de esta solución pertenecen siempre al equipo del área. No se puede cambiar el propietario."
+  ]
+ },
+ {
+  "prueba": "H-32",
+  "sub": "SPIKE4 lee cliente-t2-adm directamente",
+  "ok": true,
+  "esperado": "medicion (se busca 4xx)",
+  "obtenido": [
+   200,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-32",
+  "sub": "reasignar arreglo-t2-h32arr a un usuario de la BU raiz",
+  "ok": false,
+  "esperado": 204,
+  "obtenido": [
+   400,
+   "CARP-PRO-001",
+   "CARP-PRO-001: Los registros de esta solución pertenecen siempre al equipo del área. No se puede cambiar el propietario."
+  ]
+ },
+ {
+  "prueba": "H-32",
+  "sub": "SPIKE4 lee arreglo-t2-h32arr directamente",
+  "ok": true,
+  "esperado": "medicion (se busca 4xx)",
+  "obtenido": [
+   200,
+   ""
+  ]
+ }
+]

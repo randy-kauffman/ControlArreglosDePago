@@ -1,0 +1,130 @@
+[
+ {
+  "prueba": "H-13",
+  "sub": "CON perfil por team: lectura directa trae la cuenta real",
+  "ok": true,
+  "esperado": "HUMO-cta-T201",
+  "obtenido": {
+   "sanic_cuentadebitar": "HUMO-cta-T201",
+   "sanic_instantaneacedula": null
+  }
+ },
+ {
+  "prueba": "H-13",
+  "sub": "CON perfil: reenviar la cuenta igual = no cambio (204); cambiarla = permitido en Borrador (el perfil da update); restaurarla",
+  "ok": true,
+  "esperado": "204 en todos",
+  "obtenido": {
+   "comentarios": [
+    204,
+    204,
+    204,
+    204,
+    204,
+    204
+   ],
+   "igual": [
+    204,
+    null,
+    ""
+   ],
+   "cambio": [
+    204,
+    null,
+    ""
+   ],
+   "vuelta": [
+    204,
+    null,
+    ""
+   ]
+  }
+ },
+ {
+  "prueba": "H-13",
+  "sub": "CON perfil: duraciones de S-21 (ms), a comparar con la linea base sin perfil (31,46,15,15,31,31,15,31)",
+  "ok": true,
+  "esperado": "medicion",
+  "obtenido": []
+ },
+ {
+  "prueba": "H-16",
+  "sub": "(c) CON perfil, columna protegida + solo-sistema: la falla viene de S-21 (CARP-ARR-009)",
+  "ok": true,
+  "esperado": "400 ARR-009",
+  "obtenido": [
+   400,
+   "CARP-ARR-009",
+   "CARP-ARR-009: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_numeroarreglo."
+  ]
+ },
+ {
+  "prueba": "H-4",
+  "sub": "Oficial NO admin (rol Oficial por el team default + perfil por el team): generarformato OK, congela, provisional 1, bitacora con generadoporid = SPIKE4, xlsx valido",
+  "ok": true,
+  "esperado": "200, congelado, bitacora con SPIKE4",
+  "obtenido": [
+   200,
+   null,
+   {
+    "archivo": "42940 chars b64",
+    "nombrearchivo": "F-NIC-0000052-ARR-001066.xlsx",
+    "numeroprovisional": 1,
+    "congelado": true,
+    "advertencias": ""
+   },
+   {
+    "sanic_instantaneanombre": "HUMO Cliente 01",
+    "statuscode": 1,
+    "sanic_fechacongelamiento": "2026-10-20T14:43:04Z",
+    "sanic_carp_tbl_arregloid": "a1b8d4bb-93cc-f111-a05b-00224808ffcd",
+    "sanic_instantaneacedula": "HUMO-CED-01",
+    "statecode": 0,
+    "sanic_numeroprovisional": 1
+   },
+   1,
+   "zip_ok=True",
+   1.08
+  ],
+  "segundos": 1.08
+ },
+ {
+  "prueba": "H-4",
+  "sub": "la instantanea de la cedula quedo escrita (SYSTEM) y el Oficial la lee (perfil: lectura)",
+  "ok": true,
+  "esperado": "cedula del cliente",
+  "obtenido": "presente"
+ },
+ {
+  "prueba": "H-13",
+  "sub": "CON perfil, arreglo congelado: SPIKE4 lee sanic_instantaneacedula (el efecto de la pre-imagen de S-21 sobre la columna de solo lectura)",
+  "ok": true,
+  "esperado": "valor presente",
+  "obtenido": {
+   "sanic_instantaneacedula": "presente",
+   "sanic_instantaneanombre": "presente"
+  }
+ },
+ {
+  "prueba": "H-13",
+  "sub": "Congelado: reenviar cuenta e instantanea de cedula IGUALES no es cambio (S-21 con pre-imagen completa)",
+  "ok": true,
+  "esperado": "204 (o 403 de columna sin update en instantaneacedula)",
+  "obtenido": [
+   403,
+   null,
+   "Caller user with Id 32122bbd-56c3-f111-a05a-000d3a35abca does not have update permissions to a Cliente al congelar: cedula secured field on entity Arreglo. The requested operation could not be completed."
+  ]
+ },
+ {
+  "prueba": "H-13",
+  "sub": "Congelado: cambiar la cuenta (dato del acuerdo) se rechaza CARP-ARR-011 (S-21 ve el valor anterior)",
+  "ok": true,
+  "esperado": "400 ARR-011",
+  "obtenido": [
+   400,
+   "CARP-ARR-011",
+   "CARP-ARR-011: El arreglo está congelado: no se puede modificar sanic_cuentadebitar. Si el formato no se ha firmado, desbloquéelo; si ya está vigente, solo la jefatura puede reabrirlo."
+  ]
+ }
+]

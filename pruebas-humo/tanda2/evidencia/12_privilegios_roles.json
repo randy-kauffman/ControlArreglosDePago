@@ -1,0 +1,57 @@
+{
+ "SR - CARP - Purga": {
+  "prvDeletesanic_carp_tbl_arreglo": "Local(BU)",
+  "prvDeletesanic_carp_tbl_cliente": "Local(BU)",
+  "prvDeletesanic_carp_tbl_conversacion": "Local(BU)",
+  "prvDeletesanic_carp_tbl_cuota": "Local(BU)",
+  "prvDeletesanic_carp_tbl_generacionformato": "Local(BU)",
+  "prvReadTeam": "Global(org)",
+  "prvReadsanic_carp_tbl_arreglo": "Local(BU)",
+  "prvReadsanic_carp_tbl_cliente": "Local(BU)",
+  "prvReadsanic_carp_tbl_conversacion": "Local(BU)",
+  "prvReadsanic_carp_tbl_cuota": "Local(BU)",
+  "prvReadsanic_carp_tbl_generacionformato": "Local(BU)"
+ },
+ "SR - CARP - Oficial": {
+  "prvAppendToQueue": "Local(BU)",
+  "prvAppendTosanic_carp_tbl_arreglo": "Local(BU)",
+  "prvAppendTosanic_carp_tbl_cliente": "Local(BU)",
+  "prvAppendTosanic_carp_tbl_conversacion": "Local(BU)",
+  "prvAppendTosanic_carp_tbl_versionplantilla": "Local(BU)",
+  "prvAppendsanic_carp_tbl_arreglo": "Local(BU)",
+  "prvAppendsanic_carp_tbl_cliente": "Local(BU)",
+  "prvAppendsanic_carp_tbl_conversacion": "Local(BU)",
+  "prvCreatesanic_carp_tbl_arreglo": "Local(BU)",
+  "prvCreatesanic_carp_tbl_cliente": "Local(BU)",
+  "prvReadQueue": "Local(BU)",
+  "prvReadTeam": "Global(org)",
+  "prvReadsanic_carp_tbl_arreglo": "Local(BU)",
+  "prvReadsanic_carp_tbl_cliente": "Local(BU)",
+  "prvReadsanic_carp_tbl_conversacion": "Local(BU)",
+  "prvReadsanic_carp_tbl_cuota": "Local(BU)",
+  "prvReadsanic_carp_tbl_generacionformato": "Local(BU)",
+  "prvReadsanic_carp_tbl_mapeocelda": "Local(BU)",
+  "prvReadsanic_carp_tbl_versionplantilla": "Local(BU)",
+  "prvWritesanic_carp_tbl_arreglo": "Local(BU)",
+  "prvWritesanic_carp_tbl_cliente": "Local(BU)",
+  "prvWritesanic_carp_tbl_conversacion": "Local(BU)",
+  "prvWritesanic_carp_tbl_cuota": "Local(BU)"
+ },
+ "SR - CARP - Jefe": {
+  "prvAppendsanic_carp_tbl_mapeocelda": "Local(BU)",
+  "prvAppendsanic_carp_tbl_versionplantilla": "Local(BU)",
+  "prvCreatesanic_carp_tbl_mapeocelda": "Local(BU)",
+  "prvCreatesanic_carp_tbl_versionplantilla": "Local(BU)",
+  "prvDeletesanic_carp_tbl_mapeocelda": "Local(BU)",
+  "prvReadTeam": "Global(org)",
+  "prvWritesanic_carp_tbl_mapeocelda": "Local(BU)",
+  "prvWritesanic_carp_tbl_versionplantilla": "Local(BU)"
+ },
+ "SR - CARP - Servicio": {
+  "prvCreatesanic_carp_tbl_conversacion": "Local(BU)",
+  "prvReadQueue": "Local(BU)",
+  "prvReadTeam": "Global(org)",
+  "prvReadsanic_carp_tbl_arreglo": "Local(BU)",
+  "prvReadsanic_carp_tbl_conversacion": "Local(BU)"
+ }
+}

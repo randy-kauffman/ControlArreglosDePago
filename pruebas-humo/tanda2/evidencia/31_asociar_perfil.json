@@ -1,0 +1,56 @@
+[
+ {
+  "prueba": "13.8",
+  "sub": "perfil sin miembros antes",
+  "ok": true,
+  "esperado": "vacio",
+  "obtenido": {
+   "usuarios": [],
+   "teams": []
+  }
+ },
+ {
+  "prueba": "13.8",
+  "sub": "asociar el perfil al team default",
+  "ok": true,
+  "esperado": "204",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "prueba": "13.8",
+  "sub": "asociar el perfil al team Jefatura",
+  "ok": true,
+  "esperado": "204",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "prueba": "13.8",
+  "sub": "releido: el perfil tiene los dos teams y ningun usuario directo",
+  "ok": true,
+  "esperado": "2 teams, 0 usuarios",
+  "obtenido": {
+   "usuarios": [],
+   "teams": [
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+    "31bc18e7-f9c3-f111-a05a-7ced8d3c456b"
+   ]
+  }
+ },
+ {
+  "prueba": "13.8",
+  "sub": "SPIKE4 (solo por el team default) lee la cuenta a debitar con el perfil asociado al TEAM",
+  "ok": true,
+  "esperado": "valor real",
+  "obtenido": {
+   "sanic_cuentadebitar": "HUMO-cta-T201",
+   "sanic_instantaneacedula": null
+  },
+  "segundos_hasta_verlo": 0
+ }
+]

@@ -1,0 +1,162 @@
+[
+ {
+  "prueba": "H-19",
+  "sub": "(b) Oficial NO admin paga la cuota 1 de 2: pasa y el arreglo sigue Vigente",
+  "ok": true,
+  "esperado": "204 y Vigente",
+  "obtenido": [
+   204,
+   null,
+   "",
+   0
+  ]
+ },
+ {
+  "prueba": "H-19",
+  "sub": "(b) Oficial NO admin paga la ULTIMA cuota: S-24 escribe el arreglo con SYSTEM, S-21 lo deja pasar (DC-03), queda Terminado sin CARP-ARR-010",
+  "ok": true,
+  "esperado": "204 y Terminado (1/2) con fechatermino",
+  "obtenido": [
+   204,
+   null,
+   "",
+   {
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "b7b8d4bb-93cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": "2026-10-20T14:43:56Z",
+    "statecode": 1
+   },
+   0.49
+  ],
+  "segundos": 0.49
+ },
+ {
+  "prueba": "H-8",
+  "sub": "SIN Jefatura: el Oficial intenta reabrir un Vigente congelado: CARP-ARR-016",
+  "ok": true,
+  "esperado": "400 ARR-016",
+  "obtenido": [
+   400,
+   "CARP-ARR-016",
+   "CARP-ARR-016: Solo la jefatura puede reabrir un arreglo."
+  ]
+ },
+ {
+  "prueba": "H-8",
+  "sub": "SIN Jefatura: el Oficial intenta reabrir un Terminado: CARP-ARR-016",
+  "ok": true,
+  "esperado": "400 ARR-016",
+  "obtenido": [
+   400,
+   "CARP-ARR-016",
+   "CARP-ARR-016: Solo la jefatura puede reabrir un arreglo."
+  ]
+ },
+ {
+  "prueba": "H-12",
+  "sub": "(b) Oficial (sin Jefatura) intenta subir el archivo de un Borrador: la plataforma lo niega (sin prvWrite versionplantilla)",
+  "ok": true,
+  "esperado": "403",
+  "obtenido": [
+   403,
+   null,
+   "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivil"
+  ]
+ },
+ {
+  "prueba": "H-8",
+  "sub": "agregar a SPIKE4 a Jefatura (temporal)",
+  "ok": true,
+  "esperado": "204",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "prueba": "H-8",
+  "sub": "CON Jefatura: el mismo gesto (reabrir Vigente congelado) pasa; descongela, cuenta la reapertura, reabiertoporid = SPIKE4",
+  "ok": false,
+  "esperado": "204, sin congelar, reaperturas 1, reabiertoporid=SPIKE4",
+  "obtenido": [
+   [
+    403,
+    null,
+    "Caller user with Id 32122bbd-56c3-f111-a05a-000d3a35abca does not have update permissions to a Cliente al congelar: cedula secured field on entity Arreglo. The requested operation could not be complet",
+    1
+   ],
+   {
+    "statuscode": 159460001,
+    "sanic_fechacongelamiento": "2026-10-20T14:37:21Z",
+    "_sanic_reabiertoporid_value": null,
+    "sanic_fechareapertura": null,
+    "sanic_carp_tbl_arregloid": "b3b8d4bb-93cc-f111-a05b-00224808ffcd",
+    "statecode": 0,
+    "sanic_cantidadreaperturas": 0
+   }
+  ]
+ },
+ {
+  "prueba": "H-8",
+  "sub": "CON Jefatura: reabrir un Terminado (gesto ReabrirTerminado) pasa y queda Vigente",
+  "ok": false,
+  "esperado": "204, Vigente",
+  "obtenido": [
+   403,
+   null,
+   "Caller user with Id 32122bbd-56c3-f111-a05a-000d3a35abca does not have update permissions to a Cliente al congelar: cedula secured field on entity Arreglo. The requested operation could not be complet",
+   {
+    "statuscode": 2,
+    "sanic_carp_tbl_arregloid": "b7b8d4bb-93cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": "2026-10-20T14:43:56Z",
+    "statecode": 1,
+    "sanic_cantidadreaperturas": 0
+   }
+  ]
+ },
+ {
+  "prueba": "H-12",
+  "sub": "(b) Jefe NO admin: subida y reemplazo del archivo sobre un Borrador pasan (las dos pasadas del reemplazo)",
+  "ok": true,
+  "esperado": "2xx y archivo nuevo",
+  "obtenido": [
+   "HUMO-v94.xlsx",
+   [
+    204,
+    null,
+    ""
+   ],
+   "HUMO-T2-jefe-1.xlsx",
+   [
+    204,
+    null,
+    ""
+   ],
+   "HUMO-T2-jefe-2.xlsx"
+  ]
+ },
+ {
+  "prueba": "H-12",
+  "sub": "(b) Jefe NO admin: reemplazo del archivo de la Vigente v91: CARP-VER-003 y el archivo queda como estaba",
+  "ok": true,
+  "esperado": "4xx VER-003 y archivo igual",
+  "obtenido": [
+   400,
+   "CARP-VER-003",
+   "CARP-VER-003: Solo una versión en Borrador se puede modificar. Para cambiar el formato cree una versión nueva.",
+   "HUMO-v91.xlsx",
+   "HUMO-v91.xlsx"
+  ]
+ },
+ {
+  "prueba": "H-12",
+  "sub": "(b) Jefe NO admin: editar la capacidad de un Borrador pasa (control)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ }
+]

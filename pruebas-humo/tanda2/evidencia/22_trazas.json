@@ -1,0 +1,18 @@
+[
+ {
+  "inicio": "2026-10-20T14:41:07.653Z",
+  "tipo": "GenerarFormatoApi",
+  "msg": "sanic_carp_capi_generarformato",
+  "ent": "none",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 140,
+  "corr": "a0f8bf41",
+  "lineas": [
+   "[GenerarFormatoApi] entrada profundidad=1",
+   "[GenerarFormatoApi] generarformato arreglo=c164835f-9f1a-42a8-8057-5751ba100b14 vistaPrevia=no",
+   "[GenerarFormatoApi] rechazo CARP-GEN-002"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-GEN-002: No se encontró el arreglo o no tiene acceso a él.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid "
+ }
+]

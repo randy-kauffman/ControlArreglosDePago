@@ -1,0 +1,18 @@
+[
+ {
+  "inicio": "2026-10-20T14:45:32.4Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 23,
+  "corr": "72661216",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=a1b8d4bb-93cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] columnas escritas: sanic_instantaneanombre, sanic_instantaneacedula, sanic_instantaneacorreo, sanic_instantaneacelular, sanic_numeroprovisional",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ }
+]

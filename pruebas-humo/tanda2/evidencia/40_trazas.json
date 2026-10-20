@@ -1,0 +1,305 @@
+[
+ {
+  "inicio": "2026-10-20T14:43:56.41Z",
+  "tipo": "CuotaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "1b549fc4",
+  "lineas": [
+   "[CuotaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=b9b8d4bb-93cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[CuotaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:43:56.473Z",
+  "tipo": "CuotaTerminarArregloStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "1b549fc4",
+  "lineas": [
+   "[CuotaTerminarArregloStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=b9b8d4bb-93cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[CuotaTerminarArregloStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:43:57.02Z",
+  "tipo": "CuotaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "528e7b89",
+  "lineas": [
+   "[CuotaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=bab8d4bb-93cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[CuotaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:43:57.067Z",
+  "tipo": "CuotaTerminarArregloStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_cuota",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 171,
+  "corr": "528e7b89",
+  "lineas": [
+   "[CuotaTerminarArregloStep] entrada mensaje=Update tabla=sanic_carp_tbl_cuota id=bab8d4bb-93cc-f111-a05b-00224808ffcd etapa=PostOperation modo=sincrono profundidad=1",
+   "[CuotaTerminarArregloStep] arreglo terminado: b7b8d4bb-93cc-f111-a05b-00224808ffcd",
+   "[CuotaTerminarArregloStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:43:57.177Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "528e7b89",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=b7b8d4bb-93cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:43:57.77Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 328,
+  "corr": "e45016d5",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=b3b8d4bb-93cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] rechazo CARP-ARR-016"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-ARR-016: Solo la jefatura puede reabrir un arreglo.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid executi"
+ },
+ {
+  "inicio": "2026-10-20T14:43:58.38Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 234,
+  "corr": "80f70c71",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=b7b8d4bb-93cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] rechazo CARP-ARR-016"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-ARR-016: Solo la jefatura puede reabrir un arreglo.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest pluginRequest, ExecuteRequest executeRequest, Guid executi"
+ },
+ {
+  "inicio": "2026-10-20T14:44:02.037Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 109,
+  "corr": "a3fb877f",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=b3b8d4bb-93cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] columnas escritas: sanic_reabiertoporid, sanic_fechareapertura, sanic_cantidadreaperturas, sanic_fechatermino, sanic_fechacongelamiento, sanic_instantaneanombre, sanic_instantaneacedula, sanic_instantaneacorreo, sanic_instantaneacelular, sanic_numeroprovisional",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:02.787Z",
+  "tipo": "ArregloActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_arreglo",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 93,
+  "corr": "241bb5f0",
+  "lineas": [
+   "[ArregloActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_arreglo id=b7b8d4bb-93cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArregloActualizarStep] columnas escritas: sanic_reabiertoporid, sanic_fechareapertura, sanic_cantidadreaperturas, sanic_fechatermino, sanic_fechacongelamiento, sanic_instantaneanombre, sanic_instantaneacedula, sanic_instantaneacorreo, sanic_instantaneacelular, sanic_numeroprovisional",
+   "[ArregloActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:06.383Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "06b50e3c",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=c1effe81-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:06.413Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "06b50e3c",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=c1effe81-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:06.6Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "06b50e3c",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=c1effe81-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:06.633Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "06b50e3c",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=c1effe81-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:07.71Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "ebbfd9d0",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=c1effe81-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:07.727Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "ebbfd9d0",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=c1effe81-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:07.803Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "ebbfd9d0",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=c1effe81-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:07.82Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "ebbfd9d0",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=c1effe81-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:08.773Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "25a1ccf0",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T14:44:08.803Z",
+  "tipo": "ArchivoDePlantillaStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 171,
+  "corr": "25a1ccf0",
+  "lineas": [
+   "[ArchivoDePlantillaStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=1cdc492f-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[ArchivoDePlantillaStep] rechazo CARP-VER-003"
+  ],
+  "exc": "System.ServiceModel.FaultException`1[Microsoft.Xrm.Sdk.OrganizationServiceFault]: CARP-VER-003: Solo una versión en Borrador se puede modificar. Para cambiar el formato cree una versión nueva.\r\nat Microsoft.Xrm.RemotePlugin.Grpc.SandboxFabricGrpcClient.ExecutePluginInternal(IRemotePluginRequest plug"
+ },
+ {
+  "inicio": "2026-10-20T14:44:09.57Z",
+  "tipo": "VersionPlantillaActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_versionplantilla",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "0c906dfe",
+  "lineas": [
+   "[VersionPlantillaActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_versionplantilla id=c1effe81-91cc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[VersionPlantillaActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ }
+]
