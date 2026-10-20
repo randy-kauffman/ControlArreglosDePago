@@ -79,7 +79,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
                     consulta.Criteria.AddCondition("name", ConditionOperator.Equal, Valor(VariableNombreBu));
                     consulta.Criteria.AddCondition("isdisabled", ConditionOperator.Equal, false);
                     // TopCount 2: alcanza para distinguir "una" de "mas de una" sin traer el resto.
-                    var filas = AyudaDeConsultas.Primeras(Servicio,consulta, 2);
+                    var filas = AyudaDeConsultas.Primeras(Servicio, consulta, 2);
                     if (filas.Count != 1) throw CodigosDeError.CFG_001.Crear();
                     _buId = filas[0].Id;
                 }
@@ -96,7 +96,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
                     var consulta = AyudaDeConsultas.SoloId("team");
                     consulta.Criteria.AddCondition("businessunitid", ConditionOperator.Equal, BuId);
                     consulta.Criteria.AddCondition("isdefault", ConditionOperator.Equal, true);
-                    var filas = AyudaDeConsultas.Primeras(Servicio,consulta, 2);
+                    var filas = AyudaDeConsultas.Primeras(Servicio, consulta, 2);
                     if (filas.Count != 1) throw CodigosDeError.CFG_002.Crear();
                     _teamPropietarioId = filas[0].Id;
                 }
@@ -115,7 +115,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
                     consulta.Criteria.AddCondition("name", ConditionOperator.Equal, Valor(VariableNombreTeamJefatura));
                     consulta.Criteria.AddCondition("businessunitid", ConditionOperator.Equal, bu);
                     // TopCount 2: distingue "uno" de "mas de uno"; con varios la jefatura quedaria librada al azar (cierre del lote 4, 2026-10-19).
-                    var filas = AyudaDeConsultas.Primeras(Servicio,consulta, 2);
+                    var filas = AyudaDeConsultas.Primeras(Servicio, consulta, 2);
                     if (filas.Count != 1) throw CodigosDeError.CFG_003.Crear();
                     _teamJefaturaId = filas[0].Id;
                 }
@@ -132,7 +132,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
                     var consulta = AyudaDeConsultas.SoloId("queue");
                     consulta.Criteria.AddCondition("emailaddress", ConditionOperator.Equal, Valor(VariableBuzonArea));
                     consulta.Criteria.AddCondition("statecode", ConditionOperator.Equal, Estados.Activo);
-                    var filas = AyudaDeConsultas.Primeras(Servicio,consulta, 2);
+                    var filas = AyudaDeConsultas.Primeras(Servicio, consulta, 2);
                     if (filas.Count == 0) throw CodigosDeError.CFG_004.Crear();
                     if (filas.Count > 1) throw CodigosDeError.CFG_005.Crear();
                     _queueRemitenteId = filas[0].Id;
@@ -149,7 +149,7 @@ namespace Sanic.Carp.Plugins.Infraestructura
 
             var definiciones = new QueryExpression("environmentvariabledefinition") { ColumnSet = new ColumnSet("defaultvalue") };
             definiciones.Criteria.AddCondition("schemaname", ConditionOperator.Equal, nombre);
-            var definicion = AyudaDeConsultas.Primeras(Servicio,definiciones, 1);
+            var definicion = AyudaDeConsultas.Primeras(Servicio, definiciones, 1);
             if (definicion.Count == 0) throw CodigosDeError.CFG_006.Crear(nombre);
 
             var valores = new QueryExpression("environmentvariablevalue") { ColumnSet = new ColumnSet("value") };

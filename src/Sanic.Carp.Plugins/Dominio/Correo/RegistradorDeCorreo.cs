@@ -138,6 +138,12 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
             var direccion = Valor(correo, "directioncode") as bool?;
             if (direccion != false) return Omitir(emailId, CodigosDeError.ENT_001);
 
+            // Solo la BU del area (diseno/03 2.10 punto 13): otra BU o sin BU se omite sin escribir, buscar ni leer el team.
+            var unidad = Valor(correo, "owningbusinessunit") as ReferenciaDeEntidad;
+            // BuId se lee siempre (un CARP-CFG-001 sube aunque el correo no traiga BU, PA5F_ENT_B05).
+            var buDelArea = _configuracion.BuId;
+            if (unidad == null || unidad.Id != buDelArea) return Omitir(emailId, CodigosDeError.ENT_004);
+
             // Paso 2: la configuracion se resuelve antes de cualquier busqueda o escritura (PA-ENT-20, 2.10 decision 4).
             Guid teamId = _configuracion.TeamPropietarioId;
 
@@ -172,7 +178,7 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
                     if (existente != null)
                     {
                         encontrada = existente.Id;
-                        Trazar("correo " + Texto(emailId) + ": ruta C, huella " + huella + " ya existe");
+                        Trazar("correo " + Texto(emailId) + ": ruta C, la conversacion ya existe");
                     }
                 }
             }
@@ -212,7 +218,7 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
                     ReglasDeEntradaDeCorreo.AsuntoDeLaConversacion(Valor(correo, "subject") as string), remitente, teamId, clienteId);
                 conversacionId = _conversaciones.Crear(columnas);
                 creada = true;
-                Trazar("correo " + Texto(emailId) + ": conversacion " + Texto(conversacionId) + " creada con huella " + huella);
+                Trazar("correo " + Texto(emailId) + ": conversacion " + Texto(conversacionId) + " creada por la ruta C");
             }
 
             // Paso 8: el Email va despues de la conversacion (2.10 decision 9).

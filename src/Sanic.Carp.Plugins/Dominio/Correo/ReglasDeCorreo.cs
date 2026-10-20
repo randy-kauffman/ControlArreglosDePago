@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Sanic.Carp.Plugins.Dominio.Errores;
+using Sanic.Carp.Plugins.Dominio.Puertos;
 
 namespace Sanic.Carp.Plugins.Dominio.Correo
 {
@@ -88,7 +89,46 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
         /// </summary>
         public static ResultadoDeEvaluacion EvaluarRemitenteEnActualizacion(PedidoDeRemitenteActualizado pedido)
         {
-            throw new NotImplementedException("S-37: lo implementa el constructor (diseno/03 2.9, cierre del sublote 5f).");
+            if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+
+            // Punto 1: si el Target ya deja el correo fuera del alcance no se lee nada (PA5F_REM_U01 a U03).
+            object direccion;
+            object regarding;
+            var traeDireccion = pedido.Target.TryGetValue("directioncode", out direccion);
+            var traeRegarding = pedido.Target.TryGetValue("regardingobjectid", out regarding);
+            if (traeDireccion && !(direccion is bool && (bool)direccion)) return ResultadoDeEvaluacion.Permitir();
+            if (traeRegarding && !EsConversacion(regarding as ReferenciaDeEntidad)) return ResultadoDeEvaluacion.Permitir();
+
+            // Punto 2: UNA lectura con SYSTEM solo de lo que falta. El `from` guardado nunca se lee.
+            if (!traeDireccion || !traeRegarding)
+            {
+                var guardado = pedido.Lecturas.ColumnasDelRemitente(pedido.EmailId);
+                if (!traeDireccion) guardado.TryGetValue("directioncode", out direccion);
+                if (!traeRegarding) guardado.TryGetValue("regardingobjectid", out regarding);
+            }
+
+            // Punto 3: efectivamente no saliente o sin conversacion.
+            if (!(direccion is bool && (bool)direccion)) return ResultadoDeEvaluacion.Permitir();
+            if (!EsConversacion(regarding as ReferenciaDeEntidad)) return ResultadoDeEvaluacion.Permitir();
+
+            var queueId = pedido.Configuracion.QueueRemitenteId;
+            return DecidirPorRemitentes(pedido.Remitentes, queueId, pedido.Identidad);
+        }
+
+        private static bool EsConversacion(ReferenciaDeEntidad referencia)
+        {
+            return referencia != null && string.Equals(referencia.Tabla, Columnas.TablaConversacion, StringComparison.Ordinal);
+        }
+
+        private static ResultadoDeEvaluacion DecidirPorRemitentes(IReadOnlyList<ReferenciaDeEntidad> remitentes, Guid queueId, IIdentidadDeEjecucion identidad)
+        {
+            if (remitentes == null || remitentes.Count == 0) return PonerLaCola(queueId);
+            if (remitentes.Count > 1) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.EML_001.Crear());
+
+            var unica = remitentes[0];
+            if (unica != null && string.Equals(unica.Tabla, TablaDeCola, StringComparison.Ordinal) && unica.Id == queueId) return ResultadoDeEvaluacion.Permitir();
+            if (unica != null && string.Equals(unica.Tabla, TablaDeUsuario, StringComparison.Ordinal) && unica.Id == identidad.ActorId) return PonerLaCola(queueId);
+            return ResultadoDeEvaluacion.Rechazar(CodigosDeError.EML_001.Crear());
         }
 
         private static ResultadoDeEvaluacion PonerLaCola(Guid queueId)

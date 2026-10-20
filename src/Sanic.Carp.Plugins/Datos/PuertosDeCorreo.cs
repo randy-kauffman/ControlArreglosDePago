@@ -44,7 +44,15 @@ namespace Sanic.Carp.Plugins.Datos
         /// </summary>
         public IReadOnlyDictionary<string, object> ColumnasDelRemitente(Guid emailId)
         {
-            throw new NotImplementedException("S-37: lo implementa el constructor (diseno/03 2.9, cierre del sublote 5f).");
+            var fila = new CorreosDataverse(_servicio()).Leer(emailId, ReglasDeCorreo.ColumnasDelRemitente);
+            var valores = new Dictionary<string, object>(StringComparer.Ordinal);
+            foreach (var columna in ReglasDeCorreo.ColumnasDelRemitente)
+            {
+                object valor = null;
+                if (fila != null) fila.Valores.TryGetValue(columna, out valor);
+                valores[columna] = valor;
+            }
+            return new ReadOnlyDictionary<string, object>(valores);
         }
     }
 }

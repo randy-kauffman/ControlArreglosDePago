@@ -22,7 +22,7 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
 
         private static readonly IReadOnlyList<string> DelCorreo = new ReadOnlyCollection<string>(new[]
         {
-            "directioncode", "regardingobjectid", "messageid", "inreplyto", "subject", "sender", "actualend", "createdon", "ownerid"
+            "directioncode", "regardingobjectid", "messageid", "inreplyto", "subject", "sender", "actualend", "createdon", "ownerid", "owningbusinessunit"
         });
 
         private static readonly IReadOnlyList<string> DeLaConversacion = new ReadOnlyCollection<string>(new[]
@@ -30,7 +30,7 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
             "statecode", "statuscode", "sanic_sinrespuestadesde", "sanic_correonuevoenfinalizada"
         });
 
-        /// <summary>Las 9 columnas que <see cref="RegistradorDeCorreo.Registrar"/> pide al releer el Email (2.10 paso 1), en este orden: <c>directioncode</c>, <c>regardingobjectid</c>, <c>messageid</c>, <c>inreplyto</c>, <c>subject</c>, <c>sender</c>, <c>actualend</c>, <c>createdon</c>, <c>ownerid</c>.</summary>
+        /// <summary>Las 10 columnas que <see cref="RegistradorDeCorreo.Registrar"/> pide al releer el Email (2.10 paso 1 y punto 13), en este orden: <c>directioncode</c>, <c>regardingobjectid</c>, <c>messageid</c>, <c>inreplyto</c>, <c>subject</c>, <c>sender</c>, <c>actualend</c>, <c>createdon</c>, <c>ownerid</c>, <c>owningbusinessunit</c>.</summary>
         public static IReadOnlyList<string> ColumnasDelCorreo { get { return DelCorreo; } }
 
         /// <summary>Las 4 columnas de la conversación destino que el registrador necesita para decidir (2.10 paso 6): <c>statecode</c>, <c>statuscode</c>, <c>sanic_sinrespuestadesde</c>, <c>sanic_correonuevoenfinalizada</c>.</summary>

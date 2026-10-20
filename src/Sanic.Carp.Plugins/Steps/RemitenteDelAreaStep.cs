@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Xrm.Sdk;
+using Sanic.Carp.Plugins.Datos;
 using Sanic.Carp.Plugins.Dominio;
 using Sanic.Carp.Plugins.Dominio.Correo;
 using Sanic.Carp.Plugins.Infraestructura;
@@ -81,7 +82,25 @@ namespace Sanic.Carp.Plugins.Steps
         // S-37: contrato en el comentario de la clase.
         private static void EjecutarActualizacion(ContextoDeStep contexto)
         {
-            throw new NotImplementedException("S-37: lo implementa el constructor (diseno/03 2.9, cierre del sublote 5f).");
+            // El servicio de SYSTEM es perezoso: solo se crea si la regla necesita leer lo guardado.
+            var pedido = new PedidoDeRemitenteActualizado(contexto.TargetNeutro(), RemitentesDe(contexto.Target), contexto.IdPrimario, contexto.Identidad,
+                contexto.Configuracion, new LecturasDeCorreoDataverse(() => contexto.ServicioComoSistema));
+            var resultado = ReglasDeCorreo.EvaluarRemitenteEnActualizacion(pedido);
+            if (!resultado.Permitida) throw resultado.Error;
+
+            object pedidos;
+            if (!resultado.Escribir.TryGetValue(ReglasDeCorreo.ColumnaFrom, out pedidos)) return;
+            PonerElRemitente(contexto.Target, pedidos);
+        }
+
+        private static void PonerElRemitente(Entity target, object pedidos)
+        {
+            var partes = new List<Entity>();
+            foreach (var referencia in (IReadOnlyList<ReferenciaDeEntidad>)pedidos)
+            {
+                partes.Add(new Entity("activityparty") { ["partyid"] = new EntityReference(referencia.Tabla, referencia.Id) });
+            }
+            target["from"] = new EntityCollection(partes);
         }
 
         // null = el Target no trae `from`. Una parte sin partyid cuenta como "otra parte" (ReferenciaDeEntidad vacia).
