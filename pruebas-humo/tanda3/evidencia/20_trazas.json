@@ -1,0 +1,204 @@
+[
+ {
+  "inicio": "2026-10-20T19:37:58.73Z",
+  "tipo": "RegistrarCorreoEntranteStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 1,
+  "dur_ms": 3017,
+  "corr": "0f783546",
+  "lineas": [
+   "[RegistrarCorreoEntranteStep] entrada mensaje=Create tabla=email id=a428aabc-bdcc-f111-a05b-00224808ffcd etapa=PostOperation modo=asincrono profundidad=1",
+   "[RegistrarCorreoEntranteStep] correo a428aabc-bdcc-f111-a05b-00224808ffcd: conversacion f8680dc1-bdcc-f111-a05b-000d3a340023 creada por la ruta C",
+   "[RegistrarCorreoEntranteStep] correo a428aabc-bdcc-f111-a05b-00224808ffcd: Creada en f8680dc1-bdcc-f111-a05b-000d3a340023",
+   "[RegistrarCorreoEntranteStep] resultado Creada",
+   "[RegistrarCorreoEntranteStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:37:59.933Z",
+  "tipo": "PropietarioAlCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 172,
+  "corr": "0f783546",
+  "lineas": [
+   "[PropietarioAlCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=f8680dc1-bdcc-f111-a05b-000d3a340023 etapa=PreOperation modo=sincrono profundidad=2",
+   "[PropietarioAlCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:38:00.123Z",
+  "tipo": "ConversacionCrearStep",
+  "msg": "Create",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 110,
+  "corr": "0f783546",
+  "lineas": [
+   "[ConversacionCrearStep] entrada mensaje=Create tabla=sanic_carp_tbl_conversacion id=f8680dc1-bdcc-f111-a05b-000d3a340023 etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionCrearStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:39:40.257Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "1d63bf33",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=f8680dc1-bdcc-f111-a05b-000d3a340023 etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:39:40.303Z",
+  "tipo": "ConversacionAsignacionStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "1d63bf33",
+  "lineas": [
+   "[ConversacionAsignacionStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=f8680dc1-bdcc-f111-a05b-000d3a340023 etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionAsignacionStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:39:44.633Z",
+  "tipo": "RemitenteDelAreaStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 203,
+  "corr": "0b5ca8fc",
+  "lineas": [
+   "[RemitenteDelAreaStep] entrada mensaje=Create tabla=email id=970034fd-bdcc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[RemitenteDelAreaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:39:44.85Z",
+  "tipo": "EmailSoloSistemaStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "0b5ca8fc",
+  "lineas": [
+   "[EmailSoloSistemaStep] entrada mensaje=Create tabla=email id=970034fd-bdcc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[EmailSoloSistemaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:39:46.727Z",
+  "tipo": "RemitenteDelAreaStep",
+  "msg": "Update",
+  "ent": "email",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 109,
+  "corr": "ac583a24",
+  "lineas": [
+   "[RemitenteDelAreaStep] entrada mensaje=Update tabla=email id=970034fd-bdcc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[RemitenteDelAreaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:39:48.487Z",
+  "tipo": "RegistrarCorreoEntranteStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 1,
+  "dur_ms": 187,
+  "corr": "0b5ca8fc",
+  "lineas": [
+   "[RegistrarCorreoEntranteStep] entrada mensaje=Create tabla=email id=970034fd-bdcc-f111-a05b-00224808ffcd etapa=PostOperation modo=asincrono profundidad=1",
+   "[RegistrarCorreoEntranteStep] correo 970034fd-bdcc-f111-a05b-00224808ffcd: omitido CARP-ENT-001",
+   "[RegistrarCorreoEntranteStep] resultado Omitido CARP-ENT-001",
+   "[RegistrarCorreoEntranteStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:39:49.547Z",
+  "tipo": "RespuestaEnviadaStep",
+  "msg": "Update",
+  "ent": "email",
+  "depth": 1,
+  "mode": 1,
+  "dur_ms": 171,
+  "corr": "ac583a24",
+  "lineas": [
+   "[RespuestaEnviadaStep] entrada mensaje=Update tabla=email id=970034fd-bdcc-f111-a05b-00224808ffcd etapa=PostOperation modo=asincrono profundidad=1",
+   "[RespuestaEnviadaStep] correo 970034fd-bdcc-f111-a05b-00224808ffcd: no corresponde procesarlo",
+   "[RespuestaEnviadaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:40:10.177Z",
+  "tipo": "RespuestaEnviadaStep",
+  "msg": "Update",
+  "ent": "email",
+  "depth": 1,
+  "mode": 1,
+  "dur_ms": 1875,
+  "corr": "e4709a97",
+  "lineas": [
+   "[RespuestaEnviadaStep] entrada mensaje=Update tabla=email id=970034fd-bdcc-f111-a05b-00224808ffcd etapa=PostOperation modo=asincrono profundidad=1",
+   "[RespuestaEnviadaStep] correo 970034fd-bdcc-f111-a05b-00224808ffcd: respuesta aplicada a la conversacion f8680dc1-bdcc-f111-a05b-000d3a340023",
+   "[RespuestaEnviadaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:40:11.393Z",
+  "tipo": "EmailSoloSistemaStep",
+  "msg": "Update",
+  "ent": "email",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "e4709a97",
+  "lineas": [
+   "[EmailSoloSistemaStep] entrada mensaje=Update tabla=email id=970034fd-bdcc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[EmailSoloSistemaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:40:11.94Z",
+  "tipo": "ConversacionActualizarStep",
+  "msg": "Update",
+  "ent": "sanic_carp_tbl_conversacion",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 46,
+  "corr": "e4709a97",
+  "lineas": [
+   "[ConversacionActualizarStep] entrada mensaje=Update tabla=sanic_carp_tbl_conversacion id=f8680dc1-bdcc-f111-a05b-000d3a340023 etapa=PreOperation modo=sincrono profundidad=2",
+   "[ConversacionActualizarStep] salida correcta"
+  ],
+  "exc": ""
+ }
+]

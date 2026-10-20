@@ -1,0 +1,65 @@
+[
+ {
+  "inicio": "2026-10-20T19:37:52.417Z",
+  "tipo": "RemitenteDelAreaStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 31,
+  "corr": "0f783546",
+  "lineas": [
+   "[RemitenteDelAreaStep] entrada mensaje=Create tabla=email id=a428aabc-bdcc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[RemitenteDelAreaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:37:52.463Z",
+  "tipo": "EmailSoloSistemaStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 62,
+  "corr": "0f783546",
+  "lineas": [
+   "[EmailSoloSistemaStep] entrada mensaje=Create tabla=email id=a428aabc-bdcc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[EmailSoloSistemaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:37:58.73Z",
+  "tipo": "RegistrarCorreoEntranteStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 1,
+  "dur_ms": 3017,
+  "corr": "0f783546",
+  "lineas": [
+   "[RegistrarCorreoEntranteStep] entrada mensaje=Create tabla=email id=a428aabc-bdcc-f111-a05b-00224808ffcd etapa=PostOperation modo=asincrono profundidad=1",
+   "[RegistrarCorreoEntranteStep] correo a428aabc-bdcc-f111-a05b-00224808ffcd: conversacion f8680dc1-bdcc-f111-a05b-000d3a340023 creada por la ruta C",
+   "[RegistrarCorreoEntranteStep] correo a428aabc-bdcc-f111-a05b-00224808ffcd: Creada en f8680dc1-bdcc-f111-a05b-000d3a340023",
+   "[RegistrarCorreoEntranteStep] resultado Creada",
+   "[RegistrarCorreoEntranteStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:38:01.247Z",
+  "tipo": "RemitenteDelAreaStep",
+  "msg": "Update",
+  "ent": "email",
+  "depth": 2,
+  "mode": 0,
+  "dur_ms": 250,
+  "corr": "0f783546",
+  "lineas": [
+   "[RemitenteDelAreaStep] entrada mensaje=Update tabla=email id=a428aabc-bdcc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=2",
+   "[RemitenteDelAreaStep] salida correcta"
+  ],
+  "exc": ""
+ }
+]

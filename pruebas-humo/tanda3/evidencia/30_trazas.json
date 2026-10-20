@@ -1,0 +1,50 @@
+[
+ {
+  "inicio": "2026-10-20T19:42:31.217Z",
+  "tipo": "RemitenteDelAreaStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "3aaba7a7",
+  "lineas": [
+   "[RemitenteDelAreaStep] entrada mensaje=Create tabla=email id=61e8de62-becc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[RemitenteDelAreaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:42:31.247Z",
+  "tipo": "EmailSoloSistemaStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 0,
+  "dur_ms": 15,
+  "corr": "3aaba7a7",
+  "lineas": [
+   "[EmailSoloSistemaStep] entrada mensaje=Create tabla=email id=61e8de62-becc-f111-a05b-00224808ffcd etapa=PreOperation modo=sincrono profundidad=1",
+   "[EmailSoloSistemaStep] salida correcta"
+  ],
+  "exc": ""
+ },
+ {
+  "inicio": "2026-10-20T19:42:33.73Z",
+  "tipo": "RegistrarCorreoEntranteStep",
+  "msg": "Create",
+  "ent": "email",
+  "depth": 1,
+  "mode": 1,
+  "dur_ms": 1735,
+  "corr": "3aaba7a7",
+  "lineas": [
+   "[RegistrarCorreoEntranteStep] entrada mensaje=Create tabla=email id=61e8de62-becc-f111-a05b-00224808ffcd etapa=PostOperation modo=asincrono profundidad=1",
+   "[RegistrarCorreoEntranteStep] correo 61e8de62-becc-f111-a05b-00224808ffcd: ruta A",
+   "[RegistrarCorreoEntranteStep] correo 61e8de62-becc-f111-a05b-00224808ffcd: Unida en f8680dc1-bdcc-f111-a05b-000d3a340023",
+   "[RegistrarCorreoEntranteStep] resultado Unida",
+   "[RegistrarCorreoEntranteStep] salida correcta"
+  ],
+  "exc": ""
+ }
+]

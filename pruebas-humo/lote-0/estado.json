@@ -12,5 +12,20 @@
  "mailbox": {
   "id": "8ab4a845-b1cc-f111-a05b-00224808ffcd"
  },
- "filas": []
+ "filas": [],
+ "usuarios_13_7": {
+  "fecha": "2026-10-20",
+  "oficial": {
+   "fullname": "# User 8",
+   "systemuserid": "fab4b6ed-6116-f111-8342-000d3a316609"
+  },
+  "jefe": {
+   "fullname": "# User 9",
+   "systemuserid": "7d93e3f3-6116-f111-8342-000d3a316609",
+   "en_jefatura": true
+  },
+  "roles_directos": "ninguno (Oficial por el team del sistema, Jefe por Jefatura)",
+  "script": "scripts/l03_usuarios.py",
+  "veredicto": "ya_existia"
+ }
 }

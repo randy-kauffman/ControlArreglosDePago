@@ -1,0 +1,94 @@
+[
+ {
+  "prueba": "A2",
+  "sub": "Graph acepta la respuesta del buzón 2",
+  "ok": true,
+  "esperado": 202,
+  "obtenido": 202
+ },
+ {
+  "prueba": "A2",
+  "sub": "la respuesta del cliente entra a Dataverse",
+  "ok": true,
+  "esperado": "Email entrante",
+  "obtenido": {
+   "segundos_desde_el_envio": 122
+  }
+ },
+ {
+  "prueba": "H-25",
+  "sub": "¿el Email ya nace con Regarding a la conversación? (correlación de Exchange en el Create)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "regarding_en_la_primera_lectura": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+   "correlationmethod": 3,
+   "inreplyto_informado": true
+  }
+ },
+ {
+  "prueba": "H-5",
+  "sub": "la respuesta del cliente queda en la MISMA conversación",
+  "ok": true,
+  "esperado": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+  "obtenido": {
+   "regarding": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+   "segundos": 0
+  }
+ },
+ {
+  "prueba": "H-25",
+  "sub": "ruta de S-34 para la respuesta del cliente",
+  "ok": true,
+  "esperado": "Unida (A o B), sin conversación nueva",
+  "obtenido": [
+   "[RegistrarCorreoEntranteStep] correo 61e8de62-becc-f111-a05b-00224808ffcd: ruta A",
+   "[RegistrarCorreoEntranteStep] resultado Unida"
+  ]
+ },
+ {
+  "prueba": "H-25",
+  "sub": "historial: quién escribió el Regarding (el Create de la sincronización o SYSTEM después)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": [
+   {
+    "cuando": "2026-10-20T19:42:31.263Z",
+    "operacion": 1,
+    "usuario": "1b993c98-24ef-f011-8406-7ced8d70b036",
+    "regarding": [
+     "None",
+     "f8680dc1-bdcc-f111-a05b-000d3a340023"
+    ]
+   }
+  ]
+ },
+ {
+  "prueba": "H-5",
+  "sub": "no se creó ninguna conversación nueva por la respuesta",
+  "ok": true,
+  "esperado": 0,
+  "obtenido": []
+ },
+ {
+  "prueba": "A2",
+  "sub": "la conversación vuelve a pendiente desde la llegada de la respuesta, sigue Abierta y con 1 respuesta",
+  "ok": true,
+  "esperado": "2026-10-20T19:40:59Z",
+  "obtenido": {
+   "pendiente": "2026-10-20T19:40:59Z",
+   "estado": 1,
+   "cantidad": 1
+  }
+ },
+ {
+  "prueba": "H-26",
+  "sub": "la respuesta también queda en la BU y del team del área",
+  "ok": true,
+  "esperado": "BU/team",
+  "obtenido": [
+   "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+   "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  ]
+ }
+]

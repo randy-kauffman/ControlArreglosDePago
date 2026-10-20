@@ -1,0 +1,175 @@
+[
+ {
+  "prueba": "C",
+  "sub": "conversación nueva para el buzón 3, Abierta",
+  "ok": true,
+  "esperado": "Abierta",
+  "obtenido": {
+   "nombre": "CONV-001192",
+   "segundos_a_dataverse": 31
+  }
+ },
+ {
+  "prueba": "DC-14",
+  "sub": "sin Cliente con el correo del buzón 3: la conversación queda sin cliente",
+  "ok": true,
+  "esperado": null,
+  "obtenido": null
+ },
+ {
+  "prueba": "TOM",
+  "sub": "User 8 toma la conversación C",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": [
+   200,
+   0.58
+  ]
+ },
+ {
+  "prueba": "H-6",
+  "sub": "R2 enviada y procesada por S-35 (respondidoporid = User 8)",
+  "ok": true,
+  "esperado": "Sent/User 8",
+  "obtenido": {
+   "estado": "Sent",
+   "tiempo": 0,
+   "segundos": 31
+  }
+ },
+ {
+  "prueba": "H-5",
+  "sub": "R2 llega al buzón 3 desde el buzón 1",
+  "ok": true,
+  "esperado": "PP_MAIL_BUZON_1",
+  "obtenido": {
+   "segundos": 0
+  }
+ },
+ {
+  "prueba": "FIN",
+  "sub": "User 8 finaliza la conversación C (Sin arreglo de pago)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": 204
+ },
+ {
+  "prueba": "FIN",
+  "sub": "Finalizada con quién y cuándo",
+  "ok": true,
+  "esperado": "Finalizada/User 8",
+  "obtenido": {
+   "estado": 2,
+   "finalizadopor": "fab4b6ed-6116-f111-8342-000d3a316609",
+   "fecha": "2026-10-20T19:45:34Z",
+   "tiempototal": 1
+  }
+ },
+ {
+  "prueba": "INI",
+  "sub": "antes del correo nuevo, Iniciar nueva da CARP-INI-003",
+  "ok": true,
+  "esperado": "CARP-INI-003",
+  "obtenido": [
+   400,
+   "CARP-INI-003"
+  ]
+ },
+ {
+  "prueba": "PA-ENT-07",
+  "sub": "el correo nuevo entra a la Finalizada, que sigue Finalizada con el indicador y el pendiente = su llegada",
+  "ok": true,
+  "esperado": {
+   "regarding": "f8564bb1-becc-f111-a05b-000d3a340023",
+   "estado": 2,
+   "indicador": true,
+   "pendiente": "2026-10-20T19:45:42Z"
+  },
+  "obtenido": {
+   "regarding": "f8564bb1-becc-f111-a05b-000d3a340023",
+   "estado": 2,
+   "indicador": true,
+   "pendiente": "2026-10-20T19:45:42Z",
+   "segundos": 0
+  }
+ },
+ {
+  "prueba": "INI",
+  "sub": "Iniciar conversación nueva (User 8): 200 y 1 correo movido",
+  "ok": true,
+  "esperado": "200/1",
+  "obtenido": {
+   "http": 200,
+   "segundos": 1.65,
+   "salida": {
+    "nuevaconversacionid": "ff519ddf-becc-f111-a05b-00224808ffcd",
+    "correosmovidos": 1
+   },
+   "codigo": null
+  }
+ },
+ {
+  "prueba": "INI",
+  "sub": "la nueva: Abierta, sin oficial, del team, pendiente = llegada del correo, sin cliente (la anterior no tenía)",
+  "ok": true,
+  "esperado": "Abierta/sin oficial/team",
+  "obtenido": {
+   "_sanic_finalizadoporid_value": null,
+   "_sanic_unidaaid_value": null,
+   "_sanic_oficialasignadoid_value": null,
+   "sanic_carp_tbl_conversacionid": "ff519ddf-becc-f111-a05b-00224808ffcd",
+   "sanic_correonuevoenfinalizada": false,
+   "sanic_fechaprimercorreo": "2026-10-20T19:45:42Z",
+   "sanic_resultado": null,
+   "statecode": 0,
+   "sanic_tiempoprimerarespuesta": null,
+   "sanic_cantidadrespuestas": 0,
+   "sanic_nombre": "CONV-001193",
+   "sanic_fechafinalizacion": null,
+   "_sanic_clienteid_value": null,
+   "_owningbusinessunit_value": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+   "sanic_sinrespuestadesde": "2026-10-20T19:45:42Z",
+   "sanic_tiempototal": null,
+   "statuscode": 1,
+   "_ownerid_value": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  }
+ },
+ {
+  "prueba": "INI",
+  "sub": "el correo nuevo apunta a la nueva",
+  "ok": true,
+  "esperado": "ff519ddf-becc-f111-a05b-00224808ffcd",
+  "obtenido": "ff519ddf-becc-f111-a05b-00224808ffcd"
+ },
+ {
+  "prueba": "INI",
+  "sub": "C1 y R2 siguen en la anterior",
+  "ok": true,
+  "esperado": "f8564bb1-becc-f111-a05b-000d3a340023",
+  "obtenido": [
+   "f8564bb1-becc-f111-a05b-000d3a340023",
+   "f8564bb1-becc-f111-a05b-000d3a340023"
+  ]
+ },
+ {
+  "prueba": "INI",
+  "sub": "la anterior: Finalizada, sin indicador y sin pendiente",
+  "ok": true,
+  "esperado": "Finalizada/no/None",
+  "obtenido": [
+   2,
+   false,
+   null
+  ]
+ },
+ {
+  "prueba": "PA-INI-11",
+  "sub": "segunda llamada: CARP-INI-003",
+  "ok": true,
+  "esperado": "CARP-INI-003",
+  "obtenido": [
+   400,
+   "CARP-INI-003"
+  ]
+ }
+]

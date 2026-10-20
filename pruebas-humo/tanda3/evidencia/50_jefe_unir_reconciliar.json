@@ -1,0 +1,152 @@
+[
+ {
+  "prueba": "2.4",
+  "sub": "User 8 (Oficial) no puede reasignar la conversación a otro",
+  "ok": true,
+  "esperado": "CARP-CNV-008",
+  "obtenido": [
+   400,
+   "CARP-CNV-008"
+  ]
+ },
+ {
+  "prueba": "H-8",
+  "sub": "User 9 (Jefe por Jefatura) reasigna la conversación",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": 204
+ },
+ {
+  "prueba": "H-8",
+  "sub": "la conversación A queda asignada a User 9",
+  "ok": true,
+  "esperado": "7d93e3f3-6116-f111-8342-000d3a316609",
+  "obtenido": "7d93e3f3-6116-f111-8342-000d3a316609"
+ },
+ {
+  "prueba": "UNI",
+  "sub": "Unir como User 8: 200 y 1 correo movido, 0 arreglos",
+  "ok": true,
+  "esperado": "200/1/0",
+  "obtenido": {
+   "http": 200,
+   "segundos": 1.11,
+   "salida": {
+    "destinoid": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+    "correosmovidos": 1,
+    "arreglosrepunteados": 0
+   },
+   "codigo": null,
+   "correos_origen": [
+    "000927d0-becc-f111-a05b-00224808ffcd"
+   ],
+   "pendientes_antes": [
+    "2026-10-20T19:40:59Z",
+    "2026-10-20T19:45:42Z"
+   ]
+  }
+ },
+ {
+  "prueba": "UNI",
+  "sub": "el correo del origen apunta al destino",
+  "ok": true,
+  "esperado": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+  "obtenido": [
+   "f8680dc1-bdcc-f111-a05b-000d3a340023"
+  ]
+ },
+ {
+  "prueba": "UNI",
+  "sub": "origen Unida (1/159460001), unida a A, finalizado por User 8, sin pendiente",
+  "ok": true,
+  "esperado": "Unida/A/User 8",
+  "obtenido": {
+   "_sanic_finalizadoporid_value": "fab4b6ed-6116-f111-8342-000d3a316609",
+   "_sanic_unidaaid_value": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+   "_sanic_oficialasignadoid_value": null,
+   "sanic_carp_tbl_conversacionid": "ff519ddf-becc-f111-a05b-00224808ffcd",
+   "sanic_correonuevoenfinalizada": false,
+   "sanic_fechaprimercorreo": "2026-10-20T19:45:42Z",
+   "sanic_resultado": null,
+   "statecode": 1,
+   "sanic_tiempoprimerarespuesta": null,
+   "sanic_cantidadrespuestas": 0,
+   "sanic_nombre": "CONV-001193",
+   "sanic_fechafinalizacion": "2026-10-20T19:46:54Z",
+   "_sanic_clienteid_value": null,
+   "_owningbusinessunit_value": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+   "sanic_sinrespuestadesde": null,
+   "sanic_tiempototal": null,
+   "statuscode": 159460001,
+   "_ownerid_value": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  }
+ },
+ {
+  "prueba": "UNI",
+  "sub": "destino recalculado: pendiente = mínimo, 1 respuesta procesada, cliente del destino se conserva",
+  "ok": true,
+  "esperado": {
+   "pendiente": "2026-10-20T19:40:59Z",
+   "cantidad": 1,
+   "cliente": "5248e4a9-bdcc-f111-a05b-00224808ffcd"
+  },
+  "obtenido": {
+   "pendiente": "2026-10-20T19:40:59Z",
+   "cantidad": 1,
+   "cliente": "5248e4a9-bdcc-f111-a05b-00224808ffcd"
+  }
+ },
+ {
+  "prueba": "H-7",
+  "sub": "la cuenta de servicio de Dev existe y está habilitada",
+  "ok": true,
+  "esperado": 1,
+  "obtenido": [
+   {
+    "habilitada": true,
+    "accessmode": 0
+   }
+  ]
+ },
+ {
+  "prueba": "H-7",
+  "sub": "reconciliar (lote) como la cuenta de servicio: 200 y ningún correo de la BU sin conversación",
+  "ok": true,
+  "esperado": "200/0",
+  "obtenido": {
+   "http": 200,
+   "segundos": 0.79,
+   "salida": {
+    "encontrados": 0,
+    "registrados": 0,
+    "conerror": 0,
+    "haymas": false,
+    "detalle": "[]"
+   },
+   "roles_directos_cuenta": [
+    "Approvals User",
+    "SR | CM | Admin",
+    "SR - MPPP - Supervisor",
+    "SR - MPPP - Servicio de ingesta",
+    "System Administrator",
+    "Basic User"
+   ]
+  }
+ },
+ {
+  "prueba": "H-7",
+  "sub": "reconciliar con emailid de un correo ya registrado: yatenia en su conversación",
+  "ok": true,
+  "esperado": "yatenia",
+  "obtenido": {
+   "http": 200,
+   "salida": {
+    "encontrados": 1,
+    "registrados": 1,
+    "conerror": 0,
+    "haymas": false,
+    "detalle": "[{\"emailid\":\"a428aabc-bdcc-f111-a05b-00224808ffcd\",\"resultado\":\"yatenia\",\"conversacionid\":\"f8680dc1-bdcc-f111-a05b-000d3a340023\",\"codigo\":null}]"
+   }
+  }
+ }
+]

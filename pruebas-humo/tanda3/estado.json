@@ -1,0 +1,203 @@
+{
+ "filas": [
+  {
+   "clave": "cliente-t3",
+   "conjunto": "sanic_carp_tbl_clientes",
+   "id": "5248e4a9-bdcc-f111-a05b-00224808ffcd",
+   "nota": "correo = PP_MAIL_BUZON_2"
+  }
+ ],
+ "cliente_t3": "5248e4a9-bdcc-f111-a05b-00224808ffcd",
+ "linea_base": {
+  "fecha": "2026-10-20",
+  "mailbox": {
+   "mailboxid": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+   "_regardingobjectid_value": "88b4a845-b1cc-f111-a05b-00224808ffcd",
+   "lastsuccessfulsynccompletedon": "2026-10-20T19:32:32Z",
+   "processingstatecode": 0,
+   "enabledforoutgoingemail": true,
+   "isemailaddressapprovedbyo365admin": true,
+   "outgoingemailstatus": 1,
+   "enabledforincomingemail": true,
+   "incomingemailstatus": 1
+  },
+  "primera_sincronizacion": {
+   "correos": 10,
+   "todos_entrantes": true,
+   "con_conversacion": 10,
+   "dueno_team_del_area": 10,
+   "bu_del_area": 10,
+   "actualend_mas_viejo": "2026-10-08T19:38:33Z",
+   "creados": [
+    "2026-10-20T18:10:13Z",
+    "2026-10-20T18:10:22Z"
+   ]
+  },
+  "cliente_t3": "5248e4a9-bdcc-f111-a05b-00224808ffcd"
+ },
+ "correos_enviados": [
+  {
+   "desde": "PP_MAIL_BUZON_2",
+   "para": "PP_MAIL_BUZON_1",
+   "asunto": "HUMO-T3-A Consulta de arreglo de pago",
+   "http": 202,
+   "t_envio_utc": "2026-10-20T19:37:45Z",
+   "internetMessageId": "<PH9PR06MB610612D25C193254B649F3218FD1672@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_2",
+   "para": "PP_MAIL_BUZON_1",
+   "asunto": "RE: HUMO-T3-A Consulta de arreglo de pago",
+   "http": 202,
+   "t_envio_utc": "2026-10-20T19:40:57Z",
+   "internetMessageId": "<PH9PR06MB6106121BF524728C9770EF473CD1672@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_3",
+   "para": "PP_MAIL_BUZON_1",
+   "asunto": "HUMO-T3-C Pago de cuota atrasada",
+   "http": 202,
+   "t_envio_utc": "2026-10-20T19:44:27Z",
+   "internetMessageId": "<BL0PR06MB46757EFA2C05586E4642B744D0672@BL0PR06MB4675.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_3",
+   "para": "PP_MAIL_BUZON_1",
+   "asunto": "RE: HUMO-T3-C Pago de cuota atrasada",
+   "http": 202,
+   "t_envio_utc": "2026-10-20T19:45:36Z",
+   "internetMessageId": "<BL0PR06MB46752D7EEF47DE4EBDAAB22AD0672@BL0PR06MB4675.namprd06.prod.outlook.com>"
+  }
+ ],
+ "caso_a": {
+  "http": 202,
+  "internetMessageId": "<PH9PR06MB610612D25C193254B649F3218FD1672@PH9PR06MB610612.namprd06.prod.outlook.com>",
+  "t_envio_epoch": 1792525065.4223893,
+  "asunto": "HUMO-T3-A Consulta de arreglo de pago",
+  "email_id": "a428aabc-bdcc-f111-a05b-00224808ffcd",
+  "conversacion_id": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+  "s31_rechazo": {
+   "http": 400,
+   "codigo": "CARP-EML-001"
+  },
+  "h28_borrador": {
+   "id": "8c0034fd-bdcc-f111-a05b-00224808ffcd",
+   "from_antes": [
+    [
+     "fab4b6ed-6116-f111-8342-000d3a316609",
+     "systemuser"
+    ]
+   ],
+   "patch_regarding": {
+    "http": 204,
+    "codigo": null,
+    "error": null
+   },
+   "from_despues": [
+    [
+     "88b4a845-b1cc-f111-a05b-00224808ffcd",
+     "queue"
+    ]
+   ]
+  },
+  "r1": {
+   "id": "970034fd-bdcc-f111-a05b-00224808ffcd",
+   "from_al_crear": [
+    [
+     "88b4a845-b1cc-f111-a05b-00224808ffcd",
+     "queue"
+    ]
+   ],
+   "sendemail_http": 200,
+   "sendemail_error": null,
+   "t_send_epoch": 1792525185.3804376,
+   "graph_msg_id_b2": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEMAAC9ZLU9TgbERr3wyKycax6aAAANk2m-AAA=",
+   "graph_recibido": "2026-10-20T19:40:08Z"
+  },
+  "respuesta_cliente": {
+   "http": 202,
+   "internetMessageId": "<PH9PR06MB6106121BF524728C9770EF473CD1672@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1792525257.7972915,
+   "asunto": "RE: HUMO-T3-A Consulta de arreglo de pago",
+   "email_id": "61e8de62-becc-f111-a05b-00224808ffcd"
+  }
+ },
+ "correos_salientes": [
+  {
+   "desde": "PP_MAIL_BUZON_1 (cola)",
+   "para": "PP_MAIL_BUZON_2",
+   "asunto": "RE: HUMO-T3-A Consulta de arreglo de pago",
+   "t_utc": "2026-10-20T19:39:45Z",
+   "email_id": "970034fd-bdcc-f111-a05b-00224808ffcd"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_1 (cola)",
+   "para": "PP_MAIL_BUZON_3",
+   "asunto": "RE: HUMO-T3-C Pago de cuota atrasada",
+   "t_utc": "2026-10-20T19:44:59Z",
+   "email_id": "228f04bb-becc-f111-a05b-00224808ffcd"
+  }
+ ],
+ "caso_c": {
+  "c1": {
+   "http": 202,
+   "internetMessageId": "<BL0PR06MB46757EFA2C05586E4642B744D0672@BL0PR06MB4675.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1792525467.0450563,
+   "asunto": "HUMO-T3-C Pago de cuota atrasada",
+   "email_id": "240757ab-becc-f111-a05b-00224808ffcd",
+   "segundos_a_dataverse": 31
+  },
+  "conversacion_id": "f8564bb1-becc-f111-a05b-000d3a340023",
+  "r2": {
+   "id": "228f04bb-becc-f111-a05b-00224808ffcd",
+   "sendemail_http": 200,
+   "t_send_epoch": 1792525499.5750175,
+   "graph_msg_id_b3": "AAMkAGIzYzcwYzkxLTdkYzQtNDgxMS04OWNjLTE3ODQyYjQ4NTU2OQBGAAAAAADDbc10kWWnQYr980A02yeKBwBOIkPbwFaDQpiKFtH_UYljAAAAAAEMAABOIkPbwFaDQpiKFtH_UYljAAAO1ZAJAAA="
+  },
+  "c2": {
+   "http": 202,
+   "internetMessageId": "<BL0PR06MB46752D7EEF47DE4EBDAAB22AD0672@BL0PR06MB4675.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1792525536.0538192,
+   "asunto": "RE: HUMO-T3-C Pago de cuota atrasada",
+   "email_id": "000927d0-becc-f111-a05b-00224808ffcd",
+   "segundos_a_dataverse": 31
+  },
+  "nueva": {
+   "http": 200,
+   "segundos": 1.65,
+   "salida": {
+    "nuevaconversacionid": "ff519ddf-becc-f111-a05b-00224808ffcd",
+    "correosmovidos": 1
+   },
+   "codigo": null
+  },
+  "unir": {
+   "http": 200,
+   "segundos": 1.11,
+   "salida": {
+    "destinoid": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+    "correosmovidos": 1,
+    "arreglosrepunteados": 0
+   },
+   "codigo": null,
+   "correos_origen": [
+    "000927d0-becc-f111-a05b-00224808ffcd"
+   ],
+   "pendientes_antes": [
+    "2026-10-20T19:40:59Z",
+    "2026-10-20T19:45:42Z"
+   ]
+  }
+ },
+ "cuenta_servicio_dev": {
+  "systemuserid": "8bccbe02-f1ee-f011-8406-7ced8d70b036",
+  "roles_directos": [
+   "Approvals User",
+   "SR | CM | Admin",
+   "SR - MPPP - Supervisor",
+   "SR - MPPP - Servicio de ingesta",
+   "System Administrator",
+   "Basic User"
+  ]
+ }
+}

@@ -1,0 +1,81 @@
+[
+ {
+  "prueba": "jobs",
+  "sub": "trabajos asíncronos de los plugins CARP desde las 19:30: todos Succeeded",
+  "ok": true,
+  "esperado": 0,
+  "obtenido": {
+   "total": 11,
+   "no_exitosos": []
+  }
+ },
+ {
+  "prueba": "12.15",
+  "sub": "el gráfico Promedio por respuesta ya tiene datos (respuestas con oficial)",
+  "ok": true,
+  "esperado": ">= 2",
+  "obtenido": [
+   {
+    "oficial": "fab4b6ed-6116-f111-8342-000d3a316609",
+    "minutos": 2
+   },
+   {
+    "oficial": "fab4b6ed-6116-f111-8342-000d3a316609",
+    "minutos": 0
+   }
+  ]
+ },
+ {
+  "prueba": "base",
+  "sub": "los 37 steps CARP siguen habilitados",
+  "ok": true,
+  "esperado": 37,
+  "obtenido": 37
+ },
+ {
+  "prueba": "correo",
+  "sub": "correos enviados por Graph (solo buzones 2-4 hacia el buzón 1)",
+  "ok": true,
+  "esperado": "<= 8",
+  "obtenido": [
+   [
+    "PP_MAIL_BUZON_2",
+    "PP_MAIL_BUZON_1",
+    "HUMO-T3-A Consulta de arreglo de pago"
+   ],
+   [
+    "PP_MAIL_BUZON_2",
+    "PP_MAIL_BUZON_1",
+    "RE: HUMO-T3-A Consulta de arreglo de pago"
+   ],
+   [
+    "PP_MAIL_BUZON_3",
+    "PP_MAIL_BUZON_1",
+    "HUMO-T3-C Pago de cuota atrasada"
+   ],
+   [
+    "PP_MAIL_BUZON_3",
+    "PP_MAIL_BUZON_1",
+    "RE: HUMO-T3-C Pago de cuota atrasada"
+   ]
+  ]
+ },
+ {
+  "prueba": "correo",
+  "sub": "respuestas que salieron desde la cola (buzón 1)",
+  "ok": true,
+  "esperado": "solo a buzones 2 y 3",
+  "obtenido": [
+   [
+    "PP_MAIL_BUZON_1 (cola)",
+    "PP_MAIL_BUZON_2",
+    "RE: HUMO-T3-A Consulta de arreglo de pago"
+   ],
+   [
+    "PP_MAIL_BUZON_1 (cola)",
+    "PP_MAIL_BUZON_3",
+    "RE: HUMO-T3-C Pago de cuota atrasada"
+   ]
+  ]
+ }
+]

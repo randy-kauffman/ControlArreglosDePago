@@ -1,0 +1,69 @@
+{
+ "bu": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+ "team_del_sistema": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+ "jefatura": "31bc18e7-f9c3-f111-a05a-7ced8d3c456b",
+ "perfil_en_teams": {
+  "team_del_sistema": true,
+  "jefatura": true
+ },
+ "acciones": [],
+ "usuarios": {
+  "oficial": {
+   "systemuserid": "fab4b6ed-6116-f111-8342-000d3a316609",
+   "fullname": "# User 8",
+   "chequeos": {
+    "en_bu": true,
+    "habilitado": true,
+    "licenciado": true,
+    "en_team_del_sistema": true,
+    "en_jefatura": false,
+    "sin_roles_directos": true,
+    "whoami_impersonado": 200,
+    "leer_arreglo_impersonado": 200,
+    "ve_columna_protegida": true
+   },
+   "ok": true,
+   "roles_directos": [],
+   "teams_nombres": [
+    "Arreglos de Pago",
+    "Heartbeat - Process 3",
+    "Role Backing Team | WFE | Core | FR-1010 | Contratos de Proveedores | 2147",
+    "Role Backing Team | WFE | Core | Gerente de Administracion | Compra de equipos de TI | 2892",
+    "State Owner Team | WFE | Core | Devuelta al solicitante | Compra de equipos de TI | 6546",
+    "State Owner Team | WFE | Core | En Analisis | Compra de equipos de TI | 6255",
+    "State Owner Team | WFE | Core | En aprobacion del jefe inmediato | Compra de equipos de TI | 6692",
+    "State Owner Team | WFE | Core | En aprobacion por gerente administrativo | Compra de equipos de TI | 1737",
+    "State Owner Team | WFE | Core | Pend. Aprob. Supervisor Analistas | Contratos de Proveedores | 3568",
+    "sanic_tbl_wfe_requesteheader a6bb6e8c-fe42-4d3c-ac03-64afb0af34a1+d2d0d780-753c-f111-bec6-70a8a59d41dd"
+   ]
+  },
+  "jefe": {
+   "systemuserid": "7d93e3f3-6116-f111-8342-000d3a316609",
+   "fullname": "# User 9",
+   "chequeos": {
+    "en_bu": true,
+    "habilitado": true,
+    "licenciado": true,
+    "en_team_del_sistema": true,
+    "en_jefatura": true,
+    "sin_roles_directos": true,
+    "whoami_impersonado": 200,
+    "leer_arreglo_impersonado": 200,
+    "ve_columna_protegida": true
+   },
+   "ok": true,
+   "roles_directos": [],
+   "teams_nombres": [
+    "Arreglos de Pago",
+    "Arreglos de Pago - Jefatura",
+    "Heartbeat - Process 2",
+    "Role Backing Team | WFE | Core | FR-1002 | Gestion de prueba | 7436",
+    "Role Backing Team | WFE | Core | FR-1011 | Contratos de Proveedores | 4209",
+    "State Owner Team | WFE | Core | Devuelto a Legal por Finanzas | Contratos de Proveedores | 2480",
+    "State Owner Team | WFE | Core | En Revisión Legal | Contratos de Proveedores | 9689",
+    "sanic_tbl_wfe_requesteheader a6bb6e8c-fe42-4d3c-ac03-64afb0af34a1+d2d0d780-753c-f111-bec6-70a8a59d41dd"
+   ]
+  }
+ },
+ "veredicto": "ya_existia"
+}

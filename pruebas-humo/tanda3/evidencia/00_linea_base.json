@@ -1,0 +1,72 @@
+[
+ {
+  "prueba": "base",
+  "sub": "buzón con entrada y salida en Success",
+  "ok": true,
+  "esperado": "1/1",
+  "obtenido": [
+   1,
+   1,
+   "2026-10-20T19:32:32Z"
+  ]
+ },
+ {
+  "prueba": "base",
+  "sub": "37 steps CARP habilitados",
+  "ok": true,
+  "esperado": 37,
+  "obtenido": [
+   37,
+   37
+  ]
+ },
+ {
+  "prueba": "base",
+  "sub": "oficial habilitado y en la BU",
+  "ok": true,
+  "esperado": true,
+  "obtenido": {
+   "ownerid": "fab4b6ed-6116-f111-8342-000d3a316609",
+   "isdisabled": false,
+   "_businessunitid_value": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+   "systemuserid": "fab4b6ed-6116-f111-8342-000d3a316609"
+  }
+ },
+ {
+  "prueba": "base",
+  "sub": "jefe habilitado y en la BU",
+  "ok": true,
+  "esperado": true,
+  "obtenido": {
+   "ownerid": "7d93e3f3-6116-f111-8342-000d3a316609",
+   "isdisabled": false,
+   "_businessunitid_value": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+   "systemuserid": "7d93e3f3-6116-f111-8342-000d3a316609"
+  }
+ },
+ {
+  "prueba": "H-26",
+  "sub": "primera sincronización: entrantes previos con la BU y el team del área",
+  "ok": true,
+  "esperado": 10,
+  "obtenido": {
+   "correos": 10,
+   "todos_entrantes": true,
+   "con_conversacion": 10,
+   "dueno_team_del_area": 10,
+   "bu_del_area": 10,
+   "actualend_mas_viejo": "2026-10-08T19:38:33Z",
+   "creados": [
+    "2026-10-20T18:10:13Z",
+    "2026-10-20T18:10:22Z"
+   ]
+  }
+ },
+ {
+  "prueba": "prep",
+  "sub": "cliente HUMO con el correo del buzón 2",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": 201
+ }
+]

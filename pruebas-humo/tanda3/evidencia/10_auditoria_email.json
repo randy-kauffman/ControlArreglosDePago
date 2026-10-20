@@ -1,0 +1,138 @@
+[
+ {
+  "cuando": "2026-10-20T19:38:01.513Z",
+  "accion": 2,
+  "operacion": 2,
+  "usuario": "fc1957c4-d896-4ad5-b165-2814799fdd23",
+  "cols": {
+   "_regardingobjectid_value": [
+    "None",
+    "f8680dc1-bdcc-f111-a05b-000d3a340023"
+   ]
+  }
+ },
+ {
+  "cuando": "2026-10-20T19:37:52.525Z",
+  "accion": 1,
+  "operacion": 1,
+  "usuario": "1b993c98-24ef-f011-8406-7ced8d70b036",
+  "cols": {
+   "_ownerid_value": [
+    "None",
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+   ],
+   "_owningbusinessunit_value": [
+    "None",
+    "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b"
+   ],
+   "_receivingmailboxid_value": [
+    "None",
+    "8ab4a845-b1cc-f111-a05b-00224808ffcd"
+   ],
+   "activitytypecode": [
+    "None",
+    "email"
+   ],
+   "actualend": [
+    "None",
+    "2026-10-20T19:37:48Z"
+   ],
+   "baseconversationindexhash": [
+    "None",
+    "-2136518078"
+   ],
+   "compressed": [
+    "None",
+    "False"
+   ],
+   "conversationindex": [
+    "None",
+    "0101DD60CA7A5485B2117062724C9C4BC52DBACC3964"
+   ],
+   "correlatedsubjectchanged": [
+    "None",
+    "False"
+   ],
+   "correlationmethod": [
+    "None",
+    "0"
+   ],
+   "deliveryprioritycode": [
+    "None",
+    "1"
+   ],
+   "deliveryreceiptrequested": [
+    "None",
+    "False"
+   ],
+   "directioncode": [
+    "None",
+    "False"
+   ],
+   "emailreminderstatus": [
+    "None",
+    "0"
+   ],
+   "emailremindertype": [
+    "None",
+    "0"
+   ],
+   "followemailuserpreference": [
+    "None",
+    "False"
+   ],
+   "isbilled": [
+    "None",
+    "False"
+   ],
+   "isemailfollowed": [
+    "None",
+    "False"
+   ],
+   "isemailreminderset": [
+    "None",
+    "False"
+   ],
+   "isprotected": [
+    "None",
+    "False"
+   ],
+   "isregularactivity": [
+    "None",
+    "True"
+   ],
+   "isworkflowcreated": [
+    "None",
+    "False"
+   ],
+   "messageid": [
+    "None",
+    "<PH9PR06MB610612D25C193254B649F3218FD1672@PH9PR06MB610612.na"
+   ],
+   "notifications": [
+    "None",
+    "0"
+   ],
+   "prioritycode": [
+    "None",
+    "1"
+   ],
+   "readreceiptrequested": [
+    "None",
+    "False"
+   ],
+   "statecode": [
+    "None",
+    "1"
+   ],
+   "statuscode": [
+    "None",
+    "4"
+   ],
+   "submittedby": [
+    "None",
+    "<direccion omitida>"
+   ]
+  }
+ }
+]

@@ -1,0 +1,94 @@
+{
+ "fecha": "2026-10-20",
+ "nota": "estado previo a mover los usuarios a la BU Arreglos de Pago",
+ "usuarios": {
+  "oficial": {
+   "systemuserid": "fab4b6ed-6116-f111-8342-000d3a316609",
+   "fullname": "# User 8",
+   "domainname": "User8@55xljh.onmicrosoft.com",
+   "isdisabled": false,
+   "islicensed": true,
+   "accessmode": 0,
+   "businessunitid": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+   "roles_directos": [
+    [
+     "Basic User",
+     "99c5be02-f1ee-f011-8406-7ced8d70b036"
+    ],
+    [
+     "CH-SR-Digitizer",
+     "99c5be02-f1ee-f011-8406-7ced8d70b036"
+    ],
+    [
+     "CH-SR-Hub",
+     "99c5be02-f1ee-f011-8406-7ced8d70b036"
+    ]
+   ],
+   "teams": [
+    "2c1ab5e2-0427-f111-88b4-000d3a316609",
+    "73dea3b5-0627-f111-88b4-000d3a316609",
+    "8434bf0e-5c9f-f111-aaac-7ced8d3ca69e",
+    "94c2e107-c118-f111-8342-000d3a316609",
+    "9ac5be02-f1ee-f011-8406-7ced8d70b036",
+    "9c728d9c-0627-f111-88b4-000d3a316609",
+    "9fd89150-c318-f111-8342-000d3a316609",
+    "b839f8a3-833c-f111-bec6-70a8a59d41dd",
+    "c90fc12e-0627-f111-88b4-000d3a316609",
+    "dbe8925d-0627-f111-88b4-000d3a316609"
+   ],
+   "teams_nombres": [
+    "Heartbeat - Process 3",
+    "Role Backing Team | WFE | Core | FR-1010 | Contratos de Proveedores | 2147",
+    "Role Backing Team | WFE | Core | Gerente de Administracion | Compra de equipos de TI | 2892",
+    "State Owner Team | WFE | Core | Devuelta al solicitante | Compra de equipos de TI | 6546",
+    "State Owner Team | WFE | Core | En Analisis | Compra de equipos de TI | 6255",
+    "State Owner Team | WFE | Core | En aprobacion del jefe inmediato | Compra de equipos de TI | 6692",
+    "State Owner Team | WFE | Core | En aprobacion por gerente administrativo | Compra de equipos de TI | 1737",
+    "State Owner Team | WFE | Core | Pend. Aprob. Supervisor Analistas | Contratos de Proveedores | 3568",
+    "org36e60d9d",
+    "sanic_tbl_wfe_requesteheader a6bb6e8c-fe42-4d3c-ac03-64afb0af34a1+d2d0d780-753c-f111-bec6-70a8a59d41dd"
+   ]
+  },
+  "jefe": {
+   "systemuserid": "7d93e3f3-6116-f111-8342-000d3a316609",
+   "fullname": "# User 9",
+   "domainname": "User9@55xljh.onmicrosoft.com",
+   "isdisabled": false,
+   "islicensed": true,
+   "accessmode": 0,
+   "businessunitid": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+   "roles_directos": [
+    [
+     "Basic User",
+     "99c5be02-f1ee-f011-8406-7ced8d70b036"
+    ],
+    [
+     "CH-SR-Hub",
+     "99c5be02-f1ee-f011-8406-7ced8d70b036"
+    ],
+    [
+     "CH-SR-Receptionist",
+     "99c5be02-f1ee-f011-8406-7ced8d70b036"
+    ]
+   ],
+   "teams": [
+    "01d50568-6916-f111-8342-000d3a316609",
+    "471f76b2-c318-f111-8342-000d3a316609",
+    "664dc8fe-5b9f-f111-aaac-7ced8d3ca69e",
+    "759da70e-c118-f111-8342-000d3a316609",
+    "9ac5be02-f1ee-f011-8406-7ced8d70b036",
+    "b839f8a3-833c-f111-bec6-70a8a59d41dd",
+    "bae6a571-c318-f111-8342-000d3a316609"
+   ],
+   "teams_nombres": [
+    "Heartbeat - Process 2",
+    "Role Backing Team | WFE | Core | FR-1002 | Gestion de prueba | 7436",
+    "Role Backing Team | WFE | Core | FR-1011 | Contratos de Proveedores | 4209",
+    "State Owner Team | WFE | Core | Devuelto a Legal por Finanzas | Contratos de Proveedores | 2480",
+    "State Owner Team | WFE | Core | En Revisión Legal | Contratos de Proveedores | 9689",
+    "org36e60d9d",
+    "sanic_tbl_wfe_requesteheader a6bb6e8c-fe42-4d3c-ac03-64afb0af34a1+d2d0d780-753c-f111-bec6-70a8a59d41dd"
+   ]
+  }
+ }
+}

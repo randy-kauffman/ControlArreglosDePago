@@ -1,0 +1,183 @@
+[
+ {
+  "prueba": "TOM",
+  "sub": "User 8 toma la conversación (rol Oficial por el team)",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": [
+   200,
+   1.66,
+   {
+    "oficialasignadoid": "fab4b6ed-6116-f111-8342-000d3a316609",
+    "oficialnombre": "# User 8",
+    "yaasignada": false
+   }
+  ]
+ },
+ {
+  "prueba": "TOM",
+  "sub": "la conversación queda asignada a User 8",
+  "ok": true,
+  "esperado": "fab4b6ed-6116-f111-8342-000d3a316609",
+  "obtenido": "fab4b6ed-6116-f111-8342-000d3a316609"
+ },
+ {
+  "prueba": "S-31",
+  "sub": "otro usuario como remitente: CARP-EML-001 y sin fila",
+  "ok": true,
+  "esperado": "CARP-EML-001",
+  "obtenido": {
+   "http": 400,
+   "codigo": "CARP-EML-001"
+  }
+ },
+ {
+  "prueba": "H-28",
+  "sub": "borrador saliente sin Regarding creado por User 8",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": 204
+ },
+ {
+  "prueba": "H-28",
+  "sub": "(a) el Update con Regarding a la conversación pasa",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": {
+   "http": 204,
+   "codigo": null,
+   "error": null
+  }
+ },
+ {
+  "prueba": "H-28",
+  "sub": "(b) S-37 deja como remitente SOLO la queue (reemplaza, no acumula)",
+  "ok": true,
+  "esperado": [
+   "88b4a845-b1cc-f111-a05b-00224808ffcd",
+   "queue"
+  ],
+  "obtenido": {
+   "antes": [
+    [
+     "fab4b6ed-6116-f111-8342-000d3a316609",
+     "systemuser"
+    ]
+   ],
+   "despues": [
+    [
+     "88b4a845-b1cc-f111-a05b-00224808ffcd",
+     "queue"
+    ]
+   ]
+  }
+ },
+ {
+  "prueba": "H-5",
+  "sub": "User 8 crea la respuesta en la conversación",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": 204
+ },
+ {
+  "prueba": "S-31",
+  "sub": "el remitente por defecto (User 8) se reemplaza por la queue al crear",
+  "ok": true,
+  "esperado": [
+   "88b4a845-b1cc-f111-a05b-00224808ffcd",
+   "queue"
+  ],
+  "obtenido": [
+   [
+    "88b4a845-b1cc-f111-a05b-00224808ffcd",
+    "queue"
+   ]
+  ]
+ },
+ {
+  "prueba": "H-5",
+  "sub": "SendEmail como User 8 (Write sobre el Email, sin privilegio Send)",
+  "ok": true,
+  "esperado": "200/204",
+  "obtenido": [
+   200,
+   null
+  ]
+ },
+ {
+  "prueba": "H-5",
+  "sub": "la respuesta pasa a Sent",
+  "ok": true,
+  "esperado": "Sent",
+  "obtenido": {
+   "estado": "Sent",
+   "segundos": 31,
+   "senton": "2026-10-20T19:40:06Z"
+  }
+ },
+ {
+  "prueba": "H-5",
+  "sub": "parentactivityid = el correo del cliente",
+  "ok": true,
+  "esperado": "a428aabc-bdcc-f111-a05b-00224808ffcd",
+  "obtenido": "a428aabc-bdcc-f111-a05b-00224808ffcd"
+ },
+ {
+  "prueba": "H-28",
+  "sub": "(c) tras el envío el remitente sigue siendo solo la queue",
+  "ok": true,
+  "esperado": [
+   "88b4a845-b1cc-f111-a05b-00224808ffcd",
+   "queue"
+  ],
+  "obtenido": [
+   [
+    "88b4a845-b1cc-f111-a05b-00224808ffcd",
+    "queue"
+   ]
+  ]
+ },
+ {
+  "prueba": "H-6",
+  "sub": "S-35: respondidoporid = User 8 (createdby)",
+  "ok": true,
+  "esperado": "fab4b6ed-6116-f111-8342-000d3a316609",
+  "obtenido": {
+   "valor": "fab4b6ed-6116-f111-8342-000d3a316609",
+   "segundos": 0,
+   "createdby": "fab4b6ed-6116-f111-8342-000d3a316609"
+  }
+ },
+ {
+  "prueba": "H-6",
+  "sub": "S-35: tiemporespuesta = minutos entre la llegada y senton (truncados)",
+  "ok": true,
+  "esperado": 2,
+  "obtenido": 2
+ },
+ {
+  "prueba": "H-6",
+  "sub": "conversación: 1 respuesta, sin pendiente, primera respuesta = tiempo del correo",
+  "ok": true,
+  "esperado": {
+   "cantidad": 1,
+   "pendiente": null,
+   "primera": 2
+  },
+  "obtenido": {
+   "cantidad": 1,
+   "pendiente": null,
+   "primera": 2
+  }
+ },
+ {
+  "prueba": "H-5",
+  "sub": "la respuesta llega al buzón 2 con remitente = buzón 1 (la cola)",
+  "ok": true,
+  "esperado": "PP_MAIL_BUZON_1",
+  "obtenido": {
+   "remitente": "PP_MAIL_BUZON_1",
+   "segundos": 0
+  }
+ }
+]

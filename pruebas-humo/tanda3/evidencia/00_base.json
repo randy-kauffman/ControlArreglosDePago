@@ -1,0 +1,27 @@
+{
+ "fecha": "2026-10-20",
+ "mailbox": {
+  "mailboxid": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+  "_regardingobjectid_value": "88b4a845-b1cc-f111-a05b-00224808ffcd",
+  "lastsuccessfulsynccompletedon": "2026-10-20T19:32:32Z",
+  "processingstatecode": 0,
+  "enabledforoutgoingemail": true,
+  "isemailaddressapprovedbyo365admin": true,
+  "outgoingemailstatus": 1,
+  "enabledforincomingemail": true,
+  "incomingemailstatus": 1
+ },
+ "primera_sincronizacion": {
+  "correos": 10,
+  "todos_entrantes": true,
+  "con_conversacion": 10,
+  "dueno_team_del_area": 10,
+  "bu_del_area": 10,
+  "actualend_mas_viejo": "2026-10-08T19:38:33Z",
+  "creados": [
+   "2026-10-20T18:10:13Z",
+   "2026-10-20T18:10:22Z"
+  ]
+ },
+ "cliente_t3": "5248e4a9-bdcc-f111-a05b-00224808ffcd"
+}

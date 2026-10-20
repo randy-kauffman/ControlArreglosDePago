@@ -1,0 +1,254 @@
+[
+ {
+  "prueba": "A",
+  "sub": "el correo entra a Dataverse por la sincronización",
+  "ok": true,
+  "esperado": "Email entrante",
+  "obtenido": {
+   "segundos_desde_el_envio": 43
+  }
+ },
+ {
+  "prueba": "A",
+  "sub": "lo recibe el buzón de la cola",
+  "ok": true,
+  "esperado": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+  "obtenido": "8ab4a845-b1cc-f111-a05b-00224808ffcd"
+ },
+ {
+  "prueba": "A",
+  "sub": "S-34 apunta el correo a una conversación",
+  "ok": true,
+  "esperado": "Regarding = conversación",
+  "obtenido": {
+   "segundos_tras_aparecer": 0
+  }
+ },
+ {
+  "prueba": "H-26",
+  "sub": "el Email entrante queda en la BU del área",
+  "ok": true,
+  "esperado": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "obtenido": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b"
+ },
+ {
+  "prueba": "H-26",
+  "sub": "el Email entrante es del team del área",
+  "ok": true,
+  "esperado": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "obtenido": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+ },
+ {
+  "prueba": "H-27",
+  "sub": "el Email sigue cerrado (Received) después de que SYSTEM lo apunta",
+  "ok": true,
+  "esperado": "1/4",
+  "obtenido": [
+   1,
+   4
+  ]
+ },
+ {
+  "prueba": "A",
+  "sub": "conversación nueva Abierta, del team, en la BU",
+  "ok": true,
+  "esperado": "Abierta/team/BU",
+  "obtenido": {
+   "_sanic_finalizadoporid_value": null,
+   "_sanic_unidaaid_value": null,
+   "_sanic_oficialasignadoid_value": null,
+   "sanic_carp_tbl_conversacionid": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+   "sanic_correonuevoenfinalizada": false,
+   "sanic_fechaprimercorreo": "2026-10-20T19:37:48Z",
+   "sanic_resultado": null,
+   "statecode": 0,
+   "sanic_tiempoprimerarespuesta": null,
+   "sanic_cantidadrespuestas": 0,
+   "sanic_nombre": "CONV-001191",
+   "sanic_fechafinalizacion": null,
+   "_sanic_clienteid_value": "5248e4a9-bdcc-f111-a05b-00224808ffcd",
+   "_owningbusinessunit_value": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+   "sanic_sinrespuestadesde": "2026-10-20T19:37:48Z",
+   "sanic_tiempototal": null,
+   "statuscode": 1,
+   "_ownerid_value": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  }
+ },
+ {
+  "prueba": "A",
+  "sub": "fecha del primer correo y pendiente = llegada (actualend)",
+  "ok": true,
+  "esperado": "2026-10-20T19:37:48Z",
+  "obtenido": [
+   "2026-10-20T19:37:48Z",
+   "2026-10-20T19:37:48Z"
+  ]
+ },
+ {
+  "prueba": "DC-14",
+  "sub": "la conversación se enlaza al cliente con el correo del remitente",
+  "ok": true,
+  "esperado": "5248e4a9-bdcc-f111-a05b-00224808ffcd",
+  "obtenido": "5248e4a9-bdcc-f111-a05b-00224808ffcd"
+ },
+ {
+  "prueba": "A",
+  "sub": "nombre autonumérico CONV-nnnnnn",
+  "ok": true,
+  "esperado": "CONV-nnnnnn",
+  "obtenido": "CONV-001191"
+ },
+ {
+  "prueba": "H-25",
+  "sub": "por qué ruta entró (A = Exchange ya correlacionó en el Create; C = nueva por huella)",
+  "ok": true,
+  "esperado": "ruta C (correo nuevo)",
+  "obtenido": [
+   "[RegistrarCorreoEntranteStep] correo a428aabc-bdcc-f111-a05b-00224808ffcd: conversacion f8680dc1-bdcc-f111-a05b-000d3a340023 creada por la ruta C"
+  ]
+ },
+ {
+  "prueba": "H-25/H-27",
+  "sub": "historial del Email (Regarding y dueño: en el Create o en un Update posterior, y quién)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": [
+   {
+    "cuando": "2026-10-20T19:38:01.513Z",
+    "accion": 2,
+    "operacion": 2,
+    "usuario": "fc1957c4-d896-4ad5-b165-2814799fdd23",
+    "cols": {
+     "_regardingobjectid_value": [
+      "None",
+      "f8680dc1-bdcc-f111-a05b-000d3a340023"
+     ]
+    }
+   },
+   {
+    "cuando": "2026-10-20T19:37:52.525Z",
+    "accion": 1,
+    "operacion": 1,
+    "usuario": "1b993c98-24ef-f011-8406-7ced8d70b036",
+    "cols": {
+     "_ownerid_value": [
+      "None",
+      "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+     ],
+     "_owningbusinessunit_value": [
+      "None",
+      "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b"
+     ],
+     "_receivingmailboxid_value": [
+      "None",
+      "8ab4a845-b1cc-f111-a05b-00224808ffcd"
+     ],
+     "activitytypecode": [
+      "None",
+      "email"
+     ],
+     "actualend": [
+      "None",
+      "2026-10-20T19:37:48Z"
+     ],
+     "baseconversationindexhash": [
+      "None",
+      "-2136518078"
+     ],
+     "compressed": [
+      "None",
+      "False"
+     ],
+     "conversationindex": [
+      "None",
+      "0101DD60CA7A5485B2117062724C9C4BC52DBACC3964"
+     ],
+     "correlatedsubjectchanged": [
+      "None",
+      "False"
+     ],
+     "correlationmethod": [
+      "None",
+      "0"
+     ],
+     "deliveryprioritycode": [
+      "None",
+      "1"
+     ],
+     "deliveryreceiptrequested": [
+      "None",
+      "False"
+     ],
+     "directioncode": [
+      "None",
+      "False"
+     ],
+     "emailreminderstatus": [
+      "None",
+      "0"
+     ],
+     "emailremindertype": [
+      "None",
+      "0"
+     ],
+     "followemailuserpreference": [
+      "None",
+      "False"
+     ],
+     "isbilled": [
+      "None",
+      "False"
+     ],
+     "isemailfollowed": [
+      "None",
+      "False"
+     ],
+     "isemailreminderset": [
+      "None",
+      "False"
+     ],
+     "isprotected": [
+      "None",
+      "False"
+     ],
+     "isregularactivity": [
+      "None",
+      "True"
+     ],
+     "isworkflowcreated": [
+      "None",
+      "False"
+     ],
+     "messageid": [
+      "None",
+      "<PH9PR06MB610612D25C193254B649F3218FD1672@PH9PR06MB610612.na"
+     ],
+     "notifications": [
+      "None",
+      "0"
+     ],
+     "prioritycode": [
+      "None",
+      "1"
+     ],
+     "readreceiptrequested": [
+      "None",
+      "False"
+     ],
+     "statecode": [
+      "None",
+      "1"
+     ],
+     "statuscode": [
+      "None",
+      "4"
+     ],
+     "submittedby": [
+      "None",
+      "<direccion omitida>"
+     ]
+    }
+   }
+  ]
+ }
+]

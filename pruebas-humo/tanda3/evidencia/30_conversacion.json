@@ -1,0 +1,20 @@
+{
+ "_sanic_finalizadoporid_value": null,
+ "_sanic_unidaaid_value": null,
+ "_sanic_oficialasignadoid_value": "fab4b6ed-6116-f111-8342-000d3a316609",
+ "sanic_carp_tbl_conversacionid": "f8680dc1-bdcc-f111-a05b-000d3a340023",
+ "sanic_correonuevoenfinalizada": false,
+ "sanic_fechaprimercorreo": "2026-10-20T19:37:48Z",
+ "sanic_resultado": null,
+ "statecode": 0,
+ "sanic_tiempoprimerarespuesta": 2,
+ "sanic_cantidadrespuestas": 1,
+ "sanic_nombre": "CONV-001191",
+ "sanic_fechafinalizacion": null,
+ "_sanic_clienteid_value": "5248e4a9-bdcc-f111-a05b-00224808ffcd",
+ "_owningbusinessunit_value": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+ "sanic_sinrespuestadesde": "2026-10-20T19:40:59Z",
+ "sanic_tiempototal": null,
+ "statuscode": 1,
+ "_ownerid_value": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+}
