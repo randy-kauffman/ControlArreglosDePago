@@ -96,8 +96,12 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
         /// <summary>Los <c>catch</c> del fuente cuyo bloque NO termina en un <c>throw</c>: los que dejan seguir tras la falla.</summary>
         internal static int CatchQueSeTragan(string fuente)
         {
-            return BloquesDeCatch(fuente).Count(b => !TerminaEnThrow.IsMatch(b));
+            // Orquestador, cierre del lote 6: se vacían los literales de texto antes de buscar el throw final; si no, un "; " dentro de un texto
+            // (string.Join("; ", …)) corta el patrón y da un falso positivo (la misma lección de ApoyoDeDatos.SinComentarios).
+            return BloquesDeCatch(fuente).Count(b => !TerminaEnThrow.IsMatch(LiteralDeTexto.Replace(b, "\"\"")));
         }
+
+        private static readonly Regex LiteralDeTexto = new Regex(@"@""(?:[^""]|"""")*""|""(?:[^""\\]|\\.)*""", RegexOptions.CultureInvariant);
 
         /// <summary>Los <c>catch</c> de <paramref name="fuente"/> que NO son uno de los cuatro del generador.</summary>
         internal static int CatchQueNoSonDelGenerador(string fuente)
