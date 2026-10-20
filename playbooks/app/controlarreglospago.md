@@ -82,6 +82,9 @@ Advertencias: los títulos de sitemap van una vez por idioma de la Identidad, en
           "entradas": [
             {"id": "borradores", "titulo": {"1033": "Borradores", "3082": "Borradores"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Borradores", "icono": "sanic_carp_wr_svg_lista"},
             {"id": "vigentes", "titulo": {"1033": "Arreglos vigentes", "3082": "Arreglos vigentes"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos vigentes", "icono": "sanic_carp_wr_svg_lista"},
+            {"id": "enriesgo", "titulo": {"1033": "Arreglos en riesgo", "3082": "Arreglos en riesgo"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos en riesgo", "icono": "sanic_carp_wr_svg_alerta"},
+            {"id": "prestamo", "titulo": {"1033": "Arreglos de prestamo", "3082": "Arreglos de prestamo"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos de prestamo", "icono": "sanic_carp_wr_svg_lista"},
+            {"id": "tarjeta", "titulo": {"1033": "Arreglos de tarjeta", "3082": "Arreglos de tarjeta"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos de tarjeta", "icono": "sanic_carp_wr_svg_lista"},
             {"id": "cerrados", "titulo": {"1033": "Arreglos cerrados", "3082": "Arreglos cerrados"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos cerrados", "icono": "sanic_carp_wr_svg_lista"},
             {"id": "todos", "titulo": {"1033": "Todos los arreglos", "3082": "Todos los arreglos"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Todos los arreglos", "icono": "sanic_carp_wr_svg_lista"}
           ]
@@ -95,7 +98,10 @@ Advertencias: los títulos de sitemap van una vez por idioma de la Identidad, en
           "titulo": {"1033": "Seguimiento", "3082": "Seguimiento"},
           "entradas": [
             {"id": "sinrespuesta", "titulo": {"1033": "Correos sin respuesta", "3082": "Correos sin respuesta"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Correos sin respuesta", "icono": "sanic_carp_wr_svg_alerta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
-            {"id": "respenviadas", "titulo": {"1033": "Respuestas enviadas", "3082": "Respuestas enviadas"}, "tabla": "email", "vista": "Respuestas enviadas", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]}
+            {"id": "cierres", "titulo": {"1033": "Finalizadas sin respuesta", "3082": "Finalizadas sin respuesta"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Finalizadas sin respuesta", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
+            {"id": "errores", "titulo": {"1033": "Respuestas con error de envio", "3082": "Respuestas con error de envio"}, "tabla": "email", "vista": "Respuestas con error de envio", "icono": "sanic_carp_wr_svg_alerta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
+            {"id": "respenviadas", "titulo": {"1033": "Respuestas enviadas", "3082": "Respuestas enviadas"}, "tabla": "email", "vista": "Respuestas enviadas", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
+            {"id": "borradoressinmov", "titulo": {"1033": "Borradores sin movimiento", "3082": "Borradores sin movimiento"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Borradores sin movimiento", "icono": "sanic_carp_wr_svg_alerta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]}
           ]
         }
       ]
@@ -117,30 +123,24 @@ Advertencias: los títulos de sitemap van una vez por idioma de la Identidad, en
 
 ### Privilegios por entrada (DA-04, G-A1)
 
-Las tres entradas del jefe del lote A (`sinrespuesta`, `respenviadas`, `plantillas`; las demás de Supervisión se suman con el lote C) llevan `Privilege Entity="sanic_carp_tbl_versionplantilla" Privilege="Create"`: solo `SR - CARP - Jefe` tiene Create sobre Versión de plantilla (`diseno/04-matriz-privilegios.md`), así que el Oficial no las ve. Las del Oficial no llevan privilegio (las ven los dos roles). Es solo interfaz: un Oficial que abra la URL de una vista del jefe igual la ve si tiene Read sobre la tabla; la barrera real son los plugins y los privilegios.
+Las siete entradas del jefe (lote A: `sinrespuesta`, `respenviadas`, `plantillas`; lote C: `cierres`, `errores`, `borradoressinmov`) llevan `Privilege Entity="sanic_carp_tbl_versionplantilla" Privilege="Create"`: solo `SR - CARP - Jefe` tiene Create sobre Versión de plantilla (`diseno/04-matriz-privilegios.md`), así que el Oficial no las ve. Las del Oficial no llevan privilegio (las ven los dos roles). Es solo interfaz: un Oficial que abra la URL de una vista del jefe igual la ve si tiene Read sobre la tabla; la barrera real son los plugins y los privilegios.
 
-### Entradas diferidas (no están en el JSON porque su vista aún no existe)
+### Entradas diferidas
 
-`app.py` bloquea si una entrada nombra una vista que no existe, así que las entradas siguientes se **agregan a este playbook cuando se construyan sus vistas**. Quedan acá para que no se pierdan:
+Las seis entradas del lote C (`enriesgo`, `prestamo`, `tarjeta`, `cierres`, `errores`, `borradoressinmov`) ya están en el JSON (sus vistas se construyeron en el lote C). Queda diferida solo la del lote E:
 
 | Lote | Área › grupo | `id` | Tabla | Vista o dashboard | Ícono | Privilegio |
 |---|---|---|---|---|---|---|
-| C | Clientes y arreglos › Arreglos | `enriesgo` | `sanic_carp_tbl_arreglo` | Arreglos en riesgo | alerta | no |
-| C | Clientes y arreglos › Arreglos | `prestamo` | `sanic_carp_tbl_arreglo` | Arreglos de prestamo | lista | no |
-| C | Clientes y arreglos › Arreglos | `tarjeta` | `sanic_carp_tbl_arreglo` | Arreglos de tarjeta | lista | no |
-| C | Supervision › Seguimiento | `cierres` | `sanic_carp_tbl_conversacion` | Finalizadas sin respuesta | lista | Create versión |
-| C | Supervision › Seguimiento | `errores` | `email` | Respuestas con error de envio | alerta | Create versión |
-| C | Supervision › Seguimiento | `borradoressinmov` | `sanic_carp_tbl_arreglo` | Borradores sin movimiento | alerta | Create versión |
 | E | Supervision › Seguimiento | `panel` | (dashboard) | Panel de supervision (`dashboard`, sin `tabla`) | lista | Create versión |
 
-Decisión de este playbook: el sitemap del lote A **no** incluye esas entradas (`diseno/07` §9.3 reparte las vistas por lotes). El orden de entradas dentro de cada grupo es el de la tabla de `diseno/07` §7.2. Los títulos de las entradas `llegadasafinalizadas` y `sinrespuesta` se acortaron o repiten el nombre de la vista; **hueco**: `diseno/07` no fija los títulos de entrada, solo la vista que abren. Se usó el nombre de la vista salvo `llegadasafinalizadas` ("Correos llegados a finalizadas", por largo).
+Decisión de este playbook: `app.py` bloquea si una entrada nombra una vista que no existe, así que cada lote suma sus entradas cuando construye sus vistas (`diseno/07` §9.3). El orden de entradas dentro de cada grupo es el de la tabla de `diseno/07` §7.2. Los títulos de las entradas `llegadasafinalizadas` y `sinrespuesta` se acortaron o repiten el nombre de la vista; **hueco**: `diseno/07` no fija los títulos de entrada, solo la vista que abren. Se usó el nombre de la vista salvo `llegadasafinalizadas` ("Correos llegados a finalizadas", por largo).
 
 ## 3. Precondiciones
 
 | # | Qué tiene que existir | Cómo se comprueba |
 |---|---|---|
 | 1 | Los cuatro iconos `sanic_carp_wr_svg_app`, `_lista`, `_alerta` (y `_accion`, aunque aún no se use) | `GET webresourceset?$filter=name eq '...'` |
-| 2 | Cada vista nombrada en una entrada, exactamente una por tabla: Mis conversaciones pendientes, Conversaciones sin asignar, Conversaciones abiertas, Correos llegados a conversaciones finalizadas, Conversaciones finalizadas, Correos sin respuesta (todas sobre `sanic_carp_tbl_conversacion`); Clientes (`sanic_carp_tbl_cliente`); Borradores, Arreglos vigentes, Arreglos cerrados, Todos los arreglos (`sanic_carp_tbl_arreglo`); Respuestas enviadas (`email`); Versiones de plantilla (`sanic_carp_tbl_versionplantilla`) | `GET savedqueries?$filter=name eq '...' and returnedtypecode eq '...'` |
+| 2 | Cada vista nombrada en una entrada, exactamente una por tabla: Mis conversaciones pendientes, Conversaciones sin asignar, Conversaciones abiertas, Correos llegados a conversaciones finalizadas, Conversaciones finalizadas, Correos sin respuesta (todas sobre `sanic_carp_tbl_conversacion`); Clientes (`sanic_carp_tbl_cliente`); Borradores, Arreglos vigentes, Arreglos en riesgo, Arreglos de prestamo, Arreglos de tarjeta, Arreglos cerrados, Todos los arreglos, Borradores sin movimiento (`sanic_carp_tbl_arreglo`); Finalizadas sin respuesta (`sanic_carp_tbl_conversacion`); Respuestas enviadas y Respuestas con error de envio (`email`); Versiones de plantilla (`sanic_carp_tbl_versionplantilla`) | `GET savedqueries?$filter=name eq '...' and returnedtypecode eq '...'` |
 | 3 | Los roles `SR - CARP - Oficial` y `SR - CARP - Jefe` | `GET roles?$filter=name eq '...'` |
 | 4 | Las 8 tablas existen en el entorno (7 propias y `email`) | `GET EntityDefinitions(LogicalName='...')` |
 | 5 | Idiomas 1033 y 3082 provisionados y solución no managed | `comprobar_solucion_e_idioma` |

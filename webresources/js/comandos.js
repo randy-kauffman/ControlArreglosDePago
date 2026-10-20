@@ -4,7 +4,7 @@
  *
  * Un namespace por tabla:
  *   SanicCarp.Comun         utilidades (bandera del guardia de OnSave, contexto del ribbon, errores, avisos, API, descarga)
- *   SanicCarp.Conversacion  OnSave + gestos Tomar, Finalizar, Reabrir, Unir, Iniciar conversacion nueva
+ *   SanicCarp.Conversacion  OnLoad (aviso de otra conversacion abierta) + OnSave + gestos Tomar, Finalizar, Reabrir, Unir, Iniciar conversacion nueva
  *   SanicCarp.Arreglo       OnLoad/OnSave + gestos Generar formato, Desbloquear, Formalizar, Descartar, Anular, Reabrir arreglo
  *   SanicCarp.Cuota         OnSave (cancela el autoguardado)
  *   SanicCarp.Plantilla     OnSave del Mapeo + gestos Publicar version y Vista previa
@@ -341,6 +341,76 @@ SanicCarp.Conversacion = (function () {
         C.guardarSinGestoSuelto(executionContext, CAMPOS_GESTO, AVISO);
     }
 
+    // --- Lote C: aviso de otra conversacion abierta (RF-14, DA-06) ---------------------------------------------
+
+    var ID_AVISO_OTRA = "sanic_carp_otra_conversacion_abierta";
+    var MAXIMO_OTRAS = 3;
+    var LARGO_ASUNTO = 60;
+
+    function comillasOData(texto) {
+        return String(texto).replace(/'/g, "''");
+    }
+
+    function recortar(texto) {
+        var t = String(texto === null || texto === undefined ? "" : texto);
+        return t.length > LARGO_ASUNTO ? t.substring(0, LARGO_ASUNTO - 1) + "…" : t;
+    }
+
+    /** Texto del aviso: "Este cliente|remitente tiene otra(s) conversacion(es) abierta(s): CONV-1 «asunto»...". */
+    function textoDeAviso(filas, clienteId) {
+        var porCliente = !!clienteId && filas.some(function (f) {
+            return !!f["_sanic_clienteid_value"] && C.idLimpio(f["_sanic_clienteid_value"]) === C.idLimpio(clienteId);
+        });
+        var detalle = filas.map(function (f) {
+            return f["sanic_nombre"] + " «" + recortar(f["sanic_asunto"]) + "»";
+        }).join("; ");
+        var sujeto = porCliente ? "Este cliente" : "Este remitente";
+        var cuerpo = filas.length === 1
+            ? sujeto + " tiene otra conversación abierta: " + detalle + "."
+            : sujeto + " tiene otras conversaciones abiertas: " + detalle + ".";
+        return cuerpo + " Si es el mismo tema, use Unir a otra conversación.";
+    }
+
+    /**
+     * OnLoad (RF-14, DA-06). Si la conversacion esta Abierta, consulta hasta 3 conversaciones Abiertas, con otro id, del mismo
+     * cliente o del mismo remitente, y muestra un aviso INFO. Solo lectura; solo UX (el servidor decide al Unir). Ante cualquier
+     * falla de la consulta no avisa y no rompe el formulario.
+     */
+    async function alCargar(executionContext) {
+        var fc = C.formContext(executionContext);
+        fc.ui.clearFormNotification(ID_AVISO_OTRA);
+        var id = fc.data.entity.getId();
+        if (!id || C.valor(fc, "statuscode") !== ESTADO_ABIERTA) {
+            return;
+        }
+        var cliente = C.valor(fc, "sanic_clienteid");
+        var clienteId = (Array.isArray(cliente) && cliente.length > 0) ? C.idLimpio(cliente[0].id) : null;
+        var remitente = C.valor(fc, "sanic_remitente");
+        var criterios = [];
+        if (clienteId) {
+            criterios.push("_sanic_clienteid_value eq " + clienteId);
+        }
+        if (!C.vacio(remitente)) {
+            criterios.push("sanic_remitente eq '" + comillasOData(remitente) + "'");
+        }
+        if (criterios.length === 0) {
+            return;
+        }
+        var consulta = "?$select=sanic_nombre,sanic_asunto,_sanic_clienteid_value&$top=" + MAXIMO_OTRAS +
+            "&$orderby=sanic_fechaprimercorreo desc" +
+            "&$filter=statecode eq 0 and sanic_carp_tbl_conversacionid ne " + C.idLimpio(id) +
+            " and (" + criterios.join(" or ") + ")";
+        try {
+            var resultado = await Xrm.WebApi.retrieveMultipleRecords(TABLA, consulta);
+            var filas = (resultado && resultado.entities) || [];
+            if (filas.length > 0) {
+                fc.ui.setFormNotification(textoDeAviso(filas, clienteId), "INFO", ID_AVISO_OTRA);
+            }
+        } catch (err) {
+            // El aviso es una ayuda: si la consulta falla, la conversacion se abre igual.
+        }
+    }
+
     // --- Reglas de habilitacion (solo UX; true ante la duda) ---------------------------------------------------
 
     function enEstado(arg, estado) {
@@ -519,6 +589,7 @@ SanicCarp.Conversacion = (function () {
     }
 
     return {
+        alCargar: alCargar,
         alGuardar: alGuardar,
         puedeTomar: puedeTomar,
         puedeFinalizar: puedeFinalizar,

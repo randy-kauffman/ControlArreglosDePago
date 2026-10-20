@@ -112,6 +112,7 @@ Advertencias: etiquetas de pestaña y sección en los dos LCID, en español y si
     "sanic_carp_wr_js_comandos"
   ],
   "eventos": [
+    {"evento": "onload", "biblioteca": "sanic_carp_wr_js_comandos", "funcion": "SanicCarp.Conversacion.alCargar", "pasar_contexto": true},
     {"evento": "onsave", "biblioteca": "sanic_carp_wr_js_comandos", "funcion": "SanicCarp.Conversacion.alGuardar", "pasar_contexto": true}
   ]
 }
@@ -119,11 +120,10 @@ Advertencias: etiquetas de pestaña y sección en los dos LCID, en español y si
 
 Decisiones y huecos:
 
-- **Campos "gesto"** (`sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`): editables para que el botón Finalizar (lote B) los lea. **No** se usa `setSubmitMode("never")` (Learn: con `never` la columna no se puede editar). El `OnSave` (`alGuardar`) cancela el guardado en todos los modos mientras alguno esté *dirty* y avise "Use el botón Finalizar…", salvo que lo dispare el botón (bandera `SanicCarp.Comun.levantarBandera()`). Sin `OnLoad` en el lote A.
-- **Reasignar** = editar `sanic_oficialasignadoid` (encabezado, editable) y guardar; **Vincular cliente** = editar `sanic_clienteid`. Sin botón (DA-08).
+- **Campos "gesto"** (`sanic_resultado`, `sanic_motivosinrespuesta`, `sanic_detallesinrespuesta`): editables para que el botón Finalizar (lote B) los lea. **No** se usa `setSubmitMode("never")` (Learn: con `never` la columna no se puede editar). El `OnSave` (`alGuardar`) cancela el guardado en todos los modos mientras alguno esté *dirty* y avise "Use el botón Finalizar…", salvo que lo dispare el botón (bandera `SanicCarp.Comun.levantarBandera()`).- **Reasignar** = editar `sanic_oficialasignadoid` (encabezado, editable) y guardar; **Vincular cliente** = editar `sanic_clienteid`. Sin botón (DA-08).
 - **Timeline** (G-F2): `alto` 12 filas es una elección de este playbook (**hueco**: `diseno/07` no fija la altura). "Solo correos, sin notas": la tabla no tiene Notas (`notas: false`), así que no hay notas; limitar las actividades a correo **no está en el XML** del control y se configura a mano en el diseñador (pendiente, `herramientas/README.md`). Responder con adjuntos es el botón nativo del timeline.
 - **Subgrilla de arreglos**: reutiliza la vista "Arreglos del cliente" (DA-19) por el lookup `sanic_conversacionid` (REL-03). `registros_por_pagina` por omisión (10): `diseno/07` no pide otro valor.
-- El aviso de otra conversación abierta (RF-14) es del lote C y **no** está en `alCargar` todavía. No se oculta nada por estado.
+- **Aviso de otra conversación abierta (RF-14, DA-06; lote C).** `OnLoad` → `SanicCarp.Conversacion.alCargar`: si la conversación está Abierta, consulta hasta 3 conversaciones Abiertas, con otro id, del mismo cliente o del mismo remitente (`Xrm.WebApi.retrieveMultipleRecords`, solo lectura) y muestra `setFormNotification` INFO (id `sanic_carp_otra_conversacion_abierta`) con el número y el asunto, y la sugerencia de usar Unir a otra conversación. Si la consulta falla no avisa y el formulario abre igual. No se oculta nada por estado.
 - `sanic_nombre` va ro (autonumérica, no requerida).
 
 ## 3. Precondiciones
@@ -157,8 +157,8 @@ python3 herramientas/construir/formulario.py playbooks/formulario/conversacion.m
 |---|---|---|
 | 1 | `GET systemforms?$filter=objecttypecode eq 'sanic_carp_tbl_conversacion' and type eq 2` | un solo Main · `name` y `description` los de la sección 2 · activo · no managed |
 | 2 | `formxml` | igual al generado, etiquetas en los dos idiomas |
-| 3 | Estructura | 1 pestaña, 5 secciones, 16 campos en secciones, 1 subgrilla, 3 en el encabezado, 1 biblioteca, 1 manejador |
-| 4 | Scripts | `onsave` → `SanicCarp.Conversacion.alGuardar` con `passExecutionContext` true |
+| 3 | Estructura | 1 pestaña, 5 secciones, 16 campos en secciones, 1 subgrilla, 3 en el encabezado, 1 biblioteca, 2 manejadores |
+| 4 | Scripts | `onload` → `SanicCarp.Conversacion.alCargar` y `onsave` → `SanicCarp.Conversacion.alGuardar`, ambos con `passExecutionContext` true |
 | 5 | Pertenencia | la tabla figura en la solución con `rootcomponentbehavior` 0 |
 | 6 | Segunda ejecución | `ya_existia` |
 

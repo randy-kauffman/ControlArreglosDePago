@@ -35,18 +35,17 @@ Advertencias: etiquetas de pestaña y sección en los dos LCID, en español y si
   "tipo": "formulario",
   "nombre": "FRM - CARP - Arreglo - Principal",
   "tabla": "sanic_carp_tbl_arreglo",
-  "descripcion": "Formulario principal de Arreglo (lote A, una sola pestaña): datos del acuerdo, montos, cuotas, formatos generados y los campos de motivo de descarte, anulación y reapertura, que envían los botones del lote B. Los campos calculados por el sistema son de solo lectura.",
+  "descripcion": "Formulario principal de Arreglo (cuatro pestañas: General, Cuotas, Formatos y Cierre): datos del acuerdo, montos, cuotas, formatos generados y los campos de motivo de descarte, anulación y reapertura, que envían los botones del lote B. Los campos calculados por el sistema son de solo lectura.",
   "solo_lectura": false,
-  "pestana": {
-    "1033": "General",
-    "3082": "General"
-  },
   "encabezado": [
     {"nombre": "statuscode", "solo_lectura": true},
     {"nombre": "sanic_numeroarreglo", "solo_lectura": true},
     {"nombre": "sanic_fechacongelamiento", "solo_lectura": true}
   ],
-  "secciones": [
+  "pestanas": [
+   {
+    "titulo": {"1033": "General", "3082": "General"},
+    "secciones": [
     {
       "titulo": {
         "1033": "Acuerdo",
@@ -104,7 +103,12 @@ Advertencias: etiquetas de pestaña y sección en los dos LCID, en español y si
         {"nombre": "sanic_instantaneacorreo", "solo_lectura": true},
         {"nombre": "sanic_instantaneacelular", "solo_lectura": true}
       ]
-    },
+    }
+    ]
+   },
+   {
+    "titulo": {"1033": "Cuotas", "3082": "Cuotas"},
+    "secciones": [
     {
       "titulo": {
         "1033": "Cuotas",
@@ -116,7 +120,12 @@ Advertencias: etiquetas de pestaña y sección en los dos LCID, en español y si
         "vista": "Cuotas del arreglo",
         "registros_por_pagina": 60
       }
-    },
+    }
+    ]
+   },
+   {
+    "titulo": {"1033": "Formatos", "3082": "Formatos"},
+    "secciones": [
     {
       "titulo": {
         "1033": "Formatos generados",
@@ -127,7 +136,12 @@ Advertencias: etiquetas de pestaña y sección en los dos LCID, en español y si
         "lookup": "sanic_arregloid",
         "vista": "Formatos generados del arreglo"
       }
-    },
+    }
+    ]
+   },
+   {
+    "titulo": {"1033": "Cierre", "3082": "Cierre"},
+    "secciones": [
     {
       "titulo": {
         "1033": "Formalizacion",
@@ -173,6 +187,8 @@ Advertencias: etiquetas de pestaña y sección en los dos LCID, en español y si
         {"nombre": "sanic_cantidadreaperturas", "solo_lectura": true}
       ]
     }
+    ]
+   }
   ],
   "bibliotecas": [
     "sanic_carp_wr_js_comandos"
@@ -186,7 +202,7 @@ Advertencias: etiquetas de pestaña y sección en los dos LCID, en español y si
 
 Decisiones y huecos:
 
-- **Una sola pestaña** "General" con las 10 secciones en el orden de `diseno/07` §4.4: es el mínimo utilizable del lote A. Las cuatro pestañas (General, Cuotas, Formatos, Cierre) son G-F4 del lote C: ahí se reemplaza `pestana` + `secciones` por `pestanas` sin cambiar nada más.
+- **Cuatro pestañas** (lote C, G-F4; `diseno/07` §4.4): General (Acuerdo, Montos y plazo, Plantilla y numeracion, Cliente al congelar), Cuotas, Formatos y Cierre (Formalizacion, Descarte, Anulacion, Reapertura). Las 10 secciones y su orden no cambian respecto del lote A (que tenía una sola pestaña "General"); solo se reemplazó `pestana` + `secciones` por `pestanas`. Los títulos de pestaña "Cuotas" y "Formatos" son los de `diseno/07` §4.4.
 - **Subgrilla de cuotas con `registros_por_pagina` 60** (G-F6; el plazo máximo es 60). El 60 está dentro del rango 2 a 250 que valida la herramienta; que la plataforma lo acepte en Dev es `diseno/07` §12 punto 15. La de formatos generados queda en el 10 por omisión: **hueco**, `diseno/07` no fija un valor.
 - Los montos (`sanic_saldoinicial`, `sanic_montoabonado`, `sanic_saldoremanente`, `sanic_totalpagar`, `sanic_cuotamensual`) son `DecimalType` o Money según la tabla; el classid de decimal se agregó a `formulario.py` (G-F5). `sanic_fechafin` y `sanic_saldoremanente` los calcula el plugin: solo lectura (un requerido deshabilitado no bloquea el guardado).
 - **Campos gesto**: `sanic_motivodescarte`, `sanic_motivoanulacion`, `sanic_motivoreapertura` (editables, sin `setSubmitMode`: Learn dice que con `never` la columna no se puede editar). El `OnSave` (`alGuardar`) cancela el guardado en todos los modos mientras alguno esté *dirty* y avisa "Use el botón…", salvo que lo dispare un botón de gesto (bandera `SanicCarp.Comun.levantarBandera()`); los envían los botones del lote B.
@@ -224,7 +240,7 @@ python3 herramientas/construir/formulario.py playbooks/formulario/arreglo.md --s
 |---|---|---|
 | 1 | `GET systemforms?$filter=objecttypecode eq 'sanic_carp_tbl_arreglo' and type eq 2` | un solo Main · `name` y `description` los de la sección 2 · activo · no managed |
 | 2 | `formxml` | igual al generado, etiquetas en los dos idiomas |
-| 3 | Estructura | 1 pestaña, 10 secciones, 39 campos en secciones, 2 subgrillas (la de cuotas con `RecordsPerPage` 60), 3 en el encabezado, 1 biblioteca, 2 manejadores |
+| 3 | Estructura | 4 pestañas, 10 secciones, 39 campos en secciones, 2 subgrillas (la de cuotas con `RecordsPerPage` 60), 3 en el encabezado, 1 biblioteca, 2 manejadores |
 | 4 | Scripts | `onload` → `SanicCarp.Arreglo.alCargar`, `onsave` → `SanicCarp.Arreglo.alGuardar`, con `passExecutionContext` true |
 | 5 | Pertenencia | la tabla figura en la solución con `rootcomponentbehavior` 0 |
 | 6 | Segunda ejecución | `ya_existia` |
@@ -241,4 +257,4 @@ Se restituye el `formxml` anterior desde la solución exportada. Reversible mien
 
 ## 8. Fuera de alcance
 
-Las cuatro pestañas (lote C, G-F4), los botones de gesto (lote B), el respaldo de herencia de cliente y oficial en el alta (solo si el mapeo de REL-03 falla), la historia de auditoría (DA-21), las vistas y el JS.
+Los botones de gesto (lote B), el respaldo de herencia de cliente y oficial en el alta (solo si el mapeo de REL-03 falla), la historia de auditoría (DA-21), las vistas y el JS.
