@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Proyecto de EMPAQUETADO del paquete de plugins `sanic_carp_pkg_plugins` (diseno/03 §4.1).
+       No tiene codigo propio: compila las MISMAS fuentes de ../Sanic.Carp.Plugins, enlazadas, y solo para net462.
+       Existe porque el proyecto de codigo tambien apunta a net8.0 (para que las pruebas corran en Linux) y un paquete de plugins
+       con dos destinos no deja las dependencias (DocumentFormat.OpenXml) dentro del .nupkg. Mismo patron que los spikes
+       (spikes/sandbox/src/Spk.Plugins). Las pruebas NO referencian este proyecto.
+       Cualquier cambio de propiedades del csproj original (LangVersion, AssemblyVersion, dependencias) se replica aqui a mano. -->
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <RootNamespace>Sanic.Carp.Plugins</RootNamespace>
+    <AssemblyName>Sanic.Carp.Plugins</AssemblyName>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Sin globbing por defecto: las fuentes vienen enlazadas, no de esta carpeta. -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PowerAppsTargetsPath>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\PowerApps</PowerAppsTargetsPath>
+    <!-- HAY QUE SUBIR EL TERCER NUMERO EN CADA DESPLIEGUE (alm.md). Mantenerlo igual al de ../Sanic.Carp.Plugins. El paquete conserva su version. -->
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <ProjectTypeGuids>{4C25E9B5-9FA6-436c-8E19-B395D2A65FAF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+
+  <Import Project="$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Plugin.props" Condition="Exists('$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Plugin.props')" />
+
+  <PropertyGroup>
+    <PackageId>sanic_carp_pkg_plugins</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Sistemas Abiertos Nicaragua</Authors>
+    <Description>Paquete de plugins del proyecto 2026-003 (Control de Arreglos de Pago): 5 Custom API y 21 steps.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Sanic.Carp.Plugins\**\*.cs" Exclude="..\Sanic.Carp.Plugins\obj\**;..\Sanic.Carp.Plugins\bin\**" LinkBase="." />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.60" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.PowerApps.MSBuild.Plugin" Version="1.*" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
+    <Reference Include="System.IO.Compression" />
+  </ItemGroup>
+
+  <Import Project="$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Plugin.targets" Condition="Exists('$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Plugin.targets')" />
+</Project>
