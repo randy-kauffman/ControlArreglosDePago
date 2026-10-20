@@ -1,0 +1,688 @@
+{
+ "usuario": [
+  {
+   "@odata.etag": "W/\"13339926\"",
+   "ownerid": "8bccbe02-f1ee-f011-8406-7ced8d70b036",
+   "accessmode": 0,
+   "azureactivedirectoryobjectid": "eab4619b-d1f6-475c-a392-69aa8cf30e4f",
+   "isdisabled": false,
+   "fullname": "Randy Kauffman",
+   "islicensed": true,
+   "_businessunitid_value": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+   "systemuserid": "8bccbe02-f1ee-f011-8406-7ced8d70b036"
+  }
+ ],
+ "bu_nombre": {
+  "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#businessunits(name,_parentbusinessunitid_value)/$entity",
+  "@odata.etag": "W/\"2022455\"",
+  "businessunitid": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+  "name": "org36e60d9d",
+  "_parentbusinessunitid_value": null
+ },
+ "roles_directos": [
+  [
+   "Approvals User",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ],
+  [
+   "SR | CM | Admin",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ],
+  [
+   "SR - MPPP - Supervisor",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ],
+  [
+   "SR - MPPP - Servicio de ingesta",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ],
+  [
+   "System Administrator",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ],
+  [
+   "Basic User",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ]
+ ],
+ "teams_cantidad": 750,
+ "bu_raiz": [
+  {
+   "@odata.etag": "W/\"2022455\"",
+   "businessunitid": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+   "name": "org36e60d9d"
+  }
+ ],
+ "roles_carp": [
+  [
+   "SR - CARP - Purga",
+   "a9d455ca-c0b6-4202-ab0a-6ea8e3100ff3",
+   "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   "SR - CARP - Oficial",
+   "eaba6888-4ec4-f111-a05a-7ced8d3c456b",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ],
+  [
+   "SR - CARP - Jefe",
+   "ca75358f-4ec4-f111-a05a-7ced8d3c456b",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ],
+  [
+   "SR - CARP - Servicio",
+   "a4ed3f99-4ec4-f111-a05a-7ced8d3c456b",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ],
+  [
+   "SR - CARP - Purga",
+   "feed3f99-4ec4-f111-a05a-7ced8d3c456b",
+   "99c5be02-f1ee-f011-8406-7ced8d70b036"
+  ],
+  [
+   "SR - CARP - Oficial",
+   "49435eac-4a77-4fc6-9ffc-9aa047fe588d",
+   "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   "SR - CARP - Jefe",
+   "07a1de62-4588-40a6-b513-ddec5cb3716e",
+   "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  ],
+  [
+   "SR - CARP - Servicio",
+   "9701a644-b718-4b27-b79a-e3d6f63993fb",
+   "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  ]
+ ],
+ "conr": [
+  {
+   "@odata.etag": "W/\"3222781\"",
+   "connectionid": "ebcf70b7d46a42f18eccb8461dee550a",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365",
+   "connectionreferencedisplayname": "CONN | WFE | Office 365 Outlook",
+   "connectionreferenceid": "2a92b639-9213-f111-8342-000d3a316609",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_conn_wfe_office365outlook"
+  },
+  {
+   "@odata.etag": "W/\"3330882\"",
+   "connectionid": "shared-powerplatform-a3b9f2f7-ac87-489a-aa47-41e9ebc7e260",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_powerplatformforadmins",
+   "connectionreferencedisplayname": "Power Platform for Admins",
+   "connectionreferenceid": "ecc3a872-b519-f111-8342-000d3a316609",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "new_sharedpowerplatformforadmins_7830f"
+  },
+  {
+   "@odata.etag": "W/\"2442803\"",
+   "connectionid": "3291b56b498f4fa2afbb34022e8d2457",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataservice",
+   "connectionreferencedisplayname": "Conexion de prueba",
+   "connectionreferenceid": "1c222d4d-e7f3-f011-8407-000d3a316609",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "new_Conexiondeprueba"
+  },
+  {
+   "@odata.etag": "W/\"2442839\"",
+   "connectionid": "shared-teams-78ed6f60-9e08-41f8-8236-8040605b3e5e",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_teams",
+   "connectionreferencedisplayname": "Microsoft Teams Prueba-4221b",
+   "connectionreferenceid": "95b356f2-f1f3-f011-8407-000d3a316609",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "new_sharedteams_4221b"
+  },
+  {
+   "@odata.etag": "W/\"2442979\"",
+   "connectionid": "shared-teams-8a4e9be5-cd67-4fc3-bbe0-70c890f0c1b9",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_teams",
+   "connectionreferencedisplayname": "Microsoft Teams Prueba-d15c1",
+   "connectionreferenceid": "626f640d-f6f3-f011-8407-000d3a316609",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "new_sharedteams_d15c1"
+  },
+  {
+   "@odata.etag": "W/\"2443031\"",
+   "connectionid": "shared-teams-f999c681-6372-481b-9645-c4a2a15d6f3d",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_teams",
+   "connectionreferencedisplayname": "Microsoft Teams Prueba-8436d",
+   "connectionreferenceid": "3a5e632d-f6f3-f011-8407-000d3a316609",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "new_sharedteams_8436d"
+  },
+  {
+   "@odata.etag": "W/\"2717431\"",
+   "connectionid": "shared-commondataser-74e1231e-fed9-49cf-8cce-6d370fb85b2f",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "Microsoft Dataverse WFEngineEvaluation-3bc81",
+   "connectionreferenceid": "314cdb95-3efa-f011-8407-000d3a316609",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "wf_sharedcommondataserviceforapps_3bc81"
+  },
+  {
+   "@odata.etag": "W/\"8747691\"",
+   "connectionid": "e620d393ff024cc7a955680ee581d5b6",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_teams",
+   "connectionreferencedisplayname": "CH-CR-Teams",
+   "connectionreferenceid": "4702f764-67a5-f111-aaac-000d3a3425f0",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_chcrteams"
+  },
+  {
+   "@odata.etag": "W/\"8747698\"",
+   "connectionid": "9278761883b440dbb2db88a6b3cd54f2",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+   "connectionreferencedisplayname": "CH-CR-Office365Users",
+   "connectionreferenceid": "bb74bc7c-67a5-f111-aaac-000d3a3425f0",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_chcroffice365users"
+  },
+  {
+   "@odata.etag": "W/\"8747703\"",
+   "connectionid": "shared-office365grou-5bb8db28-8efd-4f89-a05a-a45e5725bff6",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365groups",
+   "connectionreferencedisplayname": "CH-CR-Office365Groups",
+   "connectionreferenceid": "62cd1592-67a5-f111-aaac-000d3a3425f0",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_chcroffice365groups"
+  },
+  {
+   "@odata.etag": "W/\"8747709\"",
+   "connectionid": "shared-office365user-e2f990c6-44dc-4198-98f7-1e182c1d2600",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+   "connectionreferencedisplayname": "Office 365 Users CashHubFlows-46c7d",
+   "connectionreferenceid": "f074d7cf-67a5-f111-aaac-000d3a3425f0",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_sharedoffice365users_46c7d"
+  },
+  {
+   "@odata.etag": "W/\"10067144\"",
+   "connectionid": "ebcf70b7d46a42f18eccb8461dee550a",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365",
+   "connectionreferencedisplayname": "CONR - MPPP - Outlook",
+   "connectionreferenceid": "5362c69a-81b6-f111-aaad-000d3a350099",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_mppp_conr_outlook"
+  },
+  {
+   "@odata.etag": "W/\"10067142\"",
+   "connectionid": "bc82127e63bf4d80aa1b92a6fad0b587",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "CONR - MPPP - Dataverse",
+   "connectionreferenceid": "7f1c86c1-81b6-f111-aaad-000d3a350099",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_mppp_conr_dataverse"
+  },
+  {
+   "@odata.etag": "W/\"6834850\"",
+   "connectionid": "shared-onedriveforbu-b1e38a70-51cb-4055-8103-be16b2fb6b74",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+   "connectionreferencedisplayname": "OneDrive for Business",
+   "connectionreferenceid": "5745ff21-6f0f-41c7-9a21-133cb186f730",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "new_sharedonedriveforbusiness_a6c30"
+  },
+  {
+   "@odata.etag": "W/\"6834858\"",
+   "connectionid": "shared-excelonlinebu-7cfc3a9f-fcd7-4448-a407-2a641e52bf37",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness",
+   "connectionreferencedisplayname": "CEAD CONN Excel Online Business",
+   "connectionreferenceid": "32b828a6-096c-4ece-8a73-1a5fc48cbfef",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_CEADCONNExcelOnlineBusiness"
+  },
+  {
+   "@odata.etag": "W/\"6834852\"",
+   "connectionid": "e620d393ff024cc7a955680ee581d5b6",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_teams",
+   "connectionreferencedisplayname": "Microsoft Teams",
+   "connectionreferenceid": "ccc262a0-18dd-4d96-9fb1-1b20619dfdc0",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "new_sharedteams_084e4"
+  },
+  {
+   "@odata.etag": "W/\"7116635\"",
+   "connectionid": "95bbcb03329241f586f4a337d29197db",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365",
+   "connectionreferencedisplayname": "CH-CR-Outlook",
+   "connectionreferenceid": "09da31a8-5b9d-4155-8e08-200b80cb5c12",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_CHCROutlook"
+  },
+  {
+   "@odata.etag": "W/\"6431817\"",
+   "connectionid": "abcac2d06c374755be64f6b6bbad86c2",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "Microsoft Dataverse Docupilot-a0332",
+   "connectionreferenceid": "962e272f-831e-448d-90e7-22f48bb34fc0",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "cat_sharedcommondataserviceforapps_a0332"
+  },
+  {
+   "@odata.etag": "W/\"6834866\"",
+   "connectionid": "abcac2d06c374755be64f6b6bbad86c2",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "Microsoft Dataverse CashHubFlows-025cb",
+   "connectionreferenceid": "c72db3e4-f94f-46c2-a43f-25ca572e5846",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_sharedcommondataserviceforapps_025cb"
+  },
+  {
+   "@odata.etag": "W/\"7116631\"",
+   "connectionid": "abcac2d06c374755be64f6b6bbad86c2",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "CH-CR-Dataverse",
+   "connectionreferenceid": "0a683e72-c8ed-4dd2-95a6-35e9dc3ff3fb",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_CHCRDataverse"
+  },
+  {
+   "@odata.etag": "W/\"7116637\"",
+   "connectionid": "shared-sharepointonl-30199466-9189-47d4-b1cd-40f343a48a37",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+   "connectionreferencedisplayname": "CH-CR-Sharepoint",
+   "connectionreferenceid": "bc44ea59-75f4-4200-b725-481f04eefcff",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_CHCRSharepoint"
+  },
+  {
+   "@odata.etag": "W/\"7116633\"",
+   "connectionid": "shared-onedriveforbu-b1e38a70-51cb-4055-8103-be16b2fb6b74",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+   "connectionreferencedisplayname": "CH-CR-OneDrive",
+   "connectionreferenceid": "22f15633-8de0-4fd9-8e74-50ad1f3758f5",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_CHCROneDrive"
+  },
+  {
+   "@odata.etag": "W/\"6834856\"",
+   "connectionid": "shared-onedriveforbu-b1e38a70-51cb-4055-8103-be16b2fb6b74",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+   "connectionreferencedisplayname": "AEDD - Conn - OneDrive",
+   "connectionreferenceid": "b15cf6dc-7631-4910-9dfb-616742ffaea5",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_AEDDConnOneDrive"
+  },
+  {
+   "@odata.etag": "W/\"6431829\"",
+   "connectionid": "abcac2d06c374755be64f6b6bbad86c2",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "[RiskAssessment] Microsoft Dataverse",
+   "connectionreferenceid": "207c716a-d649-4f69-9094-678058a06a43",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "msdyn_DVAcceleratorMicrosoftDataverse"
+  },
+  {
+   "@odata.etag": "W/\"3925229\"",
+   "connectionid": "shared-commondataser-74e1231e-fed9-49cf-8cce-6d370fb85b2f",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "CONN | WFE | Dataverse",
+   "connectionreferenceid": "865271a7-a13d-f111-bec6-70a8a59a459e",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_conn_wfe_dataverse"
+  },
+  {
+   "@odata.etag": "W/\"8495236\"",
+   "connectionid": "abcac2d06c374755be64f6b6bbad86c2",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "Sigil | Conn | Dataverse (SP)",
+   "connectionreferenceid": "c790b23e-1785-f111-8075-70a8a5af5a32",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_SigilConnDataverseSP"
+  },
+  {
+   "@odata.etag": "W/\"5687139\"",
+   "connectionid": "ebcf70b7d46a42f18eccb8461dee550a",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365",
+   "connectionreferencedisplayname": "Sigil | Conn | Outlook",
+   "connectionreferenceid": "38b70fa0-1785-f111-8075-70a8a5af5a32",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_sigil_conn_outlook"
+  },
+  {
+   "@odata.etag": "W/\"5687146\"",
+   "connectionid": "e620d393ff024cc7a955680ee581d5b6",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_teams",
+   "connectionreferencedisplayname": "Sigil | Conn | Teams",
+   "connectionreferenceid": "5a9b24bb-1785-f111-8075-70a8a5af5a32",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_sigil_conn_teams"
+  },
+  {
+   "@odata.etag": "W/\"6834854\"",
+   "connectionid": "abcac2d06c374755be64f6b6bbad86c2",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "AEDD - Conn - Dataverse",
+   "connectionreferenceid": "cb47bab6-a0e0-42af-8a26-77712ebb3a93",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_AEDDConnDataverse"
+  },
+  {
+   "@odata.etag": "W/\"8441840\"",
+   "connectionid": "e620d393ff024cc7a955680ee581d5b6",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_teams",
+   "connectionreferencedisplayname": "HB | CONR | Microsoft Teams",
+   "connectionreferenceid": "cc5047db-c59a-f111-b8dd-7ced8d6f268c",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_hb_conr_microsoftteams"
+  },
+  {
+   "@odata.etag": "W/\"8441838\"",
+   "connectionid": "95bbcb03329241f586f4a337d29197db",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365",
+   "connectionreferencedisplayname": "HB | CONR | Microsoft 365 Outlook",
+   "connectionreferenceid": "1c2634f4-c59a-f111-b8dd-7ced8d6f268c",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_hb_conr_microsoft365outlook"
+  },
+  {
+   "@odata.etag": "W/\"8441836\"",
+   "connectionid": "bc82127e63bf4d80aa1b92a6fad0b587",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "HB | CONR | Dataverse",
+   "connectionreferenceid": "7b16cf08-c69a-f111-b8dd-7ced8d6f268c",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_hb_conr_dataverse"
+  },
+  {
+   "@odata.etag": "W/\"6834868\"",
+   "connectionid": "shared-office365grou-5bb8db28-8efd-4f89-a05a-a45e5725bff6",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365groups",
+   "connectionreferencedisplayname": "Office 365 Groups CashHubFlows-cff38",
+   "connectionreferenceid": "8b4bda14-63e3-4b91-8c1a-8b649180970a",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_sharedoffice365groups_cff38"
+  },
+  {
+   "@odata.etag": "W/\"6431823\"",
+   "connectionid": "95bbcb03329241f586f4a337d29197db",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365",
+   "connectionreferencedisplayname": "Office 365 Outlook",
+   "connectionreferenceid": "7e0c5eb5-28af-4aff-b591-93df394e8a90",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "cat_office365Outlook"
+  },
+  {
+   "@odata.etag": "W/\"12629820\"",
+   "connectionid": null,
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+   "connectionreferencedisplayname": "Dataverse",
+   "connectionreferenceid": "b5325437-86ca-4ec7-9e54-cbdb1406d51c",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "msdyn_Dataverse"
+  },
+  {
+   "@odata.etag": "W/\"6834860\"",
+   "connectionid": "95bbcb03329241f586f4a337d29197db",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365",
+   "connectionreferencedisplayname": "CEAD CONN Outlook 365",
+   "connectionreferenceid": "7e4d0eb2-1e59-4c7c-ae6c-d140f99c1158",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_CEADCONNOutlook365"
+  },
+  {
+   "@odata.etag": "W/\"6834872\"",
+   "connectionid": "9278761883b440dbb2db88a6b3cd54f2",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+   "connectionreferencedisplayname": "Office 365 Users CashHubFlows-dd86c",
+   "connectionreferenceid": "91739870-1849-4399-9987-dc176d699ef6",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_sharedoffice365users_dd86c"
+  },
+  {
+   "@odata.etag": "W/\"6834874\"",
+   "connectionid": "shared-onedriveforbu-b1e38a70-51cb-4055-8103-be16b2fb6b74",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness",
+   "connectionreferencedisplayname": "OneDrive for Business CashHubFlows-0d05f",
+   "connectionreferenceid": "b31124f4-5492-4df1-81e2-f75febafb58e",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_sharedonedriveforbusiness_0d05f"
+  },
+  {
+   "@odata.etag": "W/\"12629818\"",
+   "connectionid": null,
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_conversionservice",
+   "connectionreferencedisplayname": "Content Conversion",
+   "connectionreferenceid": "986ef697-4d2f-4fc0-b70e-fabe642b7b52",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "msdyn_ContentConversion"
+  },
+  {
+   "@odata.etag": "W/\"6834870\"",
+   "connectionid": "9278761883b440dbb2db88a6b3cd54f2",
+   "connectorid": "/providers/Microsoft.PowerApps/apis/shared_office365users",
+   "connectionreferencedisplayname": "Office 365 Users CashHubFlows-3b441",
+   "connectionreferenceid": "48586902-ae4b-424b-8d05-fed1a9ba090a",
+   "statuscode": 1,
+   "connectionreferencelogicalname": "sanic_sharedoffice365users_3b441"
+  }
+ ],
+ "ev": [
+  [
+   "sanic_mppp_ev_buzoningesta",
+   100000000,
+   "EV - MPPP - Buzon de ingesta"
+  ],
+  [
+   "sanic_mppp_ev_carpetaprocesados",
+   100000000,
+   "EV - MPPP - Carpeta de procesados"
+  ],
+  [
+   "sanic_carp_ev_nombrebu",
+   100000000,
+   "EV - CARP - Nombre de la BU"
+  ],
+  [
+   "sanic_carp_ev_nombreteamjefatura",
+   100000000,
+   "EV - CARP - Nombre del team de jefatura"
+  ],
+  [
+   "sanic_carp_ev_buzonarea",
+   100000000,
+   "EV - CARP - Buzon del area"
+  ],
+  [
+   "sanic_ev_wfe_noreplysharedmailbox",
+   100000000,
+   "EV | WFE | Buzon notificacion No-Reply"
+  ],
+  [
+   "sanic_sigil_env_TsaEnabled",
+   100000002,
+   "Sigil | ENV | TSA Habilitado"
+  ],
+  [
+   "sanic_sigil_env_TsaEndpoints",
+   100000003,
+   "Sigil | ENV | Endpoints TSA"
+  ],
+  [
+   "sanic_sigil_env_MaxPdfSizeKB",
+   100000001,
+   "Sigil | ENV | Tamano maximo PDFs"
+  ],
+  [
+   "sanic_sigil_env_MaxParticipants",
+   100000001,
+   "Sigil | ENV | Maxima cantidad de participantes"
+  ],
+  [
+   "sanic_sigil_env_SignatureImageSpec",
+   100000003,
+   "Sigil | ENV | Especificaciones de firma"
+  ],
+  [
+   "sanic_sigil_env_ExpirationDefaultDays",
+   100000001,
+   "Sigil | ENV | Dias de expiracion por defecto"
+  ],
+  [
+   "sanic_sigil_env_ReminderCadenceDays",
+   100000001,
+   "Sigil | ENV | Cadencia de recordatorio en dias"
+  ],
+  [
+   "sanic_sigil_env_AppPlayUrl",
+   100000000,
+   "Sigil | ENV | URL de la App"
+  ],
+  [
+   "sanic_sigil_env_DefaultLanguage",
+   100000000,
+   "Sigil | ENV | Lenguaje por defecto"
+  ],
+  [
+   "sanic_ev_wfe_automation_maxretries",
+   100000001,
+   "EV | WFE | Maximo reintento en automatizaciones"
+  ],
+  [
+   "sanic_ev_wfe_automation_rescueinterval",
+   100000001,
+   "EV | WFE | Intervalo de Rescate"
+  ],
+  [
+   "sanic_sigil_env_emailoperador",
+   100000000,
+   "Sigil | ENV | Email del Operador"
+  ],
+  [
+   "sanic_ev_wfe_environmenturl",
+   100000000,
+   "EV | WFE | URL Ambiente"
+  ],
+  [
+   "sanic_hb_env_GlobalItTeamsChannelId",
+   100000000,
+   "HB | ENV | Global IT Teams Channel ID"
+  ],
+  [
+   "sanic_hb_env_GlobalItFallbackEmail",
+   100000000,
+   "HB | ENV | Global IT Fallback Email"
+  ],
+  [
+   "sanic_ev_wfe_securitytoken",
+   100000000,
+   "EV | WFE | Token de Seguridad"
+  ],
+  [
+   "sanic_CHEVSharedMailboxAddress",
+   100000000,
+   "CH-EV-SharedMailboxAddress"
+  ],
+  [
+   "sanic_CHEVOpsTeamsGroupId",
+   100000000,
+   "CH-EV-OpsTeamsGroupId"
+  ],
+  [
+   "sanic_hb_env_DigestThreshold",
+   100000001,
+   "HB | ENV | Digest Threshold"
+  ],
+  [
+   "sanic_hb_env_EscalationRecoveredMinutes",
+   100000001,
+   "HB | ENV | Escalation Recovered Minutes"
+  ],
+  [
+   "sanic_hb_env_EscalationUnackMinutes",
+   100000001,
+   "HB | ENV | Escalation Unack Minutes"
+  ]
+ ],
+ "flujos_carp": [],
+ "meta_bulkdeleteoperation": {
+  "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions(LogicalName,ObjectTypeCode,OwnershipType,IsPrivate)/$entity",
+  "MetadataId": "900569d7-bbc7-4835-b55c-6118f03c4623",
+  "LogicalName": "bulkdeleteoperation",
+  "ObjectTypeCode": 4424,
+  "OwnershipType": "None",
+  "IsPrivate": false
+ },
+ "meta_asyncoperation": {
+  "@odata.context": "https://org36e60d9d.crm.dynamics.com/api/data/v9.2/$metadata#EntityDefinitions(LogicalName,ObjectTypeCode,OwnershipType,IsPrivate)/$entity",
+  "MetadataId": "13394a90-c97d-4a73-8f7e-cbce80f8102f",
+  "LogicalName": "asyncoperation",
+  "ObjectTypeCode": 4700,
+  "OwnershipType": "UserOwned",
+  "IsPrivate": false
+ },
+ "priv_bulk": [
+  [
+   "prvReadAsyncOperation",
+   1,
+   true,
+   true,
+   true,
+   true
+  ],
+  [
+   "prvDeleteAsyncOperation",
+   65536,
+   true,
+   true,
+   true,
+   true
+  ],
+  [
+   "prvAppendAsyncOperation",
+   4,
+   true,
+   true,
+   true,
+   true
+  ],
+  [
+   "prvCreateAsyncOperation",
+   32,
+   true,
+   true,
+   true,
+   true
+  ],
+  [
+   "prvAppendToAsyncOperation",
+   16,
+   true,
+   true,
+   true,
+   true
+  ],
+  [
+   "prvAssignAsyncOperation",
+   524288,
+   true,
+   true,
+   true,
+   true
+  ],
+  [
+   "prvWriteAsyncOperation",
+   2,
+   true,
+   true,
+   true,
+   true
+  ],
+  [
+   "prvShareAsyncOperation",
+   262144,
+   true,
+   true,
+   true,
+   true
+  ],
+  [
+   "prvBulkDelete",
+   1,
+   false,
+   false,
+   false,
+   true
+  ]
+ ]
+}

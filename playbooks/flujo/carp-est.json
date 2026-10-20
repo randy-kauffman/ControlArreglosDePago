@@ -1,0 +1,64 @@
+{
+  "triggers": {
+    "Al_fallar_el_buzon": {
+      "type": "OpenApiConnectionWebhook",
+      "inputs": {
+        "parameters": {
+          "subscriptionRequest/message": 3,
+          "subscriptionRequest/entityname": "mailbox",
+          "subscriptionRequest/scope": 2,
+          "subscriptionRequest/filteringattributes": "incomingemailstatus,outgoingemailstatus",
+          "subscriptionRequest/filterexpression": "incomingemailstatus eq 2 or outgoingemailstatus eq 2"
+        },
+        "host": {
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+          "operationId": "SubscribeWebhookTrigger",
+          "connectionName": "@@conr:dataverse@@"
+        }
+      }
+    }
+  },
+  "actions": {
+    "Es_el_buzon_del_area": {
+      "runAfter": {},
+      "type": "If",
+      "expression": {
+        "and": [
+          {
+            "equals": [
+              "@toLower(coalesce(triggerOutputs()?['body/emailaddress'], ''))",
+              "@toLower(parameters('@@ev:sanic_carp_ev_buzonarea@@'))"
+            ]
+          }
+        ]
+      },
+      "actions": {
+        "Avisar_la_falla": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@parameters('@@ev:sanic_carp_ev_destinatariosalertas@@')",
+              "emailMessage/Subject": "CARP: falla la sincronización del buzón del área",
+              "emailMessage/Body": "<p>Falla la sincronización del buzón del área <b>@{parameters('@@ev:sanic_carp_ev_buzonarea@@')}</b>.</p><p>Entrada: <b>@{if(equals(triggerOutputs()?['body/incomingemailstatus'], 2), 'FALLA', 'bien')}</b> · Salida: <b>@{if(equals(triggerOutputs()?['body/outgoingemailstatus'], 2), 'FALLA', 'bien')}</b></p><p>Fecha (UTC): @{utcNow()}</p><p>Revise el buzón en Configuración de correo electrónico.</p>",
+              "emailMessage/Importance": "High"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "@@conr:outlook@@"
+            },
+            "retryPolicy": {
+              "type": "exponential",
+              "count": 4,
+              "interval": "PT10S"
+            }
+          }
+        }
+      },
+      "else": {
+        "actions": {}
+      }
+    }
+  }
+}

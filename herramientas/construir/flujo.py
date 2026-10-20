@@ -281,6 +281,11 @@ def _leer_flujo(dv, nombre):
 
 
 def _conexiones(dv, datos):
+    """Devuelve las connection references que existen pero SIN conexión. Una
+    que no existe bloquea; una sin conexión no: el flujo se puede crear igual
+    (queda apagado), porque la conexión la crea una persona iniciando sesión y
+    no hay API para eso."""
+    sin_conexion = []
     for alias, conr in datos["conexiones"].items():
         ruta = ("connectionreferences?$select=connectionreferencelogicalname,connectionid,statuscode"
                 f"&$filter=connectionreferencelogicalname eq '{conr['referencia']}'")
@@ -288,9 +293,8 @@ def _conexiones(dv, datos):
         if not filas:
             raise Bloqueado(f"la connection reference '{conr['referencia']}' no existe; hay que crearla primero")
         if not filas[0].get("connectionid"):
-            raise Bloqueado(
-                f"la connection reference '{conr['referencia']}' existe pero no tiene conexión asociada; "
-                "una persona tiene que conectarla desde el portal")
+            sin_conexion.append(conr["referencia"])
+    return sin_conexion
 
 
 def _variables(dv, datos):
@@ -345,12 +349,14 @@ def _normalizar(texto):
 def _contra_entorno(dv, datos, identidad, definicion, solo_verificar, completar, componente, dormir):
     solucion = identidad["solucion"]
     comprobar_solucion_e_idioma(dv, identidad)
-    _conexiones(dv, datos)
+    sin_conexion = _conexiones(dv, datos)
     claves, parametros = _variables(dv, datos)
     ids = _ids_hijos(dv, datos)
     cuerpo_esperado = clientdata(definicion, datos, ids, claves, parametros)
 
-    estado, estatus = ESTADO_ACTIVO if datos["activar"] else ESTADO_INACTIVO
+    # Sin conexión el flujo no se puede encender: se deja apagado, se lo ACTIVE o no el playbook.
+    activar = datos["activar"] and not sin_conexion
+    estado, estatus = ESTADO_ACTIVO if activar else ESTADO_INACTIVO
     flujo = _leer_flujo(dv, datos["nombre"])
     hubo_escritura = False
     hubo_alta = False
@@ -427,7 +433,7 @@ def _contra_entorno(dv, datos, identidad, definicion, solo_verificar, completar,
                     "se publicó. Un hijo tiene que activarse AL MENOS UNA VEZ antes de que un padre "
                     "activo pueda llamarlo: hay que activar primero el hijo")
             return "error", componente, (
-                f"el flujo quedó bien pero no se pudo {'activar' if datos['activar'] else 'desactivar'}: "
+                f"el flujo quedó bien pero no se pudo {'activar' if activar else 'desactivar'}: "
                 f"HTTP {est}: {resp}")
         hubo_escritura = True
         flujo = _leer_flujo(dv, datos["nombre"])
@@ -441,8 +447,14 @@ def _contra_entorno(dv, datos, identidad, definicion, solo_verificar, completar,
             f"el flujo existe pero está en statecode {estado_actual[0]}/{estado_actual[1]} y el playbook "
             f"pide {estado}/{estatus}")
 
+    if sin_conexion:
+        return "bloqueado", componente, (
+            f"workflowid {id_flujo}, {'creado' if hubo_alta else 'definición al día'} y apagado: la connection "
+            f"reference {sin_conexion} existe pero no tiene conexión asociada; una persona tiene que conectarla "
+            "desde el portal y después volver a correr la herramienta para encenderlo")
+
     return estado_de_escritura(hubo_alta, hubo_escritura), componente, (
-        f"workflowid {id_flujo}, {'activado' if datos['activar'] else 'desactivado (es un flujo hijo)'}, "
+        f"workflowid {id_flujo}, {'activado' if activar else 'desactivado (es un flujo hijo)'}, "
         f"{len(datos['conexiones'])} conexion(es), {len(datos['variables'])} variable(s), "
         f"{len(datos['hijos'])} hijo(s), desde '{datos['archivo']}'")
 

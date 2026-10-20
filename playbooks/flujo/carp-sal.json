@@ -1,0 +1,247 @@
+{
+  "triggers": {
+    "Cada_30_minutos_en_horario_habil": {
+      "type": "Recurrence",
+      "recurrence": {
+        "frequency": "Week",
+        "interval": 1,
+        "timeZone": "Central America Standard Time",
+        "schedule": {
+          "weekDays": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday"
+          ],
+          "hours": [
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18"
+          ],
+          "minutes": [
+            0,
+            30
+          ]
+        }
+      }
+    }
+  },
+  "actions": {
+    "Inicio": {
+      "runAfter": {},
+      "type": "Compose",
+      "inputs": "@utcNow()"
+    },
+    "Umbrales": {
+      "runAfter": {
+        "Inicio": [
+          "Succeeded"
+        ]
+      },
+      "type": "Compose",
+      "inputs": "@json(string(parameters('@@ev:sanic_carp_ev_umbralesmonitoreo@@')))"
+    },
+    "Entrada_reciente": {
+      "runAfter": {
+        "Umbrales": [
+          "Succeeded"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "parameters": {
+          "entityName": "emails",
+          "$select": "activityid",
+          "$top": 1,
+          "$filter": "directioncode eq false and createdon ge @{addHours(outputs('Inicio'), mul(-1, int(outputs('Umbrales')?['horasSinEntrada'])))} and contains(torecipients,'@{parameters('@@ev:sanic_carp_ev_buzonarea@@')}')"
+        },
+        "host": {
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+          "operationId": "ListRecords",
+          "connectionName": "@@conr:dataverse@@"
+        },
+        "retryPolicy": {
+          "type": "exponential",
+          "count": 4,
+          "interval": "PT10S"
+        }
+      },
+      "runtimeConfiguration": {
+        "secureData": {
+          "properties": [
+            "inputs",
+            "outputs"
+          ]
+        }
+      }
+    },
+    "Reconciliar_correos": {
+      "runAfter": {
+        "Entrada_reciente": [
+          "Succeeded"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "parameters": {
+          "actionName": "sanic_carp_capi_reconciliarcorreos",
+          "item/maximo": 20,
+          "item/minutosminimos": "@int(outputs('Umbrales')?['minutosReconciliar'])"
+        },
+        "host": {
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+          "operationId": "PerformUnboundAction",
+          "connectionName": "@@conr:dataverse@@"
+        },
+        "retryPolicy": {
+          "type": "exponential",
+          "count": 4,
+          "interval": "PT10S"
+        }
+      },
+      "runtimeConfiguration": {
+        "secureData": {
+          "properties": [
+            "inputs",
+            "outputs"
+          ]
+        }
+      }
+    },
+    "Errores_de_envio": {
+      "runAfter": {
+        "Reconciliar_correos": [
+          "Succeeded",
+          "Failed"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "parameters": {
+          "entityName": "emails",
+          "$select": "activityid",
+          "$top": 50,
+          "$filter": "directioncode eq true and statuscode eq 8 and modifiedon ge @{addMinutes(outputs('Inicio'), mul(-1, int(outputs('Umbrales')?['ventanaErroresMin'])))} and contains(sender,'@{parameters('@@ev:sanic_carp_ev_buzonarea@@')}')"
+        },
+        "host": {
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+          "operationId": "ListRecords",
+          "connectionName": "@@conr:dataverse@@"
+        },
+        "retryPolicy": {
+          "type": "exponential",
+          "count": 4,
+          "interval": "PT10S"
+        }
+      },
+      "runtimeConfiguration": {
+        "secureData": {
+          "properties": [
+            "inputs",
+            "outputs"
+          ]
+        }
+      }
+    },
+    "Purgas_fallidas": {
+      "runAfter": {
+        "Errores_de_envio": [
+          "Succeeded"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "parameters": {
+          "entityName": "bulkdeleteoperations",
+          "$select": "bulkdeleteoperationid",
+          "$top": 50,
+          "$filter": "statuscode eq 31 and createdon ge @{addHours(outputs('Inicio'), mul(-1, int(outputs('Umbrales')?['horasPurga'])))} and contains(name,'CARP')"
+        },
+        "host": {
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+          "operationId": "ListRecords",
+          "connectionName": "@@conr:dataverse@@"
+        },
+        "retryPolicy": {
+          "type": "exponential",
+          "count": 4,
+          "interval": "PT10S"
+        }
+      },
+      "runtimeConfiguration": {
+        "secureData": {
+          "properties": [
+            "inputs",
+            "outputs"
+          ]
+        }
+      }
+    },
+    "Avisos": {
+      "runAfter": {
+        "Purgas_fallidas": [
+          "Succeeded"
+        ]
+      },
+      "type": "Compose",
+      "inputs": "@concat(if(equals(length(coalesce(outputs('Entrada_reciente')?['body/value'], createArray())), 0), concat('<li>No ingresan correos al buzón del área desde hace ', string(outputs('Umbrales')?['horasSinEntrada']), ' horas.</li>'), ''), if(equals(actions('Reconciliar_correos')?['status'], 'Failed'), '<li>Falló la reconciliación de correos sin conversación (sanic_carp_capi_reconciliarcorreos).</li>', if(or(greater(int(coalesce(outputs('Reconciliar_correos')?['body/conerror'], 0)), 0), equals(outputs('Reconciliar_correos')?['body/haymas'], true)), concat('<li>Reconciliación de correos sin conversación: encontrados ', string(outputs('Reconciliar_correos')?['body/encontrados']), ', registrados ', string(outputs('Reconciliar_correos')?['body/registrados']), ', con error ', string(outputs('Reconciliar_correos')?['body/conerror']), if(equals(outputs('Reconciliar_correos')?['body/haymas'], true), ', y quedan más pendientes', ''), '.</li>'), '')), if(greater(length(coalesce(outputs('Errores_de_envio')?['body/value'], createArray())), 0), concat('<li>Respuestas con error de envío: ', string(length(outputs('Errores_de_envio')?['body/value'])), '. Vea la vista Respuestas con error de envio.</li>'), ''), if(greater(length(coalesce(outputs('Purgas_fallidas')?['body/value'], createArray())), 0), concat('<li>Trabajos de eliminación masiva fallidos en las últimas ', string(outputs('Umbrales')?['horasPurga']), ' horas: ', string(length(outputs('Purgas_fallidas')?['body/value'])), '. Revise System Jobs.</li>'), ''))"
+    },
+    "Hay_algo_que_avisar": {
+      "runAfter": {
+        "Avisos": [
+          "Succeeded"
+        ]
+      },
+      "type": "If",
+      "expression": {
+        "and": [
+          {
+            "not": {
+              "equals": [
+                "@outputs('Avisos')",
+                ""
+              ]
+            }
+          }
+        ]
+      },
+      "actions": {
+        "Enviar_alerta": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@parameters('@@ev:sanic_carp_ev_destinatariosalertas@@')",
+              "emailMessage/Subject": "CARP: alerta de salud del buzón del área",
+              "emailMessage/Body": "<p>Buzón del área: <b>@{parameters('@@ev:sanic_carp_ev_buzonarea@@')}</b></p><ul>@{outputs('Avisos')}</ul><p>Corrida (UTC): @{outputs('Inicio')}</p>",
+              "emailMessage/Importance": "High"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+              "operationId": "SendEmailV2",
+              "connectionName": "@@conr:outlook@@"
+            },
+            "retryPolicy": {
+              "type": "exponential",
+              "count": 4,
+              "interval": "PT10S"
+            }
+          }
+        }
+      },
+      "else": {
+        "actions": {}
+      }
+    }
+  }
+}

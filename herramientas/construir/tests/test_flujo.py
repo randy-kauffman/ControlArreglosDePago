@@ -333,11 +333,40 @@ class ContraElEntorno(Base):
         estados = [l["cuerpo"] for l in cliente.llamadas if l["metodo"] == "PATCH" and "statecode" in (l["cuerpo"] or {})]
         self.assertTrue(all(e["statecode"] == 0 for e in estados), estados)
 
-    def test_una_connection_reference_sin_conexion_queda_bloqueada_sin_escribir(self):
+    def test_una_connection_reference_sin_conexion_crea_el_flujo_apagado_y_queda_bloqueado(self):
+        # La conexión la crea una persona iniciando sesión (no hay API). Antes la herramienta paraba sin
+        # escribir y el flujo no existía hasta que alguien conectara; ahora el flujo queda creado y
+        # APAGADO, y el estado dice qué falta para encenderlo (lote D, 2026-10-20).
         cliente = self.armar(ClienteSimulado(), conectada=False)
+
+        def crear(ruta, cuerpo, solucion):
+            self.flujo = self.fila(cuerpo["clientdata"], estado=(0, 1))
+            return (204, {}, {})
+
+        cliente.responder("POST", "workflows", crear)
+        cliente.responder("PATCH", lambda r: r.startswith("workflows("), (204, {}, {}))
         estado, _, detalle = self.construir(cliente=cliente)
         self.assertEqual("bloqueado", estado, detalle)
         self.assertIn("una persona tiene que conectarla", detalle)
+        self.assertIn("apagado", detalle)
+        self.assertTrue(any(l["metodo"] == "POST" for l in cliente.llamadas))
+        encendidos = [l for l in cliente.llamadas if l["metodo"] == "PATCH" and (l["cuerpo"] or {}).get("statecode") == 1]
+        self.assertEqual([], encendidos, "sin conexión no se intenta encender")
+
+    def test_sin_conexion_y_solo_verificar_no_escribe(self):
+        cliente = self.armar(ClienteSimulado(), conectada=False)
+        estado, _, detalle = self.construir(cliente=cliente, solo_verificar=True)
+        self.assertIn(estado, ("difiere", "bloqueado"), detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_sin_conexion_un_flujo_igual_y_apagado_queda_bloqueado_sin_escribir(self):
+        cliente = self.armar(ClienteSimulado(), conectada=False)
+        esperado = fl.clientdata(copy.deepcopy(DEFINICION), COMPONENTE, {HIJO: HIJO_ID}, {EV: CLAVE_EV},
+                                 {CLAVE_EV: {"defaultValue": "arreglos@ejemplo.com", "type": "String",
+                                             "metadata": {"schemaName": EV}}})
+        self.flujo = self.fila(esperado, estado=(0, 1))
+        estado, _, detalle = self.construir(cliente=cliente)
+        self.assertEqual("bloqueado", estado, detalle)
         self.assertFalse(cliente.hubo_escritura())
 
     def test_un_hijo_que_no_existe_queda_bloqueado_sin_escribir(self):

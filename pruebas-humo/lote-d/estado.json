@@ -1,0 +1,10 @@
+{
+ "lote": "lote-d",
+ "fecha": "2026-10-20",
+ "cuenta_servicio_dev": {"upn": "admin@55xljh.onmicrosoft.com", "systemuserid": "8bccbe02-f1ee-f011-8406-7ced8d70b036", "bu": "99c5be02-f1ee-f011-8406-7ced8d70b036 (raiz)"},
+ "variables": {"sanic_carp_ev_destinatariosalertas": "514d0857-bdcc-f111-a05b-00224808ffcd", "sanic_carp_ev_umbralesmonitoreo": "e2e21f5d-bdcc-f111-a05b-00224808ffcd"},
+ "referencias": {"sanic_carp_conr_dataverse": {"id": "2d8950e2-bdcc-f111-a05b-00224808ffcd", "connectionid": "bc82127e63bf4d80aa1b92a6fad0b587"},
+                 "sanic_carp_conr_outlook": {"id": "960034fd-bdcc-f111-a05b-00224808ffcd", "connectionid": null}},
+ "flujos": {"Cloud Flow - CARP - EST - Avisar estado del mailbox": {"id": "988d5350-becc-f111-a05b-00224808ffcd", "statecode": 0},
+            "Cloud Flow - CARP - SAL - Salud del buzon": {"id": "1d0a5a59-becc-f111-a05b-00224808ffcd", "statecode": 0}}
+}

@@ -1,0 +1,56 @@
+{
+ "fecha": "2026-10-20",
+ "duda": "D-09",
+ "admin": {
+  "bulkdeleteoperations_fallidas_24h": [
+   200,
+   {
+    "filas": 0
+   }
+  ],
+  "bulkdeleteoperations_todas": [
+   200,
+   {
+    "filas": 50
+   }
+  ],
+  "asyncoperations_tipo13": [
+   200,
+   {
+    "filas": 50
+   }
+  ]
+ },
+ "antes": {
+  "isdisabled": true,
+  "en_jefatura": false
+ },
+ "no_admin": [
+  {
+   "espera_s": 30,
+   "bulkdeleteoperations_fallidas_24h": [
+    200,
+    {
+     "filas": 0
+    }
+   ],
+   "bulkdeleteoperations_todas": [
+    200,
+    {
+     "filas": 0
+    }
+   ],
+   "asyncoperations_tipo13": [
+    200,
+    {
+     "filas": 0
+    }
+   ]
+  }
+ ],
+ "despues": {
+  "isdisabled": true,
+  "igual_que_antes": true,
+  "en_jefatura": false
+ }
+}
