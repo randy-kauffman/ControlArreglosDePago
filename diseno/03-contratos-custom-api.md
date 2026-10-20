@@ -52,6 +52,8 @@ Lo que este documento **no** decide: reglas de negocio que las fuentes dejan abi
 | Parámetro opcional | Una **Action** no recibe la clave en `InputParameters` si el llamador la omite (a diferencia de una Function, M-PPP §2). El código distingue "ausente" (`!Contains`) de "presente y vacío". Aun así, un Guid o un texto vacío se tratan como ausentes | `patrones.md` (Function vs Action) |
 | Respuesta | Los parámetros de salida se escriben **todos** siempre que la llamada termina bien (con valor por defecto si no aplican) | M-PPP §1b |
 | Errores | `InvalidPluginExecutionException` con mensaje `CARP-<ÁREA>-<NNN>: <texto en español>`; ver 0.5 | DC-25 |
+| Parámetros requeridos que el plugin trata cuando faltan | **Decidido el 2026-10-20 (usuario):** un parámetro de entrada que el plugin trata con un código propio del catálogo cuando llega nulo (`conversacionid` de tomar e iniciar con `-001`, `arregloid` de generar con `CARP-GEN-001`, `origenid` y `destinoid` de unir con `CARP-UNI-001`) se registra con `opcional = true`, para que el usuario vea el mensaje del catálogo y no el error técnico de la capa OData (la columna «Req» de la sección 1 dice lo que el llamador debe pasar; el registro vale por `playbooks/custom-api/`) | spike 1b (`spikes/sandbox/RESULTADO.md`); `*Logica.cs` |
+| `habilitadaenflujos` (Enabled for Workflow) | **Decidido el 2026-10-20 (usuario):** `false` en las cinco. Ninguna se ofrece como acción de un flujo de trabajo clásico; el diseño solo usa flujos de nube con el conector de Dataverse. Es inmutable | valor por defecto de la plataforma |
 
 **Privilegio de ejecución** (`ExecutePrivilegeName`; solo puede nombrar un privilegio que ya exista; D-17, def. L402):
 
@@ -1789,6 +1791,16 @@ Qué se puede editar según el estado:
 | `src/Sanic.Carp.sln` | — | Solución (conv. §5) |
 | `src/Sanic.Carp.Plugins/` | `net462;net8.0` | Ensamblado y paquete `sanic_carp_pkg_plugins`. Sin firmar. Dependencia: `DocumentFormat.OpenXml` 2.20.0 (spike 1 hallazgo 11; la 3.x queda para revisar). `TreatWarningsAsErrors` |
 | `src/Sanic.Carp.Plugins.Tests/` | `net8.0` | xUnit. Sin FakeXrmEasy (BP-PP-159). Corre en el puesto Linux con `dotnet test src/Sanic.Carp.Plugins.Tests` |
+| `src/Sanic.Carp.Plugins.Paquete/` | `net462` | Solo empaquetado: sin código propio, compila las fuentes de `Sanic.Carp.Plugins` enlazadas. No está en el `.sln` y las pruebas no lo referencian |
+
+**Proyecto de empaquetado (2026-10-20).** `src/Sanic.Carp.Plugins.Paquete/Sanic.Carp.Plugins.Paquete.csproj` existe porque `net8.0` en `Sanic.Carp.Plugins` es solo para que las pruebas corran en Linux: con dos destinos, el paquete de plugins no deja las dependencias adentro. Este proyecto compila **las mismas fuentes** (`<Compile Include="..\Sanic.Carp.Plugins\**\*.cs" …>`, excluyendo `obj/` y `bin/` del original) solo para `net462`, con el mismo ensamblado `Sanic.Carp.Plugins` 1.0.0.0, `Microsoft.PowerApps.MSBuild.Plugin`, `PackageId` `sanic_carp_pkg_plugins`, `Version` 1.0.0, CrmSdk 9.0.2.60 con `PrivateAssets=All` y `DocumentFormat.OpenXml` 2.20.0 dentro (`lib/net462/`). El `AssemblyVersion`/`FileVersion` hay que mantenerlo igual al del proyecto de código y subir el tercer número en cada despliegue. Comando (desde la raíz del repo; **`dotnet build`, no `dotnet pack`**: el `pack` estándar falla con NU5128 y es el targets del plugin el que arma el `.nupkg`):
+
+```
+rm -rf src/Sanic.Carp.Plugins.Paquete/obj src/Sanic.Carp.Plugins.Paquete/bin src/Sanic.Carp.Plugins/obj src/Sanic.Carp.Plugins/bin
+dotnet build src/Sanic.Carp.Plugins.Paquete -c Release
+```
+
+Salida: `src/Sanic.Carp.Plugins.Paquete/bin/Release/sanic_carp_pkg_plugins.1.0.0.nupkg` (~6 MB: `Sanic.Carp.Plugins.dll` y `DocumentFormat.OpenXml.dll` en `lib/net462/`; sin `Microsoft.Xrm.Sdk` ni `lib/net8.0`).
 
 ```
 src/Sanic.Carp.Plugins/

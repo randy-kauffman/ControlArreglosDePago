@@ -26,17 +26,18 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 5 | Claves alternativas | 3 | 3 | 0 | 0 |
 | 6 | Seguridad: perfil de columnas (1) y roles (4) | 5 | 5 | 0 | 0 |
 | 7 | Código de plugins (C#, TDD estricto) | 22 | 22 | 0 | 0 |
-| 8 | Registro de paquete, Custom API y steps | 7 | 0 | 1 | 6 |
+| 8 | Registro de paquete, Custom API y steps | 7 | 0 | 7 | 0 |
 | 9 | Datos semilla y de configuración | 3 | 0 | 2 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 0 | 3 | 4 |
 | 11 | Flujos | 3 | 0 | 0 | 3 |
 | 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 25 | 0 | 0 | 25 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 14 | 3 |
-| **Total** | | **127** | **32** | **49** | **46** |
+| **Total** | | **127** | **32** | **55** | **40** |
 
 Notas del resumen:
 
 - 2026-10-20: el grupo 7 pasó de 0 hechos, 9 pendientes y 13 de diseño detallado pendiente a 22 hechos, porque el código está construido y probado (5820 pruebas en verde, commit `397088d`). El total cambió de 10 hechos, 58 pendientes y 59 de diseño detallado pendiente a 32, 49 y 46; las 127 filas no cambian. "Hecho" del grupo 7 no incluye la verificación en la plataforma real, que sigue pendiente en el grupo 8 y en las pruebas de humo de `03-contratos-custom-api.md` §8.1.
+- 2026-10-20: las filas 8.2 a 8.7 pasaron de `diseño detallado pendiente` a `pendiente`, porque `diseno/03-contratos-custom-api.md` §1, §4.1 y §5 ya fijan los contratos de las cinco API, la estructura del paquete y la lista cerrada de 37 steps. El grupo 8 pasó de 1 pendiente y 6 de diseño detallado pendiente a 7 pendientes; el total, de 49 pendientes y 46 de diseño detallado pendiente a 55 y 40 (127 filas, 32 hechas, sin cambio). «Pendiente» no quiere decir que el playbook esté listo: los pilotos de 8.1, 8.4 y 8.7 tienen huecos de diseño abiertos (`playbooks/`).
 - Las filas 13.1 a 13.3 están hechas **solo en Dev** (2026-10-09, `01-convenciones.md` §7). Faltan Test y Prod, por eso cuentan como `pendiente`.
 - La fila 10.7 quedó **retirada** el 2026-10-10 (OA-12) y no cuenta como fila activa; no se renumeraron las demás. Antes del cambio el total era 128 filas (59 pendientes) y el grupo 10 tenía 8 (4 pendientes).
 - La fila 11.3 es condicional (el respaldo de D-11 no se activa) y cuenta como fila. Si no se activa, no se construye.
@@ -182,19 +183,19 @@ Regla de implementación que cruza el grupo: toda regla que debe cumplirse sin i
 
 ## 8. Registro del paquete, Custom API y steps
 
-El paquete se compila (`dotnet pack`, fuera de este inventario) y se registra antes que cualquier API o step. Los nombres de las cinco Custom API son *(prov.)*: la definición las nombra por función (§6 Componentes, lista de cinco) y no fija nombre ni parámetros. El diseño detallado de contratos no existe todavía.
+El paquete se compila (`dotnet pack`, fuera de este inventario) y se registra antes que cualquier API o step. La definición nombra las cinco Custom API por función (§6 Componentes, lista de cinco) y no fija nombre ni parámetros; el diseño detallado sí los fija: nombres, parámetros, privilegios y errores de cada API en `diseno/03-contratos-custom-api.md` §1, la estructura del paquete en §4.1 y la lista cerrada de steps (37 registros sobre 21 clases) en §5. El código de las cinco API y de los 21 steps está construido y probado (grupo 7); lo que sigue pendiente de este grupo es registrarlo en el entorno y verificarlo en la plataforma real (`diseno/03` §8.1).
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 8.1 | Paquete `sanic_carp_pkg_plugins` (registro; dependencia Open XML SDK) | `playbooks/paquete-plugins/sanic_carp_pkg_plugins.md` | 7.1 a 7.22 compilados | Convenciones §5; D-13, spike 1b | pendiente |
-| 8.2 | `sanic_carp_capi_generarformato` (`CAPI - CARP - Generar formato`). Privilegio de ejecución: Read de Generación de formato (Oficial y Jefe). Parámetros: diseño detallado pendiente | `playbooks/custom-api/sanic_carp_capi_generarformato.md` | 8.1, 7.18, 3.7, 6.2, 6.3 | RF-08, D-13, D-17 | diseño detallado pendiente |
-| 8.3 | `sanic_carp_capi_reconciliarcorreos` *(prov.)*. Privilegio de ejecución: Create de Conversación (solo Servicio) | `playbooks/custom-api/sanic_carp_capi_reconciliarcorreos.md` | 8.1, 7.19, 3.2, 6.4 | RF-01, D-03, D-17 | diseño detallado pendiente |
-| 8.4 | `sanic_carp_capi_tomarconversacion` *(prov.)*. Privilegio de ejecución: Write de Conversación | `playbooks/custom-api/sanic_carp_capi_tomarconversacion.md` | 8.1, 7.20, 3.2, 6.2, 6.3 | RF-02, D-04, D-17 | diseño detallado pendiente |
-| 8.5 | `sanic_carp_capi_unirconversaciones` *(prov.)*. Privilegio de ejecución: Write de Conversación | `playbooks/custom-api/sanic_carp_capi_unirconversaciones.md` | 8.1, 7.21, 3.2, 6.2, 6.3 | RF-14, D-17, D-32 | diseño detallado pendiente |
-| 8.6 | `sanic_carp_capi_iniciarconversacionnueva` *(prov.)*. Privilegio de ejecución: Write de Conversación | `playbooks/custom-api/sanic_carp_capi_iniciarconversacionnueva.md` | 8.1, 7.22, 3.2, 6.2, 6.3 | RF-15, D-17, D-32 | diseño detallado pendiente |
-| 8.7 | Steps del paquete (un solo playbook con todos los steps; nombre `STEP - CARP - tabla - mensaje - etapa`). Lista cerrada: diseño detallado pendiente | `playbooks/steps/sanic_carp_pkg_plugins.md` | 8.1, 7.11 a 7.17 | D-26, D-30, D-31, §6 Lógica | diseño detallado pendiente |
+| 8.1 | Paquete `sanic_carp_pkg_plugins` (registro; dependencia Open XML SDK) | `playbooks/paquete-plugins/Sanic.Carp.Plugins.md` | 7.1 a 7.22 compilados | Convenciones §5; D-13, spike 1b | pendiente |
+| 8.2 | `sanic_carp_capi_generarformato` (`CAPI - CARP - Generar formato`). Privilegio de ejecución: Read de Generación de formato (Oficial y Purga; Jefe y Servicio por el Oficial, `diseno/03` §0.1). Parámetros: `diseno/03` §1.1 | `playbooks/custom-api/sanic_carp_capi_generarformato.md` | 8.1, 7.18, 3.7, 6.2, 6.3 | RF-08, D-13, D-17 | pendiente |
+| 8.3 | `sanic_carp_capi_reconciliarcorreos`. Privilegio de ejecución: Create de Conversación (solo Servicio). Parámetros: `diseno/03` §1.2 | `playbooks/custom-api/sanic_carp_capi_reconciliarcorreos.md` | 8.1, 7.19, 3.2, 6.4 | RF-01, D-03, D-17 | pendiente |
+| 8.4 | `sanic_carp_capi_tomarconversacion`. Privilegio de ejecución: Write de Conversación. Parámetros: `diseno/03` §1.3 | `playbooks/custom-api/sanic_carp_capi_tomarconversacion.md` | 8.1, 7.20, 3.2, 6.2, 6.3 | RF-02, D-04, D-17 | pendiente |
+| 8.5 | `sanic_carp_capi_unirconversaciones`. Privilegio de ejecución: Write de Conversación. Parámetros: `diseno/03` §1.4 | `playbooks/custom-api/sanic_carp_capi_unirconversaciones.md` | 8.1, 7.21, 3.2, 6.2, 6.3 | RF-14, D-17, D-32 | pendiente |
+| 8.6 | `sanic_carp_capi_iniciarconversacionnueva`. Privilegio de ejecución: Write de Conversación. Parámetros: `diseno/03` §1.5 | `playbooks/custom-api/sanic_carp_capi_iniciarconversacionnueva.md` | 8.1, 7.22, 3.2, 6.2, 6.3 | RF-15, D-17, D-32 | pendiente |
+| 8.7 | Steps del paquete (nombre `STEP - CARP - tabla - mensaje - etapa - clase`, `diseno/03` DC-23). Lista cerrada: `diseno/03` §5 (37 registros sobre 21 clases) | `playbooks/steps/sanic_carp_pkg_plugins.md` (un solo playbook con los 37 registros; decidido el 2026-10-20; S-18 fue el piloto del tipo y quedó integrado, el piloto se borró) | 8.1, 7.11 a 7.17 | D-26, D-30, D-31, §6 Lógica | pendiente |
 
-Familias de steps que la definición implica (contenido de 8.7; la lista cerrada con etapa, orden, filtros e imágenes no existe):
+Familias de steps que la definición implica (contenido de 8.7; la lista cerrada con etapa, orden, filtros e imágenes está en `diseno/03` §5):
 
 | Tabla o mensaje | Qué cubre | Pieza de código |
 |---|---|---|
