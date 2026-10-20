@@ -1,0 +1,44 @@
+{
+ "gen": {
+  "sanic_instantaneanombre": "presente",
+  "statuscode": 1,
+  "sanic_instantaneacorreo": null,
+  "sanic_fechacongelamiento": "2026-10-20T14:43:04Z",
+  "_sanic_reabiertoporid_value": null,
+  "sanic_carp_tbl_arregloid": "a1b8d4bb-93cc-f111-a05b-00224808ffcd",
+  "sanic_fechatermino": null,
+  "sanic_instantaneacedula": "presente",
+  "statecode": 0,
+  "sanic_numeroprovisional": 1,
+  "sanic_cantidadreaperturas": 0,
+  "sanic_instantaneacelular": null
+ },
+ "h8": {
+  "sanic_instantaneanombre": "presente",
+  "statuscode": 159460001,
+  "sanic_instantaneacorreo": null,
+  "sanic_fechacongelamiento": "2026-10-20T14:37:21Z",
+  "_sanic_reabiertoporid_value": null,
+  "sanic_carp_tbl_arregloid": "b3b8d4bb-93cc-f111-a05b-00224808ffcd",
+  "sanic_fechatermino": null,
+  "sanic_instantaneacedula": "presente",
+  "statecode": 0,
+  "sanic_numeroprovisional": 1,
+  "sanic_cantidadreaperturas": 0,
+  "sanic_instantaneacelular": null
+ },
+ "h19": {
+  "sanic_instantaneanombre": "presente",
+  "statuscode": 2,
+  "sanic_instantaneacorreo": null,
+  "sanic_fechacongelamiento": "2026-10-20T14:37:22Z",
+  "_sanic_reabiertoporid_value": null,
+  "sanic_carp_tbl_arregloid": "b7b8d4bb-93cc-f111-a05b-00224808ffcd",
+  "sanic_fechatermino": "2026-10-20T14:43:56Z",
+  "sanic_instantaneacedula": "presente",
+  "statecode": 1,
+  "sanic_numeroprovisional": 1,
+  "sanic_cantidadreaperturas": 0,
+  "sanic_instantaneacelular": null
+ }
+}

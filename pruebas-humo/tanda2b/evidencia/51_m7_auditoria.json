@@ -1,0 +1,40 @@
+{
+ "oficial_gen": {
+  "RetrieveRecordChangeHistory": [
+   400,
+   null,
+   "Syntax error: character '%' is not valid at position 0 in '%7B%22%40odata.id%22%3A%20%22sanic_carp_tbl_arreglos%28a1b8d4bb-93cc-f111-a05b-00224808ffcd%29%22%7D'."
+  ],
+  "audits": [
+   403,
+   null,
+   "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8703, businessUnitId=2dbc18e7-f9c3-f111-a05a-7ced8"
+  ]
+ },
+ "admin_gen": {
+  "RetrieveRecordChangeHistory": [
+   400,
+   null,
+   "Syntax error: character '%' is not valid at position 0 in '%7B%22%40odata.id%22%3A%20%22sanic_carp_tbl_arreglos%28a1b8d4bb-93cc-f111-a05b-00224808ffcd%29%22%7D'."
+  ],
+  "audits": [
+   200,
+   null,
+   {
+    "filas": 2
+   }
+  ]
+ },
+ "jefe_gen": {
+  "RetrieveRecordChangeHistory": [
+   400,
+   null,
+   "Syntax error: character '%' is not valid at position 0 in '%7B%22%40odata.id%22%3A%20%22sanic_carp_tbl_arreglos%28a1b8d4bb-93cc-f111-a05b-00224808ffcd%29%22%7D'."
+  ],
+  "audits": [
+   403,
+   null,
+   "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=2, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivilegesCount=8703, businessUnitId=2dbc18e7-f9c3-f111-a05a-7ced8"
+  ]
+ }
+}

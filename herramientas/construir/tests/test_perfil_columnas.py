@@ -84,6 +84,16 @@ def armar(cliente, d, existe=True, perfil=None, permisos=None, componentes=None,
                                "canread": cuerpo["canread"], "cancreate": cuerpo["cancreate"], "canupdate": cuerpo["canupdate"], "canreadunmasked": cuerpo["canreadunmasked"]})
         return (204, None, {})
 
+    def al_corregir(ruta, cuerpo, solucion):
+        if st["permisos"] is None:
+            st["permisos"] = [fp(p) for p in d["permisos"]]
+        id_ = ruta[len("fieldpermissions("):-1]
+        for f in st["permisos"]:
+            if f["fieldpermissionid"] == id_:
+                f.update(cuerpo)
+        return (204, None, {})
+
+    cliente.responder("PATCH", lambda r: r.startswith("fieldpermissions("), al_corregir)
     cliente.responder("POST", "fieldsecurityprofiles", al_crear)
     cliente.responder("POST", "fieldpermissions", al_permitir)
     return cliente
@@ -318,6 +328,91 @@ class Completar(Base):
             estado, _, detalle = self.con_cliente(cliente, BASE, **kw_correr)
             self.assertEqual(estado, "difiere", detalle)
             self.assertFalse(cliente.hubo_escritura())
+
+
+class Corregir(Base):
+    def patches(self, cliente):
+        return [l for l in cliente.llamadas if l["metodo"] == "PATCH"]
+
+    def test_corrige_el_permiso_que_difiere_y_relee(self):
+        p0, p1, p2 = BASE["permisos"]
+        cliente = armar(ClienteSimulado(), BASE, permisos=[fp(p0), fp(p1), fp(p2, canupdate=0, cancreate=0)])
+        estado, _, detalle = self.con_cliente(cliente, dict(BASE, permisos=[p0, p1, dict(p2, actualizar=True)]), corregir=True)
+        self.assertEqual(estado, "ya_existia", detalle)
+        self.assertIn("se corrigieron 1", detalle)
+        self.assertIn(f"{T_ARREGLO}.sanic_instantaneacedula", detalle)
+        parches = self.patches(cliente)
+        self.assertEqual([x["ruta"] for x in parches], ["fieldpermissions(fp-sanic_instantaneacedula)"])
+        self.assertEqual(parches[0]["cuerpo"], {"canread": 4, "cancreate": 0, "canupdate": 4})
+        self.assertFalse([l for l in cliente.llamadas if l["metodo"] in ("POST", "DELETE", "PUT")])
+
+    def test_sin_la_bandera_no_corrige(self):
+        p0, p1, p2 = BASE["permisos"]
+        cliente = armar(ClienteSimulado(), BASE, permisos=[fp(p0, canupdate=0), fp(p1), fp(p2)])
+        for kw in ({}, {"completar": True}):
+            estado, _, detalle = self.con_cliente(cliente, BASE, **kw)
+            self.assertEqual(estado, "difiere", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_con_solo_verificar_no_escribe(self):
+        p0, p1, p2 = BASE["permisos"]
+        cliente = armar(ClienteSimulado(), BASE, permisos=[fp(p0, canupdate=0), fp(p1), fp(p2)])
+        estado, _, detalle = self.con_cliente(cliente, BASE, corregir=True, solo_verificar=True)
+        self.assertEqual(estado, "difiere", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_no_borra_permisos_sobrantes_y_tampoco_corrige_si_hay_otra_diferencia(self):
+        p0, p1, p2 = BASE["permisos"]
+        sobrante = fp(dict(p0, columna="sanic_otra"))
+        for perm, kw in ((dict(permisos=[fp(p0, canupdate=0), fp(p1), fp(p2), sobrante]), "sobra el permiso"),
+                         (dict(permisos=[fp(p0, canupdate=0), fp(p1), fp(p2)], perfil=fila_perfil(BASE, description="Otra")), "description"),
+                         (dict(permisos=[fp(p0, canupdate=0), fp(p1), fp(p2)], componentes=[]), "pertenencia"),
+                         (dict(permisos=[fp(p0, canupdate=0), fp(p1), fp(p2, canreadunmasked=3)]), "canreadunmasked")):
+            cliente = armar(ClienteSimulado(), BASE, **perm)
+            estado, _, detalle = self.con_cliente(cliente, BASE, corregir=True)
+            self.assertEqual(estado, "difiere", detalle)
+            self.assertIn(kw, detalle)
+            self.assertFalse(cliente.hubo_escritura())
+
+    def test_corregir_solo_no_agrega_los_que_faltan(self):
+        p0, p1, _ = BASE["permisos"]
+        cliente = armar(ClienteSimulado(), BASE, permisos=[fp(p0, canupdate=0), fp(p1)])
+        estado, _, detalle = self.con_cliente(cliente, BASE, corregir=True)
+        self.assertEqual(estado, "difiere", detalle)
+        self.assertIn("falta el permiso", detalle)
+        self.assertFalse(cliente.hubo_escritura())
+
+    def test_corregir_con_completar_corrige_y_agrega(self):
+        p0, p1, _ = BASE["permisos"]
+        cliente = armar(ClienteSimulado(), BASE, permisos=[fp(p0, canupdate=0), fp(p1)])
+        estado, _, detalle = self.con_cliente(cliente, BASE, corregir=True, completar=True)
+        self.assertEqual(estado, "ya_existia", detalle)
+        self.assertEqual(len(self.patches(cliente)), 1)
+        self.assertEqual([l["cuerpo"]["attributelogicalname"] for l in cliente.llamadas if l["metodo"] == "POST"], ["sanic_instantaneacedula"])
+
+    def test_falla_el_patch_es_error(self):
+        p0, p1, p2 = BASE["permisos"]
+        cliente = ClienteSimulado()
+        cliente.responder("PATCH", lambda r: r.startswith("fieldpermissions("), (400, {"error": "boom"}, {}))
+        armar(cliente, BASE, permisos=[fp(p0, canupdate=0), fp(p1), fp(p2)])
+        estado, _, detalle = self.con_cliente(cliente, BASE, corregir=True)
+        self.assertEqual(estado, "error", detalle)
+        self.assertIn("HTTP 400", detalle)
+
+    def test_si_al_releer_sigue_distinto_no_dice_ya_existia(self):
+        p0, p1, p2 = BASE["permisos"]
+        cliente = ClienteSimulado()
+        cliente.responder("PATCH", lambda r: r.startswith("fieldpermissions("), (204, None, {}))  # no cambia nada
+        armar(cliente, BASE, permisos=[fp(p0, canupdate=0), fp(p1), fp(p2)])
+        estado, _, detalle = self.con_cliente(cliente, BASE, corregir=True)
+        self.assertEqual(estado, "difiere", detalle)
+        self.assertIn("canupdate", detalle)
+
+    def test_ya_existia_con_corregir_no_escribe(self):
+        cliente = armar(ClienteSimulado(), BASE)
+        estado, _, detalle = self.con_cliente(cliente, BASE, corregir=True)
+        self.assertEqual(estado, "ya_existia", detalle)
+        self.assertFalse(cliente.hubo_escritura())
 
 
 class FormaYHttpInesperados(Base):

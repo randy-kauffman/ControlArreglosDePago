@@ -3,16 +3,27 @@
 un playbook de tipo `perfil-columnas`. Contrato: `power-platform-construir`,
 `references/seguridad/patrones.md` §2.2.
 
-    python3 herramientas/construir/perfil_columnas.py <playbook.md> [--solo-verificar] [--completar]
+    python3 herramientas/construir/perfil_columnas.py <playbook.md> [--solo-verificar] [--completar] [--corregir]
 
 Crea el perfil y un permiso por columna. NO le asigna miembros: un perfil se
 asigna a usuarios o equipos (nunca a roles), y eso no viaja en la solución; es
 una tarea de administración en cada entorno.
 
 Es seguridad, así que la verificación es estricta: un permiso que falta, uno
-con otro valor y uno DE MÁS son `difiere`. Nunca quita ni cambia un permiso.
-Una sola salvedad explícita: `--completar` agrega los permisos que faltan,
-cuando esa es la única diferencia (una corrida que se cortó a mitad).
+con otro valor y uno DE MÁS son `difiere`. Nunca quita un permiso. Sin
+banderas no cambia nada. Dos salvedades explícitas:
+
+- `--completar` agrega los permisos que faltan, cuando esa es la única
+  diferencia (una corrida que se cortó a mitad).
+- `--corregir` hace PATCH a los permisos de columna (fieldpermission) cuyo
+  canread, cancreate o canupdate difieren del playbook, y relee y verifica.
+  NO borra permisos de más, no toca `canreadunmasked`, ni el perfil (nombre,
+  descripción, pertenencia a la solución): eso sigue saliendo `difiere`.
+
+Combinación: cada bandera repara solo lo suyo y solo si TODA la diferencia es
+reparable con las banderas dadas. Con `--corregir` solo, un permiso que falta
+da `difiere` y no se escribe nada; con `--corregir --completar` se corrige y
+se agrega en la misma corrida. `--solo-verificar` anula las dos: no escribe.
 
 Última línea de la salida: JSON de una línea con `estado`
 (creado | ya_existia | difiere | bloqueado | error), `componente`, `detalle`.
@@ -154,21 +165,31 @@ def _verificar(dv, datos, identidad, solution_id):
         difs.append(f"description: entorno={descripcion!r} playbook={datos['descripcion']!r}")
 
     cf = "la consulta de los permisos del perfil (GET fieldpermissions)"
-    cuerpo = leer_entorno(dv, f"fieldpermissions?$select=entityname,attributelogicalname,canread,cancreate,canupdate,canreadunmasked&$filter=_fieldsecurityprofileid_value eq {perfil_id}", cf)
-    reales = {}
+    cuerpo = leer_entorno(dv, f"fieldpermissions?$select=fieldpermissionid,entityname,attributelogicalname,canread,cancreate,canupdate,canreadunmasked&$filter=_fieldsecurityprofileid_value eq {perfil_id}", cf)
+    reales, ids = {}, {}
     for i, f in enumerate(exigir_forma(cuerpo.get("value"), [dict], cf, "value")):
         clave = (exigir_forma(f.get("entityname"), str, cf, f"value[{i}].entityname", no_vacio=True),
                  exigir_forma(f.get("attributelogicalname"), str, cf, f"value[{i}].attributelogicalname", no_vacio=True))
         reales[clave] = {api: exigir_forma(f.get(api), int, cf, f"value[{i}].{api}") for api in list(CAMPOS.values()) + ["canreadunmasked"]}
+        ids[clave] = f.get("fieldpermissionid")
 
-    faltan, otros = [], []
+    faltan, otros, corregibles = [], [], []
     for p in datos["permisos"]:
         clave = (p["tabla"], p["columna"])
         if clave not in reales:
             faltan.append(p)
             continue
         esperado = {k: v for k, v in _cuerpo_permiso(p, perfil_id).items() if k in reales[clave]}
-        otros += [f"{p['tabla']}.{p['columna']}.{api}: entorno={reales[clave][api]} playbook={v}" for api, v in esperado.items() if reales[clave][api] != v]
+        for api, v in esperado.items():
+            if reales[clave][api] == v:
+                continue
+            otros.append(f"{p['tabla']}.{p['columna']}.{api}: entorno={reales[clave][api]} playbook={v}")
+            # Solo leer, crear y actualizar se corrigen con --corregir; canreadunmasked y lo demás no.
+            if api in CAMPOS.values() and isinstance(ids[clave], str) and ids[clave]:
+                if not any(c["clave"] == clave for c in corregibles):
+                    corregibles.append({"clave": clave, "id": ids[clave], "permiso": p})
+            else:
+                difs.append(f"{p['tabla']}.{p['columna']}.{api}: no se corrige con --corregir")
     declarados = {(p["tabla"], p["columna"]) for p in datos["permisos"]}
     otros += [f"sobra el permiso sobre {t}.{c}: el playbook no lo declara" for t, c in sorted(reales) if (t, c) not in declarados]
 
@@ -176,8 +197,12 @@ def _verificar(dv, datos, identidad, solution_id):
     sc = leer_entorno(dv, f"solutioncomponents?$select=solutioncomponentid&$filter=_solutionid_value eq {solution_id} and objectid eq {perfil_id} and componenttype eq {COMPONENTE_PERFIL}", cs)
     if len(exigir_forma(sc.get("value"), [dict], cs, "value")) != 1:
         otros.append(f"pertenencia a la solución: el perfil no figura en '{identidad['solucion']}' (solutioncomponents, tipo {COMPONENTE_PERFIL})")
-    return {"existe": True, "perfil_id": perfil_id, "faltan": faltan, "solo_faltan": bool(faltan) and not difs and not otros,
-            "diffs": difs + [f"falta el permiso sobre {p['tabla']}.{p['columna']}" for p in faltan] + otros}
+    # `duros`: diferencias que ninguna bandera repara (perfil, pertenencia, permisos de más, canreadunmasked).
+    duros = [d for d in difs] + [o for o in otros if o.startswith("sobra el permiso") or o.startswith("pertenencia a la solución")]
+    duros += [o for o in otros if "canreadunmasked" in o]
+    return {"existe": True, "perfil_id": perfil_id, "faltan": faltan, "corregibles": corregibles, "duros": duros,
+            "solo_faltan": bool(faltan) and not difs and not otros,
+            "diffs": [d for d in difs if "no se corrige con --corregir" not in d] + [f"falta el permiso sobre {p['tabla']}.{p['columna']}" for p in faltan] + otros}
 
 
 def _agregar(dv, perfil_id, permisos, solucion):
@@ -188,7 +213,17 @@ def _agregar(dv, perfil_id, permisos, solucion):
     return None
 
 
-def _contra_entorno(dv, datos, identidad, solo_verificar, componente, completar):
+def _corregir(dv, corregibles):
+    for c in corregibles:
+        p = c["permiso"]
+        cuerpo = {api: PERMITIDO if p[campo] else NO_PERMITIDO for campo, api in CAMPOS.items()}
+        est, resp, _ = escribir_metadatos(dv, "PATCH", f"fieldpermissions({c['id']})", cuerpo)
+        if est not in (200, 204):
+            return f"falló la corrección del permiso sobre {p['tabla']}.{p['columna']}: HTTP {est} {resp}"
+    return None
+
+
+def _contra_entorno(dv, datos, identidad, solo_verificar, componente, completar, corregir=False):
     solucion = identidad["solucion"]
     solution_id = comprobar_solucion_e_idioma(dv, identidad)
     comprobar_columnas(dv, datos)
@@ -197,7 +232,21 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, componente, completar)
     if solo_verificar and not actual["existe"]:
         return "error", componente, "el perfil no existe en el entorno; --solo-verificar no crea nada, correr la herramienta sin ese flag primero"
     if actual["existe"]:
-        if completar and not solo_verificar and actual["solo_faltan"]:
+        # --corregir y --completar se combinan: cada una repara lo suyo, y solo si TODO lo que difiere es reparable con las banderas dadas.
+        reparable = (not solo_verificar and not actual["duros"] and (actual["faltan"] or actual["corregibles"])
+                     and (corregir or not actual["corregibles"]) and (completar or not actual["faltan"]))
+        if reparable and (corregir and actual["corregibles"]):
+            arreglados = [f"{c['permiso']['tabla']}.{c['permiso']['columna']}" for c in actual["corregibles"]]
+            agregados = [f"{p['tabla']}.{p['columna']}" for p in actual["faltan"]]
+            problema = _corregir(dv, actual["corregibles"]) or (_agregar(dv, actual["perfil_id"], actual["faltan"], solucion) if actual["faltan"] else None)
+            if problema:
+                return "error", componente, f"no se pudo corregir el perfil: {problema}"
+            actual = _verificar(dv, datos, identidad, solution_id)
+            if not actual["diffs"]:
+                extra = f"; se agregaron {len(agregados)} ({', '.join(agregados)})" if agregados else ""
+                return "ya_existia", componente, (f"fieldsecurityprofileid {actual['perfil_id']}; se corrigieron {len(arreglados)} permisos ({', '.join(arreglados)}){extra} "
+                                                  f"y ahora coincide en todo; pertenece a '{solucion}'")
+        elif completar and not solo_verificar and actual["solo_faltan"]:
             agregados = [f"{p['tabla']}.{p['columna']}" for p in actual["faltan"]]
             problema = _agregar(dv, actual["perfil_id"], actual["faltan"], solucion)
             if problema:
@@ -226,7 +275,7 @@ def _contra_entorno(dv, datos, identidad, solo_verificar, componente, completar)
     return "creado", componente, f"fieldsecurityprofileid {final['perfil_id']}, con {len(datos['permisos'])} permisos, sin miembros, en la solución '{solucion}'"
 
 
-def construir(ruta_playbook, solo_verificar, fabrica_cliente, completar=False):
+def construir(ruta_playbook, solo_verificar, fabrica_cliente, completar=False, corregir=False):
     """Nunca lanza: siempre devuelve `(estado, componente, detalle)`."""
     componente = os.path.basename(ruta_playbook)
     paso = "leer el playbook"
@@ -257,7 +306,7 @@ def construir(ruta_playbook, solo_verificar, fabrica_cliente, completar=False):
 
     rastro = Rastro(dv)
     try:
-        return _contra_entorno(rastro, datos, identidad, solo_verificar, componente, completar)
+        return _contra_entorno(rastro, datos, identidad, solo_verificar, componente, completar, corregir)
     except Bloqueado as e:
         return "bloqueado", componente, str(e)
     except ErrorEntorno as e:
@@ -270,10 +319,10 @@ def main():
     argv = sys.argv[1:]
     rutas = [a for a in argv if not a.startswith("--")]
     if len(rutas) != 1:
-        return salida("error", "desconocido", "uso incorrecto: perfil_columnas.py <playbook.md> [--solo-verificar] [--completar]")
+        return salida("error", "desconocido", "uso incorrecto: perfil_columnas.py <playbook.md> [--solo-verificar] [--completar] [--corregir]")
     from dataverse_api import Dataverse
 
-    estado, componente, detalle = construir(rutas[0], "--solo-verificar" in argv, Dataverse, completar="--completar" in argv)
+    estado, componente, detalle = construir(rutas[0], "--solo-verificar" in argv, Dataverse, completar="--completar" in argv, corregir="--corregir" in argv)
     return salida(estado, componente, detalle)
 
 

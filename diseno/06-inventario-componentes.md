@@ -133,9 +133,11 @@ La cédula del Cliente no lleva clave (D-07): una columna con seguridad por colu
 
 | # | Componente | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
-| 6.1 | `CSP - CARP - Datos sensibles` (3 columnas: `sanic_cedula` leer, crear y actualizar; `sanic_cuentadebitar` leer, crear y actualizar; `sanic_instantaneacedula` solo leer). Sin nombre lógico | `playbooks/perfil-columnas/csp_carp_datos_sensibles.md` | 3.1 y 3.3 con `protegida: true` en las tres columnas | RNF-03, RNF-10, D-19, P-16; diccionario §8 | hecho (creado en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
+| 6.1 | `CSP - CARP - Datos sensibles` (3 columnas: `sanic_cedula` leer, crear y actualizar; `sanic_cuentadebitar` leer, crear y actualizar; `sanic_instantaneacedula` leer y actualizar, sin crear). Sin nombre lógico | `playbooks/perfil-columnas/csp_carp_datos_sensibles.md` | 3.1 y 3.3 con `protegida: true` en las tres columnas | RNF-03, RNF-10, D-19, P-16; diccionario §8 | hecho (creado en Dev el 2026-10-09; `ya_existia` y muestra exportada coinciden) |
 
 La asociación de los teams al perfil y su prueba de punta a punta no viajan en la solución: están en 13.8.
+
+Motivo del permiso de actualizar sobre `sanic_instantaneacedula` (2026-10-20): Desbloquear y Reabrir fallaban con 403 para todo usuario no administrador porque el plugin (`VaciarInstantanea`, vía el Target del llamador) escribe null en `sanic_instantaneacedula` y la plataforma exige permiso de actualizar sobre una columna protegida. Es la única columna protegida que esos gestos escriben. La regla de negocio sigue en el plugin: S-21 rechaza el cambio manual de esa columna (CARP-ARR-009 y CARP-ARR-011). Se aplica con `perfil_columnas.py --corregir`.
 
 ### 6.2 Roles de seguridad
 

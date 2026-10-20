@@ -152,6 +152,6 @@ Desglose del Oficial: Cliente 6, Conversación 4, Arreglo 6, Cuota 2, Versión d
 ## 8. Fuera de esta matriz
 
 - Los privilegios de ejecución de las cinco Custom API: inventario 8.2 a 8.6, diseño detallado pendiente. La definición los fija sobre privilegios de tabla que ya están en esta matriz (sección 1, punto 5).
-- El perfil de seguridad de columna (inventario 6.1) y su asociación a los teams (13.8): los roles no dan ni quitan acceso a `sanic_cedula`, `sanic_cuentadebitar` ni `sanic_instantaneacedula`.
+- El perfil de seguridad de columna (inventario 6.1) y su asociación a los teams (13.8): los roles no dan ni quitan acceso a `sanic_cedula`, `sanic_cuentadebitar` ni `sanic_instantaneacedula`. Por eso Desbloquear y Reabrir de un no administrador dependen de que el perfil dé actualizar sobre `sanic_instantaneacedula` (2026-10-20, hallazgo de la tanda 2 de humo; ver diccionario §8).
 - El acceso a la app model-driven (va con la app, 12.25) y las vistas y el dashboard de supervisión del Jefe (12.1 a 12.16): son componentes de la app, no privilegios del rol.
 - Auditoría de la asignación de roles (13.11) y la verificación de roles ajenos (13.9).

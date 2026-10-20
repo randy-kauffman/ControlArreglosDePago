@@ -53,7 +53,7 @@ Advertencias: el perfil no tiene nombre lógico (BP-PP-185) y su nombre es un te
       "columna": "sanic_instantaneacedula",
       "leer": true,
       "crear": false,
-      "actualizar": false
+      "actualizar": true
     }
   ]
 }
@@ -65,7 +65,7 @@ Un único perfil de seguridad de columna con **tres permisos**, uno por columna 
 |---|---|---|---|---|---|
 | `sanic_carp_tbl_cliente` | `sanic_cedula` | sí | sí | sí | El oficial busca por cédula (RF-13) y la digita al crear el cliente; sin perfil, la fila no se encuentra por cédula y la columna llega vacía (D-19, spike 4) |
 | `sanic_carp_tbl_arreglo` | `sanic_cuentadebitar` | sí | sí | sí | El oficial la digita en el borrador y la corrige antes del congelamiento (RF-06) |
-| `sanic_carp_tbl_arreglo` | `sanic_instantaneacedula` | sí | no | no | La escribe el sistema al congelar (D-30); el oficial solo la lee |
+| `sanic_carp_tbl_arreglo` | `sanic_instantaneacedula` | sí | no | sí | La escribe el sistema al congelar (D-30); el oficial la lee. Actualizar (2026-10-20, hallazgo de la tanda 2 de humo): Desbloquear y Reabrir la vacían desde el plugin dentro del Target del llamador y la plataforma exige update; el cambio manual lo rechaza S-21 (CARP-ARR-009/011) |
 
 Decisiones que este playbook toma y el diseño no traía:
 
@@ -116,7 +116,7 @@ python3 herramientas/construir/tabla.py playbooks/tabla/sanic_carp_tbl_arreglo.m
 | # | Comprobación | Esperado |
 |---|---|---|
 | 1 | `GET fieldsecurityprofiles` por nombre | un solo perfil · `name = CSP - CARP - Datos sensibles` · `ismanaged = false` · la descripción de la sección 2 |
-| 2 | `GET fieldpermissions` del perfil | **exactamente tres**, y todos con `canreadunmasked = 0`: `sanic_carp_tbl_cliente.sanic_cedula` con `canread = 4` · `cancreate = 4` · `canupdate = 4`; `sanic_carp_tbl_arreglo.sanic_cuentadebitar` con `canread = 4` · `cancreate = 4` · `canupdate = 4`; `sanic_carp_tbl_arreglo.sanic_instantaneacedula` con `canread = 4` · `cancreate = 0` · `canupdate = 0`. Uno que falte, uno con otro valor y uno de más son `difiere` |
+| 2 | `GET fieldpermissions` del perfil | **exactamente tres**, y todos con `canreadunmasked = 0`: `sanic_carp_tbl_cliente.sanic_cedula` con `canread = 4` · `cancreate = 4` · `canupdate = 4`; `sanic_carp_tbl_arreglo.sanic_cuentadebitar` con `canread = 4` · `cancreate = 4` · `canupdate = 4`; `sanic_carp_tbl_arreglo.sanic_instantaneacedula` con `canread = 4` · `cancreate = 0` · `canupdate = 4`. Uno que falte, uno con otro valor y uno de más son `difiere` |
 | 3 | Pertenencia a la solución | el perfil figura una vez en la solución de la sección 1 (`solutioncomponents`, tipo 70); sus permisos viajan dentro |
 | 4 | Segunda ejecución sin `--solo-verificar` | estado `ya_existia`, código de salida 0, no cambia nada |
 | 5 | Las tablas siguen coincidiendo con sus propios playbooks | `ya_existia` en las dos |
@@ -126,11 +126,11 @@ Los miembros **no** se verifican: no son parte de lo construido.
 
 ## 6. Si ya existe
 
-Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`. Si alguna no: `difiere`, con la diferencia exacta, **sin tocar nada**. La herramienta nunca quita ni cambia un permiso. Si lo único que pasa es que falta un permiso (una corrida cortada), se completa con `--completar`; eso lo decide quien dirige la construcción, no el constructor.
+Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`. Si alguna no: `difiere`, con la diferencia exacta, **sin tocar nada**. La herramienta nunca quita un permiso. Si lo único que pasa es que falta un permiso (una corrida cortada), se completa con `--completar`. Si un permiso existe con otro valor de leer, crear o actualizar (como `sanic_instantaneacedula` antes del 2026-10-20, cuando pasó de `canupdate = 0` a `4`), se corrige con `--corregir` (PATCH, relee y verifica); no borra los sobrantes ni toca `canreadunmasked`. Las dos banderas se pueden combinar. Lo decide quien dirige la construcción, no el constructor.
 
 ## 7. Reversa
 
-`DELETE fieldsecurityprofiles(<id>)`: se lleva sus permisos. Nada es irreversible. Pero agregar o quitar un permiso cambia en el momento lo que ven quienes ya reciben el perfil: sin perfil, una columna protegida solo la ve un administrador del sistema, y la búsqueda por cédula devuelve cero filas **sin error** (D-19).
+`DELETE fieldsecurityprofiles(<id>)`: se lleva sus permisos. Para deshacer solo el cambio del 2026-10-20: PATCH de `canupdate = 0` en el permiso de `sanic_instantaneacedula` (Desbloquear y Reabrir vuelven a fallar con 403 para los no administradores). Nada es irreversible. Pero agregar o quitar un permiso cambia en el momento lo que ven quienes ya reciben el perfil: sin perfil, una columna protegida solo la ve un administrador del sistema, y la búsqueda por cédula devuelve cero filas **sin error** (D-19).
 
 ## 8. Fuera de alcance
 

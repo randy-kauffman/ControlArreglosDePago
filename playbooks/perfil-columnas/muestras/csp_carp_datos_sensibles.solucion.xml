@@ -20,7 +20,7 @@
           <EntityName>sanic_carp_tbl_arreglo</EntityName>
           <AttributeName>sanic_instantaneacedula</AttributeName>
           <CanRead>4</CanRead>
-          <CanUpdate>0</CanUpdate>
+          <CanUpdate>4</CanUpdate>
           <CanCreate>0</CanCreate>
           <CanReadUnmasked>0</CanReadUnmasked>
         </FieldPermission>

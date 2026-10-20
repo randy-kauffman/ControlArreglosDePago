@@ -1,0 +1,41 @@
+{
+ "fecha": "2026-10-20",
+ "usuario": {
+  "systemuserid": "32122bbd-56c3-f111-a05a-000d3a35abca",
+  "fullname": "SPIKE4 SP - DEV - Pruebas de Correo",
+  "isdisabled": true,
+  "accessmode": 4,
+  "_businessunitid_value": "2dbc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "roles_directos": [],
+  "teams": [
+   [
+    "Arreglos de Pago",
+    "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b"
+   ]
+  ]
+ },
+ "jefatura": {
+  "teamid": "31bc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "miembros": [],
+  "roles": [
+   "SR - CARP - Jefe"
+  ]
+ },
+ "team_default": {
+  "teamid": "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+  "miembros": [
+   "32122bbd-56c3-f111-a05a-000d3a35abca"
+  ],
+  "roles": [
+   "SR - CARP - Oficial"
+  ]
+ },
+ "perfil": {
+  "id": "d06b299c-4bc4-f111-a05a-7ced8d3c456b",
+  "usuarios": [],
+  "teams": [
+   "2ebc18e7-f9c3-f111-a05a-7ced8d3c456b",
+   "31bc18e7-f9c3-f111-a05a-7ced8d3c456b"
+  ]
+ }
+}

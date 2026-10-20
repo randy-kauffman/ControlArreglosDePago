@@ -1,0 +1,170 @@
+[
+ {
+  "prueba": "preparacion",
+  "sub": "SPIKE4 habilitado: WhoAmI",
+  "ok": true,
+  "esperado": "200 y SPIKE4",
+  "obtenido": 200
+ },
+ {
+  "prueba": "(c)",
+  "sub": "Oficial, Borrador congelado: cambio manual de sanic_instantaneacedula (valor nuevo) rechazado con codigo del catalogo",
+  "ok": true,
+  "esperado": "400 CARP-ARR-009",
+  "obtenido": [
+   400,
+   "CARP-ARR-009",
+   "CARP-ARR-009: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_instantaneacedula."
+  ]
+ },
+ {
+  "prueba": "(c)",
+  "sub": "Oficial, Borrador congelado: cambio manual de sanic_instantaneacedula (null) rechazado con codigo del catalogo",
+  "ok": true,
+  "esperado": "400 CARP-ARR-009",
+  "obtenido": [
+   400,
+   "CARP-ARR-009",
+   "CARP-ARR-009: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_instantaneacedula."
+  ]
+ },
+ {
+  "prueba": "(c)",
+  "sub": "la cedula copiada sigue intacta tras los intentos",
+  "ok": true,
+  "esperado": "presente",
+  "obtenido": "presente"
+ },
+ {
+  "prueba": "(a)",
+  "sub": "Oficial NO admin: Desbloquear un Borrador congelado pasa (antes 403) y vacia las 4 instantaneas y el provisional",
+  "ok": true,
+  "esperado": "204, sin congelar, instantaneas y provisional nulos",
+  "obtenido": [
+   [
+    204,
+    null,
+    ""
+   ],
+   {
+    "sanic_instantaneanombre": null,
+    "statuscode": 1,
+    "sanic_instantaneacorreo": null,
+    "sanic_fechacongelamiento": null,
+    "_sanic_reabiertoporid_value": null,
+    "sanic_carp_tbl_arregloid": "a1b8d4bb-93cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": null,
+    "sanic_instantaneacedula": null,
+    "statecode": 0,
+    "sanic_numeroprovisional": null,
+    "sanic_cantidadreaperturas": 0,
+    "sanic_instantaneacelular": null
+   },
+   0.33
+  ],
+  "segundos": 0.33
+ },
+ {
+  "prueba": "(c)",
+  "sub": "Oficial, Borrador sin congelar: cambio manual de sanic_instantaneacedula rechazado con codigo del catalogo",
+  "ok": true,
+  "esperado": "400 CARP-ARR-009",
+  "obtenido": [
+   400,
+   "CARP-ARR-009",
+   "CARP-ARR-009: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_instantaneacedula."
+  ]
+ },
+ {
+  "prueba": "(c)",
+  "sub": "control: una edicion normal del Borrador sigue pasando",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": [
+   204,
+   null,
+   ""
+  ]
+ },
+ {
+  "prueba": "(b)",
+  "sub": "agregar a SPIKE4 a Jefatura (temporal)",
+  "ok": true,
+  "esperado": "204",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "prueba": "(b)",
+  "sub": "Jefatura: Reabrir un Vigente congelado pasa (antes 403), descongela, vacia instantaneas, cuenta la reapertura, reabiertoporid = SPIKE4",
+  "ok": true,
+  "esperado": "204, sin congelar, reaperturas 1, reabiertoporid=SPIKE4",
+  "obtenido": [
+   [
+    [
+     204,
+     null,
+     ""
+    ],
+    1
+   ],
+   {
+    "sanic_instantaneanombre": null,
+    "statuscode": 159460001,
+    "sanic_instantaneacorreo": null,
+    "sanic_fechacongelamiento": null,
+    "_sanic_reabiertoporid_value": "32122bbd-56c3-f111-a05a-000d3a35abca",
+    "sanic_carp_tbl_arregloid": "b3b8d4bb-93cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": null,
+    "sanic_instantaneacedula": null,
+    "statecode": 0,
+    "sanic_numeroprovisional": null,
+    "sanic_cantidadreaperturas": 1,
+    "sanic_instantaneacelular": null
+   }
+  ]
+ },
+ {
+  "prueba": "(b)",
+  "sub": "Jefatura: Reabrir un Terminado pasa (antes 403) y queda Vigente sin fechatermino",
+  "ok": true,
+  "esperado": "204, Vigente",
+  "obtenido": [
+   [
+    [
+     204,
+     null,
+     ""
+    ],
+    1
+   ],
+   {
+    "sanic_instantaneanombre": null,
+    "statuscode": 159460001,
+    "sanic_instantaneacorreo": null,
+    "sanic_fechacongelamiento": null,
+    "_sanic_reabiertoporid_value": "32122bbd-56c3-f111-a05a-000d3a35abca",
+    "sanic_carp_tbl_arregloid": "b7b8d4bb-93cc-f111-a05b-00224808ffcd",
+    "sanic_fechatermino": null,
+    "sanic_instantaneacedula": null,
+    "statecode": 0,
+    "sanic_numeroprovisional": null,
+    "sanic_cantidadreaperturas": 1,
+    "sanic_instantaneacelular": null
+   }
+  ]
+ },
+ {
+  "prueba": "(c)",
+  "sub": "Jefe NO admin: cambio manual de sanic_instantaneacedula tambien rechazado",
+  "ok": true,
+  "esperado": "400 con codigo",
+  "obtenido": [
+   400,
+   "CARP-ARR-009",
+   "CARP-ARR-009: Estas columnas las gestiona el sistema y no se pueden modificar: sanic_instantaneacedula."
+  ]
+ }
+]

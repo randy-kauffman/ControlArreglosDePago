@@ -1,0 +1,28 @@
+{
+ "oficial": {
+  "RetrieveRecordChangeHistory": [
+   403,
+   "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId='fbb19319-de25-4beb-ac54-87ecef849ce4', MetadataCachePrivil"
+  ],
+  "audits": [
+   403,
+   "Principal user (Id=32122bbd-56c3-f111-a05a-000d3a35abca, type=8, roleCount=1, privilegeCount=32, accessMode='4 Non-interactive', AADObjectId"
+  ],
+  "lee_el_arreglo": 200
+ },
+ "admin": {
+  "RetrieveRecordChangeHistory": [
+   200,
+   {
+    "cambios": 3
+   }
+  ],
+  "audits": [
+   200,
+   {
+    "filas": 3
+   }
+  ],
+  "lee_el_arreglo": 200
+ }
+}
