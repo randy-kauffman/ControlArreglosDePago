@@ -11,9 +11,9 @@ Nada de este documento se verificó contra Dev (no hubo conexión). Lo que se ap
 | # | Hallazgo | Dónde se aplica |
 |---|---|---|
 | 1 | Reenviar `sanic_fechacongelamiento = null` sobre un Borrador **no** congelado da `CARP-ARR-017` (se lee como Desbloquear). | Regla general de la sección 5: el web resource y los formularios mandan **solo las columnas que cambiaron**, nunca la fila completa. Desbloquear manda `null` solo si el borrador está congelado (regla de visibilidad). |
-| 2 | El mapeo v07 tiene **28** filas, no 27 (`clienteNombre` y `fechaFormalizacion` aparecen dos veces). | 9.2 y la vista "Mapeo de la version" (12.13): una vista de 28 filas cabe en la primera página; no hace falta paginar. |
+| 2 | El mapeo v07 tiene **28** filas, no 27 (`clienteNombre` y `fechaFormalizacion` aparecen dos veces). | 9.2 y la subgrilla "Mapeo de la version" (12.13): la subgrilla trae `registros_por_pagina` (G-F6) en **28**, y la de cuotas en **60**, para que se vea todo sin paginar (o el menor valor que admita la plataforma y sea mayor o igual: **[verificar en Dev]**). La vista en sí no pagina. |
 | 3 | Dev redondea `AwayFromZero` con dos decimales. | Los montos se muestran con 2 decimales tal cual los guarda el servidor; ningún cálculo en el cliente. |
-| 4 | Perder la carrera de "Tomar" da `CARP-TOM-900` (`0x80060882`). | Sección 5: texto amable y refresco, sin reintento automático (DA-07). |
+| 4 | Perder la carrera de "Tomar" da `CARP-TOM-900` (`0x80060882`). | Sección 5: se muestra el texto neutro del catálogo y se refresca, sin reintento automático (DA-07). |
 | 5 | Un Create de Arreglo con `statecode = 1` nace Borrador igual. | Los formularios y el web resource **nunca mandan `statecode`/`statuscode` en un alta**. Solo los gestos de la sección 5 mandan estado. |
 
 ## 1. Resumen de decisiones de mecanismo
@@ -41,12 +41,14 @@ Los playbooks de vista, formulario, app, web resource, importación y flujo **no
 | G-V3 | `vista.py` | `_otras_por_defecto` solo conoce las vistas `Publica` | La vista `Lookup` de unir (12.13) no es "por defecto": no hay problema. Solo cuidar que no se declare `pordefecto` | — |
 | G-F1 | `formulario.py` | `solo_lectura` es un booleano de todo el formulario | Casi todos los campos de Conversación y Arreglo son solo-sistema: `campos` debe aceptar `"col"` o `{"nombre": "col", "solo_lectura": true}` | Lote A |
 | G-F2 | `formulario.py` | Sin control Timeline | Formulario de Conversación (12.18): sección tipo `timeline`. El `classid` y los parámetros se **leen de un formulario real de Dev** (por ejemplo el Main de `contact` con `GET systemforms`), como se hizo con los demás `classid`; no se escriben de memoria | Lote A |
-| G-F3 | `formulario.py` | Sin bibliotecas ni eventos | `bibliotecas: [nombre del web resource]` y `eventos: [{evento: onload\|onsave\|onchange, funcion, columna?}]` para el aviso (12.18) y el autoguardado (12.18, 12.19) | Lote B |
+| G-F3 | `formulario.py` | Sin bibliotecas ni eventos | `bibliotecas: [nombre del web resource]` y `eventos: [{evento: onload\|onsave\|onchange, funcion, columna?}]` para `OnLoad` (campos "gesto" en modo `never`, habilitar el motivo de reapertura, aviso) y `OnSave` (autoguardado) en 12.18, 12.19, 12.21 y el de Cuota | **Lote A** (sube desde el B) |
 | G-F4 | `formulario.py` | Una sola pestaña | `pestanas: [{titulo, secciones}]` para el Arreglo (General, Cuotas, Formatos, Cierre). **Opcional**: con una sola pestaña y secciones el formulario es utilizable | Lote C |
+| G-F5 | `formulario.py` | Sin control para columnas `DecimalType` (`CONTROL_POR_TIPO` no lo trae) | Los montos del Arreglo y de la Cuota son `decimal(2)`; sin el control no se pueden poner en el formulario. Otro agente la construye | **Lote A** |
+| G-F6 | `formulario.py` | La subgrilla fija `RecordsPerPage = 10` | Clave nueva `registros_por_pagina` en la subgrilla: cuotas **60**, mapeo **28** (o el menor valor admitido por la plataforma, mayor o igual) | **Lote A** |
 | G-A1 | `app.py` | Sin `<Privilege>` por entrada del sitemap; sin entradas de dashboard (`Url`) | Entradas del jefe ocultas al oficial; entrada del dashboard 12.14 | Lote C (privilegio), lote E (dashboard) |
-| G-I1 | `importar_solucion.py` | (a) `app_componentes` y `ribbon` exigen el prefijo `sanic_` en la tabla; (b) los botones reciben `SelectedControlSelectedItemIds` y `SelectedControl`, no `PrimaryControl` | (a) La tabla estándar `email` tiene que entrar a la app (timeline, vista 12.4). (b) En el formulario, `SelectedControl` es el contexto de **grilla**; el de formulario llega con `PrimaryControl` (Learn, *Pass data from a page as a parameter to ribbon actions*). Para `ubicaciones` que incluyan `Form`, el botón debe pasar `PrimaryControl`; para `HomepageGrid`, `SelectedControlSelectedItemIds` | Lote B |
+| G-I1 | `importar_solucion.py` | (a) `app_componentes` y `ribbon` exigen el prefijo `sanic_` en la tabla; (b) los botones reciben `SelectedControlSelectedItemIds` y `SelectedControl`, no `PrimaryControl` | (a) La tabla estándar `email` tiene que entrar a la app (timeline, vista 12.4). (b) En el formulario, `SelectedControl` es el contexto de **grilla**; el de formulario llega con `PrimaryControl` (Learn, *Pass data from a page as a parameter to ribbon actions*). Para `ubicaciones` que incluyan `Form`, el botón debe pasar `PrimaryControl`; para `HomepageGrid`, `SelectedControlSelectedItemIds`. **La `EnableRule` (`CustomRule`) también pasa `PrimaryControl`** en `Form`: hoy emite `SelectedControl` | Lote B |
 | G-I2 | `importar_solucion.py` | Todo botón no-menú lleva la regla `Mscrm.SelectionCountAtLeastOne` también en `Form` | **[verificar en Dev]** que en el formulario el botón aparece; si no, no emitir esa regla para `Form` | Lote B |
-| G-I3 | `importar_solucion.py` | Un `HideCustomAction` no se puede quitar después (Learn, *Define custom actions to modify the ribbon*) | Ocultar botones estándar es **irreversible** sin una solución nueva: se decide con cuidado (sección 5.5) | Lote C |
+| G-I3 | `importar_solucion.py` | `ocultar` genera `HideCustomAction`, que no se puede quitar después (Learn, *Define custom actions to modify the ribbon*) | Ocultar con un **`DisplayRule` que siempre dé falso** (`Mscrm.HideOnModern` + `Mscrm.ShowOnlyOnModern`) sobre el `CommandDefinition` del botón: es reversible. La herramienta debe emitir eso en vez de `HideCustomAction` (sección 5.5). Los comandos de plataforma son globales: se ocultan por el **Id del botón**, como ya hace la herramienta | Lote C |
 
 Los iconos son web resources SVG obligatorios para cada entrada del sitemap y cada botón (`app.py` y `importar_solucion.py` los exigen). Para no hacer 25 playbooks de SVG: **cuatro SVG** compartidos (DA-10): `sanic_carp_wr_svg_app`, `sanic_carp_wr_svg_lista`, `sanic_carp_wr_svg_accion`, `sanic_carp_wr_svg_alerta`.
 
@@ -100,7 +102,11 @@ Notas: `sanic_tiempoprimerarespuesta` y `sanic_tiempototal` están en **minutos*
 |---|---|---|---|---|---|
 | 12.4 | **Respuestas con error de envio** | Publica | Jefe (Supervisión) | `directioncode` `eq` `1`; `statuscode` `eq` `8`; `regardingobjecttypecode` `eq` `sanic_carp_tbl_conversacion` **[verificar en Dev]** | `createdon` desc |
 
-Columnas: `subject` 300 (primaria) · `regardingobjectid` 140 · `torecipients` 220 · `createdby` 160 · `createdon` 150 · `statuscode` 110. `statuscode` 8 = Failed (`03` §0.7, §2.9). Si `regardingobjecttypecode` no acepta el literal en un filtro de vista, la alternativa es `enlaces` hacia `sanic_carp_tbl_conversacion` por `regardingobjectid` → `sanic_carp_tbl_conversacionid` (un salto). La tabla `email` debe estar en la app (G-I1a).
+| 12.13 | **Respuestas enviadas** | Publica | Jefe (Supervisión) | `directioncode` `eq` `1`; `sanic_tiemporespuesta` `not-null` | `senton` desc |
+
+Columnas de "Respuestas enviadas": `subject` 300 (primaria) · `regardingobjectid` 140 · `sanic_respondidoporid` 180 · `sanic_tiemporespuesta` 120 (minutos) · `senton` 150. Cubre RF-03 (qué se respondió, quién y cuándo) y el criterio de éxito 2 de la definición; no agrega promedios (D-27).
+
+Columnas de "Respuestas con error de envio": `subject` 300 (primaria) · `regardingobjectid` 140 · `torecipients` 220 · `createdby` 160 · `createdon` 150 · `statuscode` 110. `statuscode` 8 = Failed (`03` §0.7, §2.9). Si `regardingobjecttypecode` no acepta el literal en un filtro de vista, la alternativa es `enlaces` hacia `sanic_carp_tbl_conversacion` por `regardingobjectid` → `sanic_carp_tbl_conversacionid` (un salto). La tabla `email` debe estar en la app (G-I1a).
 
 ### 3.4 Vistas de Arreglo (`sanic_carp_tbl_arreglo`)
 
@@ -120,16 +126,22 @@ Columnas: `subject` 300 (primaria) · `regardingobjectid` 140 · `torecipients` 
 Filtro de 12.7 como lo probó el spike 2 (`spikes/plataforma/RESULTADO.md`; D-11): ningún operador da "fecha anterior a hoy" por sí solo sobre una columna `DateOnly`; la condición es `olderthan-x-days 1` **o** `yesterday`:
 
 ```xml
-<link-entity name="sanic_carp_tbl_cuota" from="sanic_arregloid" to="sanic_carp_tbl_arregloid" link-type="any">
-  <filter type="and">
-    <filter type="or">
-      <condition attribute="sanic_fechavencimiento" operator="olderthan-x-days" value="1" />
-      <condition attribute="sanic_fechavencimiento" operator="yesterday" />
+<filter type="and">
+  <condition attribute="statecode" operator="eq" value="0" />
+  <condition attribute="statuscode" operator="eq" value="159460001" />
+  <link-entity name="sanic_carp_tbl_cuota" from="sanic_arregloid" to="sanic_carp_tbl_arregloid" link-type="any">
+    <filter type="and">
+      <filter type="or">
+        <condition attribute="sanic_fechavencimiento" operator="olderthan-x-days" value="1" />
+        <condition attribute="sanic_fechavencimiento" operator="yesterday" />
+      </filter>
+      <condition attribute="sanic_fechapago" operator="null" />
     </filter>
-    <condition attribute="sanic_fechapago" operator="null" />
-  </filter>
-</link-entity>
+  </link-entity>
+</filter>
 ```
+
+(En FetchXML, el `link-entity` de tipo `any`/`not any` **va dentro de un `<filter>`**, no como hijo directo de `<entity>`.)
 
 (`link-type="any"` evita filas repetidas cuando un arreglo tiene varias cuotas vencidas; el spike lo probó en una vista guardada.) El atributo `to` es la primaria de Arreglo (`sanic_carp_tbl_arregloid`) y el `from` es el lookup `sanic_arregloid` de la cuota. Riesgo residual del spike: zona horaria del servidor.
 
@@ -141,7 +153,7 @@ Columnas de las vistas de Arreglo (todas llevan la primaria `sanic_nombre` "Codi
 | Arreglos en riesgo | `sanic_nombre` 110 · `sanic_clienteid` 180 · `sanic_producto` 100 · `sanic_numeroproducto` 140 · `sanic_numeroarreglo` 90 · `sanic_tipo` 100 · `sanic_moneda` 90 · `sanic_cuotamensual` 110 · `sanic_plazo` 70 · `sanic_fechainicio` 120 · `sanic_oficialid` 160 |
 | Arreglos de prestamo / de tarjeta / vigentes / cerrados / Todos | `sanic_nombre` 110 · `sanic_clienteid` 180 · `sanic_producto` 100 · `sanic_numeroproducto` 140 · `sanic_numeroarreglo` 90 · `statuscode` 110 · `sanic_tipo` 100 · `sanic_moneda` 90 · `sanic_cuotamensual` 110 · `sanic_plazo` 70 · `sanic_oficialid` 160 · `modifiedon` 150 (en "cerrados" se agrega `sanic_fechatermino` 150 antes de `modifiedon`) |
 | Arreglos del cliente | `sanic_nombre` 110 · `sanic_producto` 100 · `sanic_numeroproducto` 140 · `sanic_numeroarreglo` 90 · `statuscode` 110 · `sanic_tipo` 100 · `sanic_moneda` 90 · `sanic_cuotamensual` 110 · `sanic_plazo` 70 · `sanic_fechainicio` 120 · `sanic_oficialid` 160 |
-| Busqueda rapida de Arreglo | `sanic_numeroproducto` 150 · `sanic_nombre` 110 · `sanic_clienteid` 180 · `sanic_producto` 100 · `sanic_numeroarreglo` 90 · `statuscode` 110 |
+| Busqueda rapida de Arreglo | `sanic_nombre` 110 · `sanic_numeroproducto` 150 · `sanic_clienteid` 180 · `sanic_producto` 100 · `sanic_numeroarreglo` 90 · `statuscode` 110 |
 
 Lo que el mockup muestra en "En riesgo" y **una vista no puede dar**: cuotas vencidas, días de atraso, monto vencido (son agregados del detalle). Quedan en el tab/sección de cuotas del formulario (la vista "Cuotas del arreglo" ordenada por número). Si negocio los pide en la lista, hace falta una columna rollup o un gráfico: **no se agrega** (DA-11).
 
@@ -151,7 +163,7 @@ Lo que el mockup muestra en "En riesgo" y **una vista no puede dar**: cuotas ven
 |---|---|---|---|---|---|---|---|
 | 12.10 | **Busqueda rapida de Cliente** | `sanic_carp_tbl_cliente` | BusquedaRapida | Oficial y Jefe | `or` de `like` `{0}` sobre `sanic_cedula`, `sanic_nombrecompleto`, `sanic_correo`, `sanic_celular` (G-V1) | — | `sanic_nombre` 200 · `sanic_cedula` 140 · `sanic_correo` 220 · `sanic_celular` 120 |
 | 12.13 | **Clientes** (por defecto) | `sanic_carp_tbl_cliente` | Publica | Oficial y Jefe | `statecode` `eq` `0` | `sanic_nombre` asc | `sanic_nombre` 220 · `sanic_cedula` 140 · `sanic_correo` 220 · `sanic_celular` 120 |
-| 12.13 | **Cuotas del arreglo** (subgrid de 12.19) | `sanic_carp_tbl_cuota` | Publica | — (subgrid) | ninguno | `sanic_numero` asc | `sanic_numero` 70 · `sanic_nombre` 110 · `sanic_fechavencimiento` 130 · `sanic_monto` 110 · `sanic_fechapago` 130 · `sanic_montopagado` 110 |
+| 12.13 | **Cuotas del arreglo** (subgrid de 12.19) | `sanic_carp_tbl_cuota` | Publica | — (subgrid) | ninguno | `sanic_numero` asc | `sanic_nombre` 110 · `sanic_numero` 70 · `sanic_fechavencimiento` 130 · `sanic_monto` 110 · `sanic_fechapago` 130 · `sanic_montopagado` 110 |
 | 12.13 | **Formatos generados del arreglo** (subgrid) | `sanic_carp_tbl_generacionformato` | Publica | — (subgrid) | ninguno | `sanic_fechageneracion` desc | `sanic_nombre` 110 · `sanic_fechageneracion` 150 · `sanic_generadoporid` 180 · `sanic_versionplantillaid` 120 |
 | 12.13 | **Versiones de plantilla** (por defecto) | `sanic_carp_tbl_versionplantilla` | Publica | Jefe | ninguno | `sanic_nombre` desc | `sanic_nombre` 110 · `sanic_estado` 110 · `sanic_capacidad` 90 · `sanic_fechaaprobacion` 150 · `sanic_aprobadoporid` 180 |
 | 12.13 | **Mapeo de la version** (subgrid de 12.20) | `sanic_carp_tbl_mapeocelda` | Publica | Jefe | ninguno | `sanic_hoja` asc, `sanic_celda` asc | `sanic_nombre` 140 · `sanic_hoja` 170 · `sanic_celda` 80 · `sanic_tipo` 190 · `sanic_campo` 200 · `sanic_filasmaximas` 90 |
@@ -160,14 +172,14 @@ Notas: la vista de cuotas **no** tiene la columna "Estado" del mockup (Pendiente
 
 ### 3.6 Cierre de 12.13
 
-12.13 queda cerrada como **14 vistas** (6 de Conversación, 3 de Arreglo, y Clientes, Cuotas del arreglo, Formatos generados del arreglo, Versiones de plantilla, Mapeo de la version). Cada una tiene su playbook `playbooks/vista/<nombre sin espacios>.md`; el inventario las cuenta como la fila 12.13. Total de vistas del diseño: **26** (12 de 12.1 a 12.12 y 14 de 12.13).
+12.13 queda cerrada como **15 vistas** (6 de Conversación, 1 de Email "Respuestas enviadas", 3 de Arreglo, y Clientes, Cuotas del arreglo, Formatos generados del arreglo, Versiones de plantilla, Mapeo de la version). Cada una tiene su playbook `playbooks/vista/<nombre sin espacios>.md`; el inventario las cuenta como la fila 12.13. Total de vistas del diseño: **27** (12 de 12.1 a 12.12 y 15 de 12.13).
 
 Reparto por perfil (entradas del sitemap, sección 7):
 
 | Perfil | Vistas que encuentra |
 |---|---|
 | Oficial | Mis conversaciones pendientes, Conversaciones sin asignar, Conversaciones abiertas, Correos llegados a conversaciones finalizadas, Conversaciones finalizadas, Clientes, Borradores, Arreglos vigentes, Arreglos en riesgo, Arreglos de prestamo, Arreglos de tarjeta, Arreglos cerrados, Todos los arreglos |
-| Jefe (además) | Correos sin respuesta, Finalizadas sin respuesta, Respuestas con error de envio, Borradores sin movimiento, Versiones de plantilla (y el panel, lote E) |
+| Jefe (además) | Correos sin respuesta, Finalizadas sin respuesta, Respuestas con error de envio, Respuestas enviadas, Borradores sin movimiento, Versiones de plantilla (y el panel, lote E) |
 | Ninguno (solo subgrid o selector) | Conversaciones del cliente, Conversaciones para unir, Arreglos del cliente, Cuotas del arreglo, Formatos generados del arreglo, Mapeo de la version |
 | Búsqueda | Busqueda rapida de Cliente y de Arreglo (barra de búsqueda de la grilla) |
 
@@ -179,7 +191,9 @@ Reparto por perfil (entradas del sitemap, sección 7):
 - Etiquetas de pestaña y de sección: un texto por idioma (`{"1033": "...", "3082": "..."}`, sin tildes); las de los campos salen del `DisplayName` de la columna.
 - Clave de campo: **ro** = solo lectura (G-F1); **ed** = editable; **gesto** = editable *solo* para que el botón lo lea (su valor no se guarda con Guardar; ver 5.3).
 - La columna primaria `sanic_nombre` de **Cliente** y **Mapeo** (calculada por plugin, "requerida") **no va en el formulario**: la validación de requerido de la interfaz solo mira lo que está en el formulario, y el plugin la completa. En Conversación, Arreglo y Generación es autonumérica (no requerida): va ro en Conversación y Arreglo.
-- **Campos requeridos y calculados por el plugin** (`sanic_saldoremanente`, `sanic_totalpagar`, `sanic_fechafin` en Arreglo): van ro en el formulario. **[verificar en Dev]** que un requerido deshabilitado y vacío no bloquea el guardado del alta. Si lo bloquea, la solución más barata es bajar su nivel de requerido a "ninguno" en la tabla (el servidor no lo exige por API); no se resuelve con JavaScript (DA-12).
+- **Campos requeridos y calculados por el plugin** (`sanic_saldoremanente`, `sanic_totalpagar`, `sanic_fechafin` en Arreglo): van ro en el formulario. Un requerido con el control deshabilitado no bloquea el guardado (Learn), así que no hace falta ningún ajuste.
+- **Campos "gesto" y envío.** En `OnLoad`, todos los campos "gesto" (resultado, motivo y detalle de Conversación; motivos de descarte, anulación y reapertura de Arreglo) llevan `setSubmitMode("never")`: ni el autoguardado ni la navegación los mandan solos; **el botón los manda de forma explícita** en su `updateRecord`. Así Guardar nunca produce `CARP-ARR-024` ni `CARP-CNV-005` por un motivo suelto.
+- **Autoguardado y botón Guardar.** Con el autoguardado activo, el botón **Guardar** solo aparece en el alta; en un registro existente se guarda con el icono del pie de la página o con Ctrl+S. En Conversación y Arreglo se cancela el autoguardado (`OnSave`, `getSaveMode() === 70`); en **Cuota** y **Mapeo de celda** también, para que no rebote `CARP-CUO-003` (fecha sin monto, a medio escribir) ni `CARP-MAP-003`/`-004` (campo y tipo a medio elegir).
 - Nunca se manda `statecode`/`statuscode` en un alta (humo 5), y nunca se reenvía una fila completa (humo 1). Un formulario manda solo lo que cambió: es el comportamiento nativo.
 
 ### 4.2 12.18 `FRM - CARP - Conversacion - Principal` (tabla `sanic_carp_tbl_conversacion`)
@@ -200,7 +214,7 @@ Pestaña única "General" (G-F4 opcional; las secciones van en este orden):
 - **Vincular cliente**: editar `sanic_clienteid` y guardar (válido en una Abierta; en Finalizada/Unida da `CARP-CNV-009`). **Crear cliente**: "+ Nuevo" del propio lookup (abre el formulario 12.17). No hay comando propio.
 - **Responder con adjuntos e imágenes**: el botón Responder del timeline (RF-03). No hay código. El remitente lo fija el plugin (`CARP-EML-001` si se intenta otro).
 - **Aviso de otra conversación abierta (RF-14)**: `OnLoad` → `SanicCarp.Conversacion.alCargar`. Si la conversación está Abierta, consulta hasta 3 conversaciones Abiertas, con otro id, del mismo cliente **o** del mismo remitente, y muestra `setFormNotification` nivel INFO: "Este cliente tiene otra conversación abierta: CONV-000123 «asunto». Si es el mismo tema, use Unir a otra conversación." Alternativas: (a) columna rollup en Cliente: se recalcula con retraso (no sirve para un aviso), (b) subgrid en el formulario: la relación es de Cliente a Conversación y no de Conversación a Conversación, (c) no avisar y confiar en el subgrid del Cliente: incumple RF-14. Recomendada: `OnLoad` (DA-06). Es una consulta de solo lectura, sin lógica de negocio.
-- **Autoguardado**: `OnSave` → `SanicCarp.Conversacion.alGuardar` cancela el guardado automático (`getSaveMode() === 70`). El guardado manual sigue funcionando.
+- **Autoguardado**: `OnSave` → `SanicCarp.Conversacion.alGuardar` cancela el guardado automático (`getSaveMode() === 70`); el guardado manual (icono del pie o Ctrl+S) sigue funcionando. `OnLoad` → `alCargar` pone `setSubmitMode("never")` en los tres campos de la sección Finalizacion.
 - Visibilidad por estado: **no se oculta nada** en el formulario (los campos siguen ahí y el servidor rechaza lo que no corresponde). Los avisos del mockup ("Llegó un correo nuevo a esta conversación finalizada…") se resuelven con `sanic_correonuevoenfinalizada` visible en la sección 1 y con la vista 12.2.
 
 ### 4.3 12.17 `FRM - CARP - Cliente - Principal` (tabla `sanic_carp_tbl_cliente`)
@@ -235,11 +249,12 @@ Objetivo (G-F4): pestañas **General**, **Cuotas**, **Formatos**, **Cierre**. M�
 | Cierre | 10 | Reapertura | `sanic_motivoreapertura` **gesto** · `sanic_fechareapertura` ro · `sanic_reabiertoporid` ro · `sanic_cantidadreaperturas` ro | — |
 
 - Un campo no puede repetirse en el formulario (la herramienta lo rechaza): por eso el estado vive solo en el encabezado.
-- La auditoría del mockup ("Auditoría") es la **historia de auditoría nativa** de Dataverse: no es un componente. Los datos económicos y de identificación no se auditan (D-20).
+- La auditoría del mockup ("Auditoría") es la **historia de auditoría nativa** de Dataverse: no es un componente. Los datos económicos y de identificación no se auditan (D-20). Ver la historia exige el privilegio **View Audit History**, que la matriz `04` no asigna a Oficial ni a Jefe: **no se modifican los roles**; queda como decisión pendiente del usuario y como verificación en Dev con un no administrador (sección 12).
 - `sanic_cuentadebitar` se ve solo con el perfil de columna; sin él aparece bloqueado y el alta de arreglos falla de forma visible. 13.8 es previo (sección 9).
 - Los campos de **datos del acuerdo** quedan editables aunque el arreglo esté congelado: el servidor responde `CARP-ARR-011` con el nombre de la columna. No hay lógica de bloqueo en el cliente (regla de la definición: el cliente solo da feedback).
 - Alta: el formulario manda solo los campos que el usuario llenó (sin `statecode`, humo 5). El plugin pone la versión Vigente, el canal, los montos y el calendario de cuotas, y el usuario ve las cuotas en la sección 5 al guardar.
-- `OnSave` → `SanicCarp.Arreglo.alGuardar`: cancela el autoguardado (igual que en Conversación).
+- `OnSave` → `SanicCarp.Arreglo.alGuardar`: cancela el autoguardado (igual que en Conversación). `OnLoad` → `SanicCarp.Arreglo.alCargar`: (1) `setSubmitMode("never")` en `sanic_motivodescarte`, `sanic_motivoanulacion` y `sanic_motivoreapertura`; (2) **habilita el motivo de reapertura**: el formulario de un registro inactivo (Terminado, Anulado, Descartado) deshabilita todos los controles, así que si el arreglo está **Terminado** (o **Vigente congelado**, por si la plataforma también lo deshabilita) y el usuario es de jefatura (`esJefe()`), hace `setDisabled(false)` sobre `sanic_motivoreapertura`. **[verificar en Dev]** que el control habilitado por script se puede escribir en un registro inactivo y que el botón lo envía. **Respaldo si no**: el diálogo propio de DA-01 (página generativa o HTML con `parent.Xrm`) solo para Reabrir; (3) en el **alta** desde la subgrilla de una conversación, hereda el cliente y el oficial (más abajo).
+- **Alta desde una conversación (B7).** El "+ Nuevo" de la subgrilla de arreglos de la conversación llena `sanic_conversacionid`. Para heredar además `sanic_clienteid` (el cliente de la conversación) y `sanic_oficialid` (el oficial asignado de la conversación): **primera opción**, el **mapeo de columnas de la relación** REL-03 (`sanic_carp_conversacion_arreglo`): `sanic_clienteid` → `sanic_clienteid` y `sanic_oficialasignadoid` → `sanic_oficialid` (lookups con el mismo destino), sin código; es un paso manual del maker porque ninguna herramienta lo hace. **[verificar en Dev]** que el mapeo existe para esa relación y copia al crear. **Respaldo** (si no): `SanicCarp.Arreglo.alCargar` en el alta lee la conversación padre (`Xrm.WebApi.retrieveRecord`, dos columnas) y llena los dos lookups si están vacíos. Desde el Cliente, el "+ Nuevo" ya hereda el cliente.
 - **Registrar un pago** no pasa por este formulario: se abre la cuota desde la subgrilla (4.7).
 
 ### 4.5 12.20 `FRM - CARP - Version de plantilla - Principal` (tabla `sanic_carp_tbl_versionplantilla`)
@@ -251,15 +266,15 @@ Encabezado (3): `sanic_estado` (ro) · `sanic_capacidad` (ed) · `sanic_fechaapr
 | 1 | Version | `sanic_nombre` ed (patrón `^v[0-9]{2,3}$`, `CARP-VER-012`) · `sanic_archivo` ed (control de archivo; 5 MB) · `sanic_huella` ro · `sanic_aprobadoporid` ro | — |
 | 2 | Mapeo de la version | subgrilla `sanic_carp_tbl_mapeocelda` por `sanic_versionplantillaid`, vista "Mapeo de la version" | — |
 
-`sanic_estado` va ro: **Publicar es un botón** que manda solo `sanic_estado` (el servidor rechaza cualquier otra columna en ese guardado, `CARP-VER-013`). Una versión nueva se crea con el "+ Nuevo" de la grilla (el plugin la fuerza a Borrador); para el jefe es la forma de "clonar y corregir" (clonado a mano: nuevo número, mismo archivo, mapeo nuevo; el script 9.2 sirve para cargar el mapeo grande). **Decisión**: no hay botón "Clonar" en la primera versión (DA-13).
+`sanic_estado` va ro: **Publicar es un botón** que manda solo `sanic_estado` (el servidor rechaza cualquier otra columna en ese guardado, `CARP-VER-013`). Una versión nueva se crea con el "+ Nuevo" de la grilla (el plugin la fuerza a Borrador). Para "clonar y corregir" en la primera versión: nuevo número, mismo archivo, y el mapeo se carga con la **importación nativa desde Excel** (plantilla de importación de la tabla Mapeo de celda), que pasa por los plugins y por los privilegios del usuario, en vez de crear 28 filas a mano **[verificar en Dev]**. Sin botón "Clonar" (DA-13).
 
 ### 4.6 12.21 `FRM - CARP - Mapeo de celda - Principal` (tabla `sanic_carp_tbl_mapeocelda`)
 
-Sin encabezado. Una sección "Celda del formato": `sanic_versionplantillaid` ro (se hereda de la subgrilla; moverlo da `CARP-MAP-006`) · `sanic_hoja` · `sanic_celda` · `sanic_tipo` · `sanic_campo` · `sanic_filasmaximas` (todos ed). Sin `sanic_nombre` (se calcula). Solo se edita con la versión en Borrador (`CARP-MAP-001`).
+Sin encabezado. Una sección "Celda del formato": `sanic_versionplantillaid` ro (se hereda de la subgrilla; moverlo da `CARP-MAP-006`) · `sanic_hoja` · `sanic_celda` · `sanic_tipo` · `sanic_campo` · `sanic_filasmaximas` (todos ed). Sin `sanic_nombre` (se calcula). Solo se edita con la versión en Borrador (`CARP-MAP-001`). `OnSave` cancela el autoguardado (`getSaveMode() === 70`) para que `CARP-MAP-003`/`-004` no rebote con el tipo y el campo a medio elegir.
 
 ### 4.7 Propuesta: `FRM - CARP - Cuota - Principal` (no está en el inventario; DA-09)
 
-El registro de pagos (RF-10) necesita un formulario mínimo de Cuota: sin él, el Main de fábrica muestra las cinco columnas solo-sistema como editables. Sin encabezado, una sección "Pago": `sanic_nombre` ro · `sanic_numero` ro · `sanic_fechavencimiento` ro · `sanic_monto` ro · `sanic_arregloid` ro · **`sanic_fechapago` ed · `sanic_montopagado` ed**. Se abre al hacer clic en una fila de la subgrilla de cuotas (comportamiento nativo). El pago se guarda con Guardar: fecha y monto **juntos** (si falta uno, `CARP-CUO-003`). Un pago solo se acepta con el arreglo Vigente (`CARP-CUO-002`). **Alternativas**: (A) grilla editable en la subgrilla (control de "grilla editable"; `formulario.py` genera la subgrilla de solo lectura y no la configura), (B) este formulario (la recomendada: una tabla, un playbook, nada de código). Propuesta de fila 12.26 (sección 11).
+El registro de pagos (RF-10) necesita un formulario mínimo de Cuota: sin él, el Main de fábrica muestra las cinco columnas solo-sistema como editables. Sin encabezado, una sección "Pago": `sanic_nombre` ro · `sanic_numero` ro · `sanic_fechavencimiento` ro · `sanic_monto` ro · `sanic_arregloid` ro · **`sanic_fechapago` ed · `sanic_montopagado` ed**. Se abre al hacer clic en una fila de la subgrilla de cuotas (comportamiento nativo). El pago se guarda con Guardar: fecha y monto **juntos** (si falta uno, `CARP-CUO-003`). Un pago solo se acepta con el arreglo Vigente (`CARP-CUO-002`). `OnSave` cancela el autoguardado: sin eso, escribir la fecha y esperar daría `CARP-CUO-003`. **Alternativas**: (A) grilla editable en la subgrilla (control de "grilla editable"; `formulario.py` genera la subgrilla de solo lectura y no la configura), (B) este formulario (la recomendada: una tabla, un playbook, nada de código). Propuesta de fila 12.26 (sección 11).
 
 ## 5. Web resource y comandos (12.22 y 12.24)
 
@@ -291,11 +306,11 @@ Se recomienda el ribbon JS (D-17 ya lo decidió y el costo de Power Fx es mayor 
 
 1. **Sin lógica de negocio.** Las reglas están en los plugins. El JS: (a) lee los campos del formulario, (b) pide confirmación, (c) llama a la API o hace **un** `Xrm.WebApi.updateRecord`, (d) muestra el resultado o el mensaje `CARP-*`, (e) refresca. Las "reglas de visibilidad" repiten el diagrama de estados para no mostrar un botón sin sentido; si se desvían, el servidor sigue siendo la barrera.
 2. **Solo las columnas del gesto.** Cada `updateRecord` manda únicamente las columnas del gesto (tabla 5.4), nunca la fila completa ni un `statecode` en un alta (humo 1 y 5).
-3. **Mensaje del error.** `mostrarError(err)`: busca `/CARP-[A-Z]{3}-\d{3}:[^\r\n]*/` en `err.message`. Si lo encuentra, `Xrm.Navigation.openErrorDialog({message: <ese texto>})` (el texto ya está en español y sin datos sensibles, `03` §0.5). Si no (error de la capa OData antes del plugin, texto técnico en inglés), el mensaje es "No se pudo completar la acción. Intente de nuevo; si persiste, avise al equipo de soporte." y el texto técnico va a `details`. Nunca se escribe en consola ni en trazas el contenido de campos.
+3. **Mensaje del error.** `mostrarError(err)`: busca `/CARP-[A-Z]{3,4}-\d{3}:[\s\S]*/` en `err.message`, es decir **desde el código hasta el final del mensaje, con todas las líneas** (los errores de publicación vienen unidos con `\n`). Si lo encuentra, `Xrm.Navigation.openErrorDialog({message: <ese texto>})` (el texto ya está en español y sin datos sensibles, `03` §0.5). Si no (error de la capa OData antes del plugin, texto técnico en inglés), el mensaje es "No se pudo completar la acción. Intente de nuevo; si persiste, avise al equipo de soporte." y el texto técnico va a `details`. Nunca se escribe en consola ni en trazas el contenido de campos.
 4. **Los `-900` no se reintentan solos.** El texto del catálogo ya dice "Intente de nuevo". Excepción única: `CARP-TOM-900` (sección 5.4, Tomar).
 5. **Refresco.** Tras un gesto en formulario: `formContext.data.refresh(false)`. Tras un gesto en grilla: `gridContext.refresh()`.
 6. **Parámetros del ribbon.** Por G-I1b: en `Form`, `PrimaryControl` (el formContext); en `HomepageGrid`, `SelectedControlSelectedItemIds`. Una función de comando acepta ambos con una utilidad `contexto(arg)`.
-7. **Enable rules** (`regla` del playbook): funciones `puede<Gesto>(PrimaryControl|SelectedControl)` que devuelven `true` ante la duda. `esJefe()` consulta `Xrm.Utility.getGlobalContext().userSettings.roles` por el nombre `SR - CARP - Jefe` **[verificar en Dev que incluye roles recibidos por team]**; si no los incluye, `esJefe()` devuelve `true` y el servidor decide (DA-14).
+7. **Enable rules** (`regla` del playbook): funciones `puede<Gesto>(PrimaryControl)` (en `Form`; en `HomepageGrid`, el contexto de grilla) que devuelven `true` ante la duda. La `EnableRule` recibe `PrimaryControl` igual que el comando (G-I1b). `esJefe()` consulta `Xrm.Utility.getGlobalContext().userSettings.roles` por el nombre `SR - CARP - Jefe`; `userSettings.roles` **incluye los roles que el usuario recibe por los teams** (cerrado, DA-14). Es solo UX: el servidor decide.
 8. **Namespacing**: `SanicCarp.Conversacion.*`, `SanicCarp.Arreglo.*`, `SanicCarp.Plantilla.*`. El nombre de la función del ribbon es el nombre completo (`SanicCarp.Arreglo.formalizar`).
 9. **Llamada a una Custom API**: `Xrm.WebApi.online.execute` con `getMetadata()` → `operationType: 0` (Action), `boundParameter: null`, `operationName` = nombre lógico de la API, `parameterTypes: {<param>: {typeName: "Edm.Guid", structuralProperty: 1}}`. Los nombres de parámetro son los cortos de `03` §1.
 
@@ -308,21 +323,21 @@ Leyenda: **F** = formulario, **G** = grilla (`HomepageGrid`). "Visible si" es la
 | 1 | **Tomar** | F y G | Abierta y `sanic_oficialasignadoid` vacío | No | — | Custom API `sanic_carp_capi_tomarconversacion` | `conversacionid` | Toast: "Conversación tomada." (usa `oficialnombre`). `yaasignada = true` → "Ya era suya." Una sola fila seleccionada en G; si hay más de una: "Seleccione una sola conversación." |
 | 2 | **Finalizar** | F | Abierta | Sí: "Se registra el resultado, quién finaliza y cuándo." | Campos **gesto** de la sección Finalizacion: resultado, motivo, detalle | `updateRecord(sanic_carp_tbl_conversacion, id, …)` | `statecode: 1`, `statuscode: 2`, `sanic_resultado` y, si tienen valor, `sanic_motivosinrespuesta` y `sanic_detallesinrespuesta`. Los vacíos **no** se mandan | Toast "Conversación finalizada." Los faltantes los reclama el servidor: `CARP-CNV-003`/`-004` |
 | 3 | **Reabrir conversación** | F | Finalizada | Sí: "Vuelve a Abierta; se limpian el resultado y la finalización." | — | `updateRecord` | **solo** `statecode: 0`, `statuscode: 1` (cualquier otra columna da `CARP-CNV-010`) | Toast "Conversación reabierta." |
-| 4 | **Unir a otra conversación** | F (y G con una fila) | Abierta | Sí, con los dos números: "Los correos de CONV-A pasan a CONV-B. No se puede deshacer." | Selector `Xrm.Utility.lookupObjects` sobre `sanic_carp_tbl_conversacion`, un solo valor, filtro `statecode = 0` y `id ≠ origen`, vista "Conversaciones para unir" (resuelta por nombre con una lectura de `savedquery`; si no la halla, usa la vista de búsqueda por defecto) | Custom API `sanic_carp_capi_unirconversaciones` | `origenid`, `destinoid` | Toast con `correosmovidos` y `arreglosrepunteados`; navega al destino (`Xrm.Navigation.openForm`). Errores `CARP-UNI-001` a `-010` tal cual |
+| 4 | **Unir a otra conversación** | F | Abierta | Sí, con los dos números: "Los correos de CONV-A pasan a CONV-B. No se puede deshacer." | Selector `Xrm.Utility.lookupObjects` sobre `sanic_carp_tbl_conversacion`, un solo valor, filtro `statecode = 0` y `id ≠ origen`, vista "Conversaciones para unir" (resuelta por nombre con una lectura de `savedquery`; si no la halla, usa la vista de búsqueda por defecto) | Custom API `sanic_carp_capi_unirconversaciones` | `origenid`, `destinoid` | Toast con `correosmovidos` y `arreglosrepunteados`; navega al destino (`Xrm.Navigation.openForm`). Errores `CARP-UNI-001` a `-010` tal cual |
 | 5 | **Iniciar conversacion nueva** | F | Finalizada y `sanic_correonuevoenfinalizada = sí` | Sí: "El correo llegado después de la finalización se mueve a una conversación nueva; esta sigue finalizada." | — | Custom API `sanic_carp_capi_iniciarconversacionnueva` | `conversacionid` | Navega a `nuevaconversacionid`. Errores `CARP-INI-*` |
-| 6 | **Generar formato** | F | Siempre (también Terminado, Anulado y Descartado: se genera sin congelar, OA-9) | Sí y **depende del estado**: Borrador sin congelar → "Al generar se bloquean los datos del acuerdo; podrá desbloquear antes de la firma."; Vigente sin congelar (reabierto) → "Se vuelve a congelar con los datos actuales del cliente."; el resto → "Se genera el formato; el arreglo no cambia." Si el formulario tiene cambios sin guardar → "Guarde los cambios antes de generar el formato." y no llama | — | Custom API `sanic_carp_capi_generarformato` | `arregloid` | Descarga el `.xlsx` (`archivo` en Base64 → `openFile`, `fileName = nombrearchivo`, `fileSize` en KB = `ceil(bytes/1024)`, MIME `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`, `openMode: 2`). Si `advertencias` no está vacío, las muestra. Refresca. Tarda ~1,5 s las primeras llamadas tras publicar el paquete: mostrar "Generando…" (`Xrm.Utility.showProgressIndicator`). Errores `CARP-GEN-*` |
+| 6 | **Generar formato** | F | Siempre (también Terminado, Anulado y Descartado: se genera sin congelar, OA-9) | Sí y **depende del estado**: Borrador sin congelar → "Al generar se bloquean los datos del acuerdo; podrá desbloquear antes de la firma."; Vigente sin congelar (reabierto) → "Se vuelve a congelar con los datos actuales del cliente."; el resto → "Se genera el formato; el arreglo no cambia." Si el formulario tiene cambios sin guardar → "Guarde los cambios antes de generar el formato." y no llama | — | Custom API `sanic_carp_capi_generarformato` | `arregloid` | Descarga el `.xlsx` (`archivo` en Base64 → `openFile`, `fileName = nombrearchivo`, `fileSize` en KB = `ceil(bytes/1024)`, MIME `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`, `openMode: 2`). Si `advertencias` no está vacío, las muestra. Refresca. **Descargas y OneDrive (13.17, RNF-03):** si TI confirma que la carpeta Descargas está redirigida a OneDrive (Known Folder Move), el formato (con cédula y cuenta del cliente) llegaría a OneDrive, lo que RNF-03 prohíbe; en ese caso este gesto **no se habilita** hasta resolver la redirección (excepción de carpeta o descarga a otra ruta). 13.17 es previo a la primera versión con datos reales. Tarda ~1,5 s las primeras llamadas tras publicar el paquete: mostrar "Generando…" (`Xrm.Utility.showProgressIndicator`). Errores `CARP-GEN-*` |
 | 7 | **Desbloquear** | F | Borrador **y** `sanic_fechacongelamiento` con valor | Sí: "El formato ya impreso deja de valer; hay que reimprimirlo." | — | `updateRecord` | **solo** `sanic_fechacongelamiento: null` (humo 1: sobre un borrador no congelado daría `CARP-ARR-017`; por eso la regla de visibilidad exige que esté congelado) | Toast "Borrador desbloqueado." |
 | 8 | **Formalizar** | F | Borrador congelado | Sí: "Confirme que el cliente firmó el formato impreso." | — | `updateRecord` | **solo** `statecode: 0`, `statuscode: 159460001` | Toast "Arreglo formalizado con el N.º <`sanic_numeroarreglo` releído>". Errores `CARP-ARR-019`/`-020`/`-023` |
 | 9 | **Descartar** | F | Borrador | Sí: "Queda como descartado sin consumir número. No se puede recuperar." | Campo **gesto** `sanic_motivodescarte` | `updateRecord` | `statecode: 1`, `statuscode: 159460003`, `sanic_motivodescarte` | Toast "Borrador descartado." Falta de motivo: `CARP-ARR-013` |
 | 10 | **Anular** | F | Vigente | Sí: "La anulación no se puede revertir. Si el cliente vuelve a negociar, se registra un arreglo nuevo." | Campo **gesto** `sanic_motivoanulacion` | `updateRecord` | `statecode: 1`, `statuscode: 159460002`, `sanic_motivoanulacion` | Toast "Arreglo anulado." `CARP-ARR-014` |
-| 11 | **Reabrir arreglo** | F | (Terminado) o (Vigente **congelado**), y `esJefe()` | Sí: "Descongela los datos para corregirlos. El próximo formato congela de nuevo con los datos actuales." | Campo **gesto** `sanic_motivoreapertura` | `updateRecord` | De un Terminado: `statecode: 0`, `statuscode: 159460001`, `sanic_motivoreapertura`. De un Vigente congelado: **solo** `sanic_motivoreapertura` | Toast "Arreglo reabierto." `CARP-ARR-015`/`-016`/`-017` |
+| 11 | **Reabrir arreglo** | F | (Terminado) o (Vigente **congelado**), y `esJefe()` | Sí: "Descongela los datos para corregirlos. El próximo formato congela de nuevo con los datos actuales." | Campo **gesto** `sanic_motivoreapertura` (habilitado por `OnLoad` en un arreglo inactivo, ver 4.4; respaldo: diálogo de DA-01) | `updateRecord` | De un Terminado: `statecode: 0`, `statuscode: 159460001`, `sanic_motivoreapertura`. De un Vigente congelado: **solo** `sanic_motivoreapertura` | Toast "Arreglo reabierto." `CARP-ARR-015`/`-016`/`-017` |
 | 12 | **Registrar pago** | Sin botón | — | — | Campos `sanic_fechapago` y `sanic_montopagado` del formulario de Cuota (4.7) | Guardar nativo | Lo que el usuario cambió | `CARP-CUO-001`/`-002`/`-003` en el diálogo de error nativo |
 | 13 | **Publicar versión** | F | `sanic_estado` Borrador y `esJefe()` | Sí: "La versión pasa a Vigente, la actual pasa a Histórica y no se podrá modificar." Si hay cambios sin guardar → "Guarde los cambios antes de publicar." | — | `updateRecord` | **solo** `sanic_estado: 159460002` | Toast "Versión publicada." Errores `CARP-VER-005` a `-010`, `-013` |
 | 14 | **Vista previa** | F | `sanic_estado` Borrador y `esJefe()` | Sí: "Se genera con un arreglo existente; no congela ni guarda nada." | Selector `lookupObjects` de un arreglo (cualquier estado) | Custom API `generarformato` | `arregloid`, `versionpreviaid` (id de la versión abierta) | Descarga igual que (6). `CARP-GEN-006`/`-007` |
 
 Detalles que no admiten duda:
 
-- **Tomar y la carrera (humo 4).** Si el error contiene `CARP-TOM-900` el JS refresca el formulario o la grilla y muestra: "Otro oficial tomó esta conversación un instante antes. La pantalla se actualizó." Sin reintento automático. El contrato `03` §1.3 paso 7 decía "el web resource vuelve a llamar" y la segunda llamada mostraría `CARP-TOM-004` con el nombre; se prefiere no reintentar (DA-07) porque el refresco ya muestra quién la tiene.
+- **Tomar y la carrera (humo 4).** Si el error contiene `CARP-TOM-900`, el JS muestra el texto neutro del catálogo (**"La conversación cambió en este instante. Actualice la pantalla y vuelva a intentar."**) y **además refresca** el formulario o la grilla, para que se vea quién la tiene. Sin reintento automático. El contrato `03` §1.3 paso 7 decía "el web resource vuelve a llamar" y la segunda llamada mostraría `CARP-TOM-004` con el nombre; se prefiere no reintentar (DA-07) porque el refresco ya muestra quién la tiene.
 - **Los campos "gesto" y el guardado.** Si el usuario escribe un motivo y guarda con Guardar sin el botón, el servidor responde `CARP-ARR-024` (arreglo) o `CARP-CNV-005` (conversación). Es correcto y alcanza; el texto de la sección dice "Escriba el motivo y use el botón".
 - **Orden de las llamadas.** Un gesto = una llamada. Nunca "guardar y luego gesto".
 - **Quién lo hace.** Oficial y Jefe, salvo lo marcado `esJefe()` (que además el servidor exige por `EsJefatura`). Tomar, unir e iniciar conversación nueva exigen Write sobre Conversación (privilegio de ejecución); Generar formato, Read sobre Generación.
@@ -330,7 +345,7 @@ Detalles que no admiten duda:
 
 ### 5.5 Botones estándar a ocultar (12.24, lote C)
 
-Son opcionales y **irreversibles** (G-I3). Candidatos por tabla, a confirmar con `RetrieveEntityRibbon` en Dev (la herramienta ya ofrece solo los presentes): Conversación y Arreglo y Cuota y Versión y Mapeo y Cliente: `.Deactivate`, `.Activate`, `.Delete`, `.Assign`, `.Share`, `.NewRecord` (solo en Conversación y Cuota, que no se crean a mano). El servidor ya rechaza todo (`CARP-CNV-003`, `CARP-ARR-010`, `CARP-CLI-004`, …) y los privilegios que no existen ya deshabilitan Eliminar, Asignar y Compartir. **Recomendación**: no ocultar nada en la primera versión; ocultar Activar/Desactivar en el lote C (DA-15).
+Son opcionales. Se ocultan con un **`DisplayRule` que siempre da falso** (reversible; G-I3), no con `HideCustomAction`. Candidatos por tabla, a confirmar con `RetrieveEntityRibbon` en Dev (la herramienta ya ofrece solo los presentes): Conversación y Arreglo y Cuota y Versión y Mapeo y Cliente: `.Deactivate`, `.Activate`, `.Delete`, `.Assign`, `.Share`, `.NewRecord` (solo en Conversación y Cuota, que no se crean a mano). El servidor ya rechaza todo (`CARP-CNV-003`, `CARP-ARR-010`, `CARP-CLI-004`, …) y los privilegios que no existen ya deshabilitan Eliminar, Asignar y Compartir. **Recomendación**: no ocultar nada en la primera versión; ocultar Activar/Desactivar en el lote C (DA-15).
 
 ### 5.6 Botones por tabla (contenido de los cambios `ribbon`)
 
@@ -397,6 +412,7 @@ Títulos de área, grupo y entrada: texto por idioma, sin tildes. Las vistas se 
 | **Supervision** | Seguimiento | `sinrespuesta` | Conversación | Correos sin respuesta | alerta | **Jefe** (privilegio) |
 | | | `cierres` | Conversación | Finalizadas sin respuesta | lista | **Jefe** |
 | | | `errores` | Email | Respuestas con error de envio | alerta | **Jefe** |
+| | | `respenviadas` | Email | Respuestas enviadas | lista | **Jefe** |
 | | | `borradoressinmov` | Arreglo | Borradores sin movimiento | alerta | **Jefe** |
 | | | `panel` (lote E) | (dashboard) | Panel de supervision | lista | **Jefe** |
 | **Administracion del formato** | Plantilla | `plantillas` | Versión de plantilla | Versiones de plantilla | lista | **Jefe** |
@@ -487,18 +503,22 @@ En Dev, un **oficial** puede: recibir un correo en el buzón de prueba y verlo c
 | Lote | Contenido | Resultado | Tamaño relativo |
 |---|---|---|---|
 | **0. Prerrequisitos** | 13.4, 13.5 (Dev), 10.8 (valor), 13.7, 13.8, 9.1, 9.2 | El entorno tiene datos y gente para probar | **M** (6 tareas, 2 de datos con script; casi todo administración) |
-| **A. Base navegable (sin gestos)** | Extensiones G-V1, G-F1, G-F2 · iconos (4 SVG) · vistas: 12.1, 12.2, 12.5, 12.10, 12.11, 12.12 y las 11 de 12.13 de la primera versión (Mis conversaciones pendientes, Sin asignar, Abiertas, del cliente, para unir, Arreglos vigentes, Clientes, Cuotas del arreglo, Formatos generados del arreglo, Versiones de plantilla, Mapeo de la version) · formularios 12.17, 12.18 (sin eventos), 12.19 (una pestaña), 12.20, 12.21 y el de Cuota (propuesto) · `app.py` + sitemap (12.23, 12.25) · `app_componentes` (con G-I1a) | El oficial lee conversaciones, responde con el timeline, edita clientes y arreglos y registra pagos; el jefe edita versiones y mapeo. No hay gestos de estado | **XL** (≈17 vistas + 6 formularios + 4 SVG + app = ~29 playbooks; 3 extensiones de herramienta; el timeline exige leer un formulario real) |
-| **B. Gestos** | G-F3 (bibliotecas y eventos) · G-I1b (PrimaryControl) · G-I2 · JS `comandos.js` (14 gestos) · 12.22 · 12.24 (3 cambios `ribbon`) · eventos en 12.18 y 12.19 (autoguardado) · regenerar el ribbon | **Primera versión utilizable de punta a punta** | **L** (1 JS de ~400 líneas, 1 playbook de importación con 13 botones, 2 extensiones, prueba manual de 14 gestos con los dos perfiles) |
-| **C. Completar las pantallas de la fase 1** | Vistas 12.3, 12.4, 12.6, 12.7, 12.8, 12.9 y las 3 de 12.13 restantes (Conversaciones finalizadas, Arreglos cerrados, Todos los arreglos) · G-V2 · G-F4 (pestañas) · G-A1 (`Privilege`) · aviso `alCargar` (12.18) · ocultar botones estándar (decisión DA-15) | RF-04, RF-11, RF-14, RF-17 completos | **M** (9 vistas, una extensión importante de `vista.py`, entradas de sitemap nuevas) |
+| **A. Base navegable (sin gestos)** | Extensiones G-V1, G-F1, G-F2, **G-F3 (eventos), G-F5 (decimal), G-F6 (registros por página)** · iconos (4 SVG) · vistas: 12.1, 12.2, 12.5, 12.10, 12.11, 12.12 y las de 12.13 de la primera versión (Mis conversaciones pendientes, Sin asignar, Abiertas, **Finalizadas**, del cliente, para unir, **Respuestas enviadas**, Arreglos vigentes, **Arreglos cerrados, Todos los arreglos**, Clientes, Cuotas del arreglo, Formatos generados del arreglo, Versiones de plantilla, Mapeo de la version) · formularios 12.17, 12.18 (con `OnLoad`/`OnSave`), 12.19 (una pestaña, con eventos), 12.20, 12.21 y el de Cuota (propuesto) · `app.py` + sitemap (12.23, 12.25) · `app_componentes` (con G-I1a) · mapeo de columnas de REL-03 (manual) | El oficial lee conversaciones, responde con el timeline, edita clientes y arreglos y registra pagos; el jefe edita versiones y mapeo (importación nativa desde Excel). No hay gestos de estado | **XL** (≈21 vistas + 6 formularios + 4 SVG + app = ~33 playbooks; 6 extensiones de herramienta; el timeline exige leer un formulario real) |
+| **B. Gestos** | G-I1b (PrimaryControl, también en la `EnableRule`) · G-I2 · JS `comandos.js` (14 gestos, más `alCargar`/`alGuardar` de los formularios) · 12.22 · 12.24 (3 cambios `ribbon`) · regenerar el ribbon | **Primera versión utilizable de punta a punta** | **L** (1 JS de ~450 líneas, 1 playbook de importación con 13 botones, 1 extensión, prueba manual de 14 gestos con los dos perfiles) |
+| **C. Completar las pantallas de la fase 1** | Vistas 12.3, 12.4, 12.6, 12.7, 12.8, 12.9 · G-V2 · G-F4 (pestañas) · G-A1 (`Privilege`) · aviso `alCargar` (12.18) · ocultar botones estándar (DA-15, G-I3) | RF-04, RF-11, RF-14, RF-17 completos | **M** (6 vistas, una extensión importante de `vista.py`, entradas de sitemap nuevas) |
 | **D. Monitoreo** | 10.3, 10.4, 10.5, 10.6 · 13.6 (cuenta de servicio) · conexiones · 11.1 · 11.2 (comprobaciones 1 a 3) · 13.13 | Captura de correos vigilada; la red de seguridad (reconciliación) en marcha | **M** (2 flujos, 4 componentes de configuración, pasos manuales de la cuenta de servicio) |
 | **E. Supervisión visual** | 12.15, 12.16, 12.14 y la entrada del sitemap (G-A1) | Promedios por oficial (criterio de éxito del jefe) | **S** (3 componentes manuales con guía) |
 | **F. Después** | Comprobación 4 de 11.2 (cuando exista 13.12) · clonar versión (DA-13) · diálogo propio de motivos (DA-01) | — | — |
+
+**Plazo (RNF-09, entrega 2026-10-31, sujeta a C-03).** Al 2026-10-20 quedan 11 días. El orden de los lotes es el del camino crítico: 0 → A → B es lo mínimo para entregar algo utilizable; A y B comparten tres extensiones de `formulario.py` (G-F1 a G-F3, G-F5, G-F6) que son el cuello de botella y conviene empezar por ahí, en paralelo con el lote 0 (administración). Si el plazo aprieta, el orden de recorte es: E primero (no hay promedios por oficial), luego C (sin lista de riesgo ni vistas por producto), luego D (sin monitoreo, aceptable solo en Dev). D es obligatorio antes del pase a Test y C antes del pase a Prod; ni uno ni otro está en el camino de la primera versión. Este documento no estima horas: el tamaño es relativo.
 
 Orden de dependencias: 0 → A → B (primera versión) → C → D → E. D puede ir en paralelo a C. Nada de C, D o E bloquea que el oficial y el jefe trabajen; D bloquea el pase a Test (reconciliación) y C bloquea el pase a Prod (RF completos).
 
 Pruebas del lote B (humo de interfaz, ya con dos usuarios no administradores): los 14 gestos en el orden del flujo de trabajo (tomar → responder → registrar arreglo → generar → desbloquear → generar → formalizar → pago → anular; descartar; finalizar y reabrir; unir; iniciar nueva; publicar; vista previa), cada uno con un caso de error (`CARP-*` en español, no técnico) y la carrera de Tomar con dos navegadores.
 
 ## 10. Decisiones abiertas (marcadas para confirmar)
+
+DA-12 se retiró (un requerido con el control deshabilitado no bloquea el guardado); el número no se reutiliza.
 
 | ID | Decisión | Recomendación | Tradeoff / alternativa |
 |---|---|---|---|
@@ -513,15 +533,15 @@ Pruebas del lote B (humo de interfaz, ya con dos usuarios no administradores): l
 | DA-09 | Agregar el formulario de Cuota (fila 12.26) | **Sí** (sección 4.7) | Alternativa: grilla editable en la subgrilla (la herramienta no la configura) |
 | DA-10 | Iconos | **4 SVG compartidos** | Un SVG por entrada y por botón son ~25 playbooks; o extender las herramientas para permitir "sin icono" |
 | DA-11 | Estado de la cuota (Pendiente, Vencida, Pagada) y "días de atraso" en las listas | **No agregar columnas ni rollups** en la fase 1 | Una columna de fórmula en Cuota cambia el modelo de datos (tabla 3.4 ya construida) |
-| DA-12 | Requeridos solo-sistema en el formulario (`saldoremanente`, `totalpagar`, `fechafin`) | **Verificar en Dev**; si bloquean el alta, bajar su nivel de requerido a "ninguno" | Con JavaScript (`setRequiredLevel`) se arregla en el cliente pero agrega lógica de formulario |
-| DA-13 | Botón "Clonar versión" | **No en la primera versión**; el jefe crea la versión nueva a mano y carga el mapeo con el script 9.2 | Clonar mapeo + archivo desde la interfaz exige una Custom API nueva (no está entre las cinco) |
-| DA-14 | `esJefe()` en el cliente | **Por nombre de rol en `userSettings.roles`**; verificar que incluye roles de team | Si no, los botones del jefe se ven para todos y el servidor rechaza (`CARP-ARR-016`, Write sobre Versión) |
-| DA-15 | Ocultar botones estándar | **Solo Activar/Desactivar, en el lote C** | Un `HideCustomAction` no se puede quitar sin una solución nueva (G-I3) |
+| DA-13 | Botón "Clonar versión" | **No en la primera versión**; el jefe crea la versión nueva y carga el mapeo con la **importación nativa desde Excel** (plantilla de Mapeo de celda: respeta plugins y privilegios) **[verificar en Dev]**; el script 9.2 queda para la carga inicial | La Custom API de clonar (mapeo + archivo desde la interfaz) queda para después; no está entre las cinco |
+| DA-14 | `esJefe()` en el cliente | **Por nombre de rol en `userSettings.roles`**, que incluye los roles que se reciben por team (cerrado) | Es solo UX; el servidor rechaza igual (`CARP-ARR-016`, Write sobre Versión) |
+| DA-15 | Ocultar botones estándar | **Solo Activar/Desactivar, en el lote C, con un `DisplayRule` que siempre da falso** (reversible, G-I3) | `HideCustomAction` no se puede quitar sin una solución nueva |
 | DA-16 | Dueño de los flujos | **Cuenta de servicio, asignado a mano** en cada entorno (13.13) | `flujo.py` no asigna dueño; verificar en Test cómo queda tras importar la solución managed |
 | DA-17 | Antirruido de 11.1 | Filtro de filas por falla; un aviso por modificación mientras siga en falla | Una condición sobre el valor anterior evita repeticiones |
 | DA-18 | Vista "Arreglos de prestamo/de tarjeta": todos los estados | **Todos los estados** (el filtro de la columna Estado hace el resto, D-35) | Solo activos sería más corto pero esconde el historial |
 | DA-19 | Subgrid de arreglos de la conversación | **Reusa** la vista "Arreglos del cliente" | Una vista propia es un playbook más |
 | DA-20 | Clientes inactivos | La vista "Clientes" muestra solo activos; **ningún proceso desactiva clientes** (D-40) | Sin efecto práctico |
+| DA-21 | Ver la auditoría nativa (View Audit History) | **No se tocan los roles**: queda como decisión pendiente del usuario sobre la matriz `04`; verificar en Dev con un no administrador si lo necesitan | Sin el privilegio, la pestaña de auditoría del mockup no se ve; el dato igual se audita |
 
 ## 11. Componentes que el diseño agrega y el inventario no tiene (propuesta; no suman filas hasta confirmar)
 
@@ -536,13 +556,19 @@ Si se confirman, el grupo 12 pasaría de 25 a 28 filas y el total de 127 a 130.
 ## 12. Verificaciones que quedan para Dev (lista corta)
 
 1. `regardingobjecttypecode` en el filtro de la vista de Email (3.3).
-2. Un campo requerido, deshabilitado y vacío no bloquea el alta (4.1, DA-12).
+2. (retirada)
 3. Parámetros y `classid` del control Timeline (G-F2).
 4. `PrimaryControl` en `Form` y la regla `SelectionCountAtLeastOne` (G-I1b, G-I2).
-5. `userSettings.roles` incluye los roles de team (DA-14).
+5. (cerrada) `userSettings.roles` incluye los roles de team.
 6. `Privilege` del sitemap oculta la entrada al Oficial (G-A1).
 7. `getSaveMode() === 70` en el `OnSave` cancela el autoguardado.
 8. `Xrm.Navigation.openFile` con `openMode: 2` descarga el `.xlsx` de ~44 mil caracteres en Base64 y `fileSize` en KB (5.4, gesto 6).
 9. `lookupObjects` con `filters` y vista por nombre.
 10. Nombre real de la vista de búsqueda rápida de fábrica de Cliente y de Arreglo.
 11. Tipo y estados de los trabajos de eliminación masiva y el privilegio de lectura (8.4, comprobación 4).
+12. `setDisabled(false)` sobre `sanic_motivoreapertura` en un arreglo Terminado se puede escribir y se envía (4.4); si no, diálogo de DA-01.
+13. Mapeo de columnas de REL-03 (cliente y oficial) disponible y efectivo; si no, el `alCargar` del alta (4.4).
+14. Importación nativa desde Excel de Mapeo de celda: respeta plugins y privilegios y carga las 28 filas (4.5, DA-13).
+15. `registros_por_pagina` 60 y 28 aceptados por la plataforma (G-F6).
+16. View Audit History con un no administrador (4.4, DA-21).
+17. `setSubmitMode("never")` evita que los campos "gesto" viajen en el autoguardado y en la navegación (4.1).

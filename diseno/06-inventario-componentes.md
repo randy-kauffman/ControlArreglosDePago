@@ -275,7 +275,7 @@ Nombre de vista: texto de negocio, sin prefijo y sin tildes. Los nombres son *(p
 | 12.10 | Busqueda rapida de Cliente (cédula, nombre, correo, celular) | Cliente | `playbooks/vista/busqueda_rapida_cliente.md` | 3.1, 6.1 | RF-13, D-12 | pendiente (diseño completo en `diseno/07` §3.5) |
 | 12.11 | Busqueda rapida de Arreglo (número de producto) | Arreglo | `playbooks/vista/busqueda_rapida_arreglo.md` | 3.3 | RF-13, D-12 | pendiente (diseño completo en `diseno/07` §3.4) |
 | 12.12 | Arreglos del cliente (subgrid con todos los estados) | Arreglo | `playbooks/vista/arreglos_del_cliente.md` | 3.3, 4.2 | RF-13, ítem 13 | pendiente (diseño completo en `diseno/07` §3.4) |
-| 12.13 | Otras vistas "por perfil" (oficial y jefe). La definición no las enumera | varias | `playbooks/vista/` (por definir) | 3.x, 4.x | §6 Componentes (app) | pendiente (diseño completo en `diseno/07` §3.5 y §3.6 (14 vistas)) |
+| 12.13 | Otras vistas "por perfil" (oficial y jefe). La definición no las enumera | varias | `playbooks/vista/` (por definir) | 3.x, 4.x | §6 Componentes (app) | pendiente (diseño completo en `diseno/07` §3.5 y §3.6 (15 vistas)) |
 
 ### 12.2 Dashboard y gráficos
 
