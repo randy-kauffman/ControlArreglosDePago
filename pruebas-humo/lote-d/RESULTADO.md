@@ -22,6 +22,15 @@ Inventario 13.6, 10.3 a 10.6, 11.1 y 11.2; diseño `diseno/07-diseno-app-y-flujo
 3. En **Conexión**, elegí una conexión de Office 365 Outlook de esa cuenta (o **+ Nueva conexión** e iniciá sesión con esa misma cuenta). Guardá.
 4. Avisame: corro `python3 pruebas-humo/lote-d/scripts/como_servicio.py flujo playbooks/flujo/carp-est.md` y lo mismo con `carp-sal.md`, que **encienden** los dos flujos y verifican.
 
+### Intento de encendido (2026-10-21 03:50 UTC, 21:50 del 2026-10-20 en Nicaragua)
+
+- Antes de encender: `sanic_carp_ev_destinatariosalertas` tiene un solo destinatario y es el buzón de prueba 3 (comparado sin imprimirlo). `sanic_carp_conr_outlook` y `sanic_carp_conr_dataverse` ya tienen conexión.
+- `como_servicio.py flujo` con los dos playbooks: `bloqueado`, `ConnectionAuthorizationFailed`. La activación la autoriza el servicio de Power Automate contra la identidad del token (el service principal), y la cabecera `CallerObjectId` solo vale para Dataverse: no alcanza con hacerse pasar por la cuenta de servicio, aunque sea la dueña de la conexión de Outlook.
+- `--solo-verificar`: los dos dan `difiere` **solo por el estado** (`statecode` 0/1 frente a 1/2); la definición coincide con el archivo. No quedó nada a medias.
+- 11.2 no corrió: sigue apagado, y a esa hora está fuera del horario hábil.
+
+**Paso que falta (1 minuto, con admin@55xljh.onmicrosoft.com):** make.powerapps.com → Dev → Soluciones → `sanic_carp_sol_controlarreglospago` → **Flujos de nube** → `Cloud Flow - CARP - EST - Avisar estado del mailbox` → **Activar**; lo mismo con `Cloud Flow - CARP - SAL - Salud del buzon`. Después `python3 pruebas-humo/lote-d/scripts/como_servicio.py flujo playbooks/flujo/carp-est.md --solo-verificar` (y `carp-sal.md`) debe dar `ya_existia`, y en el día hábil siguiente se revisa la primera corrida de 11.2 en su historial.
+
 Al encender 11.2 la recurrencia corre en horario hábil (lunes a viernes, 07:00 a 18:30 de Nicaragua). Si no entró correo al buzón del área en las últimas 4 horas, **manda un aviso al buzón de prueba 3**, y uno cada 30 minutos mientras siga así. Es esperado en Dev mientras no haya tráfico; se corta apagando el flujo.
 
 ## Desviaciones y decisiones
