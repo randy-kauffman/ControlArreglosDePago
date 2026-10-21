@@ -29,12 +29,14 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 8 | Registro de paquete, Custom API y steps | 7 | 7 | 0 | 0 |
 | 9 | Datos semilla y de configuración | 3 | 2 | 0 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 7 | 0 | 0 |
-| 11 | Flujos | 3 | 0 | 2 | 1 |
+| 11 | Flujos | 3 | 2 | 0 | 1 |
 | 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 26 | 26 | 0 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 15 | 2 |
-| **Total** | | **128** | **74** | **46** | **8** |
+| **Total** | | **128** | **76** | **44** | **8** |
 
 Notas del resumen:
+
+- 2026-10-20 (Dev): 11.1 y 11.2 pasaron a `hecho` tras activarlos el usuario con la cuenta de servicio (la API no puede activarlos: Power Automate autoriza la conexión contra la identidad del token, `CallerObjectId` no alcanza). El grupo 11 pasó de 0 hechas y 2 pendientes a 2 y 0; el total, de 74 y 46 a 76 y 44.
 
 - 2026-10-20: 13.15 pasó de `diseño detallado pendiente` a `pendiente` (`manual/procedimiento-instalacion.md` escrito; falta ejecutarlo en Test). El grupo 13 pasó de 14 pendientes y 3 de diseño detallado pendiente a 15 y 2; el total, de 45 y 9 a 46 y 8.
 
@@ -270,8 +272,8 @@ Solo monitoreo. La captura de correos no pasa por flujos (D-21). Son propiedad d
 
 | # | Componente | Disparador | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|---|
-| 11.1 | `Cloud Flow - CARP - COD - Avisar estado del mailbox` *(prov.; `COD` por definir)*: avisa por Outlook al jefe y al equipo cuando la entrada o la salida del buzón pasan a fallo | `playbooks/flujo/carp-est.md` | `playbooks/flujo/<cod>.md` | 10.1 a 10.6, 6.4, 13.5, 13.6 | D-21, §6 Operación | pendiente (2026-10-20, Dev: construido como `Cloud Flow - CARP - EST - Avisar estado del mailbox`, en la solución, a nombre de la cuenta de servicio, **apagado** hasta que la referencia 10.5 tenga conexión; `playbooks/flujo/carp-est.md`) |
-| 11.2 | `Cloud Flow - CARP - SAL - Salud del buzon` (ID `CARP-SAL`): cada 30 minutos en horario hábil comprueba correos entrantes recientes, correos sin conversación, respuestas con error de envío y **trabajos de eliminación masiva fallidos en las últimas 24 h** (cuarta comprobación, OA-3, 2026-10-10); si hay correos sin conversación invoca 8.3. El privilegio con que `SR - CARP - Servicio` lee esos trabajos está PENDIENTE de verificar en Dev al construir este flujo (`04-matriz-privilegios.md`, duda D-09). Hasta que el flujo exista, revisión manual semanal de System Jobs | recurrente | `playbooks/flujo/carp-sal.md` | 8.3, 10.3 a 10.6, 6.4, 13.5, 13.6 | D-21, RNF-08, §6 Operación | pendiente (2026-10-20, Dev: construido en la solución, a nombre de la cuenta de servicio, **apagado** hasta que la referencia 10.5 tenga conexión; D-09 resuelta sin cambio de rol; `playbooks/flujo/carp-sal.md`) |
+| 11.1 | `Cloud Flow - CARP - COD - Avisar estado del mailbox` *(prov.; `COD` por definir)*: avisa por Outlook al jefe y al equipo cuando la entrada o la salida del buzón pasan a fallo | `playbooks/flujo/carp-est.md` | `playbooks/flujo/<cod>.md` | 10.1 a 10.6, 6.4, 13.5, 13.6 | D-21, §6 Operación | hecho (2026-10-20, Dev: activado a mano por la cuenta de servicio en el portal; `como_servicio.py flujo --solo-verificar` da `ya_existia`, activado, 2 conexiones) |
+| 11.2 | `Cloud Flow - CARP - SAL - Salud del buzon` (ID `CARP-SAL`): cada 30 minutos en horario hábil comprueba correos entrantes recientes, correos sin conversación, respuestas con error de envío y **trabajos de eliminación masiva fallidos en las últimas 24 h** (cuarta comprobación, OA-3, 2026-10-10); si hay correos sin conversación invoca 8.3. El privilegio con que `SR - CARP - Servicio` lee esos trabajos está PENDIENTE de verificar en Dev al construir este flujo (`04-matriz-privilegios.md`, duda D-09). Hasta que el flujo exista, revisión manual semanal de System Jobs | recurrente | `playbooks/flujo/carp-sal.md` | 8.3, 10.3 a 10.6, 6.4, 13.5, 13.6 | D-21, RNF-08, §6 Operación | hecho (2026-10-20, Dev: activado a mano por la cuenta de servicio en el portal; `como_servicio.py flujo --solo-verificar` da `ya_existia`, activado, 2 conexiones) |
 | 11.3 | Flujo diario de marcado de cuotas vencidas sin pago (respaldo de D-11). **Condicional: no se activa**, el spike 2 mostró que el operador de fecha relativa sirve. Requeriría una Custom API que la definición no lista entre las cinco | recurrente diario | — | D-11, D-21; escribe Cuota con rol Servicio | diseño detallado pendiente (condicional; no se construye salvo que se active) |
 
 ## 12. App model-driven
