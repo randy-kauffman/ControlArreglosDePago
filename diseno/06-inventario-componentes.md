@@ -30,11 +30,13 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 9 | Datos semilla y de configuración | 3 | 2 | 0 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 7 | 0 | 0 |
 | 11 | Flujos | 3 | 2 | 0 | 1 |
-| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 26 | 26 | 0 | 0 |
+| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 27 | 27 | 0 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 15 | 2 |
-| **Total** | | **128** | **76** | **44** | **8** |
+| **Total** | | **129** | **77** | **44** | **8** |
 
 Notas del resumen:
+
+- 2026-10-28 (Dev, lote F de íconos): fila nueva 12.27, ya `hecho`: 41 SVG propios (1 de la app, 20 del sitemap, 13 de comandos y 7 de tablas, DA-22, `diseno/07` §13) y el ícono de las 7 tablas (`IconVectorName`), verificados `ya_existia`; títulos del sitemap en inglés (1033) y español (3082). Era la propuesta 12.27 de `diseno/07` §11 (4 iconos compartidos, DA-10). El grupo 12 pasó de 26 filas y 26 hechas a 27 y 27; el total, de 128 filas y 76 hechas a 129 y 77 (`pruebas-humo/lote-f/RESULTADO.md`).
 
 - 2026-10-20 (Dev): 11.1 y 11.2 pasaron a `hecho` tras activarlos el usuario con la cuenta de servicio (la API no puede activarlos: Power Automate autoriza la conexión contra la identidad del token, `CallerObjectId` no alcanza). El grupo 11 pasó de 0 hechas y 2 pendientes a 2 y 0; el total, de 74 y 46 a 76 y 44.
 
@@ -324,6 +326,7 @@ Nombre: `FRM - CARP - Tabla - Tipo`. La definición no nombra un formulario para
 | 12.20 | `FRM - CARP - Version de plantilla - Principal` (subgrid de mapeo) | `playbooks/formulario/versionplantilla.md` | 3.5, 3.6 | RF-09 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.5) |
 | 12.21 | `FRM - CARP - Mapeo de celda - Principal` | `playbooks/formulario/mapeocelda.md` | 3.6 | RF-09 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.6) |
 | 12.26 | `FRM - CARP - Cuota - Principal` (registro de pago: fecha y monto pagado juntos; el resto de solo lectura) | `playbooks/formulario/cuota.md` | 3.4, 12.13 | RF-10 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.7) |
+| 12.27 | Iconos SVG propios: 41 web resources `sanic_carp_wr_svg_*` (app, 20 entradas del sitemap, 13 botones, 7 tablas) y el ícono `IconVectorName` de las 7 tablas propias | `playbooks/web-resource/sanic_carp_wr_svg_<nombre>.md` ×41, `playbooks/icono-tabla/tablas.md` | 1.1, 3.1 a 3.7, 12.23, 12.24 | Pedido del usuario del 2026-10-28, DA-22 | hecho (Dev, 2026-10-28: 41 web resources y 7 tablas `ya_existia`, sitemap y ribbon `ya_existia`, 42 steps en `statecode` 0 después del import) (diseño en `diseno/07` §13) |
 
 ### 12.4 Web resource, comandos, sitemap y app
 

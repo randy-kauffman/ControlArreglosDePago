@@ -51,7 +51,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "tomar",
           "regla": "SanicCarp.Conversacion.puedeTomar",
           "funcion": "SanicCarp.Conversacion.tomar",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_tomar",
           "etiqueta": {"1033": "Take", "3082": "Tomar"},
           "tooltip": {
             "1033": "Assigns the conversation to you.",
@@ -64,7 +64,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "finalizar",
           "regla": "SanicCarp.Conversacion.puedeFinalizar",
           "funcion": "SanicCarp.Conversacion.finalizar",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_finalizar",
           "etiqueta": {"1033": "Finish", "3082": "Finalizar"},
           "tooltip": {
             "1033": "Finishes the conversation with the result, reason and detail typed in the form.",
@@ -77,7 +77,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "unir",
           "regla": "SanicCarp.Conversacion.puedeUnir",
           "funcion": "SanicCarp.Conversacion.unir",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_unir",
           "etiqueta": {"1033": "Merge into another conversation", "3082": "Unir a otra conversación"},
           "tooltip": {
             "1033": "Moves the emails of this conversation to another open one. It cannot be undone.",
@@ -90,7 +90,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "reabrir",
           "regla": "SanicCarp.Conversacion.puedeReabrir",
           "funcion": "SanicCarp.Conversacion.reabrir",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_reabrir",
           "etiqueta": {"1033": "Reopen", "3082": "Reabrir"},
           "tooltip": {
             "1033": "Reopens the finished conversation and clears its result and finish data.",
@@ -103,7 +103,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "iniciarnueva",
           "regla": "SanicCarp.Conversacion.puedeIniciarNueva",
           "funcion": "SanicCarp.Conversacion.iniciarNueva",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_iniciarnueva",
           "etiqueta": {"1033": "Start new conversation", "3082": "Iniciar conversación nueva"},
           "tooltip": {
             "1033": "Moves the email that arrived after the conversation was finished to a new conversation.",
@@ -124,7 +124,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "generar",
           "regla": "SanicCarp.Arreglo.puedeGenerar",
           "funcion": "SanicCarp.Arreglo.generar",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_generar",
           "etiqueta": {"1033": "Generate form", "3082": "Generar formato"},
           "tooltip": {
             "1033": "Generates the Excel form F-NIC-0000052 for signature. A draft is frozen on generation.",
@@ -137,7 +137,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "desbloquear",
           "regla": "SanicCarp.Arreglo.puedeDesbloquear",
           "funcion": "SanicCarp.Arreglo.desbloquear",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_desbloquear",
           "etiqueta": {"1033": "Unlock", "3082": "Desbloquear"},
           "tooltip": {
             "1033": "Unlocks the agreement data of a frozen draft.",
@@ -150,7 +150,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "formalizar",
           "regla": "SanicCarp.Arreglo.puedeFormalizar",
           "funcion": "SanicCarp.Arreglo.formalizar",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_formalizar",
           "etiqueta": {"1033": "Formalize", "3082": "Formalizar"},
           "tooltip": {
             "1033": "Formalizes the frozen draft once the customer signed the printed form.",
@@ -163,7 +163,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "descartar",
           "regla": "SanicCarp.Arreglo.puedeDescartar",
           "funcion": "SanicCarp.Arreglo.descartar",
-          "icono": "sanic_carp_wr_svg_alerta",
+          "icono": "sanic_carp_wr_svg_cmd_descartar",
           "etiqueta": {"1033": "Discard", "3082": "Descartar"},
           "tooltip": {
             "1033": "Discards the draft with the reason typed in the form.",
@@ -176,7 +176,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "anular",
           "regla": "SanicCarp.Arreglo.puedeAnular",
           "funcion": "SanicCarp.Arreglo.anular",
-          "icono": "sanic_carp_wr_svg_alerta",
+          "icono": "sanic_carp_wr_svg_cmd_anular",
           "etiqueta": {"1033": "Void", "3082": "Anular"},
           "tooltip": {
             "1033": "Voids the agreement with the reason typed in the form. It cannot be undone.",
@@ -189,7 +189,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "reabrir",
           "regla": "SanicCarp.Arreglo.puedeReabrir",
           "funcion": "SanicCarp.Arreglo.reabrir",
-          "icono": "sanic_carp_wr_svg_alerta",
+          "icono": "sanic_carp_wr_svg_cmd_reabrirarreglo",
           "etiqueta": {"1033": "Reopen agreement", "3082": "Reabrir arreglo"},
           "tooltip": {
             "1033": "Unfreezes the data to correct it, with the reason typed in the form. Managers only.",
@@ -210,7 +210,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "publicar",
           "regla": "SanicCarp.Plantilla.puedePublicar",
           "funcion": "SanicCarp.Plantilla.publicar",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_publicar",
           "etiqueta": {"1033": "Publish version", "3082": "Publicar versión"},
           "tooltip": {
             "1033": "Makes the draft version the current one. The previous one becomes historical.",
@@ -223,7 +223,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
           "id": "vistaprevia",
           "regla": "SanicCarp.Plantilla.puedeVistaPrevia",
           "funcion": "SanicCarp.Plantilla.vistaPrevia",
-          "icono": "sanic_carp_wr_svg_accion",
+          "icono": "sanic_carp_wr_svg_cmd_vistaprevia",
           "etiqueta": {"1033": "Preview", "3082": "Vista previa"},
           "tooltip": {
             "1033": "Generates the form with an existing agreement using this draft version. It saves nothing.",
@@ -257,7 +257,7 @@ De dónde sale cada dato: `diseno/01-convenciones.md` §0. El contenido de los b
 | # | Qué tiene que existir | Cómo se comprueba |
 |---|---|---|
 | 1 | El web resource `sanic_carp_wr_js_comandos` con las funciones de la sección 2 | `playbooks/web-resource/sanic_carp_wr_js_comandos.md` |
-| 2 | Los iconos `sanic_carp_wr_svg_accion` y `sanic_carp_wr_svg_alerta` | `GET webresourceset?$filter=name eq '...'` |
+| 2 | Los 13 iconos propios `sanic_carp_wr_svg_cmd_*` (DA-22, `diseno/07` §13; antes `accion` y `alerta`, DA-10) | `GET webresourceset?$filter=name eq '...'` |
 | 3 | La app `sanic_carp_mda_controlarreglospago` con sus 8 tablas | `playbooks/app/controlarreglospago.md` (se construye antes) |
 | 4 | Solución no managed e idiomas 1033 y 3082 provisionados | `comprobar_solucion_e_idioma` |
 

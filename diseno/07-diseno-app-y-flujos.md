@@ -531,7 +531,7 @@ DA-12 se retiró (un requerido con el control deshabilitado no bloquea el guarda
 | DA-07 | Perder la carrera de Tomar | **Texto amable + refresco, sin reintento** (humo 4) | El contrato `03` §1.3 paso 7 dice "vuelve a llamar" para mostrar `CARP-TOM-004` con el nombre; el refresco ya lo muestra. Si se prefiere el reintento, es una línea |
 | DA-08 | Reasignar y vincular cliente sin botón (edición del lookup y Guardar) | **Sin botón** | El mockup tiene el botón Reasignar; el servidor ya decide (`CARP-CNV-008`). Un botón costaría una función y un playbook |
 | DA-09 | Agregar el formulario de Cuota (fila 12.26) | **Sí** (sección 4.7) | Alternativa: grilla editable en la subgrilla (la herramienta no la configura) |
-| DA-10 | Iconos | **4 SVG compartidos** | Un SVG por entrada y por botón son ~25 playbooks; o extender las herramientas para permitir "sin icono" |
+| DA-10 | Iconos | ~~4 SVG compartidos~~ **Reemplazada el 2026-10-28 por DA-22** (§13) | Un SVG por entrada y por botón son ~25 playbooks; o extender las herramientas para permitir "sin icono" |
 | DA-11 | Estado de la cuota (Pendiente, Vencida, Pagada) y "días de atraso" en las listas | **No agregar columnas ni rollups** en la fase 1 | Una columna de fórmula en Cuota cambia el modelo de datos (tabla 3.4 ya construida) |
 | DA-13 | Botón "Clonar versión" | **No en la primera versión**; el jefe crea la versión nueva y carga el mapeo con la **importación nativa desde Excel** (plantilla de Mapeo de celda: respeta plugins y privilegios) **[verificar en Dev]**; el script 9.2 queda para la carga inicial | La Custom API de clonar (mapeo + archivo desde la interfaz) queda para después; no está entre las cinco |
 | DA-14 | `esJefe()` en el cliente | **Por nombre de rol en `userSettings.roles`**, que incluye los roles que se reciben por team (cerrado) | Es solo UX; el servidor rechaza igual (`CARP-ARR-016`, Write sobre Versión) |
@@ -542,13 +542,14 @@ DA-12 se retiró (un requerido con el control deshabilitado no bloquea el guarda
 | DA-19 | Subgrid de arreglos de la conversación | **Reusa** la vista "Arreglos del cliente" | Una vista propia es un playbook más |
 | DA-20 | Clientes inactivos | La vista "Clientes" muestra solo activos; **ningún proceso desactiva clientes** (D-40) | Sin efecto práctico |
 | DA-21 | Ver la auditoría nativa (View Audit History) | **Resuelta el 2026-10-20 (decisión del usuario, M7):** `SR - CARP - Oficial` recibe `prvReadRecordAuditHistory` (solo admite Global; la lectura de la BU sigue acotando qué arreglos ve). Verificado en Dev con un no administrador: `RetrieveRecordChangeHistory` pasa de 403 a 200 (`pruebas-humo/lote-0/RESULTADO-auditoria.md`) | Sin el privilegio, la pestaña de auditoría del mockup no se ve; el dato igual se audita |
+| DA-22 | Iconos propios (pedido del usuario, 2026-10-28) | **Un SVG propio por entrada del sitemap, por botón y por tabla** (41 web resources, §13), trazo `currentColor`; títulos del sitemap en inglés (1033) y español (3082) | Reemplaza a DA-10. Más playbooks (uno por ícono, generados con el mismo formato), a cambio de una navegación que se entiende de un vistazo |
 
 ## 11. Componentes que el diseño agrega y el inventario no tiene (propuesta; no suman filas hasta confirmar)
 
 | Propuesta | Playbook | Depende de |
 |---|---|---|
 | 12.26 `FRM - CARP - Cuota - Principal` | `playbooks/formulario/cuota.md` | 3.4, 12.13 |
-| 12.27 Iconos SVG (4 web resources) | `playbooks/web-resource/sanic_carp_wr_svg_<nombre>.md` ×4 | 1.1 |
+| 12.27 Iconos SVG (4 web resources; desde el 2026-10-28, 41 propios más el ícono de las 7 tablas, DA-22, §13; ya es fila del inventario) | `playbooks/web-resource/sanic_carp_wr_svg_<nombre>.md` ×41 y `playbooks/icono-tabla/tablas.md` | 1.1, 3.1 a 3.7 |
 | 12.28 Importación de las tablas de la app (`app_componentes`) | parte de `playbooks/app/controlarreglospago.md` o `playbooks/importacion/app_tablas.md` | 12.25, G-I1a |
 
 Si se confirman, el grupo 12 pasaría de 25 a 28 filas y el total de 127 a 130.
@@ -572,3 +573,69 @@ Si se confirman, el grupo 12 pasaría de 25 a 28 filas y el total de 127 a 130.
 15. `registros_por_pagina` 60 y 28 aceptados por la plataforma (G-F6).
 16. View Audit History con un no administrador (4.4, DA-21).
 17. Los campos "gesto" se pueden escribir (sin `setSubmitMode`), y el `OnSave` con `preventDefault()` en todos los modos, cuando hay un gesto *dirty*, no rompe la navegación ni "Guardar y nuevo" (4.1). (Learn, `setSubmitMode`: con `never` la columna no se puede editar; por eso no se usa.)
+
+## 13. Iconos propios (DA-22, 2026-10-28; reemplaza a DA-10)
+
+Pedido del usuario (2026-10-28): los cuatro iconos compartidos de DA-10 (`app`, `lista`, `accion`, `alerta`) eran genéricos. Cada entrada del sitemap, cada botón propio y cada tabla propia tiene ahora su SVG, con una metáfora de lo que hace. 41 web resources: 1 de la app, 20 del sitemap, 13 de comandos y 7 de tablas. Los cuatro viejos quedan en el entorno sin uso (no se borra nada).
+
+**Estilo.** Dibujo propio en el estilo de línea de Fluent UI System Icons (no se copió ningún ícono; Fluent UI System Icons es MIT). Trazo `stroke="currentColor"`, sin relleno de color fijo, sin hojas de estilo ni scripts, con `width`, `height` y `viewBox` (Learn, "Image web resources": así la app controla el color y el contraste, también en tema oscuro y alto contraste). Sitemap, app y tablas: 24 × 24, trazo 1,75. Comandos del ribbon: 16 × 16 (Learn recomienda 16 × 16 para íconos de comando), trazo 1,25. Sin texto dentro del SVG. Vista previa local: `webresources/svg/vista-previa.html` (no se sube al entorno).
+
+**Idiomas.** Un SVG no tiene idioma. Lo bilingüe es lo que la persona lee: el título de cada área, grupo y entrada del sitemap (desde el 2026-10-28, 1033 en inglés y 3082 en español; antes los dos en español) y la etiqueta y el tooltip de cada botón (ya estaban en 1033 y 3082). El web resource tiene un solo `displayname` y una sola `description`, que no son etiquetas por idioma: la descripción lleva los dos textos (`ES: ... / EN: ...`).
+
+**Tablas.** El ícono de la tabla es `EntityMetadata.IconVectorName` (Learn: SVG en lugar de `IconSmallName`/`IconMediumName`/`IconLargeName`); lo usan la navegación, los lookups, los formularios y las vistas. Lo pone la herramienta nueva `herramientas/construir/icono_tabla.py` (PUT de la definición completa con `MSCRM.MergeLabels` y publicación), playbook `playbooks/icono-tabla/tablas.md`.
+
+### 13.1 App y sitemap
+
+| Dónde | Español (3082) | Inglés (1033) | Web resource | Metáfora |
+|---|---|---|---|---|
+| App (icono de la app) | Control de Arreglos de Pago | Payment Arrangements | `sanic_carp_wr_svg_app` | Calendario de pagos con una marca de cumplido: el plan de cuotas acordado |
+| Sitemap `mispendientes` | Mis conversaciones pendientes | My pending conversations | `sanic_carp_wr_svg_conv_mias` | Sobre con una persona: los correos que me tocan a mi |
+| Sitemap `sinasignar` | Conversaciones sin asignar | Unassigned conversations | `sanic_carp_wr_svg_conv_sinasignar` | Sobre con una persona punteada: todavia no tiene dueno |
+| Sitemap `abiertas` | Conversaciones abiertas | Open conversations | `sanic_carp_wr_svg_conv_abiertas` | Sobre abierto: conversaciones en curso |
+| Sitemap `llegadasafinalizadas` | Correos llegados a finalizadas | New emails in closed conversations | `sanic_carp_wr_svg_conv_correonuevo` | Sobre con un punto de aviso: llego algo nuevo a una conversacion ya cerrada |
+| Sitemap `finalizadas` | Conversaciones finalizadas | Closed conversations | `sanic_carp_wr_svg_conv_finalizadas` | Burbuja de conversacion con un cumplido: atendida y cerrada |
+| Sitemap `clientes` | Clientes | Customers | `sanic_carp_wr_svg_clientes` | Tarjeta de contacto: la ficha del cliente |
+| Sitemap `borradores` | Borradores | Drafts | `sanic_carp_wr_svg_arr_borradores` | Documento con un lapiz: arreglo en preparacion |
+| Sitemap `vigentes` | Arreglos vigentes | Active agreements | `sanic_carp_wr_svg_arr_vigentes` | Documento con un cumplido: firmado y en curso |
+| Sitemap `enriesgo` | Arreglos en riesgo | At-risk agreements | `sanic_carp_wr_svg_arr_enriesgo` | Documento con un triangulo de advertencia: cuotas vencidas sin pago |
+| Sitemap `prestamo` | Arreglos de prestamo | Loan agreements | `sanic_carp_wr_svg_arr_prestamo` | Edificio de banco: producto de prestamo |
+| Sitemap `tarjeta` | Arreglos de tarjeta | Card agreements | `sanic_carp_wr_svg_arr_tarjeta` | Tarjeta de credito: producto de tarjeta |
+| Sitemap `cerrados` | Arreglos cerrados | Closed agreements | `sanic_carp_wr_svg_arr_cerrados` | Caja de archivo: terminados, anulados y descartados |
+| Sitemap `todos` | Todos los arreglos | All agreements | `sanic_carp_wr_svg_arr_todos` | Pila de documentos: todos, sin filtro |
+| Sitemap `sinrespuesta` | Correos sin respuesta | Unanswered emails | `sanic_carp_wr_svg_sup_sinrespuesta` | Sobre con un reloj: esperando respuesta |
+| Sitemap `cierres` | Finalizadas sin respuesta | Closed without reply | `sanic_carp_wr_svg_sup_finsinrespuesta` | Burbuja de conversacion con una cruz: se cerro sin respuesta del cliente |
+| Sitemap `errores` | Respuestas con error de envio | Replies with send errors | `sanic_carp_wr_svg_sup_errorenvio` | Sobre con una cruz: el buzon no pudo enviar la respuesta |
+| Sitemap `respenviadas` | Respuestas enviadas | Sent replies | `sanic_carp_wr_svg_sup_enviadas` | Avion de papel: respuestas que salieron |
+| Sitemap `borradoressinmov` | Borradores sin movimiento | Stale drafts | `sanic_carp_wr_svg_sup_borradorquieto` | Documento con un reloj de arena: borrador quieto hace mas de 30 dias |
+| Sitemap `panel` | Panel de supervision | Supervision dashboard | `sanic_carp_wr_svg_sup_panel` | Tablero con barras: graficos de tiempos |
+| Sitemap `plantillas` | Versiones de plantilla | Template versions | `sanic_carp_wr_svg_plantillas` | Hoja de calculo: el formato Excel para firma |
+
+### 13.2 Comandos del ribbon
+
+| Dónde | Español (3082) | Inglés (1033) | Web resource | Metáfora |
+|---|---|---|---|---|
+| Botón: Conversación · `tomar` | Tomar | Take | `sanic_carp_wr_svg_cmd_tomar` | Persona con un mas: me la asigno |
+| Botón: Conversación · `finalizar` | Finalizar | Finish | `sanic_carp_wr_svg_cmd_finalizar` | Circulo con cumplido: cerrar con un resultado |
+| Botón: Conversación · `unir` | Unir a otra conversacion | Merge into another conversation | `sanic_carp_wr_svg_cmd_unir` | Dos caminos que se juntan en uno: unir conversaciones |
+| Botón: Conversación · `reabrir` | Reabrir | Reopen | `sanic_carp_wr_svg_cmd_reabrir` | Flecha que vuelve: reabrir la conversacion |
+| Botón: Conversación · `iniciarnueva` | Iniciar conversacion nueva | Start new conversation | `sanic_carp_wr_svg_cmd_iniciarnueva` | Burbuja con un mas: abrir una conversacion nueva |
+| Botón: Arreglo · `generar` | Generar formato | Generate form | `sanic_carp_wr_svg_cmd_generar` | Documento con flecha de descarga: bajar el Excel |
+| Botón: Arreglo · `desbloquear` | Desbloquear | Unlock | `sanic_carp_wr_svg_cmd_desbloquear` | Candado abierto: quitar el congelamiento |
+| Botón: Arreglo · `formalizar` | Formalizar | Formalize | `sanic_carp_wr_svg_cmd_formalizar` | Pluma sobre una linea de firma: el arreglo queda firmado |
+| Botón: Arreglo · `descartar` | Descartar | Discard | `sanic_carp_wr_svg_cmd_descartar` | Papelera: descartar el borrador |
+| Botón: Arreglo · `anular` | Anular | Void | `sanic_carp_wr_svg_cmd_anular` | Circulo tachado: anular el arreglo vigente |
+| Botón: Arreglo · `reabrir` | Reabrir arreglo | Reopen agreement | `sanic_carp_wr_svg_cmd_reabrirarreglo` | Documento con flecha que vuelve: reabrir el arreglo |
+| Botón: Versión de plantilla · `publicar` | Publicar version | Publish version | `sanic_carp_wr_svg_cmd_publicar` | Flecha hacia arriba desde la bandeja: publicar |
+| Botón: Versión de plantilla · `vistaprevia` | Vista previa | Preview | `sanic_carp_wr_svg_cmd_vistaprevia` | Ojo: ver como queda antes de publicar |
+
+### 13.3 Tablas
+
+| Dónde | Español (3082) | Inglés (1033) | Web resource | Metáfora |
+|---|---|---|---|---|
+| Tabla `sanic_carp_tbl_cliente` | Cliente | Customer | `sanic_carp_wr_svg_tbl_cliente` | Persona: el cliente |
+| Tabla `sanic_carp_tbl_conversacion` | Conversacion | Conversation | `sanic_carp_wr_svg_tbl_conversacion` | Dos burbujas: el ida y vuelta de correos |
+| Tabla `sanic_carp_tbl_arreglo` | Arreglo de pago | Payment agreement | `sanic_carp_wr_svg_tbl_arreglo` | Documento con lineas y una firma: el acuerdo |
+| Tabla `sanic_carp_tbl_cuota` | Cuota | Installment | `sanic_carp_wr_svg_tbl_cuota` | Pila de monedas: cada pago del plan |
+| Tabla `sanic_carp_tbl_generacionformato` | Generacion de formato | Form generation | `sanic_carp_wr_svg_tbl_generacionformato` | Documento con una flecha de descarga: cada Excel generado |
+| Tabla `sanic_carp_tbl_versionplantilla` | Version de plantilla | Template version | `sanic_carp_wr_svg_tbl_versionplantilla` | Capas apiladas: versiones de la plantilla |
+| Tabla `sanic_carp_tbl_mapeocelda` | Mapeo de celda | Cell mapping | `sanic_carp_wr_svg_tbl_mapeocelda` | Dos celdas unidas por una flecha: campo a celda |

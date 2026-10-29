@@ -26,7 +26,7 @@
 
 De dónde sale cada dato: `diseno/01-convenciones.md` §0, verificados contra Dev el 2026-10-09. El sitemap y la app son las filas 12.23 y 12.25 de `diseno/06-inventario-componentes.md` §12.4; su diseño está en `diseno/07-diseno-app-y-flujos.md` §7.1 y §7.2, con DA-04 (privilegios) y G-A1.
 
-Advertencias: los títulos de sitemap van una vez por idioma de la Identidad, en español y sin tildes (BP-PP-197); `diseno/07` los trae solo en español, así que 1033 y 3082 llevan el mismo texto, como en el resto del proyecto. Cada entrada con vista se abre por `Url` con el `viewid` (la herramienta resuelve el id por nombre y tabla).
+Advertencias: los títulos de sitemap van una vez por idioma de la Identidad y sin tildes (BP-PP-197). Desde el 2026-10-28 (DA-22, `diseno/07` §13) 1033 lleva el título en inglés y 3082 en español; antes llevaban el mismo texto en español. Cada entrada tiene su icono SVG propio (`diseno/07` §13), no los cuatro compartidos de DA-10. Cada entrada con vista se abre por `Url` con el `viewid` (la herramienta resuelve el id por nombre y tabla).
 
 ## 2. Qué se crea
 
@@ -54,39 +54,39 @@ Advertencias: los títulos de sitemap van una vez por idioma de la Identidad, en
   ],
   "areas": [
     {
-      "titulo": {"1033": "Conversaciones", "3082": "Conversaciones"},
+      "titulo": {"1033": "Conversations", "3082": "Conversaciones"},
       "grupos": [
         {
-          "titulo": {"1033": "Bandeja", "3082": "Bandeja"},
+          "titulo": {"1033": "Inbox", "3082": "Bandeja"},
           "entradas": [
-            {"id": "mispendientes", "titulo": {"1033": "Mis conversaciones pendientes", "3082": "Mis conversaciones pendientes"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Mis conversaciones pendientes", "icono": "sanic_carp_wr_svg_lista"},
-            {"id": "sinasignar", "titulo": {"1033": "Conversaciones sin asignar", "3082": "Conversaciones sin asignar"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Conversaciones sin asignar", "icono": "sanic_carp_wr_svg_lista"},
-            {"id": "abiertas", "titulo": {"1033": "Conversaciones abiertas", "3082": "Conversaciones abiertas"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Conversaciones abiertas", "icono": "sanic_carp_wr_svg_lista"},
-            {"id": "llegadasafinalizadas", "titulo": {"1033": "Correos llegados a finalizadas", "3082": "Correos llegados a finalizadas"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Correos llegados a conversaciones finalizadas", "icono": "sanic_carp_wr_svg_alerta"},
-            {"id": "finalizadas", "titulo": {"1033": "Conversaciones finalizadas", "3082": "Conversaciones finalizadas"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Conversaciones finalizadas", "icono": "sanic_carp_wr_svg_lista"}
+            {"id": "mispendientes", "titulo": {"1033": "My pending conversations", "3082": "Mis conversaciones pendientes"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Mis conversaciones pendientes", "icono": "sanic_carp_wr_svg_conv_mias"},
+            {"id": "sinasignar", "titulo": {"1033": "Unassigned conversations", "3082": "Conversaciones sin asignar"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Conversaciones sin asignar", "icono": "sanic_carp_wr_svg_conv_sinasignar"},
+            {"id": "abiertas", "titulo": {"1033": "Open conversations", "3082": "Conversaciones abiertas"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Conversaciones abiertas", "icono": "sanic_carp_wr_svg_conv_abiertas"},
+            {"id": "llegadasafinalizadas", "titulo": {"1033": "New emails in closed conversations", "3082": "Correos llegados a finalizadas"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Correos llegados a conversaciones finalizadas", "icono": "sanic_carp_wr_svg_conv_correonuevo"},
+            {"id": "finalizadas", "titulo": {"1033": "Closed conversations", "3082": "Conversaciones finalizadas"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Conversaciones finalizadas", "icono": "sanic_carp_wr_svg_conv_finalizadas"}
           ]
         }
       ]
     },
     {
-      "titulo": {"1033": "Clientes y arreglos", "3082": "Clientes y arreglos"},
+      "titulo": {"1033": "Customers and agreements", "3082": "Clientes y arreglos"},
       "grupos": [
         {
-          "titulo": {"1033": "Clientes", "3082": "Clientes"},
+          "titulo": {"1033": "Customers", "3082": "Clientes"},
           "entradas": [
-            {"id": "clientes", "titulo": {"1033": "Clientes", "3082": "Clientes"}, "tabla": "sanic_carp_tbl_cliente", "vista": "Clientes", "icono": "sanic_carp_wr_svg_lista"}
+            {"id": "clientes", "titulo": {"1033": "Customers", "3082": "Clientes"}, "tabla": "sanic_carp_tbl_cliente", "vista": "Clientes", "icono": "sanic_carp_wr_svg_clientes"}
           ]
         },
         {
-          "titulo": {"1033": "Arreglos", "3082": "Arreglos"},
+          "titulo": {"1033": "Agreements", "3082": "Arreglos"},
           "entradas": [
-            {"id": "borradores", "titulo": {"1033": "Borradores", "3082": "Borradores"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Borradores", "icono": "sanic_carp_wr_svg_lista"},
-            {"id": "vigentes", "titulo": {"1033": "Arreglos vigentes", "3082": "Arreglos vigentes"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos vigentes", "icono": "sanic_carp_wr_svg_lista"},
-            {"id": "enriesgo", "titulo": {"1033": "Arreglos en riesgo", "3082": "Arreglos en riesgo"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos en riesgo", "icono": "sanic_carp_wr_svg_alerta"},
-            {"id": "prestamo", "titulo": {"1033": "Arreglos de prestamo", "3082": "Arreglos de prestamo"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos de prestamo", "icono": "sanic_carp_wr_svg_lista"},
-            {"id": "tarjeta", "titulo": {"1033": "Arreglos de tarjeta", "3082": "Arreglos de tarjeta"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos de tarjeta", "icono": "sanic_carp_wr_svg_lista"},
-            {"id": "cerrados", "titulo": {"1033": "Arreglos cerrados", "3082": "Arreglos cerrados"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos cerrados", "icono": "sanic_carp_wr_svg_lista"},
-            {"id": "todos", "titulo": {"1033": "Todos los arreglos", "3082": "Todos los arreglos"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Todos los arreglos", "icono": "sanic_carp_wr_svg_lista"}
+            {"id": "borradores", "titulo": {"1033": "Drafts", "3082": "Borradores"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Borradores", "icono": "sanic_carp_wr_svg_arr_borradores"},
+            {"id": "vigentes", "titulo": {"1033": "Active agreements", "3082": "Arreglos vigentes"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos vigentes", "icono": "sanic_carp_wr_svg_arr_vigentes"},
+            {"id": "enriesgo", "titulo": {"1033": "At-risk agreements", "3082": "Arreglos en riesgo"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos en riesgo", "icono": "sanic_carp_wr_svg_arr_enriesgo"},
+            {"id": "prestamo", "titulo": {"1033": "Loan agreements", "3082": "Arreglos de prestamo"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos de prestamo", "icono": "sanic_carp_wr_svg_arr_prestamo"},
+            {"id": "tarjeta", "titulo": {"1033": "Card agreements", "3082": "Arreglos de tarjeta"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos de tarjeta", "icono": "sanic_carp_wr_svg_arr_tarjeta"},
+            {"id": "cerrados", "titulo": {"1033": "Closed agreements", "3082": "Arreglos cerrados"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Arreglos cerrados", "icono": "sanic_carp_wr_svg_arr_cerrados"},
+            {"id": "todos", "titulo": {"1033": "All agreements", "3082": "Todos los arreglos"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Todos los arreglos", "icono": "sanic_carp_wr_svg_arr_todos"}
           ]
         }
       ]
@@ -95,25 +95,25 @@ Advertencias: los títulos de sitemap van una vez por idioma de la Identidad, en
       "titulo": {"1033": "Supervision", "3082": "Supervision"},
       "grupos": [
         {
-          "titulo": {"1033": "Seguimiento", "3082": "Seguimiento"},
+          "titulo": {"1033": "Follow-up", "3082": "Seguimiento"},
           "entradas": [
-            {"id": "sinrespuesta", "titulo": {"1033": "Correos sin respuesta", "3082": "Correos sin respuesta"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Correos sin respuesta", "icono": "sanic_carp_wr_svg_alerta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
-            {"id": "cierres", "titulo": {"1033": "Finalizadas sin respuesta", "3082": "Finalizadas sin respuesta"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Finalizadas sin respuesta", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
-            {"id": "errores", "titulo": {"1033": "Respuestas con error de envio", "3082": "Respuestas con error de envio"}, "tabla": "email", "vista": "Respuestas con error de envio", "icono": "sanic_carp_wr_svg_alerta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
-            {"id": "respenviadas", "titulo": {"1033": "Respuestas enviadas", "3082": "Respuestas enviadas"}, "tabla": "email", "vista": "Respuestas enviadas", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
-            {"id": "borradoressinmov", "titulo": {"1033": "Borradores sin movimiento", "3082": "Borradores sin movimiento"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Borradores sin movimiento", "icono": "sanic_carp_wr_svg_alerta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
-            {"id": "panel", "titulo": {"1033": "Panel de supervision", "3082": "Panel de supervision"}, "dashboard": "DASH - CARP - Supervision", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]}
+            {"id": "sinrespuesta", "titulo": {"1033": "Unanswered emails", "3082": "Correos sin respuesta"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Correos sin respuesta", "icono": "sanic_carp_wr_svg_sup_sinrespuesta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
+            {"id": "cierres", "titulo": {"1033": "Closed without reply", "3082": "Finalizadas sin respuesta"}, "tabla": "sanic_carp_tbl_conversacion", "vista": "Finalizadas sin respuesta", "icono": "sanic_carp_wr_svg_sup_finsinrespuesta", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
+            {"id": "errores", "titulo": {"1033": "Replies with send errors", "3082": "Respuestas con error de envio"}, "tabla": "email", "vista": "Respuestas con error de envio", "icono": "sanic_carp_wr_svg_sup_errorenvio", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
+            {"id": "respenviadas", "titulo": {"1033": "Sent replies", "3082": "Respuestas enviadas"}, "tabla": "email", "vista": "Respuestas enviadas", "icono": "sanic_carp_wr_svg_sup_enviadas", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
+            {"id": "borradoressinmov", "titulo": {"1033": "Stale drafts", "3082": "Borradores sin movimiento"}, "tabla": "sanic_carp_tbl_arreglo", "vista": "Borradores sin movimiento", "icono": "sanic_carp_wr_svg_sup_borradorquieto", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]},
+            {"id": "panel", "titulo": {"1033": "Supervision dashboard", "3082": "Panel de supervision"}, "dashboard": "DASH - CARP - Supervision", "icono": "sanic_carp_wr_svg_sup_panel", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]}
           ]
         }
       ]
     },
     {
-      "titulo": {"1033": "Administracion del formato", "3082": "Administracion del formato"},
+      "titulo": {"1033": "Form administration", "3082": "Administracion del formato"},
       "grupos": [
         {
-          "titulo": {"1033": "Plantilla", "3082": "Plantilla"},
+          "titulo": {"1033": "Template", "3082": "Plantilla"},
           "entradas": [
-            {"id": "plantillas", "titulo": {"1033": "Versiones de plantilla", "3082": "Versiones de plantilla"}, "tabla": "sanic_carp_tbl_versionplantilla", "vista": "Versiones de plantilla", "icono": "sanic_carp_wr_svg_lista", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]}
+            {"id": "plantillas", "titulo": {"1033": "Template versions", "3082": "Versiones de plantilla"}, "tabla": "sanic_carp_tbl_versionplantilla", "vista": "Versiones de plantilla", "icono": "sanic_carp_wr_svg_plantillas", "privilegios": [{"tabla": "sanic_carp_tbl_versionplantilla", "privilegio": "Create"}]}
           ]
         }
       ]
