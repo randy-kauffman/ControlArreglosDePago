@@ -1,0 +1,82 @@
+[
+ {
+  "prueba": "V-4",
+  "sub": "Create de un entrante con partes from/to, actualend, messageid, sender, torecipients",
+  "ok": true,
+  "esperado": "204",
+  "obtenido": {
+   "http": 204,
+   "error": null
+  }
+ },
+ {
+  "prueba": "V-4",
+  "sub": "Update a Received (statecode 1, statuscode 4)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": {
+   "http": 204,
+   "error": null
+  }
+ },
+ {
+  "prueba": "V-4",
+  "sub": "activitymimeattachment normal y en línea (attachmentcontentid)",
+  "ok": true,
+  "esperado": "204",
+  "obtenido": [
+   {
+    "nombre": "logo.png",
+    "cid": "logo1",
+    "http": 204,
+    "error": null
+   },
+   {
+    "nombre": "normal.png",
+    "cid": null,
+    "http": 204,
+    "error": null
+   }
+  ]
+ },
+ {
+  "prueba": "V-4",
+  "sub": "AddToQueue del entrante a la cola de prueba",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": {
+   "http": 200,
+   "error": null
+  }
+ },
+ {
+  "prueba": "V-4",
+  "sub": "estado final del entrante simulado",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "email": {
+    "statuscode": 4,
+    "statecode": 1,
+    "actualend": "2026-11-02T22:40:10Z",
+    "messageid": "<spk-fc-v40-sim@spike.invalid>",
+    "directioncode": false,
+    "correlationmethod": 0
+   },
+   "adjuntos": [
+    {
+     "filename": "logo.png",
+     "mimetype": "image/png",
+     "attachmentcontentid": "logo1",
+     "filesize": 71
+    },
+    {
+     "filename": "normal.png",
+     "mimetype": "image/png",
+     "attachmentcontentid": null,
+     "filesize": 71
+    }
+   ]
+  }
+ }
+]

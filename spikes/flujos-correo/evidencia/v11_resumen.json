@@ -1,0 +1,101 @@
+{
+ "requireapprovalforqueueemail": true,
+ "issuesend_true": {
+  "id": "19e88607-0dd7-f111-84e8-0022480c5699",
+  "antes": {
+   "statuscode": 1,
+   "statecode": 0,
+   "senton": null,
+   "actualend": null,
+   "messageid": null
+  },
+  "sendemail": {
+   "http": 200,
+   "error": null,
+   "codigo": null,
+   "respuesta_keys": [
+    "@odata.context",
+    "Subject"
+   ],
+   "t": 2.31
+  },
+  "lecturas": [
+   {
+    "+s": 0,
+    "statuscode": 6,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z",
+    "messageid": "<C08349677D98401AA94A14A2D074E1221DD6B19CF891@<dominio-del-buzon>>",
+    "correlationmethod": 0
+   },
+   {
+    "+s": 20,
+    "statuscode": 6,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z",
+    "messageid": "<C08349677D98401AA94A14A2D074E1221DD6B19CF891@<dominio-del-buzon>>",
+    "correlationmethod": 0
+   },
+   {
+    "+s": 60,
+    "statuscode": 6,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z",
+    "messageid": "<C08349677D98401AA94A14A2D074E1221DD6B19CF891@<dominio-del-buzon>>",
+    "correlationmethod": 0
+   }
+  ]
+ },
+ "issuesend_false": {
+  "id": "8a6b5232-0dd7-f111-84e8-0022480c5699",
+  "antes": {
+   "statuscode": 1,
+   "statecode": 0,
+   "senton": null,
+   "actualend": null,
+   "messageid": null
+  },
+  "sendemail": {
+   "http": 200,
+   "error": null,
+   "codigo": null,
+   "respuesta_keys": [
+    "@odata.context",
+    "Subject"
+   ],
+   "t": 0.58
+  },
+  "lecturas": [
+   {
+    "+s": 0,
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": "2026-11-02T22:31:52Z",
+    "actualend": "2026-11-02T22:31:52Z",
+    "messageid": null,
+    "correlationmethod": 0
+   },
+   {
+    "+s": 20,
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": "2026-11-02T22:31:52Z",
+    "actualend": "2026-11-02T22:31:52Z",
+    "messageid": null,
+    "correlationmethod": 0
+   },
+   {
+    "+s": 60,
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": "2026-11-02T22:31:52Z",
+    "actualend": "2026-11-02T22:31:52Z",
+    "messageid": null,
+    "correlationmethod": 0
+   }
+  ]
+ }
+}

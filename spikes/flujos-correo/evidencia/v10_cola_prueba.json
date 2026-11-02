@@ -1,0 +1,62 @@
+[
+ {
+  "prueba": "V-1",
+  "sub": "crear cola de prueba con el buzón 4",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": 201
+ },
+ {
+  "prueba": "V-1",
+  "sub": "la cola quedó con buzón por defecto",
+  "ok": true,
+  "esperado": "mailbox",
+  "obtenido": "da9c82fb-0cd7-f111-84e8-0022480c5699"
+ },
+ {
+  "prueba": "V-1",
+  "sub": "la dirección de la cola es el buzón 4",
+  "ok": true,
+  "esperado": "PP_MAIL_BUZON_4",
+  "obtenido": "PP_MAIL_BUZON_4"
+ },
+ {
+  "prueba": "V-1",
+  "sub": "mailbox inicial (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "incomingemaildeliverymethod": 2,
+   "outgoingemaildeliverymethod": 2,
+   "emailrouteraccessapproval": 2,
+   "statuscode": 1
+  }
+ },
+ {
+  "prueba": "V-1",
+  "sub": "mailbox de prueba a None/None",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": 204
+ },
+ {
+  "prueba": "V-1",
+  "sub": "mailbox de prueba en None/None",
+  "ok": true,
+  "esperado": "0/0",
+  "obtenido": [
+   0,
+   0
+  ]
+ },
+ {
+  "prueba": "V-1",
+  "sub": "mailbox del área intacto (SSS entrada y salida)",
+  "ok": true,
+  "esperado": "2/2",
+  "obtenido": [
+   2,
+   2
+  ]
+ }
+]

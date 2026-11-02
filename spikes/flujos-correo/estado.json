@@ -1,0 +1,249 @@
+{
+ "cola_spk": "d89c82fb-0cd7-f111-84e8-0022480c5699",
+ "mailbox_spk": "da9c82fb-0cd7-f111-84e8-0022480c5699",
+ "v1_issuesend_true": {
+  "id": "19e88607-0dd7-f111-84e8-0022480c5699",
+  "antes": {
+   "statuscode": 1,
+   "statecode": 0,
+   "senton": null,
+   "actualend": null,
+   "messageid": null
+  },
+  "sendemail": {
+   "http": 200,
+   "error": null,
+   "codigo": null,
+   "respuesta_keys": [
+    "@odata.context",
+    "Subject"
+   ],
+   "t": 2.31
+  },
+  "lecturas": [
+   {
+    "+s": 0,
+    "statuscode": 6,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z",
+    "messageid": "<C08349677D98401AA94A14A2D074E1221DD6B19CF891@<dominio-del-buzon>>",
+    "correlationmethod": 0
+   },
+   {
+    "+s": 20,
+    "statuscode": 6,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z",
+    "messageid": "<C08349677D98401AA94A14A2D074E1221DD6B19CF891@<dominio-del-buzon>>",
+    "correlationmethod": 0
+   },
+   {
+    "+s": 60,
+    "statuscode": 6,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z",
+    "messageid": "<C08349677D98401AA94A14A2D074E1221DD6B19CF891@<dominio-del-buzon>>",
+    "correlationmethod": 0
+   }
+  ]
+ },
+ "v1_issuesend_false": {
+  "id": "8a6b5232-0dd7-f111-84e8-0022480c5699",
+  "antes": {
+   "statuscode": 1,
+   "statecode": 0,
+   "senton": null,
+   "actualend": null,
+   "messageid": null
+  },
+  "sendemail": {
+   "http": 200,
+   "error": null,
+   "codigo": null,
+   "respuesta_keys": [
+    "@odata.context",
+    "Subject"
+   ],
+   "t": 0.58
+  },
+  "lecturas": [
+   {
+    "+s": 0,
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": "2026-11-02T22:31:52Z",
+    "actualend": "2026-11-02T22:31:52Z",
+    "messageid": null,
+    "correlationmethod": 0
+   },
+   {
+    "+s": 20,
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": "2026-11-02T22:31:52Z",
+    "actualend": "2026-11-02T22:31:52Z",
+    "messageid": null,
+    "correlationmethod": 0
+   },
+   {
+    "+s": 60,
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": "2026-11-02T22:31:52Z",
+    "actualend": "2026-11-02T22:31:52Z",
+    "messageid": null,
+    "correlationmethod": 0
+   }
+  ]
+ },
+ "filas": [
+  {
+   "clave": "cola_spk",
+   "conjunto": "queues",
+   "id": "d89c82fb-0cd7-f111-84e8-0022480c5699",
+   "nota": "cola de prueba V-1 (buzón 4)"
+  },
+  {
+   "clave": "cuenta_spk",
+   "conjunto": "accounts",
+   "id": "c42eabb1-0dd7-f111-84e8-0022480c5699",
+   "nota": "V-3"
+  }
+ ],
+ "v1_failed": {
+  "id": "bdc98b81-0dd7-f111-84e8-0022480c5699"
+ },
+ "v3": {
+  "cuenta": "c42eabb1-0dd7-f111-84e8-0022480c5699",
+  "orig1": {
+   "id": "c62eabb1-0dd7-f111-84e8-0022480c5699",
+   "sendemail_http": 200,
+   "error": null,
+   "leido": {
+    "subject": "SPK-FC-V3 original uno",
+    "statuscode": 3,
+    "messageid": "<spk-fc-v3-orig1@spike.invalid>",
+    "trackingtoken": null,
+    "_regardingobjectid_value": "c42eabb1-0dd7-f111-84e8-0022480c5699"
+   },
+   "a_sent": 204
+  },
+  "orig2": {
+   "id": "d42eabb1-0dd7-f111-84e8-0022480c5699",
+   "sendemail_http": 200,
+   "error": null,
+   "leido": {
+    "subject": "SPK-FC-V3 original dos",
+    "statuscode": 3,
+    "messageid": "<spk-fc-v3-orig2@spike.invalid>",
+    "trackingtoken": null,
+    "_regardingobjectid_value": "c42eabb1-0dd7-f111-84e8-0022480c5699"
+   },
+   "a_sent": 204
+  },
+  "casos": {
+   "C1": {
+    "http": 200,
+    "error": null,
+    "codigo": null,
+    "id": "54594dc5-0dd7-f111-84e8-0022480c5699",
+    "leido": {
+     "subject": "RE: SPK-FC-V3 original uno",
+     "statuscode": 4,
+     "directioncode": false,
+     "messageid": "<spk-fc-v3-c1@spike.invalid>",
+     "inreplyto": null,
+     "correlationmethod": 0,
+     "_regardingobjectid_value": null,
+     "_parentactivityid_value": null,
+     "_correlatedactivityid_value": null,
+     "_ownerid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+     "_owningbusinessunit_value": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+     "_receivingmailboxid_value": null,
+     "trackingtoken": null,
+     "conversationindex": null
+    },
+    "correlaciono": false
+   },
+   "C2": {
+    "http": 200,
+    "error": null,
+    "codigo": null,
+    "id": "6a594dc5-0dd7-f111-84e8-0022480c5699",
+    "leido": {
+     "subject": "RE: SPK-FC-V3 original dos",
+     "statuscode": 4,
+     "directioncode": false,
+     "messageid": "<spk-fc-v3-c2@spike.invalid>",
+     "inreplyto": null,
+     "correlationmethod": 0,
+     "_regardingobjectid_value": null,
+     "_parentactivityid_value": null,
+     "_correlatedactivityid_value": null,
+     "_ownerid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+     "_owningbusinessunit_value": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+     "_receivingmailboxid_value": null,
+     "trackingtoken": null,
+     "conversationindex": null
+    },
+    "correlaciono": false
+   },
+   "C3": {
+    "http": 200,
+    "error": null,
+    "codigo": null,
+    "id": "7f594dc5-0dd7-f111-84e8-0022480c5699",
+    "leido": {
+     "subject": "RE: SPK-FC-V3 original uno (c3)",
+     "statuscode": 4,
+     "directioncode": false,
+     "messageid": "<spk-fc-v3-c3@spike.invalid>",
+     "inreplyto": "<spk-fc-v3-orig1@spike.invalid>",
+     "correlationmethod": 3,
+     "_regardingobjectid_value": "c42eabb1-0dd7-f111-84e8-0022480c5699",
+     "_parentactivityid_value": "c62eabb1-0dd7-f111-84e8-0022480c5699",
+     "_correlatedactivityid_value": "c62eabb1-0dd7-f111-84e8-0022480c5699",
+     "_ownerid_value": "ffc778df-d287-f111-8075-70a8a5af5a32",
+     "_owningbusinessunit_value": "99c5be02-f1ee-f011-8406-7ced8d70b036",
+     "_receivingmailboxid_value": null,
+     "trackingtoken": null,
+     "conversationindex": null
+    },
+    "correlaciono": true
+   }
+  }
+ },
+ "v40": {
+  "create": {
+   "http": 204,
+   "error": null
+  },
+  "email": "95a97d5a-0ed7-f111-84e8-0022480c5699",
+  "cierre": {
+   "http": 204,
+   "error": null
+  },
+  "adjuntos": [
+   {
+    "nombre": "logo.png",
+    "cid": "logo1",
+    "http": 204,
+    "error": null
+   },
+   {
+    "nombre": "normal.png",
+    "cid": null,
+    "http": 204,
+    "error": null
+   }
+  ],
+  "queue": {
+   "http": 200,
+   "error": null
+  }
+ },
+ "solucion_spk": "ff34766f-0ed7-f111-84e8-0022480c5699"
+}

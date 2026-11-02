@@ -1,0 +1,29 @@
+{
+ "create": {
+  "http": 204,
+  "error": null
+ },
+ "email": "95a97d5a-0ed7-f111-84e8-0022480c5699",
+ "cierre": {
+  "http": 204,
+  "error": null
+ },
+ "adjuntos": [
+  {
+   "nombre": "logo.png",
+   "cid": "logo1",
+   "http": 204,
+   "error": null
+  },
+  {
+   "nombre": "normal.png",
+   "cid": null,
+   "http": 204,
+   "error": null
+  }
+ ],
+ "queue": {
+  "http": 200,
+  "error": null
+ }
+}

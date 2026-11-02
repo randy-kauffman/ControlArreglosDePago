@@ -1,0 +1,64 @@
+{
+ "A": {
+  "inicial": {
+   "statuscode": 6,
+   "statecode": 1,
+   "senton": null,
+   "actualend": "2026-11-02T22:30:49Z",
+   "messageid": "<C08349677D98401AA94A14A2D074E1221DD6B19CF891@<dominio-del-buzon>>"
+  },
+  "a7": {
+   "http": 204,
+   "error": null,
+   "despues": {
+    "statuscode": 7,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z",
+    "messageid": "<C08349677D98401AA94A14A2D074E1221DD6B19CF891@<dominio-del-buzon>>"
+   }
+  },
+  "a3": {
+   "http": 204,
+   "error": null,
+   "despues": {
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z",
+    "messageid": "<SPK-FC-V12-prueba@spike.invalid>"
+   }
+  },
+  "a3_con_estado": {
+   "http": 204,
+   "error": null,
+   "despues": {
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z",
+    "messageid": "<SPK-FC-V12-prueba@spike.invalid>"
+   }
+  }
+ },
+ "F": {
+  "inicial": {
+   "statuscode": 6,
+   "statecode": 1,
+   "senton": null,
+   "actualend": "2026-11-02T22:34:06Z",
+   "messageid": "<72669414B6C642F0850F853B3B9CBA0F1DD6B1A4568A@<dominio-del-buzon>>"
+  },
+  "a8": {
+   "http": 400,
+   "error": "8 is not a valid status code for state code EmailState.Completed on email with Id bdc98b81-0dd7-f111-84e8-0022480c5699.",
+   "despues": {
+    "statuscode": 6,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:34:06Z",
+    "messageid": "<72669414B6C642F0850F853B3B9CBA0F1DD6B1A4568A@<dominio-del-buzon>>"
+   }
+  }
+ }
+}

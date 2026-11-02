@@ -1,0 +1,50 @@
+[
+ {
+  "prueba": "V-1",
+  "sub": "6 -> 8 Failed con statecode 0 explícito",
+  "ok": true,
+  "esperado": "204 y 8",
+  "obtenido": {
+   "http": 204,
+   "error": null,
+   "despues": {
+    "statuscode": 8,
+    "statecode": 0,
+    "senton": null,
+    "actualend": "2026-11-02T22:34:06Z"
+   }
+  }
+ },
+ {
+  "prueba": "V-1",
+  "sub": "senton escribible en un correo Sent (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "http": 204,
+   "error": null,
+   "despues": {
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z"
+   }
+  }
+ },
+ {
+  "prueba": "V-1",
+  "sub": "Failed -> Pending Send (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "http": 204,
+   "error": null,
+   "despues": {
+    "statuscode": 6,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:34:06Z"
+   }
+  }
+ }
+]

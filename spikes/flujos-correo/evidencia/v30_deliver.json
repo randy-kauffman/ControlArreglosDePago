@@ -1,0 +1,93 @@
+[
+ {
+  "prueba": "V-3",
+  "sub": "originales: Pending Send con Regarding a la cuenta ficticia",
+  "ok": true,
+  "esperado": "6 (o 3 si ya se pasó a Sent) y cuenta",
+  "obtenido": {
+   "orig1": {
+    "subject": "SPK-FC-V3 original uno",
+    "statuscode": 3,
+    "messageid": "<spk-fc-v3-orig1@spike.invalid>",
+    "trackingtoken": null,
+    "_regardingobjectid_value": "c42eabb1-0dd7-f111-84e8-0022480c5699"
+   },
+   "orig2": {
+    "subject": "SPK-FC-V3 original dos",
+    "statuscode": 3,
+    "messageid": "<spk-fc-v3-orig2@spike.invalid>",
+    "trackingtoken": null,
+    "_regardingobjectid_value": "c42eabb1-0dd7-f111-84e8-0022480c5699"
+   }
+  }
+ },
+ {
+  "prueba": "V-3",
+  "sub": "C1: respuesta entregada con DeliverIncomingEmail",
+  "ok": true,
+  "esperado": "200/204",
+  "obtenido": {
+   "http": 200,
+   "error": null,
+   "codigo": null
+  }
+ },
+ {
+  "prueba": "V-3",
+  "sub": "C1: ¿correlacionó (Regarding = cuenta del original)?",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "correlaciono": false,
+   "correlationmethod": 0,
+   "regarding": null,
+   "inreplyto": false
+  }
+ },
+ {
+  "prueba": "V-3",
+  "sub": "C2: respuesta entregada con DeliverIncomingEmail",
+  "ok": true,
+  "esperado": "200/204",
+  "obtenido": {
+   "http": 200,
+   "error": null,
+   "codigo": null
+  }
+ },
+ {
+  "prueba": "V-3",
+  "sub": "C2: ¿correlacionó (Regarding = cuenta del original)?",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "correlaciono": false,
+   "correlationmethod": 0,
+   "regarding": null,
+   "inreplyto": false
+  }
+ },
+ {
+  "prueba": "V-3",
+  "sub": "C3: respuesta entregada con DeliverIncomingEmail",
+  "ok": true,
+  "esperado": "200/204",
+  "obtenido": {
+   "http": 200,
+   "error": null,
+   "codigo": null
+  }
+ },
+ {
+  "prueba": "V-3",
+  "sub": "C3: ¿correlacionó (Regarding = cuenta del original)?",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "correlaciono": true,
+   "correlationmethod": 3,
+   "regarding": "c42eabb1-0dd7-f111-84e8-0022480c5699",
+   "inreplyto": true
+  }
+ }
+]

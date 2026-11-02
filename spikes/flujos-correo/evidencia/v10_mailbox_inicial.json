@@ -1,0 +1,13 @@
+{
+ "mailboxid": "da9c82fb-0cd7-f111-84e8-0022480c5699",
+ "_emailserverprofile_value": "7eedeb22-6a30-4a66-808b-00c25a95b03f",
+ "_regardingobjectid_value": "d89c82fb-0cd7-f111-84e8-0022480c5699",
+ "statuscode": 1,
+ "name": "SPK - Correo por flujos (prueba, buzon 4)",
+ "incomingemaildeliverymethod": 2,
+ "enabledforoutgoingemail": true,
+ "actdeliverymethod": 2,
+ "enabledforincomingemail": true,
+ "emailrouteraccessapproval": 2,
+ "outgoingemaildeliverymethod": 2
+}

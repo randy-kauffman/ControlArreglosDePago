@@ -1,0 +1,48 @@
+{
+ "F": {
+  "antes": {
+   "statuscode": 6,
+   "statecode": 1,
+   "senton": null,
+   "actualend": "2026-11-02T22:34:06Z"
+  },
+  "a8": {
+   "http": 204,
+   "error": null,
+   "despues": {
+    "statuscode": 8,
+    "statecode": 0,
+    "senton": null,
+    "actualend": "2026-11-02T22:34:06Z"
+   }
+  },
+  "reintento_a6": {
+   "http": 204,
+   "error": null,
+   "despues": {
+    "statuscode": 6,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:34:06Z"
+   }
+  }
+ },
+ "A": {
+  "antes": {
+   "statuscode": 3,
+   "statecode": 1,
+   "senton": null,
+   "actualend": "2026-11-02T22:30:49Z"
+  },
+  "senton": {
+   "http": 204,
+   "error": null,
+   "despues": {
+    "statuscode": 3,
+    "statecode": 1,
+    "senton": null,
+    "actualend": "2026-11-02T22:30:49Z"
+   }
+  }
+ }
+}

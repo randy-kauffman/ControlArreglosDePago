@@ -1,0 +1,75 @@
+[
+ {
+  "prueba": "F0",
+  "sub": "la solución del spike existe, sin gestionar, aparte de la principal",
+  "ok": true,
+  "esperado": "1 fila, ismanaged false",
+  "obtenido": "ff34766f-0ed7-f111-84e8-0022480c5699"
+ },
+ {
+  "prueba": "F0",
+  "sub": "variable sanic_carp_ev_spkbuzon (definición)",
+  "ok": true,
+  "esperado": "creado/ya_existia/actualizado",
+  "obtenido": "{\"estado\": \"ya_existia\", \"componente\": \"sanic_carp_ev_spkbuzon\", \"detalle\": \"environmentvariabledefinitionid 0235766f-0ed7-f111-84e8-0022480c5699, tipo Texto (SIN VALOR en este entorno, a propósito), en la solución 'sanic_carp_sol_spikecorreo' con componenttype 380\"}"
+ },
+ {
+  "prueba": "F0",
+  "sub": "variable sanic_carp_ev_spkteamarea (definición)",
+  "ok": true,
+  "esperado": "creado/ya_existia/actualizado",
+  "obtenido": "{\"estado\": \"ya_existia\", \"componente\": \"sanic_carp_ev_spkteamarea\", \"detalle\": \"environmentvariabledefinitionid 8742ba76-0ed7-f111-84e8-0022480c5699, tipo Texto (SIN VALOR en este entorno, a propósito), en la solución 'sanic_carp_sol_spikecorreo' con componenttype 380\"}"
+ },
+ {
+  "prueba": "F0",
+  "sub": "variable sanic_carp_ev_spkcola (definición)",
+  "ok": true,
+  "esperado": "creado/ya_existia/actualizado",
+  "obtenido": "{\"estado\": \"ya_existia\", \"componente\": \"sanic_carp_ev_spkcola\", \"detalle\": \"environmentvariabledefinitionid 9142ba76-0ed7-f111-84e8-0022480c5699, tipo Texto (SIN VALOR en este entorno, a propósito), en la solución 'sanic_carp_sol_spikecorreo' con componenttype 380\"}"
+ },
+ {
+  "prueba": "F0",
+  "sub": "variable sanic_carp_ev_spksalida (definición)",
+  "ok": true,
+  "esperado": "creado/ya_existia/actualizado",
+  "obtenido": "{\"estado\": \"creado\", \"componente\": \"sanic_carp_ev_spksalida\", \"detalle\": \"environmentvariabledefinitionid 18b8e210-0fd7-f111-84e8-0022480c5699, tipo Texto (SIN VALOR en este entorno, a propósito), en la solución 'sanic_carp_sol_spikecorreo' con componenttype 380\"}"
+ },
+ {
+  "prueba": "F0",
+  "sub": "team del área (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "nombre": "Arreglos de Pago",
+   "tipo": 0
+  }
+ },
+ {
+  "prueba": "F0",
+  "sub": "valor de sanic_carp_ev_spkbuzon",
+  "ok": true,
+  "esperado": "ya cargado",
+  "obtenido": "ya_existia"
+ },
+ {
+  "prueba": "F0",
+  "sub": "valor de sanic_carp_ev_spkteamarea",
+  "ok": true,
+  "esperado": "ya cargado",
+  "obtenido": "ya_existia"
+ },
+ {
+  "prueba": "F0",
+  "sub": "valor de sanic_carp_ev_spkcola",
+  "ok": true,
+  "esperado": "ya cargado",
+  "obtenido": "ya_existia"
+ },
+ {
+  "prueba": "F0",
+  "sub": "valor de sanic_carp_ev_spksalida",
+  "ok": true,
+  "esperado": "204",
+  "obtenido": 204
+ }
+]

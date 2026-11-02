@@ -1,0 +1,109 @@
+[
+ {
+  "prueba": "V-1",
+  "sub": "requireapprovalforqueueemail del entorno (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": true
+ },
+ {
+  "prueba": "V-1",
+  "sub": "SendEmail con IssueSend=true lo acepta (200/204)",
+  "ok": true,
+  "esperado": "200/204",
+  "obtenido": {
+   "http": 200,
+   "error": null,
+   "codigo": null,
+   "respuesta_keys": [
+    "@odata.context",
+    "Subject"
+   ],
+   "t": 2.31
+  }
+ },
+ {
+  "prueba": "V-1",
+  "sub": "queda en 6 Pending Send",
+  "ok": true,
+  "esperado": 6,
+  "obtenido": [
+   [
+    0,
+    6
+   ],
+   [
+    20,
+    6
+   ],
+   [
+    60,
+    6
+   ]
+  ]
+ },
+ {
+  "prueba": "V-1",
+  "sub": "SendEmail con IssueSend=false (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "sendemail": {
+    "http": 200,
+    "error": null,
+    "codigo": null,
+    "respuesta_keys": [
+     "@odata.context",
+     "Subject"
+    ],
+    "t": 0.58
+   },
+   "antes": {
+    "statuscode": 1,
+    "statecode": 0,
+    "senton": null,
+    "actualend": null,
+    "messageid": null
+   },
+   "lecturas": [
+    {
+     "+s": 0,
+     "statuscode": 3,
+     "statecode": 1,
+     "senton": "2026-11-02T22:31:52Z",
+     "actualend": "2026-11-02T22:31:52Z",
+     "messageid": null,
+     "correlationmethod": 0
+    },
+    {
+     "+s": 20,
+     "statuscode": 3,
+     "statecode": 1,
+     "senton": "2026-11-02T22:31:52Z",
+     "actualend": "2026-11-02T22:31:52Z",
+     "messageid": null,
+     "correlationmethod": 0
+    },
+    {
+     "+s": 60,
+     "statuscode": 3,
+     "statecode": 1,
+     "senton": "2026-11-02T22:31:52Z",
+     "actualend": "2026-11-02T22:31:52Z",
+     "messageid": null,
+     "correlationmethod": 0
+    }
+   ]
+  }
+ },
+ {
+  "prueba": "V-1",
+  "sub": "nada salió: 0 en Enviados del buzón 4 y 0 en la bandeja del buzón 2",
+  "ok": true,
+  "esperado": "0 y 0",
+  "obtenido": [
+   0,
+   0
+  ]
+ }
+]

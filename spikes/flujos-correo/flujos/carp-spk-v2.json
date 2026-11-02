@@ -1,0 +1,293 @@
+{
+  "triggers": {
+    "Al_llegar_correo": {
+      "recurrence": {
+        "interval": 1,
+        "frequency": "Minute"
+      },
+      "splitOn": "@triggerOutputs()?['body/value']",
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "@@conr:outlook@@",
+          "operationId": "SharedMailboxOnNewEmailV2",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+        },
+        "parameters": {
+          "mailboxAddress": "@parameters('@@ev:sanic_carp_ev_spkbuzon@@')",
+          "folderId": "Inbox",
+          "subjectFilter": "SPK-FC-V2",
+          "importance": "Any",
+          "includeAttachments": false
+        },
+        "authentication": "@parameters('$authentication')"
+      }
+    }
+  },
+  "actions": {
+    "Intento": {
+      "runAfter": {},
+      "type": "Scope",
+      "actions": {
+        "Leer_mensaje": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:outlook@@",
+              "operationId": "HttpRequest",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "Uri": "@concat(concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/messages/', triggerOutputs()?['body/id']), '?$select=id,internetMessageId,conversationId,internetMessageHeaders,subject,hasAttachments,receivedDateTime')",
+              "Method": "GET",
+              "ContentType": "application/json"
+            }
+          },
+          "retryPolicy": {
+            "type": "fixed",
+            "count": 3,
+            "interval": "PT10S"
+          }
+        },
+        "Filtrar_en_respuesta_a": {
+          "runAfter": {
+            "Leer_mensaje": [
+              "Succeeded"
+            ]
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@coalesce(body('Leer_mensaje')?['internetMessageHeaders'], json('[]'))",
+            "where": "@equals(toLower(item()?['name']), 'in-reply-to')"
+          }
+        },
+        "Nombres_de_encabezados": {
+          "runAfter": {
+            "Leer_mensaje": [
+              "Succeeded"
+            ]
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@coalesce(body('Leer_mensaje')?['internetMessageHeaders'], json('[]'))",
+            "select": "@item()?['name']"
+          }
+        },
+        "Filtrar_references": {
+          "runAfter": {
+            "Nombres_de_encabezados": [
+              "Succeeded"
+            ]
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@coalesce(body('Leer_mensaje')?['internetMessageHeaders'], json('[]'))",
+            "where": "@equals(toLower(item()?['name']), 'references')"
+          }
+        },
+        "Crear_respuesta": {
+          "runAfter": {
+            "Filtrar_references": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:outlook@@",
+              "operationId": "HttpRequest",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "Uri": "@concat(concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/messages/', triggerOutputs()?['body/id']), '/createReply')",
+              "Method": "POST",
+              "ContentType": "application/json",
+              "Body": "{\"comment\": \"Respuesta automatica del spike SPK-FC (V-2). Datos ficticios.\"}"
+            }
+          },
+          "retryPolicy": {
+            "type": "fixed",
+            "count": 3,
+            "interval": "PT10S"
+          }
+        },
+        "Leer_borrador": {
+          "runAfter": {
+            "Crear_respuesta": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:outlook@@",
+              "operationId": "HttpRequest",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/messages/', body('Crear_respuesta')?['id'], '?$select=id,internetMessageId,subject')",
+              "Method": "GET",
+              "ContentType": "application/json"
+            }
+          },
+          "retryPolicy": {
+            "type": "fixed",
+            "count": 3,
+            "interval": "PT10S"
+          }
+        },
+        "Enviar_respuesta": {
+          "runAfter": {
+            "Leer_borrador": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:outlook@@",
+              "operationId": "HttpRequest",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/messages/', body('Crear_respuesta')?['id'], '/send')",
+              "Method": "POST",
+              "ContentType": "application/json"
+            }
+          },
+          "retryPolicy": {
+            "type": "fixed",
+            "count": 3,
+            "interval": "PT10S"
+          }
+        },
+        "Esperar_el_envio": {
+          "runAfter": {
+            "Enviar_respuesta": [
+              "Succeeded"
+            ]
+          },
+          "type": "Wait",
+          "inputs": {
+            "interval": {
+              "count": 15,
+              "unit": "Second"
+            }
+          }
+        },
+        "Buscar_en_enviados": {
+          "runAfter": {
+            "Esperar_el_envio": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:outlook@@",
+              "operationId": "HttpRequest",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/mailFolders/SentItems/messages?$top=5&$orderby=sentDateTime%20desc&$select=id,internetMessageId,subject,sentDateTime')",
+              "Method": "GET",
+              "ContentType": "application/json"
+            }
+          },
+          "retryPolicy": {
+            "type": "fixed",
+            "count": 3,
+            "interval": "PT10S"
+          }
+        },
+        "Coincidencia_en_enviados": {
+          "runAfter": {
+            "Buscar_en_enviados": [
+              "Succeeded"
+            ]
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@coalesce(body('Buscar_en_enviados')?['value'], json('[]'))",
+            "where": "@equals(item()?['internetMessageId'], body('Leer_borrador')?['internetMessageId'])"
+          }
+        }
+      }
+    },
+    "Estado_de_las_acciones": {
+      "runAfter": {
+        "Intento": [
+          "Succeeded",
+          "Failed",
+          "Skipped",
+          "TimedOut"
+        ]
+      },
+      "type": "Select",
+      "inputs": {
+        "from": "@result('Intento')",
+        "select": {
+          "nombre": "@item()?['name']",
+          "estado": "@item()?['status']",
+          "codigo": "@item()?['code']",
+          "error": "@coalesce(item()?['error']?['message'], item()?['outputs']?['body']?['error']?['message'], '')"
+        }
+      }
+    },
+    "Armar_diagnostico": {
+      "runAfter": {
+        "Estado_de_las_acciones": [
+          "Succeeded",
+          "Failed",
+          "Skipped",
+          "TimedOut"
+        ]
+      },
+      "type": "Compose",
+      "inputs": {
+        "flujo": "V2 encabezados y respuesta",
+        "recibido": "@utcNow()",
+        "trigger_id_largo": "@length(string(triggerOutputs()?['body/id']))",
+        "trigger_internetMessageId": "@triggerOutputs()?['body/internetMessageId']",
+        "graph_internetMessageId": "@body('Leer_mensaje')?['internetMessageId']",
+        "graph_conversationId_presente": "@not(empty(body('Leer_mensaje')?['conversationId']))",
+        "encabezados_cantidad": "@length(coalesce(body('Leer_mensaje')?['internetMessageHeaders'], json('[]')))",
+        "encabezados_nombres": "@join(body('Nombres_de_encabezados'), ',')",
+        "in_reply_to": "@first(body('Filtrar_en_respuesta_a'))?['value']",
+        "references": "@first(body('Filtrar_references'))?['value']",
+        "borrador_id_largo": "@length(string(body('Crear_respuesta')?['id']))",
+        "borrador_internetMessageId_createReply": "@body('Crear_respuesta')?['internetMessageId']",
+        "borrador_internetMessageId_get": "@body('Leer_borrador')?['internetMessageId']",
+        "enviar_status": "@outputs('Enviar_respuesta')?['statusCode']",
+        "enviados_coincide_con_borrador": "@greater(length(body('Coincidencia_en_enviados')), 0)",
+        "enviados_internetMessageId": "@first(body('Coincidencia_en_enviados'))?['internetMessageId']",
+        "acciones": "@body('Estado_de_las_acciones')"
+      }
+    },
+    "Registrar_diagnostico": {
+      "runAfter": {
+        "Armar_diagnostico": [
+          "Succeeded",
+          "Failed",
+          "Skipped",
+          "TimedOut"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "@@conr:dataverse@@",
+          "operationId": "CreateRecord",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+        },
+        "parameters": {
+          "entityName": "emails",
+          "item/subject": "@concat('SPK-DIAG V2 ', coalesce(triggerOutputs()?['body/subject'], ''))",
+          "item/description": "@string(outputs('Armar_diagnostico'))",
+          "item/directioncode": true
+        }
+      }
+    }
+  }
+}

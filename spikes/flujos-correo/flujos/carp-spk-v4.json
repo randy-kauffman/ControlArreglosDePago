@@ -1,0 +1,746 @@
+{
+  "triggers": {
+    "Al_llegar_correo": {
+      "recurrence": {
+        "interval": 1,
+        "frequency": "Minute"
+      },
+      "splitOn": "@triggerOutputs()?['body/value']",
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "@@conr:outlook@@",
+          "operationId": "SharedMailboxOnNewEmailV2",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+        },
+        "parameters": {
+          "mailboxAddress": "@parameters('@@ev:sanic_carp_ev_spkbuzon@@')",
+          "folderId": "Inbox",
+          "subjectFilter": "SPK-FC-V4",
+          "importance": "Any",
+          "includeAttachments": true
+        },
+        "authentication": "@parameters('$authentication')"
+      }
+    }
+  },
+  "actions": {
+    "Variable_conversacion": {
+      "runAfter": {},
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varConv",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    },
+    "Variable_correo": {
+      "runAfter": {
+        "Variable_conversacion": [
+          "Succeeded"
+        ]
+      },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varEmailId",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    },
+    "Variable_modo": {
+      "runAfter": {
+        "Variable_correo": [
+          "Succeeded"
+        ]
+      },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varModo",
+            "type": "string",
+            "value": "sin_procesar"
+          }
+        ]
+      }
+    },
+    "Variable_opcionales": {
+      "runAfter": {
+        "Variable_modo": [
+          "Succeeded"
+        ]
+      },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varOpc",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    },
+    "Intento": {
+      "runAfter": {
+        "Variable_opcionales": [
+          "Succeeded"
+        ]
+      },
+      "type": "Scope",
+      "actions": {
+        "Leer_mensaje": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:outlook@@",
+              "operationId": "HttpRequest",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "Uri": "@concat(concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/messages/', triggerOutputs()?['body/id']), '?$select=id,internetMessageId,conversationId,internetMessageHeaders,subject,hasAttachments,receivedDateTime')",
+              "Method": "GET",
+              "ContentType": "application/json"
+            }
+          },
+          "retryPolicy": {
+            "type": "fixed",
+            "count": 3,
+            "interval": "PT10S"
+          }
+        },
+        "Filtrar_en_respuesta_a": {
+          "runAfter": {
+            "Leer_mensaje": [
+              "Succeeded"
+            ]
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@coalesce(body('Leer_mensaje')?['internetMessageHeaders'], json('[]'))",
+            "where": "@equals(toLower(item()?['name']), 'in-reply-to')"
+          }
+        },
+        "Variantes": {
+          "runAfter": {
+            "Filtrar_en_respuesta_a": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": {
+            "a": "@trim(coalesce(first(body('Filtrar_en_respuesta_a'))?['value'], ''))",
+            "b": "@replace(replace(trim(coalesce(first(body('Filtrar_en_respuesta_a'))?['value'], '')), '<', ''), '>', '')",
+            "c": "@concat('<', replace(replace(trim(coalesce(first(body('Filtrar_en_respuesta_a'))?['value'], '')), '<', ''), '>', ''), '>')"
+          }
+        },
+        "Leer_adjuntos": {
+          "runAfter": {
+            "Variantes": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:outlook@@",
+              "operationId": "HttpRequest",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "Uri": "@concat(concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/messages/', triggerOutputs()?['body/id']), '/attachments?$select=id,name,contentType,size,isInline,contentId,contentBytes')",
+              "Method": "GET",
+              "ContentType": "application/json"
+            }
+          },
+          "retryPolicy": {
+            "type": "fixed",
+            "count": 3,
+            "interval": "PT10S"
+          }
+        },
+        "Resumen_adjuntos": {
+          "runAfter": {
+            "Leer_adjuntos": [
+              "Succeeded"
+            ]
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@coalesce(body('Leer_adjuntos')?['value'], json('[]'))",
+            "select": {
+              "nombre": "@item()?['name']",
+              "tipo": "@if(empty(item()?['contentBytes']), 'sin_contenido_incrustado', 'archivo')",
+              "enLinea": "@item()?['isInline']",
+              "contentId": "@item()?['contentId']",
+              "tamano": "@item()?['size']",
+              "tieneBytes": "@not(empty(item()?['contentBytes']))"
+            }
+          }
+        },
+        "Buscar_duplicado": {
+          "runAfter": {
+            "Resumen_adjuntos": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:dataverse@@",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "emails",
+              "$select": "activityid",
+              "$top": 1,
+              "$filter": "@concat('directioncode eq false and messageid eq ''', triggerOutputs()?['body/internetMessageId'], '''')"
+            }
+          }
+        },
+        "Es_nuevo": {
+          "runAfter": {
+            "Buscar_duplicado": [
+              "Succeeded"
+            ]
+          },
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@length(outputs('Buscar_duplicado')?['body/value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Hay_en_respuesta_a": {
+              "runAfter": {},
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@outputs('Variantes')?['a']",
+                        ""
+                      ]
+                    }
+                  }
+                ]
+              },
+              "actions": {
+                "Buscar_original": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "@@conr:dataverse@@",
+                      "operationId": "ListRecords",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "emails",
+                      "$select": "activityid,_regardingobjectid_value,createdon",
+                      "$top": 1,
+                      "$orderby": "createdon asc",
+                      "$filter": "@concat('_regardingobjectid_value ne null and (messageid eq ''', outputs('Variantes')?['a'], ''' or messageid eq ''', outputs('Variantes')?['b'], ''' or messageid eq ''', outputs('Variantes')?['c'], ''')')"
+                    }
+                  }
+                },
+                "Hay_original": {
+                  "runAfter": {
+                    "Buscar_original": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "greater": [
+                          "@length(outputs('Buscar_original')?['body/value'])",
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Buscar_conversacion": {
+                      "runAfter": {},
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "@@conr:dataverse@@",
+                          "operationId": "ListRecords",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "sanic_carp_tbl_conversacions",
+                          "$select": "sanic_carp_tbl_conversacionid",
+                          "$top": 1,
+                          "$filter": "@concat('sanic_carp_tbl_conversacionid eq ', first(outputs('Buscar_original')?['body/value'])?['_regardingobjectid_value'])"
+                        }
+                      }
+                    },
+                    "Hay_conversacion": {
+                      "runAfter": {
+                        "Buscar_conversacion": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "If",
+                      "expression": {
+                        "and": [
+                          {
+                            "greater": [
+                              "@length(outputs('Buscar_conversacion')?['body/value'])",
+                              0
+                            ]
+                          }
+                        ]
+                      },
+                      "actions": {
+                        "Fijar_conversacion": {
+                          "runAfter": {},
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "varConv",
+                            "value": "@first(outputs('Buscar_conversacion')?['body/value'])?['sanic_carp_tbl_conversacionid']"
+                          }
+                        }
+                      },
+                      "else": {
+                        "actions": {}
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              }
+            },
+            "Crear_el_correo": {
+              "runAfter": {
+                "Hay_en_respuesta_a": [
+                  "Succeeded"
+                ]
+              },
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@variables('varConv')",
+                      ""
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Crear_sin_conversacion": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "@@conr:dataverse@@",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "emails",
+                      "item/subject": "@triggerOutputs()?['body/subject']",
+                      "item/description": "@triggerOutputs()?['body/body']",
+                      "item/directioncode": false,
+                      "item/messageid": "@triggerOutputs()?['body/internetMessageId']",
+                      "item/sender": "@triggerOutputs()?['body/from']",
+                      "item/torecipients": "@triggerOutputs()?['body/to']",
+                      "item/actualend": "@triggerOutputs()?['body/receivedDateTime']",
+                      "item/ownerid@odata.bind": "@concat('/teams(', parameters('@@ev:sanic_carp_ev_spkteamarea@@'), ')')",
+                      "item/email_activity_parties": [
+                        {
+                          "participationtypemask": 1,
+                          "addressused": "@triggerOutputs()?['body/from']"
+                        },
+                        {
+                          "participationtypemask": 2,
+                          "partyid_queue@odata.bind": "@concat('/queues(', parameters('@@ev:sanic_carp_ev_spkcola@@'), ')')"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "Fijar_correo_a": {
+                  "runAfter": {
+                    "Crear_sin_conversacion": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "varEmailId",
+                    "value": "@outputs('Crear_sin_conversacion')?['body/activityid']"
+                  }
+                },
+                "Fijar_modo_a": {
+                  "runAfter": {
+                    "Fijar_correo_a": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "varModo",
+                    "value": "ruta_C_sin_regarding"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Crear_con_conversacion": {
+                    "runAfter": {},
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "@@conr:dataverse@@",
+                        "operationId": "CreateRecord",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                      },
+                      "parameters": {
+                        "entityName": "emails",
+                        "item/subject": "@triggerOutputs()?['body/subject']",
+                        "item/description": "@triggerOutputs()?['body/body']",
+                        "item/directioncode": false,
+                        "item/messageid": "@triggerOutputs()?['body/internetMessageId']",
+                        "item/sender": "@triggerOutputs()?['body/from']",
+                        "item/torecipients": "@triggerOutputs()?['body/to']",
+                        "item/actualend": "@triggerOutputs()?['body/receivedDateTime']",
+                        "item/ownerid@odata.bind": "@concat('/teams(', parameters('@@ev:sanic_carp_ev_spkteamarea@@'), ')')",
+                        "item/email_activity_parties": [
+                          {
+                            "participationtypemask": 1,
+                            "addressused": "@triggerOutputs()?['body/from']"
+                          },
+                          {
+                            "participationtypemask": 2,
+                            "partyid_queue@odata.bind": "@concat('/queues(', parameters('@@ev:sanic_carp_ev_spkcola@@'), ')')"
+                          }
+                        ],
+                        "item/regardingobjectid_sanic_carp_tbl_conversacion_email@odata.bind": "@concat('/sanic_carp_tbl_conversacions(', variables('varConv'), ')')"
+                      }
+                    }
+                  },
+                  "Fijar_correo_b": {
+                    "runAfter": {
+                      "Crear_con_conversacion": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "varEmailId",
+                      "value": "@outputs('Crear_con_conversacion')?['body/activityid']"
+                    }
+                  },
+                  "Fijar_modo_b": {
+                    "runAfter": {
+                      "Fijar_correo_b": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "varModo",
+                      "value": "ruta_A_con_regarding"
+                    }
+                  }
+                }
+              }
+            },
+            "Cerrar_como_recibido": {
+              "runAfter": {
+                "Crear_el_correo": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "@@conr:dataverse@@",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "emails",
+                  "recordId": "@variables('varEmailId')",
+                  "item/statecode": 1,
+                  "item/statuscode": 4
+                }
+              }
+            },
+            "Por_cada_adjunto": {
+              "runAfter": {
+                "Cerrar_como_recibido": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Foreach",
+              "foreach": "@coalesce(body('Leer_adjuntos')?['value'], json('[]'))",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              },
+              "actions": {
+                "Es_archivo": {
+                  "runAfter": {},
+                  "type": "If",
+                  "expression": {
+                    "and": [
+                      {
+                        "not": {
+                          "equals": [
+                            "@coalesce(items('Por_cada_adjunto')?['contentBytes'], '')",
+                            ""
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "actions": {
+                    "Crear_adjunto": {
+                      "runAfter": {},
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "@@conr:dataverse@@",
+                          "operationId": "CreateRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "activitymimeattachments",
+                          "item/filename": "@items('Por_cada_adjunto')?['name']",
+                          "item/subject": "@items('Por_cada_adjunto')?['name']",
+                          "item/mimetype": "@items('Por_cada_adjunto')?['contentType']",
+                          "item/body": "@items('Por_cada_adjunto')?['contentBytes']",
+                          "item/objectid_email@odata.bind": "@concat('/emails(', variables('varEmailId'), ')')",
+                          "item/objecttypecode": "email",
+                          "item/attachmentcontentid": "@if(equals(items('Por_cada_adjunto')?['isInline'], true), items('Por_cada_adjunto')?['contentId'], '')"
+                        }
+                      }
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  }
+                }
+              }
+            },
+            "Opcionales": {
+              "runAfter": {
+                "Por_cada_adjunto": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Scope",
+              "actions": {
+                "Agregar_a_la_cola": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "@@conr:dataverse@@",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "queueitems",
+                      "item/queueid@odata.bind": "@concat('/queues(', parameters('@@ev:sanic_carp_ev_spkcola@@'), ')')",
+                      "item/objectid_email@odata.bind": "@concat('/emails(', variables('varEmailId'), ')')"
+                    }
+                  }
+                },
+                "Marcar_categoria": {
+                  "runAfter": {
+                    "Agregar_a_la_cola": [
+                      "Succeeded",
+                      "Failed"
+                    ]
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "@@conr:outlook@@",
+                      "operationId": "HttpRequest",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                    },
+                    "parameters": {
+                      "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/messages/', triggerOutputs()?['body/id'])",
+                      "Method": "PATCH",
+                      "ContentType": "application/json",
+                      "Body": "{\"categories\": [\"CARP-registrado\"]}"
+                    }
+                  },
+                  "retryPolicy": {
+                    "type": "fixed",
+                    "count": 3,
+                    "interval": "PT10S"
+                  }
+                }
+              }
+            },
+            "Resumen_opcionales": {
+              "runAfter": {
+                "Opcionales": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped",
+                  "TimedOut"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@result('Opcionales')",
+                "select": {
+                  "nombre": "@item()?['name']",
+                  "estado": "@item()?['status']",
+                  "codigo": "@item()?['code']",
+                  "error": "@coalesce(item()?['error']?['message'], item()?['outputs']?['body']?['error']?['message'], '')"
+                }
+              }
+            },
+            "Fijar_opcionales": {
+              "runAfter": {
+                "Resumen_opcionales": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped",
+                  "TimedOut"
+                ]
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "varOpc",
+                "value": "@string(body('Resumen_opcionales'))"
+              }
+            },
+            "Fijar_modo_final": {
+              "runAfter": {
+                "Fijar_opcionales": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped",
+                  "TimedOut"
+                ]
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "varModo",
+                "value": "@concat(variables('varModo'), '+registrado')"
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Fijar_modo_duplicado": {
+                "runAfter": {},
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "varModo",
+                  "value": "duplicado_no_se_crea"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Estado_de_las_acciones": {
+      "runAfter": {
+        "Intento": [
+          "Succeeded",
+          "Failed",
+          "Skipped",
+          "TimedOut"
+        ]
+      },
+      "type": "Select",
+      "inputs": {
+        "from": "@result('Intento')",
+        "select": {
+          "nombre": "@item()?['name']",
+          "estado": "@item()?['status']",
+          "codigo": "@item()?['code']",
+          "error": "@coalesce(item()?['error']?['message'], item()?['outputs']?['body']?['error']?['message'], '')"
+        }
+      }
+    },
+    "Armar_diagnostico": {
+      "runAfter": {
+        "Estado_de_las_acciones": [
+          "Succeeded",
+          "Failed",
+          "Skipped",
+          "TimedOut"
+        ]
+      },
+      "type": "Compose",
+      "inputs": {
+        "flujo": "V4 entrada completa",
+        "recibido": "@utcNow()",
+        "modo": "@variables('varModo')",
+        "correo_creado": "@variables('varEmailId')",
+        "conversacion_encontrada": "@variables('varConv')",
+        "in_reply_to": "@outputs('Variantes')?['a']",
+        "trigger_internetMessageId": "@triggerOutputs()?['body/internetMessageId']",
+        "graph_internetMessageId": "@body('Leer_mensaje')?['internetMessageId']",
+        "trigger_adjuntos_cantidad": "@length(coalesce(triggerOutputs()?['body/attachments'], json('[]')))",
+        "trigger_hasAttachment": "@triggerOutputs()?['body/hasAttachment']",
+        "graph_adjuntos": "@body('Resumen_adjuntos')",
+        "duplicado": "@greater(length(coalesce(outputs('Buscar_duplicado')?['body/value'], json('[]'))), 0)",
+        "acciones": "@body('Estado_de_las_acciones')",
+        "opcionales": "@variables('varOpc')"
+      }
+    },
+    "Registrar_diagnostico": {
+      "runAfter": {
+        "Armar_diagnostico": [
+          "Succeeded",
+          "Failed",
+          "Skipped",
+          "TimedOut"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "@@conr:dataverse@@",
+          "operationId": "CreateRecord",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+        },
+        "parameters": {
+          "entityName": "emails",
+          "item/subject": "@concat('SPK-DIAG V4 ', coalesce(triggerOutputs()?['body/subject'], ''))",
+          "item/description": "@string(outputs('Armar_diagnostico'))",
+          "item/directioncode": true
+        }
+      }
+    }
+  }
+}
