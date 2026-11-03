@@ -373,7 +373,7 @@
                       "item/torecipients": "@triggerOutputs()?['body/to']",
                       "item/actualend": "@triggerOutputs()?['body/receivedDateTime']",
                       "item/ownerid_email@odata.bind": "@concat('/teams(', parameters('@@ev:sanic_carp_ev_spkteamarea@@'), ')')",
-                      "item/email_activity_parties": [
+                      "item/activitypointer_activity_parties": [
                         {
                           "participationtypemask": 1,
                           "addressused": "@triggerOutputs()?['body/from']"
@@ -432,7 +432,7 @@
                         "item/torecipients": "@triggerOutputs()?['body/to']",
                         "item/actualend": "@triggerOutputs()?['body/receivedDateTime']",
                         "item/ownerid_email@odata.bind": "@concat('/teams(', parameters('@@ev:sanic_carp_ev_spkteamarea@@'), ')')",
-                        "item/email_activity_parties": [
+                        "item/activitypointer_activity_parties": [
                           {
                             "participationtypemask": 1,
                             "addressused": "@triggerOutputs()?['body/from']"

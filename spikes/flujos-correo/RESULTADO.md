@@ -111,3 +111,7 @@ Al activar `V4 Entrada completa (r3)` la plataforma respondió `WorkflowRunActio
 ## Corrección 2026-11-02: V4 (r5)
 
 Al activar `(r4)`: `WorkflowOperationParametersExtraParameter`, "The API operation does not contain a definition for parameter 'item/ownerid@odata.bind'". El conector de Dataverse nombra las búsquedas por la **propiedad de navegación** del lado de la tabla, no por el nombre de la columna: en `email`, `ownerid` es `ownerid_email` (leído de `EntityDefinitions(LogicalName='email')/ManyToOneRelationships`). La Web API acepta `ownerid@odata.bind`; el conector no. Se creó `Cloud Flow - CARP - SPK - V4 Entrada completa (r5)` (`65a1ce90-1ad7-f111-84e8-0022480c5699`), apagado, con `item/ownerid_email@odata.bind`. Las otras búsquedas del flujo se cotejaron contra la metadata y coinciden (`regardingobjectid_sanic_carp_tbl_conversacion_email`, `objectid_email`, `queueid`). `(r4)` queda descartado.
+
+## Corrección 2026-11-02: V4 (r6)
+
+Al activar `(r5)`: `WorkflowOperationParametersExtraParameter` para `item/email_activity_parties`. En el conector, las partes de una actividad se exponen por la relación de `activitypointer` (`item/activitypointer_activity_parties`), no por la de `email`. Se creó `(r6)` con ese nombre; `(r5)` queda descartado. **Pendiente de confirmar al activar**: este nombre sale de flujos exportados conocidos, no de metadata leída; si falla, el plan es leerlo del diseñador (el usuario abre la acción y copia la vista de código).
