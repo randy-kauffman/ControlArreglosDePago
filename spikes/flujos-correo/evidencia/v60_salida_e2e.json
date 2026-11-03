@@ -1,0 +1,233 @@
+[
+ {
+  "prueba": "E2E",
+  "sub": "línea base del mailbox 1 (SSS entrada y salida)",
+  "ok": true,
+  "esperado": "2/2",
+  "obtenido": {
+   "incomingemaildeliverymethod": 2,
+   "outgoingemaildeliverymethod": 2,
+   "outgoingemailstatus": 1,
+   "statuscode": 1
+  }
+ },
+ {
+  "prueba": "E2E",
+  "sub": "flujo SND encendido",
+  "ok": true,
+  "esperado": "statecode 1",
+  "obtenido": {
+   "Cloud Flow - CARP - SPK - SND Salida de respuestas": 0,
+   "Cloud Flow - CARP - SPK - SND Salida de respuestas (r2)": 1,
+   "Cloud Flow - CARP - SPK - V2 Encabezados y respuesta": 1,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r2)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r3)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r4)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r5)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r6)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r7)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r8)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r9)": 1
+  }
+ },
+ {
+  "prueba": "E2E",
+  "sub": "la consulta entra por SSS",
+  "ok": true,
+  "esperado": "email",
+  "obtenido": 31
+ },
+ {
+  "prueba": "E2E",
+  "sub": "S-34 crea la conversación",
+  "ok": true,
+  "esperado": "Regarding",
+  "obtenido": 11
+ },
+ {
+  "prueba": "E2E",
+  "sub": "el Oficial toma la conversación",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": 200
+ },
+ {
+  "prueba": "E2E",
+  "sub": "el Oficial crea la respuesta (S-31 fija la cola del área)",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": 204
+ },
+ {
+  "prueba": "E2E",
+  "sub": "VENTANA ABIERTA: salida SSS del mailbox 1 a None",
+  "ok": true,
+  "esperado": 204,
+  "obtenido": 204
+ },
+ {
+  "prueba": "E2E",
+  "sub": "mailbox 1 en entrada SSS (2) y salida None (0)",
+  "ok": true,
+  "esperado": "2/0",
+  "obtenido": [
+   2,
+   0
+  ]
+ },
+ {
+  "prueba": "E2E",
+  "sub": "SendEmail del Oficial aceptado",
+  "ok": true,
+  "esperado": "200/204",
+  "obtenido": 200
+ },
+ {
+  "prueba": "E2E",
+  "sub": "el flujo SND pasa el correo a Sent (3) sin que SSS de salida intervenga",
+  "ok": true,
+  "esperado": 3,
+  "obtenido": {
+   "final": 3,
+   "segundos": 16,
+   "lecturas": [
+    {
+     "+s": 2,
+     "statuscode": 6
+    },
+    {
+     "+s": 7,
+     "statuscode": 6
+    },
+    {
+     "+s": 13,
+     "statuscode": 7
+    },
+    {
+     "+s": 18,
+     "statuscode": 3
+    }
+   ]
+  }
+ },
+ {
+  "prueba": "E2E",
+  "sub": "VENTANA CERRADA: salida SSS del mailbox 1 restaurada",
+  "ok": true,
+  "esperado": "salida = 2",
+  "obtenido": {
+   "http": 204,
+   "iguales_a_la_linea_base": {
+    "mailboxid": true,
+    "_emailserverprofile_value": true,
+    "statuscode": true,
+    "processanddeleteemails": true,
+    "incomingemaildeliverymethod": true,
+    "enabledforoutgoingemail": true,
+    "outgoingemailstatus": false,
+    "enabledforincomingemail": true,
+    "emailrouteraccessapproval": true,
+    "testemailconfigurationscheduled": true,
+    "outgoingemaildeliverymethod": true,
+    "incomingemailstatus": true
+   }
+  }
+ },
+ {
+  "prueba": "E2E",
+  "sub": "mailbox 1 idéntico a la línea base (métodos, habilitados, estados, aprobación)",
+  "ok": false,
+  "esperado": "todos iguales",
+  "obtenido": {
+   "outgoingemailstatus": false
+  }
+ },
+ {
+  "prueba": "E2E",
+  "sub": "estado final del saliente (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "statuscode": 3,
+   "statecode": 1,
+   "messageid": "<<correo>>",
+   "actualend": "2026-11-03T14:51:54Z",
+   "senton": "2026-11-03T14:52:08Z",
+   "_createdby_value": "fab4b6ed-6116-f111-8342-000d3a316609"
+  }
+ },
+ {
+  "prueba": "E2E",
+  "sub": "diagnóstico del flujo SND (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "modo": "enviado_3",
+   "es_conversacion": true,
+   "remitente_coincide": true,
+   "sigue_pendiente": true,
+   "imid_grabado": "<<correo>>"
+  }
+ },
+ {
+  "prueba": "E2E",
+  "sub": "S-35 (filtro statuscode) se dispara con el cambio a Sent hecho por el flujo: respondidopor = el Oficial",
+  "ok": true,
+  "esperado": "fab4b6ed-6116-f111-8342-000d3a316609",
+  "obtenido": "fab4b6ed-6116-f111-8342-000d3a316609"
+ },
+ {
+  "prueba": "E2E",
+  "sub": "S-35 calcula el tiempo de respuesta (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "tiemporespuesta": 0,
+   "senton": "2026-11-03T14:52:08Z",
+   "actualend": "2026-11-03T14:51:54Z"
+  }
+ },
+ {
+  "prueba": "E2E",
+  "sub": "la respuesta llega al buzón 2",
+  "ok": true,
+  "esperado": "mensaje",
+  "obtenido": 0
+ },
+ {
+  "prueba": "E2E",
+  "sub": "remitente de la respuesta = buzón 1 (la cola del área; Send As)",
+  "ok": true,
+  "esperado": "PP_MAIL_BUZON_1",
+  "obtenido": "PP_MAIL_BUZON_1"
+ },
+ {
+  "prueba": "E2E",
+  "sub": "el internetMessageId recibido es el messageid grabado por el flujo",
+  "ok": true,
+  "esperado": "iguales",
+  "obtenido": [
+   "<<correo>>",
+   "<<correo>>"
+  ]
+ },
+ {
+  "prueba": "E2E",
+  "sub": "la contestación del cliente entra por SSS",
+  "ok": true,
+  "esperado": "email",
+  "obtenido": 30
+ },
+ {
+  "prueba": "E2E",
+  "sub": "la contestación correlaciona con la MISMA conversación (el messageid que grabó el flujo sirve de In-Reply-To)",
+  "ok": true,
+  "esperado": "eb4b3a14-96d7-f111-84e8-70a8a5afa915",
+  "obtenido": {
+   "regarding": "eb4b3a14-96d7-f111-84e8-70a8a5afa915",
+   "correlationmethod": 3,
+   "inreplyto_informado": true
+  }
+ }
+]

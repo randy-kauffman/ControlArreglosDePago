@@ -1,0 +1,40 @@
+[
+ {
+  "prueba": "V-4",
+  "sub": "SendEmail por SSS aceptado",
+  "ok": true,
+  "esperado": "200/204",
+  "obtenido": 200
+ },
+ {
+  "prueba": "V-4",
+  "sub": "SSS de salida del buzón 1 vuelve a enviar (Sent)",
+  "ok": false,
+  "esperado": 3,
+  "obtenido": {
+   "final": null,
+   "segundos": 912
+  }
+ },
+ {
+  "prueba": "V-4",
+  "sub": "outgoingemailstatus del mailbox 1 vuelve a Success (1)",
+  "ok": false,
+  "esperado": 1,
+  "obtenido": 304
+ },
+ {
+  "prueba": "V-4",
+  "sub": "tras Test & Enable (lanzado por API 15:13 UTC): el correo V61 queda Sent y outgoingemailstatus = 1",
+  "ok": true,
+  "esperado": "3 y 1",
+  "obtenido": "3 y 1"
+ },
+ {
+  "prueba": "V-4",
+  "sub": "mailbox 1 idéntico a la línea base de v60",
+  "ok": true,
+  "esperado": "sin diferencias",
+  "obtenido": {}
+ }
+]

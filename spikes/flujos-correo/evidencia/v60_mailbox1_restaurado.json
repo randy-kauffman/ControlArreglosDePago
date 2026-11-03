@@ -1,0 +1,14 @@
+{
+ "mailboxid": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+ "_emailserverprofile_value": "7eedeb22-6a30-4a66-808b-00c25a95b03f",
+ "statuscode": 1,
+ "processanddeleteemails": false,
+ "incomingemaildeliverymethod": 2,
+ "enabledforoutgoingemail": true,
+ "outgoingemailstatus": 0,
+ "enabledforincomingemail": true,
+ "emailrouteraccessapproval": 1,
+ "testemailconfigurationscheduled": false,
+ "outgoingemaildeliverymethod": 2,
+ "incomingemailstatus": 1
+}

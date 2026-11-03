@@ -346,6 +346,26 @@
    "http": 202,
    "t_envio_utc": "2026-11-03T14:41:07Z",
    "internetMessageId": "<BL0PR06MB46755618B3739E7C3D265742D0692@BL0PR06MB4675.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_2",
+   "para": [
+    "PP_MAIL_BUZON_1"
+   ],
+   "asunto": "SPK-FC-E2E consulta 1793717467",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T14:51:08Z",
+   "internetMessageId": "<PH9PR06MB61061206EDFC37845322F42AEED1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_2",
+   "para": [
+    "PP_MAIL_BUZON_1"
+   ],
+   "asunto": "RE: SPK-FC-E2E consulta 1793717467",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T14:52:18Z",
+   "internetMessageId": "<PH9PR06MB61061295FC95F20C851CD3FD52D1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
   }
  ],
  "v2_intento1_sin_disparo": {
@@ -473,6 +493,79 @@
    "internetMessageId": "<BL0PR06MB46755618B3739E7C3D265742D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
    "t_envio_epoch": 1793716867.5591981,
    "asunto": "SPK-FC-V4 adjuntos SSS 1793716867"
+  }
+ },
+ "ventana_salida": {
+  "original": {
+   "mailboxid": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+   "_emailserverprofile_value": "7eedeb22-6a30-4a66-808b-00c25a95b03f",
+   "statuscode": 1,
+   "processanddeleteemails": false,
+   "incomingemaildeliverymethod": 2,
+   "enabledforoutgoingemail": true,
+   "outgoingemailstatus": 1,
+   "enabledforincomingemail": true,
+   "emailrouteraccessapproval": 1,
+   "testemailconfigurationscheduled": false,
+   "outgoingemaildeliverymethod": 2,
+   "incomingemailstatus": 1
+  },
+  "abierta": false,
+  "cierre": {
+   "http": 204,
+   "iguales": {
+    "mailboxid": true,
+    "_emailserverprofile_value": true,
+    "statuscode": true,
+    "processanddeleteemails": true,
+    "incomingemaildeliverymethod": true,
+    "enabledforoutgoingemail": true,
+    "outgoingemailstatus": false,
+    "enabledforincomingemail": true,
+    "emailrouteraccessapproval": true,
+    "testemailconfigurationscheduled": true,
+    "outgoingemaildeliverymethod": true,
+    "incomingemailstatus": true
+   }
+  }
+ },
+ "e2e": {
+  "cliente": {
+   "http": 202,
+   "internetMessageId": "<PH9PR06MB61061206EDFC37845322F42AEED1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793717468.141789,
+   "asunto": "SPK-FC-E2E consulta 1793717467"
+  },
+  "email_id": "701d2406-96d7-f111-84e8-0022480c5699",
+  "conv": "eb4b3a14-96d7-f111-84e8-70a8a5afa915",
+  "resp_id": "df278d19-96d7-f111-84e8-0022480c5699",
+  "ventana": {
+   "final": 3,
+   "segundos": 16,
+   "lecturas": [
+    {
+     "+s": 2,
+     "statuscode": 6
+    },
+    {
+     "+s": 7,
+     "statuscode": 6
+    },
+    {
+     "+s": 13,
+     "statuscode": 7
+    },
+    {
+     "+s": 18,
+     "statuscode": 3
+    }
+   ]
+  },
+  "contestacion": {
+   "http": 202,
+   "internetMessageId": "<PH9PR06MB61061295FC95F20C851CD3FD52D1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793717538.6625583,
+   "asunto": "RE: SPK-FC-E2E consulta 1793717467"
   }
  }
 }

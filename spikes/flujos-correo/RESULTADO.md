@@ -137,3 +137,11 @@ Caso A (nuevo, sin adjuntos): un email con el `messageid` real, dueño = team de
 ## Resultado V-4 entrada con (r9), 2026-11-03 14:39 UTC: 14 de 14 OK, idempotencia OK
 
 Con `objectid_email` el `queueitem` existe en la cola de prueba (verificado en Dev). Idempotencia: el usuario reenvió (Resubmit) dos veces la corrida del caso D (con adjuntos); las dos quedaron `duplicado_no_se_crea` y sigue habiendo un solo email del flujo con ese `messageid` (`evidencia/v23_idempotencia.json`). V-4 entrada cerrada; falta V-4 salida (ventana SSS, `v60`).
+
+## Resultado V-4 salida integral (v60), 2026-11-03 14:50 UTC: 20 de 21; cierre de ventana con Test & Enable
+
+Con la salida SSS del buzón 1 en None, el flujo SND (r2) pasó la respuesta del Oficial de Pending Send a Sent en 16 s; S-35 registró al Oficial; la respuesta llegó al buzón 2 con remitente = buzón 1 (Send As) e `internetMessageId` = el grabado; la contestación del cliente entró por SSS y correlacionó sola con la MISMA conversación (In-Reply-To, `correlationmethod` 3). Observación para F2: `tiemporespuesta` = 0 porque la prueba respondió segundos después de la consulta.
+
+**Hallazgo (documentar en el procedimiento de BAC):** cambiar `outgoingemaildeliverymethod` de un mailbox con SSS, aunque se devuelva el valor original, **suspende la salida** hasta un nuevo *Test & Enable*: alerta `OutgoingMailboxUpdateError` ("isn't currently sending outgoing emails due to an update to the mailbox record") y `outgoingemailstatus` = 0. La entrada sigue funcionando. El correo de prueba `v61` quedó en Pending Send 20 min. Se lanzó Test & Enable por API (`testemailconfigurationscheduled = true`, 15:13 UTC): a los ~30 s `outgoingemailstatus` = 1, el correo `v61` pasó a Sent y el mailbox quedó idéntico a la línea base de v60 (`evidencia/v61_salida_sss_restaurada.json`). El flujo SND (r2) se apagó al cerrar la ventana (regla: nunca SSS y flujos en el mismo buzón).
+
+**F0 cerrado:** V-1, V-2, V-3, V-4 (entrada, idempotencia y salida integral) verificados.
