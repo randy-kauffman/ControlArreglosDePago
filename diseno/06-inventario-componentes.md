@@ -24,7 +24,7 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 3 | Tablas con sus columnas (7 propias + columnas sobre `email`) | 8 | 8 | 0 | 0 |
 | 4 | Relaciones 1:N (con su lookup) | 19 | 19 | 0 | 0 |
 | 5 | Claves alternativas | 3 | 3 | 0 | 0 |
-| 6 | Seguridad: perfil de columnas (1) y roles (4) | 5 | 5 | 0 | 0 |
+| 6 | Seguridad: perfil de columnas (1) y roles (5; 6.6 solo del plan B) | 6 | 6 | 0 | 0 |
 | 7 | Código de plugins (C#, TDD estricto) | 22 | 22 | 0 | 0 |
 | 8 | Registro de paquete, Custom API y steps | 7 | 7 | 0 | 0 |
 | 9 | Datos semilla y de configuración | 3 | 2 | 0 | 1 |
@@ -32,10 +32,11 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 11 | Flujos | 5 | 4 | 0 | 1 |
 | 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 27 | 27 | 0 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 15 | 2 |
-| **Total** | | **132** | **80** | **44** | **8** |
+| **Total** | | **133** | **81** | **44** | **8** |
 
 Notas del resumen:
 
+- 2026-11-03 (Dev, F3 del plan B de `diseno/08`): fila nueva 6.6 (`SR - CARP - Servicio flujos`, sin asignar a nadie), `hecho`. El grupo 6 pasó de 5 filas y 5 hechas a 6 y 6; el total, de 132 filas y 80 hechas a 133 y 81 (pendientes 44 y diseño detallado pendiente 8, sin cambio). `SR - CARP - Servicio` no se modificó.
 - 2026-11-03 (Dev, F2 del plan B de `diseno/08`): fila nueva 11.5 (flujo SND, apagado), `hecho`. El grupo 11 pasó de 4 filas y 3 hechas a 5 y 4; el total, de 131 filas y 79 hechas a 132 y 80 (pendientes 44 y diseño detallado pendiente 8, sin cambio). La columna `sanic_idoutlook` de `diseno/08` NO se agrega (`diseno/08` §11).
 - 2026-11-03 (Dev, F1 del plan B de `diseno/08`): filas nuevas 10.9 (`sanic_carp_ev_modocorreo`) y 11.4 (flujo ENT, apagado), ambas `hecho`. El grupo 10 pasó de 7 a 8 filas y el grupo 11 de 3 a 4 (hechas, de 2 a 3); el total, de 129 filas y 77 hechas a 131 y 79 (pendientes 44 y diseño detallado pendiente 8, sin cambio).
 - 2026-10-28 (Dev, lote F de íconos): fila nueva 12.27, ya `hecho`: 41 SVG propios (1 de la app, 20 del sitemap, 13 de comandos y 7 de tablas, DA-22, `diseno/07` §13) y el ícono de las 7 tablas (`IconVectorName`), verificados `ya_existia`; títulos del sitemap en inglés (1033) y español (3082). Era la propuesta 12.27 de `diseno/07` §11 (4 iconos compartidos, DA-10). El grupo 12 pasó de 26 filas y 26 hechas a 27 y 27; el total, de 128 filas y 76 hechas a 129 y 77 (`pruebas-humo/lote-f/RESULTADO.md`).
@@ -176,6 +177,7 @@ Se crean con profundidad BU, sin Delete humano sobre el agregado (definición §
 | 6.3 | `SR - CARP - Jefe` (definición: "ARP Jefe"; "suma" privilegios al Oficial) | `playbooks/rol/sr_carp_jefe.md` | ídem; 6.2 como base de lectura | RF-09, RF-04, RNF-04 | hecho (creado en Dev el 2026-10-09 desde `diseno/04-matriz-privilegios.md`; `ya_existia` y muestra exportada coinciden; falta la prueba con un usuario no administrador, matriz §7) |
 | 6.4 | `SR - CARP - Servicio` (definición: "ARP Servicio"; cuenta de servicio, flujos y reconciliación) | `playbooks/rol/sr_carp_servicio.md` | ídem; Mailbox, Queue Item | D-21, D-26; Create de Conversación es el privilegio de ejecución de 8.3 | hecho (creado en Dev el 2026-10-09 desde `diseno/04-matriz-privilegios.md`; `ya_existia` y muestra exportada coinciden; falta la prueba con un usuario no administrador, matriz §7) |
 | 6.5 | `SR - CARP - Purga` (definición: "ARP Purga"; trabajos de eliminación) | `playbooks/rol/sr_carp_purga.md` | ídem; Email con adjuntos y Queue Item | RNF-07, D-22 | hecho (creado en Dev el 2026-10-09 desde `diseno/04-matriz-privilegios.md`; `ya_existia` y muestra exportada coinciden; falta la prueba con un usuario no administrador, matriz §7) |
+| 6.6 | `SR - CARP - Servicio flujos` (**plan B del correo, modo flujos**): se suma a Servicio en la cuenta dueña de las conexiones de ENT y SND. Create, Write y Append de Email, AppendTo de Queue y AppendTo de Conversación, todos Local; sin Assign. No se asigna salvo en modo flujos | `playbooks/rol/sr_carp_servicio_flujos.md` | 3.2, 6.4 | `diseno/08` §5, §11 (F3) | hecho (2026-11-03, Dev: creado por `rol.py`, `ya_existia` y muestra exportada coinciden, roleid `a66aa9a8-9fd7-f111-84e8-0022480c5699`. **No asignado a ningún usuario ni team.** Sin probar con un no administrador: F4) |
 
 Los roles son previos a las Custom API: cada API se restringe con el privilegio de una tabla propia, presente solo en los roles que corresponden (D-17). Las API dependen de los roles, no al revés.
 

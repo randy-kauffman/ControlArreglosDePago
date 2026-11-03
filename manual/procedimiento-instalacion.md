@@ -85,6 +85,8 @@ No hace falta tocarlos, pero conviene confirmarlos en la muestra del rol (`playb
 
 ## 5. Cola y buzón del área (13.4, 13.5)
 
+> Este paso es el camino principal (sincronización del servidor, SSS). Si el entorno va en **modo flujos** (demo temporal, sección 11), el buzón se conecta por los flujos ENT y SND y no por SSS: siga la sección 11 en lugar del paso 5.3.
+
 > ⚠️ **Antes de conectar el buzón real.** La primera sincronización **importa toda la bandeja de entrada que ya tiene el buzón**, y por cada correo se crea una conversación. En Dev entraron 10 correos viejos y se crearon 10 conversaciones (`pruebas-humo/tanda3/RESULTADO.md`). En Prod hay que **vaciar o archivar la bandeja del buzón real** antes del paso 5.3, o aceptar por escrito esa carga inicial con el jefe.
 
 1. **Buzón de Exchange** (13.5, Mensajería y TI):
@@ -177,3 +179,54 @@ Si alguna prueba falla, **no** se cargan datos reales. Se registra en el `RESULT
 - D-10: privilegios de Callback Registration para el dueño de los flujos (paso 7.4).
 - DA-03: horario hábil y `horasSinEntrada`, a confirmar con el jefe.
 - D-27: si el gráfico de tiempo total excluye las finalizadas "Sin respuesta", a confirmar con negocio.
+
+## 11. Modo flujos (demo temporal, plan B de `diseno/08`)
+
+El modo flujos deja que el negocio pruebe la solución y vea cómo trabajará SSS antes de que TI de BAC apruebe la cola y la sincronización del servidor. **Es una demo temporal, no el camino de producción.** La misma solución se instala en los dos casos: lo que cambia es la variable `sanic_carp_ev_modocorreo` (`sss` o `flujos`) y qué flujos están encendidos. Los plugins no cambian.
+
+**Regla de oro: nunca SSS y flujos sobre el mismo buzón.** Duplican la entrada y la salida.
+
+### 11.1 Prerrequisitos
+
+| # | Qué | Responsable |
+|---|---|---|
+| 1 | **Full Access y Send As** del buzón compartido del área para la cuenta que será dueña de las conexiones de ENT y SND. Full Access sola no deja enviar | Administrador de Exchange |
+| 2 | Esa cuenta tiene licencia de Exchange Online y **Power Automate Premium** (Dataverse es premium) | Admin. de licencias |
+| 3 | DLP del entorno: **Office 365 Outlook y Dataverse en el mismo grupo** | Admin. de Power Platform |
+| 4 | Las variables `sanic_carp_ev_buzonarea` y `sanic_carp_ev_nombrebu` tienen valor, y las referencias de conexión de Outlook y Dataverse están enlazadas con la cuenta del punto 1 (paso 4) | Admin. de Power Platform |
+| 5 | La cola del área existe (paso 5.2). Los flujos la buscan por la dirección del buzón | Admin. de Power Platform |
+
+### 11.2 Pasar un entorno a modo flujos
+
+1. **Apagar SSS del buzón del área, entrada y salida**: en el registro Mailbox de la cola, poner el método de entrega entrante y saliente en *Ninguno*. Lo hace el administrador. No se borra el buzón ni la cola.
+2. Poner `sanic_carp_ev_modocorreo` = `flujos`.
+3. **Asignar el rol `SR - CARP - Servicio flujos`** a la cuenta del prerrequisito 1, **además** de `SR - CARP - Servicio` (y del Oficial, que ya recibe por estar en la BU). Solo a esa cuenta. Si el rol ya estaba asignado y se cambió, quitarlo y volver a asociarlo (spike 4, hallazgo 1). Es un paso de administración, no de la solución.
+4. **Una persona** (la dueña de las conexiones, desde make.powerapps.com → Soluciones → Flujos de nube) **enciende ENT y SND**:
+   - `Cloud Flow - CARP - ENT - Capturar correo entrante`;
+   - `Cloud Flow - CARP - SND - Enviar respuestas`.
+
+   No se pueden encender por API con el service principal (`ConnectionAuthorizationFailed`).
+5. **Verificación:** enviar un correo de prueba al buzón del área. En un minuto debe haber un email entrante con el team como dueño y su conversación. Responder desde la app: el email pasa de Pending Send a Sent y llega al buzón de prueba con el buzón del área como remitente. Si algo falla, el historial de ejecuciones del flujo dice dónde.
+6. Los flujos EST y SAL pueden quedar encendidos. EST no aplica en modo flujos (sección 11.4); SAL sigue como está.
+
+### 11.3 Volver a SSS
+
+1. **Apagar ENT y SND.**
+2. Poner `sanic_carp_ev_modocorreo` = `sss`.
+3. Quitar el rol `SR - CARP - Servicio flujos` a la cuenta.
+4. Volver a poner el método de entrega entrante y saliente del Mailbox en *Servidor de sincronización del lado del servidor*, aprobar el correo si el entorno lo exige y **ejecutar Probar y habilitar buzón (Test & Enable)**.
+
+> **Test & Enable es obligatorio.** Cambiar `outgoingemaildeliverymethod` de un Mailbox con SSS, aunque se devuelva el valor original, **suspende la salida** hasta un nuevo Test & Enable (alerta `OutgoingMailboxUpdateError`, `outgoingemailstatus` = 0). La entrada sigue funcionando. Si se omite, las respuestas quedan en Pending Send (`spikes/flujos-correo/RESULTADO.md`, cierre de V-4).
+
+### 11.4 Diferencias aceptadas frente a SSS
+
+El negocio tiene que saber esto antes de juzgar la demo (`diseno/08` §6 y §11):
+
+- **Correlación solo por In-Reply-To.** Una respuesta de un cliente de correo que no lo manda abre una conversación nueva. SSS correlaciona también por token y por conversación de Exchange.
+- **Adjuntos `.msg`, `.eml` e `.ics`** de correos entrantes no llegan por el disparador.
+- **Adjuntos de salida de 3 a 5 MB** no se envían: la respuesta termina en Failed. No hay carga por partes en el modo flujos.
+- **Imágenes en línea y formato** del cuerpo pueden verse distintos; no se probaron caso por caso.
+- **Latencia** de entrada y salida distinta a la de SSS, sin SLA en ninguno de los dos.
+- **Monitoreo.** No hay muro de alertas del buzón ni panel de SSS. EST (aviso por estado del buzón) no aplica. Las fallas se ven en el historial de ejecuciones de ENT y SND y en la vista *Respuestas con error de envío*. SAL no se modificó para este modo.
+- **Respuesta sin correo original.** Si el original no aparece en el buzón, la respuesta sale como mensaje nuevo (sin hilo en Exchange). Esa rama no está validada en Dev.
+- **Operación.** El equipo mantiene los dos flujos; los flujos dependen de la cuenta y de la licencia de una persona.

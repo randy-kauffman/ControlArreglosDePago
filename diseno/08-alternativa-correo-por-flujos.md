@@ -93,7 +93,7 @@ El Oficial sigue usando **Responder → Enviar** en la línea de tiempo. S-31 y 
 | Límites | Throughput de SSS, sin SLA | Premium: 40 000 solicitudes por usuario cada 24 h; Process: 250 000 por flujo (misma página). Estimado: ~25 acciones por correo entrante y ~15 por respuesta; 300 correos al día son ~12 000, entra en Premium |
 | DLP | — | Office 365 Outlook y Dataverse en el mismo grupo (Business) de la política del entorno |
 | Acceso condicional | — | Si BAC limita Graph o los conectores por IP o dispositivo, la conexión de Outlook puede fallar ([Known issues for connectors](https://learn.microsoft.com/connectors/common/known-issues)) |
-| Rol `SR - CARP - Servicio` | — | Le faltan Create, Write y Append de Email en la BU (hoy los tiene el Oficial en B, `04` líneas 87 a 91), `prvAppendToQueue`, AddToQueue y `prvAssign` para dar el email al team. Es un **cambio de rol**, lo decide el usuario. D-10 (Callback Registration) aplica también al disparador de Dataverse del flujo de salida |
+| Rol `SR - CARP - Servicio` | — | Le faltan Create, Write y Append de Email en la BU (hoy los tiene el Oficial en B, `04` líneas 87 a 91), `prvAppendToQueue`, AddToQueue y `prvAssign` para dar el email al team. ~~Es un cambio de rol, lo decide el usuario.~~ **Decidido: rol aparte** `SR - CARP - Servicio flujos` (§11, notas de F3), sin `prvAssign`. D-10 (Callback Registration) aplica también al disparador de Dataverse del flujo de salida |
 
 ## 6. Lo que no se replica igual (diferencias visibles o de operación)
 
@@ -130,7 +130,7 @@ Esfuerzo estimado del plan B:
 | F0 | Verificaciones V-1 a V-4 en Dev | 2 |
 | F1 | Flujo ENT con playbook (idempotencia, correlación, adjuntos, queue, categoría) | 3 |
 | F2 | ~~Columna `sanic_idoutlook`~~ (descartada, §11 notas de F2), flujo SND con playbook (bloqueo, Graph createReply/send, Sent con `messageid`, Failed) | 3,5 |
-| F3 | Cambio de rol de Servicio (decisión del usuario), ajuste de SAL, retiro de EST para este modo, procedimiento de instalación | 1,5 |
+| F3 | Rol nuevo `SR - CARP - Servicio flujos` (en vez de cambiar Servicio, decisión del usuario), corrección del JSON de adjuntos de SND, procedimiento de instalación y de cambio de modo. ~~Ajuste de SAL~~ y ~~retiro de EST~~: no se hacen (§11, notas de F3) | 1 |
 | F4 | Humo "tanda 4": repetir H-5, H-6, H-25 a H-28 y S-31 con flujos | 2 |
 | F5 | Manual y documentación | 0,5 |
 | **Total** | | **12,5** |
@@ -154,9 +154,9 @@ Regla para todas: correos solo entre los buzones de prueba 1 a 4, nunca el buzó
 - **Cambian si se construye el plan B:**
   - playbooks nuevos `playbooks/flujo/carp-ent.md` y `carp-snd.md`;
   - ~~columna `sanic_idoutlook` en `email` (diccionario y playbook de tabla)~~: descartada en F2 (§11, notas de F2);
-  - rol `SR - CARP - Servicio` (`04`);
-  - SAL con dos comprobaciones nuevas (corridas fallidas de ENT y SND, y mensajes sin categoría);
-  - EST no aplica en ese modo;
+  - ~~rol `SR - CARP - Servicio` (`04`)~~: no se modifica; rol nuevo `SR - CARP - Servicio flujos` (`playbooks/rol/sr_carp_servicio_flujos.md`, inventario 6.6; §11, notas de F3);
+  - ~~SAL con dos comprobaciones nuevas~~: no se hace, SAL no cambia (§11, notas de F3);
+  - EST no aplica en ese modo (se documenta, no se retira);
   - `manual/procedimiento-instalacion.md` con una sección "modo flujos" en vez de cola y buzón con SSS;
   - inventario: grupo 11 con dos filas nuevas.
 - **Selección de modo por entorno:** una variable de entorno nueva (`sanic_carp_ev_modocorreo`: `sss` | `flujos`) deja apagados los flujos ENT y SND cuando el entorno usa SSS. Se instala la misma solución en los dos casos.
@@ -181,3 +181,16 @@ Flujo SND construido (`playbooks/flujo/carp-snd.md`, inventario 11.5) en la solu
 3. **Rama sin original (nueva, no estaba en §4).** Si el email saliente no tiene padre, o el `messageid` del padre no aparece en el buzón del área, el flujo no puede usar `createReply`: crea un mensaje nuevo (`POST /users/{buzón}/messages`), agrega adjuntos, lee su `internetMessageId`, envía y cierra en Sent con ese `messageid`. Sale sin In-Reply-To; la contestación del cliente igual correlaciona (por el `messageid` grabado). **No está validada en Dev**: el spike solo probó la respuesta a un original. Va a F4 (un caso Pending Send sin padre).
 4. **Un solo código para spike y producción:** `generar_flujos.py` genera el spike SND (r2) y el SND de producción con la misma función (`_salida`); el JSON del spike no cambió.
 5. **Límite de adjuntos por Graph:** un `fileAttachment` simple admite ~3 MB; entre 3 y 5 MB (tope de `MaxUploadFileSize`) fallaría. Pendiente a F4 si hace falta una sesión de carga.
+
+### Notas de la construcción de F3 (2026-11-03)
+
+El plan B es una **demo temporal**: sirve para que el negocio pruebe y vea lo que hará SSS antes de que BAC apruebe la cola y la sincronización del servidor. Por eso F3 se mantuvo mínimo. Desviaciones respecto de lo escrito arriba:
+
+1. **Rol aparte, no cambio de Servicio.** Decisión del usuario: `SR - CARP - Servicio` no se toca. Se creó `SR - CARP - Servicio flujos` (`playbooks/rol/sr_carp_servicio_flujos.md`, inventario 6.6), con 5 privilegios propios en Local sobre el rol base `App Opener`: Create, Write y Append de Email (`prvCreateActivity`, `prvWriteActivity`, `prvAppendActivity`), `prvAppendToQueue` y AppendTo de Conversación. Se asigna **además** de Servicio, solo a la cuenta dueña de las conexiones de ENT y SND y solo en modo flujos (paso de instalación, no de la solución). No se asignó a nadie en Dev.
+2. **Sin `prvAssign`.** §5 lo listaba "para dar el email al team". La prueba de roles con un no administrador (`spikes/roles/RESULTADO.md`, C1) mostró que crear con el team como dueño no necesita Assign, y ENT crea el email ya con el team como dueño y no reasigna. Tampoco `prvAppendToActivity` ni `prvAppendToUser` (los flujos no ponen padre ni usuario en un lookup). **Sin probar con un no administrador**: si F4 da 403, se corrige el playbook.
+3. **Probable redundancia.** Una cuenta de servicio dentro de la BU ya recibe el Oficial por el team por defecto, y el Oficial trae Create, Write y Append de Email, AppendTo de Queue y AppendTo de Conversación. Es posible que Servicio + Oficial alcance y el rol nuevo sobre. F4 lo confirma; si es así, no se asigna.
+4. **Sin cambios en SAL.** Las fallas de ENT y SND se ven en el historial de ejecuciones y en la vista "Respuestas con error de envío". SAL no se modifica para este modo.
+5. **Sin carga por partes (Graph upload session).** Un adjunto de 3 a 5 MB hace que esa respuesta termine en Failed. Diferencia aceptada para la demo (ya anotada en F2, punto 5).
+6. **EST no aplica en modo flujos.** No se retira ni se cambia: sigue en la solución y se documenta que no vigila nada útil con los flujos. SAL sigue encendido.
+7. **Cuerpo del adjunto de SND como objeto.** El `fileAttachment` se armaba concatenando texto, y un nombre de archivo con comillas rompía el JSON. Ahora lo arma un Compose con un objeto y `@odata.type` se antepone con `union()` (como clave del Compose, Power Automate la lee como expresión y rechaza el flujo). Cambia el cuerpo compartido, o sea el SND del spike y el de producción, en el repositorio. **El SND de Dev no se pudo actualizar**: el service principal, incluso con `como_servicio.py`, recibe `ConnectionAuthorizationFailed` al guardar el flujo porque la conexión de Outlook es de otra persona. Queda pendiente para F4: la persona dueña de la conexión reimporta o recrea el flujo desde `playbooks/flujo/carp-snd.json`. El SND de Dev sigue apagado con el armado anterior.
+8. **Cambio de modo SSS ↔ flujos.** Procedimiento en `manual/procedimiento-instalacion.md`, sección 11. Volver a SSS exige Test & Enable (`spikes/flujos-correo/RESULTADO.md`).

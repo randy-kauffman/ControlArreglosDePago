@@ -464,8 +464,23 @@
                 }
               },
               "actions": {
-                "Agregar_adjunto": {
+                "Cuerpo_del_adjunto": {
                   "runAfter": {},
+                  "type": "Compose",
+                  "inputs": {
+                    "name": "@items('Por_cada_adjunto')?['filename']",
+                    "contentType": "@items('Por_cada_adjunto')?['mimetype']",
+                    "contentBytes": "@items('Por_cada_adjunto')?['body']",
+                    "isInline": "@not(empty(items('Por_cada_adjunto')?['attachmentcontentid']))",
+                    "contentId": "@coalesce(items('Por_cada_adjunto')?['attachmentcontentid'], '')"
+                  }
+                },
+                "Agregar_adjunto": {
+                  "runAfter": {
+                    "Cuerpo_del_adjunto": [
+                      "Succeeded"
+                    ]
+                  },
                   "type": "OpenApiConnection",
                   "inputs": {
                     "host": {
@@ -477,7 +492,7 @@
                       "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spksalida@@'), '/messages/', body('Crear_respuesta')?['id'], '/attachments')",
                       "Method": "POST",
                       "ContentType": "application/json",
-                      "Body": "@string(json(concat('{\"@odata.type\":\"#microsoft.graph.fileAttachment\",\"name\":\"', items('Por_cada_adjunto')?['filename'], '\",\"contentType\":\"', items('Por_cada_adjunto')?['mimetype'], '\",\"contentBytes\":\"', items('Por_cada_adjunto')?['body'], '\",\"isInline\":', if(empty(items('Por_cada_adjunto')?['attachmentcontentid']), 'false', 'true'), ',\"contentId\":\"', coalesce(items('Por_cada_adjunto')?['attachmentcontentid'], ''), '\"}')))"
+                      "Body": "@string(union(json('{\"@odata.type\":\"#microsoft.graph.fileAttachment\"}'), outputs('Cuerpo_del_adjunto')))"
                     }
                   },
                   "retryPolicy": {

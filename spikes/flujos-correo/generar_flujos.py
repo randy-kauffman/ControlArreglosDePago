@@ -422,8 +422,14 @@ def _salida(bz, diag, seguro, sin_padre, despues=None):
         "Por_cada_adjunto": {"runAfter": ra("Adjuntos_del_correo"), "type": "Foreach",
             "foreach": "@coalesce(outputs('Adjuntos_del_correo')?['body/value'], json('[]'))",
             "runtimeConfiguration": {"concurrency": {"repetitions": 1}},
-            "actions": {"Agregar_adjunto": http({}, f"@concat('{G}', {bz}, '/messages/', {borrador}, '/attachments')", "POST",
-                "@string(json(concat('{\"@odata.type\":\"#microsoft.graph.fileAttachment\",\"name\":\"', items('Por_cada_adjunto')?['filename'], '\",\"contentType\":\"', items('Por_cada_adjunto')?['mimetype'], '\",\"contentBytes\":\"', items('Por_cada_adjunto')?['body'], '\",\"isInline\":', if(empty(items('Por_cada_adjunto')?['attachmentcontentid']), 'false', 'true'), ',\"contentId\":\"', coalesce(items('Por_cada_adjunto')?['attachmentcontentid'], ''), '\"}')))")}},
+            "actions": {
+                "Cuerpo_del_adjunto": compose({}, {
+                    "name": "@items('Por_cada_adjunto')?['filename']", "contentType": "@items('Por_cada_adjunto')?['mimetype']", "contentBytes": "@items('Por_cada_adjunto')?['body']",
+                    "isInline": "@not(empty(items('Por_cada_adjunto')?['attachmentcontentid']))", "contentId": "@coalesce(items('Por_cada_adjunto')?['attachmentcontentid'], '')"}),
+                "Agregar_adjunto": http(ra("Cuerpo_del_adjunto"), f"@concat('{G}', {bz}, '/messages/', {borrador}, '/attachments')", "POST",
+                    # La clave "@odata.type" no puede ir en el objeto del Compose (Power Automate la lee como expresión):
+                    # se antepone con union() a un literal constante, para que quede primera (Graph la espera primero).
+                    "@string(union(json('{\"@odata.type\":\"#microsoft.graph.fileAttachment\"}'), outputs('Cuerpo_del_adjunto')))")}},
         "Leer_borrador": http(ra("Por_cada_adjunto"), f"@concat('{G}', {bz}, '/messages/', {borrador}, '?$select=id,internetMessageId,subject')"),
         "Fijar_imid": {"runAfter": ra("Leer_borrador"), "type": "SetVariable", "inputs": {"name": "varImid", "value": "@body('Leer_borrador')?['internetMessageId']"}},
         "Enviar_respuesta": http(ra("Fijar_imid"), f"@concat('{G}', {bz}, '/messages/', {borrador}, '/send')", "POST"),
