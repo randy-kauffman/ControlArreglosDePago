@@ -366,6 +366,36 @@
    "http": 202,
    "t_envio_utc": "2026-11-03T14:52:18Z",
    "internetMessageId": "<PH9PR06MB61061295FC95F20C851CD3FD52D1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_3",
+   "para": [
+    "PP_MAIL_BUZON_4"
+   ],
+   "asunto": "SPK-FC-V4 nuevo 1793720110",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T15:35:11Z",
+   "internetMessageId": "<BL0PR06MB467505B1D1AEEE5A244B55F6D0692@BL0PR06MB4675.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_3",
+   "para": [
+    "PP_MAIL_BUZON_4"
+   ],
+   "asunto": "SPK-FC-V4 adjuntos 1793720184",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T15:36:25Z",
+   "internetMessageId": "<BL0PR06MB467537AC265753C5C1C01706D0692@BL0PR06MB4675.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_3",
+   "para": [
+    "PP_MAIL_BUZON_1"
+   ],
+   "asunto": "SPK-FC-V4 adjuntos SSS 1793720185",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T15:36:25Z",
+   "internetMessageId": "<BL0PR06MB467568D8B68A647C23141A7AD0692@BL0PR06MB4675.namprd06.prod.outlook.com>"
   }
  ],
  "v2_intento1_sin_disparo": {
@@ -566,6 +596,29 @@
    "internetMessageId": "<BL0PR06MB46755618B3739E7C3D265742D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
    "t_envio_epoch": 1793716867.5591981,
    "asunto": "SPK-FC-V4 adjuntos SSS 1793716867"
+  }
+ },
+ "v4": {
+  "desde": "2026-11-03T15:35:09Z",
+  "A": {
+   "http": 202,
+   "internetMessageId": "<BL0PR06MB467505B1D1AEEE5A244B55F6D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793720111.395876,
+   "asunto": "SPK-FC-V4 nuevo 1793720110"
+  },
+  "A_email": "a3a23046-9cd7-f111-84e8-0022480c5699",
+  "A_conv": "97590b48-9cd7-f111-84e8-70a8a5afa915",
+  "D": {
+   "http": 202,
+   "internetMessageId": "<BL0PR06MB467537AC265753C5C1C01706D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793720185.3782234,
+   "asunto": "SPK-FC-V4 adjuntos 1793720184"
+  },
+  "D_sss": {
+   "http": 202,
+   "internetMessageId": "<BL0PR06MB467568D8B68A647C23141A7AD0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793720185.8957798,
+   "asunto": "SPK-FC-V4 adjuntos SSS 1793720185"
   }
  }
 }
