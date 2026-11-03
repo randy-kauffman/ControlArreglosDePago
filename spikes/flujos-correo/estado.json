@@ -396,6 +396,26 @@
    "http": 202,
    "t_envio_utc": "2026-11-03T15:36:25Z",
    "internetMessageId": "<BL0PR06MB467568D8B68A647C23141A7AD0692@BL0PR06MB4675.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_2",
+   "para": [
+    "PP_MAIL_BUZON_1"
+   ],
+   "asunto": "SPK-FC-F4 consulta 1793727083",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T17:31:23Z",
+   "internetMessageId": "<PH9PR06MB610612B93AB3A693515E63AE02D1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_2",
+   "para": [
+    "PP_MAIL_BUZON_1"
+   ],
+   "asunto": "RE: SPK-FC-F4 consulta 1793727083",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T17:33:12Z",
+   "internetMessageId": "<PH9PR06MB6106124D1FCB2158366B875311D1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
   }
  ],
  "v2_intento1_sin_disparo": {
@@ -634,5 +654,25 @@
    "incomingemailstatus": 1
   },
   "desde": "2026-11-03T16:43:18Z"
+ },
+ "f4": {
+  "cliente": {
+   "http": 202,
+   "internetMessageId": "<PH9PR06MB610612B93AB3A693515E63AE02D1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793727083.5129428,
+   "asunto": "SPK-FC-F4 consulta 1793727083"
+  },
+  "email_id": "17260388-acd7-f111-84e8-0022480c5699",
+  "conv": "b354038a-acd7-f111-84e8-70a8a5afa915",
+  "resp_id": "227b5e92-acd7-f111-84e8-0022480c5699",
+  "t_resp": 1793727165.8454523,
+  "contestacion": {
+   "http": 202,
+   "internetMessageId": "<PH9PR06MB6106124D1FCB2158366B875311D1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793727192.626376,
+   "asunto": "RE: SPK-FC-F4 consulta 1793727083"
+  },
+  "asunto_nuevo": "SPK-FC-F4 aviso del Oficial 1793727223",
+  "nuevo_id": "13f830b4-acd7-f111-84e8-0022480c5699"
  }
 }
