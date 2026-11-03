@@ -1,4 +1,4 @@
-"""V-4, idempotencia: después de que el usuario REENVIÓ (Resubmit) en el historial del flujo V4 (r3) la corrida del correo A, comprueba que NO se duplicó el email."""
+"""V-4, idempotencia: después de que el usuario REENVIÓ (Resubmit) en el historial del flujo V4 (r8) la corrida del correo A, comprueba que NO se duplicó el email."""
 from flib import *
 
 dv = adm()

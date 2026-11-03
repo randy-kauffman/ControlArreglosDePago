@@ -231,7 +231,8 @@
           "nombre": "@item()?['name']",
           "estado": "@item()?['status']",
           "codigo": "@item()?['code']",
-          "error": "@coalesce(item()?['error']?['message'], item()?['outputs']?['body']?['error']?['message'], '')"
+          "error": "@item()?['error']",
+          "cuerpo": "@take(string(item()?['outputs']?['body']), 600)"
         }
       }
     },

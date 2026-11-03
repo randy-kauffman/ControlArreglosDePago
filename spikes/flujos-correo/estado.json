@@ -245,5 +245,124 @@
    "error": null
   }
  },
- "solucion_spk": "ff34766f-0ed7-f111-84e8-0022480c5699"
+ "solucion_spk": "ff34766f-0ed7-f111-84e8-0022480c5699",
+ "correos_enviados": [
+  {
+   "desde": "PP_MAIL_BUZON_2",
+   "para": [
+    "PP_MAIL_BUZON_4"
+   ],
+   "asunto": "SPK-FC-V2 uno 1793665484",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T00:24:45Z",
+   "internetMessageId": "<PH9PR06MB61061206DF92208AFDA61E035BD1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_2",
+   "para": [
+    "PP_MAIL_BUZON_4"
+   ],
+   "asunto": "SPK-FC-V2 uno 1793669192",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T01:26:33Z",
+   "internetMessageId": "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_2",
+   "para": [
+    "PP_MAIL_BUZON_4"
+   ],
+   "asunto": "RE: SPK-FC-V2 uno 1793669192",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T01:27:35Z",
+   "internetMessageId": "<PH9PR06MB6106121C3B099A84F8370E5F11D1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  },
+  {
+   "desde": "PP_MAIL_BUZON_3",
+   "para": [
+    "PP_MAIL_BUZON_4"
+   ],
+   "asunto": "SPK-FC-V4 nuevo 1793678692",
+   "http": 202,
+   "t_envio_utc": "2026-11-03T04:04:53Z",
+   "internetMessageId": "<BL0PR06MB4675EE3B9C8691C988C3C6E7D0692@BL0PR06MB4675.namprd06.prod.outlook.com>"
+  }
+ ],
+ "v2_intento1_sin_disparo": {
+  "m1": {
+   "http": 202,
+   "internetMessageId": "<PH9PR06MB61061206DF92208AFDA61E035BD1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793665485.0348895,
+   "asunto": "SPK-FC-V2 uno 1793665484"
+  }
+ },
+ "v2": {
+  "m1": {
+   "http": 202,
+   "internetMessageId": "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793669193.2110105,
+   "asunto": "SPK-FC-V2 uno 1793669192"
+  },
+  "diag1": {
+   "flujo": "V2 encabezados y respuesta",
+   "recibido": "2026-11-03T01:27:32.7459775Z",
+   "trigger_id_largo": 152,
+   "trigger_internetMessageId": "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "graph_internetMessageId": "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "graph_conversationId_presente": true,
+   "encabezados_cantidad": 47,
+   "encabezados_nombres": "Received,Received,Received,Authentication-Results,Content-Type,Content-Transfer-Encoding,From,To,Subject,Thread-Topic,Thread-Index,Date,Message-ID,Accept-Language,Content-Language,X-MS-Exchange-Organization-SCL,X-MS-TNEF-Correlator,MIME-Version,X-MS-Exchange-Organization-MessageDirectionality,X-MS-Exchange-Organization-AuthSource,X-MS-Exchange-Organization-AuthAs,X-MS-Exchange-Organization-AuthMechanism,X-MS-Exchange-Organization-Network-Message-Id,X-MS-PublicTrafficType,X-MS-TrafficTypeDiagnostic,Return-Path,X-MS-Exchange-Organization-ExpirationStartTime,X-MS-Exchange-Organization-ExpirationStartTimeReason,X-MS-Exchange-Organization-ExpirationInterval,X-MS-Exchange-Organization-ExpirationIntervalReason,X-MS-Office365-Filtering-Correlation-Id,X-Microsoft-Antispam,X-Forefront-Antispam-Report,X-MS-Exchange-CrossTenant-OriginalArrivalTime,X-MS-Exchange-CrossTenant-FromEntityHeader,X-MS-Exchange-CrossTenant-Id,X-MS-Exchange-CrossTenant-AuthSource,X-MS-Exchange-CrossTenant-AuthAs,X-MS-Exchange-CrossTenant-Network-Message-Id,X-MS-Exchange-CrossTenant-MailboxType,X-MS-Exchange-CrossTenant-UserPrincipalName,X-MS-Exchange-Transport-CrossTenantHeadersStamped,X-MS-Exchange-Transport-EndToEndLatency,X-MS-Exchange-Processed-By-BccFoldering,X-MS-Exchange-ExternalInOutlookResult,X-Microsoft-Antispam-Mailbox-Delivery,X-Microsoft-Antispam-Message-Info",
+   "in_reply_to": null,
+   "references": null,
+   "borrador_id_largo": 152,
+   "borrador_internetMessageId_createReply": "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "borrador_internetMessageId_get": "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "enviar_status": 202,
+   "enviados_coincide_con_borrador": true,
+   "enviados_internetMessageId": "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "acciones": null,
+   "_activityid": "099c7abd-25d7-f111-84e8-0022480c5699",
+   "_createdon": "2026-11-03T01:27:32Z"
+  },
+  "resp_flujo": {
+   "id": "AAMkADFkMjNjODliLTYzMTMtNDgxZC04Mjk0LWE4Njc3MmNkODExYgBGAAAAAADqmCVN3pYLRb3i2i_a6oDEBwC9ZLU9TgbERr3wyKycax6aAAAAAAEMAAC9ZLU9TgbERr3wyKycax6aAAAXJGzhAAA=",
+   "internetMessageId": "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+  },
+  "m2": {
+   "http": 202,
+   "internetMessageId": "<PH9PR06MB6106121C3B099A84F8370E5F11D1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793669255.3359025,
+   "asunto": "RE: SPK-FC-V2 uno 1793669192"
+  },
+  "diag2": {
+   "flujo": "V2 encabezados y respuesta",
+   "recibido": "2026-11-03T01:28:48.7999944Z",
+   "trigger_id_largo": 152,
+   "trigger_internetMessageId": "<PH9PR06MB6106121C3B099A84F8370E5F11D1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "graph_internetMessageId": "<PH9PR06MB6106121C3B099A84F8370E5F11D1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "graph_conversationId_presente": true,
+   "encabezados_cantidad": 49,
+   "encabezados_nombres": "Received,Received,Received,Authentication-Results,Content-Type,Content-Transfer-Encoding,From,To,Subject,Thread-Topic,Thread-Index,Date,Message-ID,References,In-Reply-To,Accept-Language,Content-Language,X-MS-Exchange-Organization-SCL,X-MS-TNEF-Correlator,MIME-Version,X-MS-Exchange-Organization-MessageDirectionality,X-MS-Exchange-Organization-AuthSource,X-MS-Exchange-Organization-AuthAs,X-MS-Exchange-Organization-AuthMechanism,X-MS-Exchange-Organization-Network-Message-Id,X-MS-PublicTrafficType,X-MS-TrafficTypeDiagnostic,Return-Path,X-MS-Exchange-Organization-ExpirationStartTime,X-MS-Exchange-Organization-ExpirationStartTimeReason,X-MS-Exchange-Organization-ExpirationInterval,X-MS-Exchange-Organization-ExpirationIntervalReason,X-MS-Office365-Filtering-Correlation-Id,X-Microsoft-Antispam,X-Forefront-Antispam-Report,X-MS-Exchange-CrossTenant-OriginalArrivalTime,X-MS-Exchange-CrossTenant-FromEntityHeader,X-MS-Exchange-CrossTenant-Id,X-MS-Exchange-CrossTenant-AuthSource,X-MS-Exchange-CrossTenant-AuthAs,X-MS-Exchange-CrossTenant-Network-Message-Id,X-MS-Exchange-CrossTenant-MailboxType,X-MS-Exchange-CrossTenant-UserPrincipalName,X-MS-Exchange-Transport-CrossTenantHeadersStamped,X-MS-Exchange-Transport-EndToEndLatency,X-MS-Exchange-Processed-By-BccFoldering,X-MS-Exchange-ExternalInOutlookResult,X-Microsoft-Antispam-Mailbox-Delivery,X-Microsoft-Antispam-Message-Info",
+   "in_reply_to": "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "references": "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com> <MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "borrador_id_largo": 152,
+   "borrador_internetMessageId_createReply": "<MWHPR06MB999838E89A8919C7EE5A8C2785D7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "borrador_internetMessageId_get": "<MWHPR06MB999838E89A8919C7EE5A8C2785D7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "enviar_status": 202,
+   "enviados_coincide_con_borrador": true,
+   "enviados_internetMessageId": "<MWHPR06MB999838E89A8919C7EE5A8C2785D7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "acciones": null,
+   "_activityid": "95f1d1ea-25d7-f111-84e8-0022480c5699",
+   "_createdon": "2026-11-03T01:28:48Z"
+  }
+ },
+ "v4_r7_fallido": {
+  "desde": "2026-11-03T04:04:51Z",
+  "A": {
+   "http": 202,
+   "internetMessageId": "<BL0PR06MB4675EE3B9C8691C988C3C6E7D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793678693.09861,
+   "asunto": "SPK-FC-V4 nuevo 1793678692"
+  }
+ }
 }

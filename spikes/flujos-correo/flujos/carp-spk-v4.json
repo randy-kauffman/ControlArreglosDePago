@@ -157,7 +157,7 @@
               "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
             },
             "parameters": {
-              "Uri": "@concat(concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/messages/', triggerOutputs()?['body/id']), '/attachments?$select=id,name,contentType,size,isInline,contentId,contentBytes')",
+              "Uri": "@concat(concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '/messages/', triggerOutputs()?['body/id']), '/attachments')",
               "Method": "GET",
               "ContentType": "application/json"
             }
@@ -605,7 +605,8 @@
                   "nombre": "@item()?['name']",
                   "estado": "@item()?['status']",
                   "codigo": "@item()?['code']",
-                  "error": "@coalesce(item()?['error']?['message'], item()?['outputs']?['body']?['error']?['message'], '')"
+                  "error": "@item()?['error']",
+                  "cuerpo": "@take(string(item()?['outputs']?['body']), 600)"
                 }
               }
             },
@@ -671,7 +672,8 @@
           "nombre": "@item()?['name']",
           "estado": "@item()?['status']",
           "codigo": "@item()?['code']",
-          "error": "@coalesce(item()?['error']?['message'], item()?['outputs']?['body']?['error']?['message'], '')"
+          "error": "@item()?['error']",
+          "cuerpo": "@take(string(item()?['outputs']?['body']), 600)"
         }
       }
     },

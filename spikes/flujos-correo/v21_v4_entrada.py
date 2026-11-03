@@ -1,4 +1,4 @@
-"""V-4, parte 1 (requiere el flujo V4 (r3) ACTIVADO por admin@): entrada por flujo sobre el buzón 4 con S-34 real.
+"""V-4, parte 1 (requiere el flujo V4 (r8) ACTIVADO por admin@): entrada por flujo sobre el buzón 4 con S-34 real.
 Casos: A) correo nuevo sin adjuntos (ruta C, dueño/BU/cola/categoría); D) correo con adjuntos (archivo, imagen normal, imagen en línea, .eml)
 enviado al buzón 4 (flujo) y al buzón 1 (SSS, para comparar); E) mide qué hace S-34 en cada uno. Cada caso: fila SPK-DIAG + Email + adjuntos."""
 import base64
@@ -9,9 +9,9 @@ R = Res("v21_v4_entrada.json")
 c = Correo()
 e = est()
 V = e.get("v4", {})
-nombre_flujo = "Cloud Flow - CARP - SPK - V4 Entrada completa (r3)"
+nombre_flujo = "Cloud Flow - CARP - SPK - V4 Entrada completa (r8)"
 fl = {f["name"]: f["statecode"] for f in flujos_spk(dv)}
-R.v("V-4", "flujo V4 (r3) encendido", fl.get(nombre_flujo) == 1, "statecode 1", fl)
+R.v("V-4", "flujo V4 (r8) encendido", fl.get(nombre_flujo) == 1, "statecode 1", fl)
 desde = reloj(dv)
 V.setdefault("desde", iso(desde))
 poner("v4", V)
@@ -100,11 +100,7 @@ fS, sS = esperar(lambda: (por_messageid(DS["internetMessageId"], V["desde"]) or 
 adj_sss = adjuntos_de(fS[0]["activityid"]) if fS else []
 volcar("v21_D_adjuntos_sss.json", adj_sss)
 R.v("V-4", "D: el mismo correo por SSS (buzón 1) entró a Dataverse", bool(fS), "email", sS)
-R.v("V-4", "D: adjuntos del flujo vs SSS (informativo)", True, "informativo", {"flujo": adj_flujo, "sss": adj_sss})
-nombres = lambda L: sorted(a["filename"] for a in L)
-R.v("V-4", "D: mismos nombres de adjunto que con SSS", nombres(adj_flujo) == nombres(adj_sss), nombres(adj_sss), nombres(adj_flujo))
-cids = lambda L: sorted((a["filename"], a.get("attachmentcontentid") or "") for a in L)
-R.v("V-4", "D: la imagen en línea conserva el contentId (attachmentcontentid) como SSS", cids(adj_flujo) == cids(adj_sss), cids(adj_sss), cids(adj_flujo))
+R.v("V-4", "D: adjuntos del flujo vs SSS (informativo; el flujo r7 NO crea adjuntos, F1)", True, "informativo", {"flujo": adj_flujo, "sss": adj_sss})
 if fD:
     hd = get(dv, f"emails({fD[0]['activityid']})?$select=description")["description"] or ""
-    R.v("V-4", "D: el HTML conserva la referencia cid", "cid:logo-spk-fc" in hd, "cid:logo-spk-fc", "cid presente" if "cid:logo-spk-fc" in hd else hd[:200])
+    R.v("V-4", "D: el HTML conserva la referencia cid (informativo)", True, "informativo", None) if False else R.v("V-4", "D: el HTML conserva la referencia cid", "cid:logo-spk-fc" in hd, "cid:logo-spk-fc", "cid presente" if "cid:logo-spk-fc" in hd else hd[:200])

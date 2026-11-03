@@ -1,0 +1,147 @@
+[
+ {
+  "prueba": "V-2",
+  "sub": "flujo V2 encendido",
+  "ok": true,
+  "esperado": "statecode 1",
+  "obtenido": {
+   "Cloud Flow - CARP - SPK - SND Salida de respuestas": 0,
+   "Cloud Flow - CARP - SPK - SND Salida de respuestas (r2)": 1,
+   "Cloud Flow - CARP - SPK - V2 Encabezados y respuesta": 1,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r2)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r3)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r4)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r5)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r6)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r7)": 1
+  }
+ },
+ {
+  "prueba": "V-2",
+  "sub": "Graph acepta el envío buzón 2 -> buzón 4",
+  "ok": true,
+  "esperado": 202,
+  "obtenido": 202
+ },
+ {
+  "prueba": "V-2",
+  "sub": "el flujo corre y deja su diagnóstico",
+  "ok": true,
+  "esperado": "fila SPK-DIAG",
+  "obtenido": {
+   "segundos_hasta_el_diagnostico": 59
+  }
+ },
+ {
+  "prueba": "V-2",
+  "sub": "Graph lee el mensaje con el id del disparador (internetMessageId igual al del disparador)",
+  "ok": true,
+  "esperado": "iguales",
+  "obtenido": [
+   "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  ]
+ },
+ {
+  "prueba": "V-2",
+  "sub": "internetMessageId coincide con el que registró Graph al crear el borrador en el envío",
+  "ok": true,
+  "esperado": "iguales",
+  "obtenido": [
+   "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
+   "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+  ]
+ },
+ {
+  "prueba": "V-2",
+  "sub": "llegan internetMessageHeaders",
+  "ok": true,
+  "esperado": "> 0",
+  "obtenido": {
+   "cantidad": 47,
+   "nombres": "Received,Received,Received,Authentication-Results,Content-Type,Content-Transfer-Encoding,From,To,Subject,Thread-Topic,Thread-Index,Date,Message-ID,Accept-Language,Content-Language,X-MS-Exchange-Organization-SCL,X-MS-TNEF-Correlator,MIME-Version,X-MS-Exchange-Organization-MessageDirectionality,X-MS-Exchange-Organization-AuthSource,X-MS-Exchange-Organization-AuthAs,X-MS-Exchange-Organization-AuthMechanism,X-MS-Exchange-Organization-Network-Message-Id,X-MS-PublicTrafficType,X-MS-TrafficTypeDiagnostic,Return-Path,X-MS-Exchange-Organization-ExpirationStartTime,X-MS-Exchange-Organization-ExpirationStartTimeReason,X-MS-Exchange-Organization-ExpirationInterval,X-MS-Exchange-Organization-ExpirationIntervalReason,X-MS-Office365-Filtering-Correlation-Id,X-Microsoft-Antispam,X-Forefront-Antispam-Report,X-MS-Exchange-CrossTenant-OriginalArrivalTime,X-MS-Exchange-CrossTenant-FromEntityHeader,X-MS-Exchange-CrossTenant-Id,X-MS-Exchange-CrossTenant-AuthSource,X-MS-Exchange-CrossTenant-AuthAs,X-MS-Exchange-CrossTenant-Network-Message-Id,X-MS-Exchange-CrossTenant-MailboxType,X-MS-Exchange-CrossTenant-UserPrincipalName,X-MS-Exchange-Transport-CrossTenantHeadersStamped,X-MS-Exchange-Transport-EndToEndLatency,X-MS-Exchange-Processed-By-BccFoldering,X-MS-Exchange-ExternalInOutlookResult,X-Microsoft-Antispam-Mailbox-Delivery,X-Microsoft-Antispam-Message-Info"
+  }
+ },
+ {
+  "prueba": "V-2",
+  "sub": "createReply + GET del borrador devuelven internetMessageId",
+  "ok": true,
+  "esperado": "presente",
+  "obtenido": [
+   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+  ]
+ },
+ {
+  "prueba": "V-2",
+  "sub": "send aceptado (202)",
+  "ok": true,
+  "esperado": 202,
+  "obtenido": 202
+ },
+ {
+  "prueba": "V-2",
+  "sub": "en Enviados el internetMessageId es el del borrador",
+  "ok": true,
+  "esperado": true,
+  "obtenido": "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+ },
+ {
+  "prueba": "V-2",
+  "sub": "estado de las acciones (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": null
+ },
+ {
+  "prueba": "V-2",
+  "sub": "la respuesta del flujo llega al buzón 2",
+  "ok": true,
+  "esperado": "mensaje RE:",
+  "obtenido": {
+   "segundos": 0
+  }
+ },
+ {
+  "prueba": "V-2",
+  "sub": "remitente de la respuesta = buzón 4",
+  "ok": true,
+  "esperado": "PP_MAIL_BUZON_4",
+  "obtenido": "PP_MAIL_BUZON_4"
+ },
+ {
+  "prueba": "V-2",
+  "sub": "internetMessageId recibido = el leído por el flujo en el borrador",
+  "ok": true,
+  "esperado": "iguales",
+  "obtenido": [
+   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+  ]
+ },
+ {
+  "prueba": "V-2",
+  "sub": "el flujo corre con la contestación y deja su diagnóstico",
+  "ok": true,
+  "esperado": "fila SPK-DIAG",
+  "obtenido": 81
+ },
+ {
+  "prueba": "V-2",
+  "sub": "In-Reply-To leído = internetMessageId de la respuesta que mandó el flujo",
+  "ok": true,
+  "esperado": "iguales",
+  "obtenido": [
+   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
+   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+  ]
+ },
+ {
+  "prueba": "V-2",
+  "sub": "References leído (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com> <MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+ }
+]

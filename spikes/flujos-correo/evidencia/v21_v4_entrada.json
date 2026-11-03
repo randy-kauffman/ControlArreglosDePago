@@ -1,0 +1,45 @@
+[
+ {
+  "prueba": "V-4",
+  "sub": "flujo V4 (r7) encendido",
+  "ok": true,
+  "esperado": "statecode 1",
+  "obtenido": {
+   "Cloud Flow - CARP - SPK - SND Salida de respuestas": 0,
+   "Cloud Flow - CARP - SPK - SND Salida de respuestas (r2)": 1,
+   "Cloud Flow - CARP - SPK - V2 Encabezados y respuesta": 1,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r2)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r3)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r4)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r5)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r6)": 0,
+   "Cloud Flow - CARP - SPK - V4 Entrada completa (r7)": 1
+  }
+ },
+ {
+  "prueba": "V-4",
+  "sub": "A: el flujo corre y deja su diagnóstico",
+  "ok": true,
+  "esperado": "fila SPK-DIAG",
+  "obtenido": 101
+ },
+ {
+  "prueba": "V-4",
+  "sub": "A: estado de las acciones y opcionales (informativo)",
+  "ok": true,
+  "esperado": "informativo",
+  "obtenido": {
+   "modo": "sin_procesar",
+   "acciones": null,
+   "opcionales": ""
+  }
+ },
+ {
+  "prueba": "V-4",
+  "sub": "A: existe UN email en Dataverse con el messageid real del correo",
+  "ok": false,
+  "esperado": 1,
+  "obtenido": 0
+ }
+]

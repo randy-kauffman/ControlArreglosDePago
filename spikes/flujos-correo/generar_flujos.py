@@ -65,7 +65,7 @@ def trigger_buzon(filtro_asunto, con_adjuntos):
 TODOS = ["Succeeded", "Failed", "Skipped", "TimedOut"]
 ESTADO_ACCIONES = lambda scope, desde: select({scope: TODOS}, f"@result('{scope}')", {
     "nombre": "@item()?['name']", "estado": "@item()?['status']", "codigo": "@item()?['code']",
-    "error": "@coalesce(item()?['error']?['message'], item()?['outputs']?['body']?['error']?['message'], '')"})
+    "error": "@item()?['error']", "cuerpo": "@take(string(item()?['outputs']?['body']), 600)"})
 DIAG = lambda quien, prefijo, ra_: dv("CreateRecord", ra_, {
     "entityName": "emails", "item/subject": f"@concat('SPK-DIAG {quien} ', coalesce({prefijo}, ''))",
     "item/description": "@string(outputs('Armar_diagnostico'))", "item/directioncode": True})
@@ -126,7 +126,7 @@ def _opcionales_v4(EC):
             "Marcar_categoria": http(ra("Agregar_a_la_cola", estados=["Succeeded", "Failed"]), f"@{MSG}", "PATCH", "{\"categories\": [\"CARP-registrado\"]}")}},
         "Resumen_opcionales": select({"Opcionales": TODOS}, "@result('Opcionales')", {
             "nombre": "@item()?['name']", "estado": "@item()?['status']", "codigo": "@item()?['code']",
-            "error": "@coalesce(item()?['error']?['message'], item()?['outputs']?['body']?['error']?['message'], '')"}),
+            "error": "@item()?['error']", "cuerpo": "@take(string(item()?['outputs']?['body']), 600)"}),
         "Fijar_opcionales": {"runAfter": {"Resumen_opcionales": TODOS}, "type": "SetVariable", "inputs": {"name": "varOpc", "value": "@string(body('Resumen_opcionales'))"}},
         "Fijar_modo_final": {"runAfter": {"Fijar_opcionales": TODOS}, "type": "AppendToStringVariable", "inputs": {"name": "varModo", "value": "+registrado"}},
     }
@@ -206,7 +206,7 @@ def flujo_v4():
             "a": "@trim(coalesce(first(body('Filtrar_en_respuesta_a'))?['value'], ''))",
             "b": "@replace(replace(trim(coalesce(first(body('Filtrar_en_respuesta_a'))?['value'], '')), '<', ''), '>', '')",
             "c": "@concat('<', replace(replace(trim(coalesce(first(body('Filtrar_en_respuesta_a'))?['value'], '')), '<', ''), '>', ''), '>')"}),
-        "Leer_adjuntos": http(ra("Variantes"), f"@concat({MSG}, '/attachments?$select=id,name,contentType,size,isInline,contentId,contentBytes')"),
+        "Leer_adjuntos": http(ra("Variantes"), f"@concat({MSG}, '/attachments')"),  # r8: $select=contentBytes falla en /attachments; el tipo base attachment no la tiene
         "Resumen_adjuntos": select(ra("Leer_adjuntos"), "@coalesce(body('Leer_adjuntos')?['value'], json('[]'))", {
             "nombre": "@item()?['name']", "tipo": "@if(empty(item()?['contentBytes']), 'sin_contenido_incrustado', 'archivo')", "enLinea": "@item()?['isInline']", "contentId": "@item()?['contentId']",
             "tamano": "@item()?['size']", "tieneBytes": "@not(empty(item()?['contentBytes']))"}),
@@ -333,7 +333,7 @@ FLUJOS = [
     ("carp-spk-v2", "Cloud Flow - CARP - SPK - V2 Encabezados y respuesta", flujo_v2,
      "Spike F0 V-2: lee los encabezados del correo nuevo del buzon de prueba 4 por Graph, responde con createReply y send y lee el internetMessageId. Deja una fila SPK-DIAG.",
      {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spkbuzon"]),
-    ("carp-spk-v4", "Cloud Flow - CARP - SPK - V4 Entrada completa (r7)", flujo_v4,
+    ("carp-spk-v4", "Cloud Flow - CARP - SPK - V4 Entrada completa (r8)", flujo_v4,
      "Spike F0 V-4: captura el correo nuevo del buzon de prueba 4 y crea el email en Dataverse con dueno el team del area (idempotencia, correlacion por In-Reply-To, adjuntos, cola, categoria). Deja una fila SPK-DIAG.",
      {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spkbuzon", "sanic_carp_ev_spkteamarea", "sanic_carp_ev_spkcola"]),
     ("carp-spk-snd", "Cloud Flow - CARP - SPK - SND Salida de respuestas (r2)", flujo_snd,

@@ -1,0 +1,18 @@
+{
+ "flujo": "V4 entrada completa",
+ "recibido": "2026-11-03T04:06:12.4939455Z",
+ "modo": "sin_procesar",
+ "correo_creado": "",
+ "conversacion_encontrada": "",
+ "in_reply_to": "",
+ "trigger_internetMessageId": "<<correo>>",
+ "graph_internetMessageId": "<<correo>>",
+ "trigger_adjuntos_cantidad": 0,
+ "trigger_hasAttachment": null,
+ "graph_adjuntos": null,
+ "duplicado": false,
+ "acciones": null,
+ "opcionales": "",
+ "_activityid": "ec1b14e7-3bd7-f111-84e8-0022480c5699",
+ "_createdon": "2026-11-03T04:06:12Z"
+}
