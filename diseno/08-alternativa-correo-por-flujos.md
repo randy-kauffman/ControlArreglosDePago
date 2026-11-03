@@ -79,7 +79,7 @@ El Oficial sigue usando **Responder → Enviar** en la línea de tiempo. S-31 y 
    - `GET` del borrador para leer su `internetMessageId`;
    - `POST .../send`.
 
-   Exchange pone el In-Reply-To y las References. `idOriginal` es el id de Outlook del correo del cliente: hay que guardarlo en la entrada. Hace falta una columna nueva en `email` (`sanic_idoutlook`, T(200)) o buscarlo por `internetMessageId`. La acción *Reply to email (V3)* conserva el hilo, pero no devuelve el `internetMessageId`. *Send an email from a shared mailbox (V2)* ([Create flows for popular email scenarios](https://learn.microsoft.com/power-automate/email-top-scenarios#send-an-email-from-a-distribution-list-or-shared-mailbox)) no conserva el hilo ni devuelve el id. Por eso las dos quedan descartadas.
+   Exchange pone el In-Reply-To y las References. `idOriginal` es el id de Outlook del correo del cliente: hay que guardarlo en la entrada. ~~Hace falta una columna nueva en `email` (`sanic_idoutlook`, T(200)) o buscarlo por `internetMessageId`.~~ **Se busca por `internetMessageId`** del correo padre, con `$filter` en Graph; no hay columna nueva (§11, notas de F2). La acción *Reply to email (V3)* conserva el hilo, pero no devuelve el `internetMessageId`. *Send an email from a shared mailbox (V2)* ([Create flows for popular email scenarios](https://learn.microsoft.com/power-automate/email-top-scenarios#send-an-email-from-a-distribution-list-or-shared-mailbox)) no conserva el hilo ni devuelve el id. Por eso las dos quedan descartadas.
 5. **Cierre:** `Update` del `email` a `statecode` 1, `statuscode` 3 (Sent) y `messageid` = el `internetMessageId` real. **Ese `messageid` es lo que permite que la respuesta del cliente vuelva a la misma conversación (paso 4 de la entrada).** `senton` lo pone el servidor (`spikes/dobles` (8)). S-35 despierta por `statuscode` y calcula los tiempos, como hoy.
 6. **Error:** se reintenta 3 veces con espera. Si sigue fallando, `statuscode` 8 (Failed) y el correo aparece en "Respuestas con error de envío", como con SSS. SAL lo cuenta.
 7. **Adjuntos y cuerpo:** los `activitymimeattachment` del correo se mandan como adjuntos. Las imágenes pegadas en el editor son adjuntos con `attachmentcontentid` y van como adjuntos en línea **[verificar en Dev]**. Es el punto con más riesgo de diferencia visible para el cliente final.
@@ -129,7 +129,7 @@ Esfuerzo estimado del plan B:
 |---|---|---|
 | F0 | Verificaciones V-1 a V-4 en Dev | 2 |
 | F1 | Flujo ENT con playbook (idempotencia, correlación, adjuntos, queue, categoría) | 3 |
-| F2 | Columna `sanic_idoutlook`, flujo SND con playbook (bloqueo, Graph createReply/send, Sent con `messageid`, Failed) | 3,5 |
+| F2 | ~~Columna `sanic_idoutlook`~~ (descartada, §11 notas de F2), flujo SND con playbook (bloqueo, Graph createReply/send, Sent con `messageid`, Failed) | 3,5 |
 | F3 | Cambio de rol de Servicio (decisión del usuario), ajuste de SAL, retiro de EST para este modo, procedimiento de instalación | 1,5 |
 | F4 | Humo "tanda 4": repetir H-5, H-6, H-25 a H-28 y S-31 con flujos | 2 |
 | F5 | Manual y documentación | 0,5 |
@@ -153,7 +153,7 @@ Regla para todas: correos solo entre los buzones de prueba 1 a 4, nunca el buzó
 - **No cambian:** el código de plugins y sus 5827 pruebas, las 5 Custom API, los 37 steps, la app (vistas, formularios, comandos y panel), el flujo SAL en su estructura, la plantilla y los datos.
 - **Cambian si se construye el plan B:**
   - playbooks nuevos `playbooks/flujo/carp-ent.md` y `carp-snd.md`;
-  - columna `sanic_idoutlook` en `email` (diccionario y playbook de tabla);
+  - ~~columna `sanic_idoutlook` en `email` (diccionario y playbook de tabla)~~: descartada en F2 (§11, notas de F2);
   - rol `SR - CARP - Servicio` (`04`);
   - SAL con dos comprobaciones nuevas (corridas fallidas de ENT y SND, y mensajes sin categoría);
   - EST no aplica en ese modo;
@@ -171,3 +171,13 @@ Flujo ENT construido (`playbooks/flujo/carp-ent.md`, inventario 11.4) y variable
 4. **Secure data y `diseno/07` §8.1:** esa regla dice que los flujos «no leen cuerpos ni adjuntos». ENT sí los lee; por eso secure inputs y outputs son obligatorios en todas sus acciones y en las salidas del disparador.
 5. **Adjuntos por el conector de Dataverse** (no por Graph ni por HTTP con Entra ID): ver las trampas del conector en el playbook, §2.2. `DeliverIncomingEmail` queda descartada (V-3).
 6. **Un solo código para spike y producción:** `spikes/flujos-correo/generar_flujos.py` genera el spike V4 y ENT con la misma función (`_entrada`); el JSON del spike no cambió.
+
+### Notas de la construcción de F2 (2026-11-03)
+
+Flujo SND construido (`playbooks/flujo/carp-snd.md`, inventario 11.5) en la solución principal, **apagado**. Desviaciones respecto de lo escrito arriba:
+
+1. **Sin columna `sanic_idoutlook`.** El spike (V-4 salida integral, `spikes/flujos-correo/RESULTADO.md`) probó que el correo original se encuentra en Graph con `$filter=internetMessageId eq '<messageid del correo padre>'` sobre el buzón del área. La entrada ya graba ese `messageid` en el email del cliente, así que no hace falta guardar nada más. No se agrega la columna, ni diccionario, ni playbook de tabla, ni cambia el esquema. Se tachó en §4, punto 4, en la tabla de esfuerzo (§8) y en §10.
+2. **Compuerta de modo**, secure data, concurrencia 1 del disparador y cierre de la corrida en Failed (`CARP-SND-FALLO`) después de marcar el email como Failed (`statecode` 0, `statuscode` 8; §4.6 se lee así, como ya anotó `RESULTADO.md`), igual que ENT (§11, puntos 2 a 4).
+3. **Rama sin original (nueva, no estaba en §4).** Si el email saliente no tiene padre, o el `messageid` del padre no aparece en el buzón del área, el flujo no puede usar `createReply`: crea un mensaje nuevo (`POST /users/{buzón}/messages`), agrega adjuntos, lee su `internetMessageId`, envía y cierra en Sent con ese `messageid`. Sale sin In-Reply-To; la contestación del cliente igual correlaciona (por el `messageid` grabado). **No está validada en Dev**: el spike solo probó la respuesta a un original. Va a F4 (un caso Pending Send sin padre).
+4. **Un solo código para spike y producción:** `generar_flujos.py` genera el spike SND (r2) y el SND de producción con la misma función (`_salida`); el JSON del spike no cambió.
+5. **Límite de adjuntos por Graph:** un `fileAttachment` simple admite ~3 MB; entre 3 y 5 MB (tope de `MaxUploadFileSize`) fallaría. Pendiente a F4 si hace falta una sesión de carga.

@@ -333,13 +333,29 @@ def flujo_ent():
 
 
 # --------------------------------------------------------------------------------------------- salida (e2e)
-def flujo_snd():
+def _salida(bz, diag, seguro, sin_padre, despues=None):
+    """Cuerpo COMPARTIDO de la salida: lo usan el spike SND (`flujo_snd`) y el flujo de producción SND (`flujo_snd_produccion`), para que
+    no se separen. `bz` = expresión del buzón desde el que sale la respuesta (spike: sanic_carp_ev_spksalida; producción: sanic_carp_ev_buzonarea).
+    `diag`=True agrega el andamiaje del spike (varModo, Armar_diagnostico, fila SPK-DIAG). `seguro`=True aplica secure data.
+    `sin_padre`=True (producción) agrega la rama de correo SIN original en Graph: un mensaje nuevo en vez de createReply (diseno/08 §11).
+    `despues`: acción tras la que arranca (producción: la compuerta de modo). Devuelve el disparador y las acciones."""
     ac = {}
     id_ = "triggerOutputs()?['body/activityid']"
-    ac["Variable_bloqueado"] = {"runAfter": {}, "type": "InitializeVariable", "inputs": {"variables": [{"name": "varBloqueado", "type": "boolean", "value": False}]}}
-    ac["Variable_modo"] = {"runAfter": ra("Variable_bloqueado"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varModo", "type": "string", "value": "no_es_del_area"}]}}
-    ac["Variable_imid"] = {"runAfter": ra("Variable_modo"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varImid", "type": "string", "value": ""}]}}
-    ac["Es_conversacion"] = dv("ListRecords", ra("Variable_imid"), {
+    previa = [despues]
+
+    def init(clave, nombre, tipo_valor, valor):
+        ac[clave] = {"runAfter": ra(previa[0]) if previa[0] else {}, "type": "InitializeVariable",
+                     "inputs": {"variables": [{"name": nombre, "type": tipo_valor, "value": valor}]}}
+        previa[0] = clave
+
+    init("Variable_bloqueado", "varBloqueado", "boolean", False)
+    if diag:
+        init("Variable_modo", "varModo", "string", "no_es_del_area")
+    init("Variable_imid", "varImid", "string", "")
+    if sin_padre:
+        init("Variable_original", "varOriginal", "string", "")
+        init("Variable_borrador", "varBorrador", "string", "")
+    ac["Es_conversacion"] = dv("ListRecords", ra(previa[0]), {
         "entityName": "sanic_carp_tbl_conversacions", "$select": "sanic_carp_tbl_conversacionid", "$top": 1,
         "$filter": "@concat('sanic_carp_tbl_conversacionid eq ', coalesce(triggerOutputs()?['body/_regardingobjectid_value'], '00000000-0000-0000-0000-000000000000'))"})
     ac["Remitente_del_correo"] = dv("ListRecords", ra("Es_conversacion"), {
@@ -349,73 +365,146 @@ def flujo_snd():
         "entityName": "emails", "$select": "activityid", "$top": 1,
         "$filter": f"@concat('activityid eq ', {id_}, ' and statuscode eq 6')"})
     ac["Remitente_coincide"] = query(ra("Sigue_pendiente"), "@coalesce(outputs('Remitente_del_correo')?['body/value'], json('[]'))",
-                                     f"@equals(toLower(coalesce(item()?['addressused'], '')), toLower({KS}))")
+                                     f"@equals(toLower(coalesce(item()?['addressused'], '')), toLower({bz}))")
 
-    cuerpo = {
-        "Leer_correo": dv("GetItem", {}, {"entityName": "emails", "recordId": f"@{id_}", "$select": "subject,description,_parentactivityid_value"}),
-        "Leer_padre": dv("GetItem", ra("Leer_correo"), {"entityName": "emails", "recordId": "@outputs('Leer_correo')?['body/_parentactivityid_value']", "$select": "messageid"}),
+    # borrador: el spike usa el de createReply; producción lo guarda en varBorrador (viene de createReply o de un mensaje nuevo)
+    borrador = "variables('varBorrador')" if sin_padre else "body('Crear_respuesta')?['id']"
+    cuerpo = {"Leer_correo": dv("GetItem", {}, {"entityName": "emails", "recordId": f"@{id_}", "$select": "subject,description,_parentactivityid_value"})}
+    if sin_padre:
+        # el padre puede no existir: ListRecords con un GUID nulo devuelve vacío en vez de fallar como lo haría GetItem
+        cuerpo["Leer_padre"] = dv("ListRecords", ra("Leer_correo"), {
+            "entityName": "emails", "$select": "messageid", "$top": 1,
+            "$filter": "@concat('activityid eq ', coalesce(outputs('Leer_correo')?['body/_parentactivityid_value'], '00000000-0000-0000-0000-000000000000'))"})
+    else:
+        cuerpo["Leer_padre"] = dv("GetItem", ra("Leer_correo"), {"entityName": "emails", "recordId": "@outputs('Leer_correo')?['body/_parentactivityid_value']", "$select": "messageid"})
+    cuerpo.update({
         "Destinatarios": dv("ListRecords", ra("Leer_padre"), {
             "entityName": "activityparties", "$select": "addressused,participationtypemask",
             "$filter": f"@concat('_activityid_value eq ', {id_}, ' and (participationtypemask eq 2 or participationtypemask eq 3)')"}),
         "Para_filtrado": query(ra("Destinatarios"), "@coalesce(outputs('Destinatarios')?['body/value'], json('[]'))", "@equals(item()?['participationtypemask'], 2)"),
         "Para_lista": select(ra("Para_filtrado"), "@body('Para_filtrado')", {"emailAddress": {"address": "@item()?['addressused']"}}),
         "Copia_filtrada": query(ra("Para_lista"), "@coalesce(outputs('Destinatarios')?['body/value'], json('[]'))", "@equals(item()?['participationtypemask'], 3)"),
-        "Copia_lista": select(ra("Copia_filtrada"), "@body('Copia_filtrada')", {"emailAddress": {"address": "@item()?['addressused']"}}),
-        "Buscar_original": http(ra("Copia_lista"), f"@concat('{G}', {KS}, '/messages?$top=1&$select=id,internetMessageId,subject&$filter=', uriComponent(concat('internetMessageId eq ''', outputs('Leer_padre')?['body/messageid'], '''')))"),
-        "Crear_respuesta": http(ra("Buscar_original"), f"@concat('{G}', {KS}, '/messages/', first(body('Buscar_original')?['value'])?['id'], '/createReply')", "POST", "{}"),
-        "Cuerpo_del_borrador": compose(ra("Crear_respuesta"), {
-            "body": {"contentType": "HTML", "content": "@outputs('Leer_correo')?['body/description']"},
-            "toRecipients": "@body('Para_lista')", "ccRecipients": "@body('Copia_lista')"}),
-        "Completar_borrador": http(ra("Cuerpo_del_borrador"), f"@concat('{G}', {KS}, '/messages/', body('Crear_respuesta')?['id'])", "PATCH", "@string(outputs('Cuerpo_del_borrador'))"),
-        "Adjuntos_del_correo": dv("ListRecords", ra("Completar_borrador"), {
+        "Copia_lista": select(ra("Copia_filtrada"), "@body('Copia_filtrada')", {"emailAddress": {"address": "@item()?['addressused']"}})})
+    cuerpo_reply = {"body": {"contentType": "HTML", "content": "@outputs('Leer_correo')?['body/description']"},
+                    "toRecipients": "@body('Para_lista')", "ccRecipients": "@body('Copia_lista')"}
+    if not sin_padre:
+        cuerpo["Buscar_original"] = http(ra("Copia_lista"), f"@concat('{G}', {bz}, '/messages?$top=1&$select=id,internetMessageId,subject&$filter=', uriComponent(concat('internetMessageId eq ''', outputs('Leer_padre')?['body/messageid'], '''')))")
+        cuerpo["Crear_respuesta"] = http(ra("Buscar_original"), f"@concat('{G}', {bz}, '/messages/', first(body('Buscar_original')?['value'])?['id'], '/createReply')", "POST", "{}")
+        cuerpo["Cuerpo_del_borrador"] = compose(ra("Crear_respuesta"), cuerpo_reply)
+        cuerpo["Completar_borrador"] = http(ra("Cuerpo_del_borrador"), f"@concat('{G}', {bz}, '/messages/', body('Crear_respuesta')?['id'])", "PATCH", "@string(outputs('Cuerpo_del_borrador'))")
+        antes_adjuntos = "Completar_borrador"
+    else:
+        # 1) buscar el original en Graph por el messageid del padre (solo si hay padre con messageid)
+        hay_id = "@coalesce(first(outputs('Leer_padre')?['body/value'])?['messageid'], '')"
+        cuerpo["Buscar_el_original"] = {"runAfter": ra("Copia_lista"), "type": "If",
+            "expression": {"and": [{"not": {"equals": [hay_id, ""]}}]},
+            "actions": {"Buscar_original": http({}, f"@concat('{G}', {bz}, '/messages?$top=1&$select=id,internetMessageId,subject&$filter=', uriComponent(concat('internetMessageId eq ''', first(outputs('Leer_padre')?['body/value'])?['messageid'], '''')))"),
+                        "Fijar_original": {"runAfter": ra("Buscar_original"), "type": "SetVariable", "inputs": {"name": "varOriginal", "value": "@coalesce(first(body('Buscar_original')?['value'])?['id'], '')"}}},
+            "else": {"actions": {}}}
+        # 2) con original: createReply (hilo conservado, validado en el spike); sin original: mensaje nuevo (NO validado en Dev, va a F4)
+        responder = {
+            "Crear_respuesta": http({}, f"@concat('{G}', {bz}, '/messages/', variables('varOriginal'), '/createReply')", "POST", "{}"),
+            "Cuerpo_del_borrador": compose(ra("Crear_respuesta"), cuerpo_reply),
+            "Completar_borrador": http(ra("Cuerpo_del_borrador"), f"@concat('{G}', {bz}, '/messages/', body('Crear_respuesta')?['id'])", "PATCH", "@string(outputs('Cuerpo_del_borrador'))"),
+            "Fijar_borrador_respuesta": {"runAfter": ra("Completar_borrador"), "type": "SetVariable", "inputs": {"name": "varBorrador", "value": "@body('Crear_respuesta')?['id']"}}}
+        nuevo = {
+            "Cuerpo_del_mensaje_nuevo": compose({}, dict({"subject": "@outputs('Leer_correo')?['body/subject']"}, **cuerpo_reply)),
+            "Crear_mensaje_nuevo": http(ra("Cuerpo_del_mensaje_nuevo"), f"@concat('{G}', {bz}, '/messages')", "POST", "@string(outputs('Cuerpo_del_mensaje_nuevo'))"),
+            "Fijar_borrador_nuevo": {"runAfter": ra("Crear_mensaje_nuevo"), "type": "SetVariable", "inputs": {"name": "varBorrador", "value": "@body('Crear_mensaje_nuevo')?['id']"}}}
+        cuerpo["Hay_original"] = {"runAfter": ra("Buscar_el_original"), "type": "If",
+            "expression": {"and": [{"not": {"equals": ["@variables('varOriginal')", ""]}}]},
+            "actions": responder, "else": {"actions": nuevo}}
+        antes_adjuntos = "Hay_original"
+    cuerpo.update({
+        "Adjuntos_del_correo": dv("ListRecords", ra(antes_adjuntos), {
             "entityName": "activitymimeattachments", "$select": "filename,mimetype,body,attachmentcontentid",
             "$filter": f"@concat('_objectid_value eq ', {id_})"}),
         "Por_cada_adjunto": {"runAfter": ra("Adjuntos_del_correo"), "type": "Foreach",
             "foreach": "@coalesce(outputs('Adjuntos_del_correo')?['body/value'], json('[]'))",
             "runtimeConfiguration": {"concurrency": {"repetitions": 1}},
-            "actions": {"Agregar_adjunto": http({}, f"@concat('{G}', {KS}, '/messages/', body('Crear_respuesta')?['id'], '/attachments')", "POST",
+            "actions": {"Agregar_adjunto": http({}, f"@concat('{G}', {bz}, '/messages/', {borrador}, '/attachments')", "POST",
                 "@string(json(concat('{\"@odata.type\":\"#microsoft.graph.fileAttachment\",\"name\":\"', items('Por_cada_adjunto')?['filename'], '\",\"contentType\":\"', items('Por_cada_adjunto')?['mimetype'], '\",\"contentBytes\":\"', items('Por_cada_adjunto')?['body'], '\",\"isInline\":', if(empty(items('Por_cada_adjunto')?['attachmentcontentid']), 'false', 'true'), ',\"contentId\":\"', coalesce(items('Por_cada_adjunto')?['attachmentcontentid'], ''), '\"}')))")}},
-        "Leer_borrador": http(ra("Por_cada_adjunto"), f"@concat('{G}', {KS}, '/messages/', body('Crear_respuesta')?['id'], '?$select=id,internetMessageId,subject')"),
+        "Leer_borrador": http(ra("Por_cada_adjunto"), f"@concat('{G}', {bz}, '/messages/', {borrador}, '?$select=id,internetMessageId,subject')"),
         "Fijar_imid": {"runAfter": ra("Leer_borrador"), "type": "SetVariable", "inputs": {"name": "varImid", "value": "@body('Leer_borrador')?['internetMessageId']"}},
-        "Enviar_respuesta": http(ra("Fijar_imid"), f"@concat('{G}', {KS}, '/messages/', body('Crear_respuesta')?['id'], '/send')", "POST"),
+        "Enviar_respuesta": http(ra("Fijar_imid"), f"@concat('{G}', {bz}, '/messages/', {borrador}, '/send')", "POST"),
         "Cerrar_como_enviado": dv("UpdateOnlyRecord", ra("Enviar_respuesta"), {
             "entityName": "emails", "recordId": f"@{id_}", "item/statecode": 1, "item/statuscode": 3, "item/messageid": "@variables('varImid')"}),
-    }
+    })
+
+    def modo(nombre, ra_, valor):
+        """Fija varModo: solo existe en el spike (diag); en producción no se emite."""
+        return {nombre: {"runAfter": ra_, "type": "SetVariable", "inputs": {"name": "varModo", "value": valor}}} if diag else {}
+
+    intento_acc = {
+        "Bloquear": dv("UpdateOnlyRecord", {}, {"entityName": "emails", "recordId": f"@{id_}", "item/statuscode": 7}),
+        "Fijar_bloqueado": {"runAfter": ra("Bloquear"), "type": "SetVariable", "inputs": {"name": "varBloqueado", "value": True}}}
+    intento_acc.update(modo("Fijar_modo", ra("Fijar_bloqueado"), "procesando"))
+    intento_acc["Envio"] = {"runAfter": ra("Fijar_modo" if diag else "Fijar_bloqueado"), "type": "Scope", "actions": cuerpo}
+    # Failed es del estado Open: statecode 0 + statuscode 8 (RESULTADO, V-1)
+    si_fallo = {"Marcar_fallido": dv("UpdateOnlyRecord", {}, {"entityName": "emails", "recordId": f"@{id_}", "item/statecode": 0, "item/statuscode": 8})}
+    si_fallo.update(modo("Fijar_modo_fallo", ra("Marcar_fallido"), "fallido_8"))
+    if not diag:
+        # la corrida termina Failed DESPUES de dejar el correo en Failed, para que el monitoreo (SAL) la vea; corre aunque Marcar_fallido falle
+        si_fallo["Terminar_con_fallo"] = {"runAfter": ra("Marcar_fallido", estados=TODOS), "type": "Terminate",
+            "inputs": {"runStatus": "Failed", "runError": {"code": "CARP-SND-FALLO",
+                       "message": "El flujo SND no pudo enviar la respuesta; el correo quedo en Failed. Ver la accion que fallo en el historial de la corrida."}}}
+    intento_acc["Si_fallo"] = {"runAfter": {"Envio": ["Failed", "TimedOut"]}, "type": "If",
+        "expression": {"and": [{"equals": ["@variables('varBloqueado')", True]}]},
+        "actions": si_fallo, "else": {"actions": {}}}
+    intento_acc.update(modo("Fijar_modo_ok", {"Envio": ["Succeeded"]}, "enviado_3"))
     ac["Intento"] = {"runAfter": ra("Remitente_coincide"), "type": "If",
         "expression": {"and": [{"greater": ["@length(outputs('Es_conversacion')?['body/value'])", 0]},
                                {"greater": ["@length(body('Remitente_coincide'))", 0]},
                                {"greater": ["@length(outputs('Sigue_pendiente')?['body/value'])", 0]}]},
-        "actions": dict({
-            "Bloquear": dv("UpdateOnlyRecord", {}, {"entityName": "emails", "recordId": f"@{id_}", "item/statuscode": 7}),
-            "Fijar_bloqueado": {"runAfter": ra("Bloquear"), "type": "SetVariable", "inputs": {"name": "varBloqueado", "value": True}},
-            "Fijar_modo": {"runAfter": ra("Fijar_bloqueado"), "type": "SetVariable", "inputs": {"name": "varModo", "value": "procesando"}},
-            "Envio": {"runAfter": ra("Fijar_modo"), "type": "Scope", "actions": cuerpo},
-            "Si_fallo": {"runAfter": {"Envio": ["Failed", "TimedOut"]}, "type": "If",
-                "expression": {"and": [{"equals": ["@variables('varBloqueado')", True]}]},
-                "actions": {"Marcar_fallido": dv("UpdateOnlyRecord", {}, {"entityName": "emails", "recordId": f"@{id_}", "item/statecode": 0, "item/statuscode": 8}),
-                            "Fijar_modo_fallo": {"runAfter": ra("Marcar_fallido"), "type": "SetVariable", "inputs": {"name": "varModo", "value": "fallido_8"}}},
-                "else": {"actions": {}}},
-            "Fijar_modo_ok": {"runAfter": {"Envio": ["Succeeded"]}, "type": "SetVariable", "inputs": {"name": "varModo", "value": "enviado_3"}},
-        }),
-        "else": {"actions": {}}}
-    ac["Armar_diagnostico"] = compose({"Intento": TODOS}, {
-        "flujo": "SND salida", "recibido": "@utcNow()", "modo": "@variables('varModo')",
-        "email": f"@{id_}", "es_conversacion": "@greater(length(coalesce(outputs('Es_conversacion')?['body/value'], json('[]'))), 0)",
-        "remitente_coincide": "@greater(length(coalesce(body('Remitente_coincide'), json('[]'))), 0)",
-        "sigue_pendiente": "@greater(length(coalesce(outputs('Sigue_pendiente')?['body/value'], json('[]'))), 0)",
-        "imid_grabado": "@variables('varImid')"})
-    ac["Si_era_del_area"] = {"runAfter": {"Armar_diagnostico": TODOS}, "type": "If",
-        "expression": {"and": [{"not": {"equals": ["@variables('varModo')", "no_es_del_area"]}}]},
-        "actions": {"Registrar_diagnostico": DIAG("SND", "concat(variables('varModo'), ' ', string(" + id_ + "))", {})},
-        "else": {"actions": {}}}
+        "actions": intento_acc, "else": {"actions": {}}}
+    if diag:
+        ac["Armar_diagnostico"] = compose({"Intento": TODOS}, {
+            "flujo": "SND salida", "recibido": "@utcNow()", "modo": "@variables('varModo')",
+            "email": f"@{id_}", "es_conversacion": "@greater(length(coalesce(outputs('Es_conversacion')?['body/value'], json('[]'))), 0)",
+            "remitente_coincide": "@greater(length(coalesce(body('Remitente_coincide'), json('[]'))), 0)",
+            "sigue_pendiente": "@greater(length(coalesce(outputs('Sigue_pendiente')?['body/value'], json('[]'))), 0)",
+            "imid_grabado": "@variables('varImid')"})
+        ac["Si_era_del_area"] = {"runAfter": {"Armar_diagnostico": TODOS}, "type": "If",
+            "expression": {"and": [{"not": {"equals": ["@variables('varModo')", "no_es_del_area"]}}]},
+            "actions": {"Registrar_diagnostico": DIAG("SND", "concat(variables('varModo'), ' ', string(" + id_ + "))", {})},
+            "else": {"actions": {}}}
+    else:
+        # por si falla algo ANTES de poder marcar el correo (el propio bloqueo): la corrida queda Failed y el correo sigue en Pending Send
+        ac["Fallar_si_el_intento_fallo"] = {"runAfter": {"Intento": ["Failed", "TimedOut"]}, "type": "Terminate",
+            "inputs": {"runStatus": "Failed", "runError": {"code": "CARP-SND-FALLO",
+                       "message": "El flujo SND fallo antes de poder enviar la respuesta; ver la accion que fallo en el historial de la corrida."}}}
+    if seguro:
+        _asegurar(ac)
+    # concurrencia 1: dos corridas no toman el mismo correo (diseno/08 §4.2)
+    cfg = {"concurrency": {"runs": 1}}
+    if seguro:
+        cfg["secureData"] = {"properties": ["outputs"]}   # el disparador trae el cuerpo del correo
     trig = {"Al_quedar_pendiente_de_envio": {"type": "OpenApiConnectionWebhook",
         "inputs": {"host": {"connectionName": "@@conr:dataverse@@", "operationId": "SubscribeWebhookTrigger", "apiId": DV},
                    "parameters": {"subscriptionRequest/message": 3, "subscriptionRequest/entityname": "email", "subscriptionRequest/scope": 4,
                                   "subscriptionRequest/filteringattributes": "statuscode",
                                   "subscriptionRequest/filterexpression": "statuscode eq 6 and directioncode eq true"},
                    "authentication": "@parameters('$authentication')"},
-        "runtimeConfiguration": {"concurrency": {"runs": 1}}}}
+        "runtimeConfiguration": cfg}}
     return {"triggers": trig, "actions": ac}
+
+
+def flujo_snd():
+    return _salida(KS, diag=True, seguro=False, sin_padre=False)
+
+
+def flujo_snd_produccion():
+    """Flujo de producción `Cloud Flow - CARP - SND - Enviar respuestas` (diseno/08 §4). Misma lógica que el spike SND (r2), generada por
+    `_salida`; difiere en lo que el spike necesita y producción no (sin SPK-DIAG ni varModo), y agrega: compuerta de modo, secure data,
+    cierre de la corrida en Failed (`CARP-SND-FALLO`) y la rama de correo SIN original en Graph (mensaje nuevo en vez de createReply)."""
+    gate = {"Verificar_modo": {"runAfter": {}, "type": "If",
+            "expression": {"and": [{"not": {"equals": [f"@toLower(trim(coalesce({MODO}, '')))", "flujos"]}}]},
+            "actions": {"Terminar_modo_sss": {"runAfter": {}, "type": "Terminate", "inputs": {"runStatus": "Succeeded"}}},
+            "else": {"actions": {}}}}
+    d = _salida(BZ, diag=False, seguro=True, sin_padre=True, despues="Verificar_modo")
+    gate.update(d["actions"])
+    d["actions"] = gate
+    return d
 
 
 # ------------------------------------------------------------------------------------------ escritura
@@ -473,6 +562,15 @@ for v in ("sanic_carp_ev_buzonarea", "sanic_carp_ev_nombrebu", "sanic_carp_ev_mo
 assert "SPK" not in def_ent and "spk" not in def_ent, "el flujo de producción no puede tener restos del spike"
 open(os.path.join(RAIZ, "playbooks", "flujo", "carp-ent.json"), "w", encoding="utf-8").write(def_ent)
 print("generado: playbooks/flujo/carp-ent.json")
+
+# flujo de producción SND: igual que ENT (el playbook .md se escribe a mano)
+def_snd = json.dumps(flujo_snd_produccion(), ensure_ascii=False, indent=2)
+for v in ("sanic_carp_ev_buzonarea", "sanic_carp_ev_modocorreo"):
+    assert f"@@ev:{v}@@" in def_snd, v
+assert "sanic_carp_ev_nombrebu" not in def_snd, "SND no usa la BU"
+assert "SPK" not in def_snd and "spk" not in def_snd, "el flujo de producción no puede tener restos del spike"
+open(os.path.join(RAIZ, "playbooks", "flujo", "carp-snd.json"), "w", encoding="utf-8").write(def_snd)
+print("generado: playbooks/flujo/carp-snd.json")
 
 # variables de entorno del spike (valor null: lo carga v50_solucion_y_variables.py desde memoria)
 VARS = [("sanic_carp_ev_spkbuzon", "EV - CARP - SPK Buzon de prueba 4", "Direccion del buzon de prueba 4 (PP_MAIL_BUZON_4) que leen y usan los flujos del spike F0. El valor solo vive en este entorno."),

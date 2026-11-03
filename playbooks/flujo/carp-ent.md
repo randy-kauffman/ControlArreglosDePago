@@ -131,7 +131,7 @@ Está apagado: no hay nada que revertir. Borrarlo no afecta al modo `sss`.
 ## 8. Fuera de alcance
 
 - **Encenderlo.** Solo en modo `flujos` (F3/F4 de `diseno/08`): antes se apaga la sincronización del buzón del área y se carga `sanic_carp_ev_modocorreo` = `flujos`. En Dev no se enciende mientras el buzón 1 use SSS. Lo enciende una persona dueña de las conexiones (un service principal no puede: `ConnectionAuthorizationFailed`).
-- El flujo de salida SND y la columna `sanic_idoutlook` (F2).
+- El flujo de salida SND (`playbooks/flujo/carp-snd.md`, F2). La columna `sanic_idoutlook` se descartó (`diseno/08` §11).
 - Permisos del rol `SR - CARP - Servicio` (Create/Write/Append de Email, `prvAppendToQueue`, `prvAssign`): cambio de rol de F3, decisión del usuario.
 - Crear las conexiones (OAuth): paso manual (`pruebas-humo/lote-d/RESULTADO.md`).
 

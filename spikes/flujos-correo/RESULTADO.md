@@ -153,3 +153,8 @@ El conector de Dataverse exige `item/attachmentid@odata.bind` en `activitymimeat
 ## F1: flujo ENT de producción, 2026-11-03
 
 El flujo de producción `Cloud Flow - CARP - ENT - Capturar correo entrante` (playbook `playbooks/flujo/carp-ent.md`, definición `playbooks/flujo/carp-ent.json`) usa la lógica de V4 (r10) generada por la misma función de `generar_flujos.py`; regenerar el spike no cambia `flujos/carp-spk-v4.json`. Se creó en la solución principal, **apagado**, junto con la variable `sanic_carp_ev_modocorreo` (`playbooks/variable-entorno/sanic_carp_ev_modocorreo.md`, valor `sss`). No se enciende mientras el buzón del área use SSS; la validación en ejecución con `flujos` es de F3/F4.
+
+## F2: flujo SND de producción, 2026-11-03
+
+El flujo `Cloud Flow - CARP - SND - Enviar respuestas` (playbook `playbooks/flujo/carp-snd.md`, definición `playbooks/flujo/carp-snd.json`) usa la lógica de SND (r2) generada por la misma función de `generar_flujos.py` (`_salida`); regenerar el spike no cambia `flujos/carp-spk-snd.json`. Se creó en la solución principal, **apagado**. No se enciende mientras el buzón del área use SSS. Decisión: no se agrega la columna `sanic_idoutlook` (el original se encuentra por `internetMessageId`, validado en V-4). La rama «sin original» (mensaje nuevo) es nueva y **no está validada**: va a F4.
+

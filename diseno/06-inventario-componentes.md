@@ -29,13 +29,14 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 8 | Registro de paquete, Custom API y steps | 7 | 7 | 0 | 0 |
 | 9 | Datos semilla y de configuración | 3 | 2 | 0 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 8 | 8 | 0 | 0 |
-| 11 | Flujos | 4 | 3 | 0 | 1 |
+| 11 | Flujos | 5 | 4 | 0 | 1 |
 | 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 27 | 27 | 0 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 15 | 2 |
-| **Total** | | **131** | **79** | **44** | **8** |
+| **Total** | | **132** | **80** | **44** | **8** |
 
 Notas del resumen:
 
+- 2026-11-03 (Dev, F2 del plan B de `diseno/08`): fila nueva 11.5 (flujo SND, apagado), `hecho`. El grupo 11 pasó de 4 filas y 3 hechas a 5 y 4; el total, de 131 filas y 79 hechas a 132 y 80 (pendientes 44 y diseño detallado pendiente 8, sin cambio). La columna `sanic_idoutlook` de `diseno/08` NO se agrega (`diseno/08` §11).
 - 2026-11-03 (Dev, F1 del plan B de `diseno/08`): filas nuevas 10.9 (`sanic_carp_ev_modocorreo`) y 11.4 (flujo ENT, apagado), ambas `hecho`. El grupo 10 pasó de 7 a 8 filas y el grupo 11 de 3 a 4 (hechas, de 2 a 3); el total, de 129 filas y 77 hechas a 131 y 79 (pendientes 44 y diseño detallado pendiente 8, sin cambio).
 - 2026-10-28 (Dev, lote F de íconos): fila nueva 12.27, ya `hecho`: 41 SVG propios (1 de la app, 20 del sitemap, 13 de comandos y 7 de tablas, DA-22, `diseno/07` §13) y el ícono de las 7 tablas (`IconVectorName`), verificados `ya_existia`; títulos del sitemap en inglés (1033) y español (3082). Era la propuesta 12.27 de `diseno/07` §11 (4 iconos compartidos, DA-10). El grupo 12 pasó de 26 filas y 26 hechas a 27 y 27; el total, de 128 filas y 76 hechas a 129 y 77 (`pruebas-humo/lote-f/RESULTADO.md`).
 
@@ -280,6 +281,7 @@ Monitoreo (11.1 a 11.3) y, solo en el plan B de `diseno/08`, la captura de corre
 | 11.2 | `Cloud Flow - CARP - SAL - Salud del buzon` (ID `CARP-SAL`): cada 30 minutos en horario hábil comprueba correos entrantes recientes, correos sin conversación, respuestas con error de envío y **trabajos de eliminación masiva fallidos en las últimas 24 h** (cuarta comprobación, OA-3, 2026-10-10); si hay correos sin conversación invoca 8.3. El privilegio con que `SR - CARP - Servicio` lee esos trabajos está PENDIENTE de verificar en Dev al construir este flujo (`04-matriz-privilegios.md`, duda D-09). Hasta que el flujo exista, revisión manual semanal de System Jobs | recurrente | `playbooks/flujo/carp-sal.md` | 8.3, 10.3 a 10.6, 6.4, 13.5, 13.6 | D-21, RNF-08, §6 Operación | hecho (2026-10-20, Dev: activado a mano por la cuenta de servicio en el portal; `como_servicio.py flujo --solo-verificar` da `ya_existia`, activado, 2 conexiones) |
 | 11.3 | Flujo diario de marcado de cuotas vencidas sin pago (respaldo de D-11). **Condicional: no se activa**, el spike 2 mostró que el operador de fecha relativa sirve. Requeriría una Custom API que la definición no lista entre las cinco | recurrente diario | — | D-11, D-21; escribe Cuota con rol Servicio | diseño detallado pendiente (condicional; no se construye salvo que se active) |
 | 11.4 | `Cloud Flow - CARP - ENT - Capturar correo entrante`: **plan B del correo (modo flujos)**. Captura el correo nuevo del buzón del área y crea el email entrante en Dataverse (idempotencia, In-Reply-To, adjuntos, cola, categoría). Compuerta por `sanic_carp_ev_modocorreo`: si no vale `flujos`, termina sin hacer nada. **No se activa** salvo en modo flujos | Outlook, correo nuevo en buzón compartido (cada minuto) | `playbooks/flujo/carp-ent.md` | 10.1, 10.5, 10.6, 10.8, 10.9 | `diseno/08` §3 y §10 (F1) | hecho (2026-11-03, Dev: creado APAGADO por `como_servicio.py`, `ya_existia`; NO se enciende en Dev mientras el buzón del área use SSS. Lo enciende una persona en F3/F4) |
+| 11.5 | `Cloud Flow - CARP - SND - Enviar respuestas`: **plan B del correo (modo flujos)**. Toma el email saliente del área en Pending Send, lo envía desde el buzón del área con Graph (`createReply` conservando el hilo; mensaje nuevo si no hay original), con adjuntos, y lo pasa a Sent con el `messageid` real, o a Failed (`statecode` 0 y `statuscode` 8). Compuerta por `sanic_carp_ev_modocorreo`. **No se activa** salvo en modo flujos | Dataverse, `email` pasa a Pending Send (`statuscode eq 6 and directioncode eq true`, concurrencia 1) | `playbooks/flujo/carp-snd.md` | 10.5, 10.6, 10.8, 10.9 | `diseno/08` §4 y §10 (F2) | hecho (2026-11-03, Dev: creado APAGADO por `como_servicio.py`, `ya_existia`; NO se enciende en Dev mientras el buzón del área use SSS. La rama sin original no está validada en Dev: F4. Lo enciende una persona en F3/F4) |
 
 ## 12. App model-driven
 

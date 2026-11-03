@@ -1,0 +1,1051 @@
+{
+  "triggers": {
+    "Al_quedar_pendiente_de_envio": {
+      "type": "OpenApiConnectionWebhook",
+      "inputs": {
+        "host": {
+          "connectionName": "@@conr:dataverse@@",
+          "operationId": "SubscribeWebhookTrigger",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+        },
+        "parameters": {
+          "subscriptionRequest/message": 3,
+          "subscriptionRequest/entityname": "email",
+          "subscriptionRequest/scope": 4,
+          "subscriptionRequest/filteringattributes": "statuscode",
+          "subscriptionRequest/filterexpression": "statuscode eq 6 and directioncode eq true"
+        },
+        "authentication": "@parameters('$authentication')"
+      },
+      "runtimeConfiguration": {
+        "concurrency": {
+          "runs": 1
+        },
+        "secureData": {
+          "properties": [
+            "outputs"
+          ]
+        }
+      }
+    }
+  },
+  "actions": {
+    "Verificar_modo": {
+      "runAfter": {},
+      "type": "If",
+      "expression": {
+        "and": [
+          {
+            "not": {
+              "equals": [
+                "@toLower(trim(coalesce(parameters('@@ev:sanic_carp_ev_modocorreo@@'), '')))",
+                "flujos"
+              ]
+            }
+          }
+        ]
+      },
+      "actions": {
+        "Terminar_modo_sss": {
+          "runAfter": {},
+          "type": "Terminate",
+          "inputs": {
+            "runStatus": "Succeeded"
+          }
+        }
+      },
+      "else": {
+        "actions": {}
+      }
+    },
+    "Variable_bloqueado": {
+      "runAfter": {
+        "Verificar_modo": [
+          "Succeeded"
+        ]
+      },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varBloqueado",
+            "type": "boolean",
+            "value": false
+          }
+        ]
+      }
+    },
+    "Variable_imid": {
+      "runAfter": {
+        "Variable_bloqueado": [
+          "Succeeded"
+        ]
+      },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varImid",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    },
+    "Variable_original": {
+      "runAfter": {
+        "Variable_imid": [
+          "Succeeded"
+        ]
+      },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varOriginal",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    },
+    "Variable_borrador": {
+      "runAfter": {
+        "Variable_original": [
+          "Succeeded"
+        ]
+      },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varBorrador",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    },
+    "Es_conversacion": {
+      "runAfter": {
+        "Variable_borrador": [
+          "Succeeded"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "@@conr:dataverse@@",
+          "operationId": "ListRecords",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+        },
+        "parameters": {
+          "entityName": "sanic_carp_tbl_conversacions",
+          "$select": "sanic_carp_tbl_conversacionid",
+          "$top": 1,
+          "$filter": "@concat('sanic_carp_tbl_conversacionid eq ', coalesce(triggerOutputs()?['body/_regardingobjectid_value'], '00000000-0000-0000-0000-000000000000'))"
+        }
+      },
+      "runtimeConfiguration": {
+        "secureData": {
+          "properties": [
+            "inputs",
+            "outputs"
+          ]
+        }
+      }
+    },
+    "Remitente_del_correo": {
+      "runAfter": {
+        "Es_conversacion": [
+          "Succeeded"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "@@conr:dataverse@@",
+          "operationId": "ListRecords",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+        },
+        "parameters": {
+          "entityName": "activityparties",
+          "$select": "addressused",
+          "$top": 5,
+          "$filter": "@concat('_activityid_value eq ', triggerOutputs()?['body/activityid'], ' and participationtypemask eq 1')"
+        }
+      },
+      "runtimeConfiguration": {
+        "secureData": {
+          "properties": [
+            "inputs",
+            "outputs"
+          ]
+        }
+      }
+    },
+    "Sigue_pendiente": {
+      "runAfter": {
+        "Remitente_del_correo": [
+          "Succeeded"
+        ]
+      },
+      "type": "OpenApiConnection",
+      "inputs": {
+        "host": {
+          "connectionName": "@@conr:dataverse@@",
+          "operationId": "ListRecords",
+          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+        },
+        "parameters": {
+          "entityName": "emails",
+          "$select": "activityid",
+          "$top": 1,
+          "$filter": "@concat('activityid eq ', triggerOutputs()?['body/activityid'], ' and statuscode eq 6')"
+        }
+      },
+      "runtimeConfiguration": {
+        "secureData": {
+          "properties": [
+            "inputs",
+            "outputs"
+          ]
+        }
+      }
+    },
+    "Remitente_coincide": {
+      "runAfter": {
+        "Sigue_pendiente": [
+          "Succeeded"
+        ]
+      },
+      "type": "Query",
+      "inputs": {
+        "from": "@coalesce(outputs('Remitente_del_correo')?['body/value'], json('[]'))",
+        "where": "@equals(toLower(coalesce(item()?['addressused'], '')), toLower(parameters('@@ev:sanic_carp_ev_buzonarea@@')))"
+      },
+      "runtimeConfiguration": {
+        "secureData": {
+          "properties": [
+            "inputs",
+            "outputs"
+          ]
+        }
+      }
+    },
+    "Intento": {
+      "runAfter": {
+        "Remitente_coincide": [
+          "Succeeded"
+        ]
+      },
+      "type": "If",
+      "expression": {
+        "and": [
+          {
+            "greater": [
+              "@length(outputs('Es_conversacion')?['body/value'])",
+              0
+            ]
+          },
+          {
+            "greater": [
+              "@length(body('Remitente_coincide'))",
+              0
+            ]
+          },
+          {
+            "greater": [
+              "@length(outputs('Sigue_pendiente')?['body/value'])",
+              0
+            ]
+          }
+        ]
+      },
+      "actions": {
+        "Bloquear": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:dataverse@@",
+              "operationId": "UpdateOnlyRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "emails",
+              "recordId": "@triggerOutputs()?['body/activityid']",
+              "item/statuscode": 7
+            }
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        },
+        "Fijar_bloqueado": {
+          "runAfter": {
+            "Bloquear": [
+              "Succeeded"
+            ]
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "varBloqueado",
+            "value": true
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        },
+        "Envio": {
+          "runAfter": {
+            "Fijar_bloqueado": [
+              "Succeeded"
+            ]
+          },
+          "type": "Scope",
+          "actions": {
+            "Leer_correo": {
+              "runAfter": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "@@conr:dataverse@@",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "emails",
+                  "recordId": "@triggerOutputs()?['body/activityid']",
+                  "$select": "subject,description,_parentactivityid_value"
+                }
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Leer_padre": {
+              "runAfter": {
+                "Leer_correo": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "@@conr:dataverse@@",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "emails",
+                  "$select": "messageid",
+                  "$top": 1,
+                  "$filter": "@concat('activityid eq ', coalesce(outputs('Leer_correo')?['body/_parentactivityid_value'], '00000000-0000-0000-0000-000000000000'))"
+                }
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Destinatarios": {
+              "runAfter": {
+                "Leer_padre": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "@@conr:dataverse@@",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "activityparties",
+                  "$select": "addressused,participationtypemask",
+                  "$filter": "@concat('_activityid_value eq ', triggerOutputs()?['body/activityid'], ' and (participationtypemask eq 2 or participationtypemask eq 3)')"
+                }
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Para_filtrado": {
+              "runAfter": {
+                "Destinatarios": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@coalesce(outputs('Destinatarios')?['body/value'], json('[]'))",
+                "where": "@equals(item()?['participationtypemask'], 2)"
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Para_lista": {
+              "runAfter": {
+                "Para_filtrado": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@body('Para_filtrado')",
+                "select": {
+                  "emailAddress": {
+                    "address": "@item()?['addressused']"
+                  }
+                }
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Copia_filtrada": {
+              "runAfter": {
+                "Para_lista": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@coalesce(outputs('Destinatarios')?['body/value'], json('[]'))",
+                "where": "@equals(item()?['participationtypemask'], 3)"
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Copia_lista": {
+              "runAfter": {
+                "Copia_filtrada": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@body('Copia_filtrada')",
+                "select": {
+                  "emailAddress": {
+                    "address": "@item()?['addressused']"
+                  }
+                }
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Buscar_el_original": {
+              "runAfter": {
+                "Copia_lista": [
+                  "Succeeded"
+                ]
+              },
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@coalesce(first(outputs('Leer_padre')?['body/value'])?['messageid'], '')",
+                        ""
+                      ]
+                    }
+                  }
+                ]
+              },
+              "actions": {
+                "Buscar_original": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "@@conr:outlook@@",
+                      "operationId": "HttpRequest",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                    },
+                    "parameters": {
+                      "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_buzonarea@@'), '/messages?$top=1&$select=id,internetMessageId,subject&$filter=', uriComponent(concat('internetMessageId eq ''', first(outputs('Leer_padre')?['body/value'])?['messageid'], '''')))",
+                      "Method": "GET",
+                      "ContentType": "application/json"
+                    }
+                  },
+                  "retryPolicy": {
+                    "type": "fixed",
+                    "count": 3,
+                    "interval": "PT10S"
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "inputs",
+                        "outputs"
+                      ]
+                    }
+                  }
+                },
+                "Fijar_original": {
+                  "runAfter": {
+                    "Buscar_original": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "varOriginal",
+                    "value": "@coalesce(first(body('Buscar_original')?['value'])?['id'], '')"
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "inputs",
+                        "outputs"
+                      ]
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {}
+              }
+            },
+            "Hay_original": {
+              "runAfter": {
+                "Buscar_el_original": [
+                  "Succeeded"
+                ]
+              },
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@variables('varOriginal')",
+                        ""
+                      ]
+                    }
+                  }
+                ]
+              },
+              "actions": {
+                "Crear_respuesta": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "@@conr:outlook@@",
+                      "operationId": "HttpRequest",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                    },
+                    "parameters": {
+                      "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_buzonarea@@'), '/messages/', variables('varOriginal'), '/createReply')",
+                      "Method": "POST",
+                      "ContentType": "application/json",
+                      "Body": "{}"
+                    }
+                  },
+                  "retryPolicy": {
+                    "type": "fixed",
+                    "count": 3,
+                    "interval": "PT10S"
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "inputs",
+                        "outputs"
+                      ]
+                    }
+                  }
+                },
+                "Cuerpo_del_borrador": {
+                  "runAfter": {
+                    "Crear_respuesta": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "Compose",
+                  "inputs": {
+                    "body": {
+                      "contentType": "HTML",
+                      "content": "@outputs('Leer_correo')?['body/description']"
+                    },
+                    "toRecipients": "@body('Para_lista')",
+                    "ccRecipients": "@body('Copia_lista')"
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "inputs",
+                        "outputs"
+                      ]
+                    }
+                  }
+                },
+                "Completar_borrador": {
+                  "runAfter": {
+                    "Cuerpo_del_borrador": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "@@conr:outlook@@",
+                      "operationId": "HttpRequest",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                    },
+                    "parameters": {
+                      "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_buzonarea@@'), '/messages/', body('Crear_respuesta')?['id'])",
+                      "Method": "PATCH",
+                      "ContentType": "application/json",
+                      "Body": "@string(outputs('Cuerpo_del_borrador'))"
+                    }
+                  },
+                  "retryPolicy": {
+                    "type": "fixed",
+                    "count": 3,
+                    "interval": "PT10S"
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "inputs",
+                        "outputs"
+                      ]
+                    }
+                  }
+                },
+                "Fijar_borrador_respuesta": {
+                  "runAfter": {
+                    "Completar_borrador": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "varBorrador",
+                    "value": "@body('Crear_respuesta')?['id']"
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "inputs",
+                        "outputs"
+                      ]
+                    }
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Cuerpo_del_mensaje_nuevo": {
+                    "runAfter": {},
+                    "type": "Compose",
+                    "inputs": {
+                      "subject": "@outputs('Leer_correo')?['body/subject']",
+                      "body": {
+                        "contentType": "HTML",
+                        "content": "@outputs('Leer_correo')?['body/description']"
+                      },
+                      "toRecipients": "@body('Para_lista')",
+                      "ccRecipients": "@body('Copia_lista')"
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs",
+                          "outputs"
+                        ]
+                      }
+                    }
+                  },
+                  "Crear_mensaje_nuevo": {
+                    "runAfter": {
+                      "Cuerpo_del_mensaje_nuevo": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "@@conr:outlook@@",
+                        "operationId": "HttpRequest",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                      },
+                      "parameters": {
+                        "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_buzonarea@@'), '/messages')",
+                        "Method": "POST",
+                        "ContentType": "application/json",
+                        "Body": "@string(outputs('Cuerpo_del_mensaje_nuevo'))"
+                      }
+                    },
+                    "retryPolicy": {
+                      "type": "fixed",
+                      "count": 3,
+                      "interval": "PT10S"
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs",
+                          "outputs"
+                        ]
+                      }
+                    }
+                  },
+                  "Fijar_borrador_nuevo": {
+                    "runAfter": {
+                      "Crear_mensaje_nuevo": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "varBorrador",
+                      "value": "@body('Crear_mensaje_nuevo')?['id']"
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs",
+                          "outputs"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Adjuntos_del_correo": {
+              "runAfter": {
+                "Hay_original": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "@@conr:dataverse@@",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "activitymimeattachments",
+                  "$select": "filename,mimetype,body,attachmentcontentid",
+                  "$filter": "@concat('_objectid_value eq ', triggerOutputs()?['body/activityid'])"
+                }
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Por_cada_adjunto": {
+              "runAfter": {
+                "Adjuntos_del_correo": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Foreach",
+              "foreach": "@coalesce(outputs('Adjuntos_del_correo')?['body/value'], json('[]'))",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              },
+              "actions": {
+                "Agregar_adjunto": {
+                  "runAfter": {},
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "@@conr:outlook@@",
+                      "operationId": "HttpRequest",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                    },
+                    "parameters": {
+                      "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_buzonarea@@'), '/messages/', variables('varBorrador'), '/attachments')",
+                      "Method": "POST",
+                      "ContentType": "application/json",
+                      "Body": "@string(json(concat('{\"@odata.type\":\"#microsoft.graph.fileAttachment\",\"name\":\"', items('Por_cada_adjunto')?['filename'], '\",\"contentType\":\"', items('Por_cada_adjunto')?['mimetype'], '\",\"contentBytes\":\"', items('Por_cada_adjunto')?['body'], '\",\"isInline\":', if(empty(items('Por_cada_adjunto')?['attachmentcontentid']), 'false', 'true'), ',\"contentId\":\"', coalesce(items('Por_cada_adjunto')?['attachmentcontentid'], ''), '\"}')))"
+                    }
+                  },
+                  "retryPolicy": {
+                    "type": "fixed",
+                    "count": 3,
+                    "interval": "PT10S"
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "inputs",
+                        "outputs"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "Leer_borrador": {
+              "runAfter": {
+                "Por_cada_adjunto": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "@@conr:outlook@@",
+                  "operationId": "HttpRequest",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_buzonarea@@'), '/messages/', variables('varBorrador'), '?$select=id,internetMessageId,subject')",
+                  "Method": "GET",
+                  "ContentType": "application/json"
+                }
+              },
+              "retryPolicy": {
+                "type": "fixed",
+                "count": 3,
+                "interval": "PT10S"
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Fijar_imid": {
+              "runAfter": {
+                "Leer_borrador": [
+                  "Succeeded"
+                ]
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "varImid",
+                "value": "@body('Leer_borrador')?['internetMessageId']"
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Enviar_respuesta": {
+              "runAfter": {
+                "Fijar_imid": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "@@conr:outlook@@",
+                  "operationId": "HttpRequest",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "Uri": "@concat('https://graph.microsoft.com/v1.0/users/', parameters('@@ev:sanic_carp_ev_buzonarea@@'), '/messages/', variables('varBorrador'), '/send')",
+                  "Method": "POST",
+                  "ContentType": "application/json"
+                }
+              },
+              "retryPolicy": {
+                "type": "fixed",
+                "count": 3,
+                "interval": "PT10S"
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Cerrar_como_enviado": {
+              "runAfter": {
+                "Enviar_respuesta": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "@@conr:dataverse@@",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "emails",
+                  "recordId": "@triggerOutputs()?['body/activityid']",
+                  "item/statecode": 1,
+                  "item/statuscode": 3,
+                  "item/messageid": "@variables('varImid')"
+                }
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "Si_fallo": {
+          "runAfter": {
+            "Envio": [
+              "Failed",
+              "TimedOut"
+            ]
+          },
+          "type": "If",
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@variables('varBloqueado')",
+                  true
+                ]
+              }
+            ]
+          },
+          "actions": {
+            "Marcar_fallido": {
+              "runAfter": {},
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "@@conr:dataverse@@",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "emails",
+                  "recordId": "@triggerOutputs()?['body/activityid']",
+                  "item/statecode": 0,
+                  "item/statuscode": 8
+                }
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Terminar_con_fallo": {
+              "runAfter": {
+                "Marcar_fallido": [
+                  "Succeeded",
+                  "Failed",
+                  "Skipped",
+                  "TimedOut"
+                ]
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Failed",
+                "runError": {
+                  "code": "CARP-SND-FALLO",
+                  "message": "El flujo SND no pudo enviar la respuesta; el correo quedo en Failed. Ver la accion que fallo en el historial de la corrida."
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          }
+        }
+      },
+      "else": {
+        "actions": {}
+      }
+    },
+    "Fallar_si_el_intento_fallo": {
+      "runAfter": {
+        "Intento": [
+          "Failed",
+          "TimedOut"
+        ]
+      },
+      "type": "Terminate",
+      "inputs": {
+        "runStatus": "Failed",
+        "runError": {
+          "code": "CARP-SND-FALLO",
+          "message": "El flujo SND fallo antes de poder enviar la respuesta; ver la accion que fallo en el historial de la corrida."
+        }
+      }
+    }
+  }
+}
