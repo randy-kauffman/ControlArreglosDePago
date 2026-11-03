@@ -1,4 +1,4 @@
-# Playbook (spike F0): flujo · Cloud Flow - CARP - SPK - V4 Entrada completa (r9)
+# Playbook (spike F0): flujo · Cloud Flow - CARP - SPK - V4 Entrada completa (r10)
 
 > Spike de `diseno/08` (correo por flujos). Temporal, en la solución `sanic_carp_sol_spikecorreo`, fuera de la principal. Se crea APAGADO (`activar: false`); lo activa una persona (admin@) porque un service principal no puede (ConnectionAuthorizationFailed). La definición se genera con `generar_flujos.py`.
 
@@ -29,7 +29,7 @@
 ```json
 {
   "tipo": "flujo",
-  "nombre": "Cloud Flow - CARP - SPK - V4 Entrada completa (r9)",
+  "nombre": "Cloud Flow - CARP - SPK - V4 Entrada completa (r10)",
   "descripcion": "Spike F0 V-4: captura el correo nuevo del buzon de prueba 4 y crea el email en Dataverse con dueno el team del area (idempotencia, correlacion por In-Reply-To, adjuntos, cola, categoria). Deja una fila SPK-DIAG.",
   "archivo": "spikes/flujos-correo/flujos/carp-spk-v4.json",
   "conexiones": {
@@ -44,8 +44,7 @@
   },
   "variables": [
     "sanic_carp_ev_spkbuzon",
-    "sanic_carp_ev_spkteamarea",
-    "sanic_carp_ev_spkcola"
+    "sanic_carp_ev_nombrebu"
   ],
   "hijos": [],
   "activar": false

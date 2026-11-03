@@ -1,0 +1,26 @@
+[
+ {
+  "filename": "logo-en-linea.png",
+  "mimetype": "image/png",
+  "attachmentcontentid": "logo-spk-fc",
+  "filesize": 71
+ },
+ {
+  "filename": "nota.txt",
+  "mimetype": "text/plain",
+  "attachmentcontentid": null,
+  "filesize": 24
+ },
+ {
+  "filename": "pixel.png",
+  "mimetype": "image/png",
+  "attachmentcontentid": null,
+  "filesize": 71
+ },
+ {
+  "filename": "reenviado.eml",
+  "mimetype": "message/rfc822",
+  "attachmentcontentid": null,
+  "filesize": 132
+ }
+]

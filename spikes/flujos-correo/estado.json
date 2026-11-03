@@ -472,29 +472,6 @@
    "D_create_objectid_email": "4021a493-3ed7-f111-84e8-0022480c5699"
   }
  },
- "v4": {
-  "desde": "2026-11-03T14:39:52Z",
-  "A": {
-   "http": 202,
-   "internetMessageId": "<BL0PR06MB467513CD2106865253287DD2D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
-   "t_envio_epoch": 1793716793.2269428,
-   "asunto": "SPK-FC-V4 nuevo 1793716792"
-  },
-  "A_email": "a7b85288-94d7-f111-84e8-0022480c5699",
-  "A_conv": "bc1b7d8b-94d7-f111-84e8-70a8a5afa5ce",
-  "D": {
-   "http": 202,
-   "internetMessageId": "<BL0PR06MB467504EA35A4D99F1DFE9AF0D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
-   "t_envio_epoch": 1793716866.9530816,
-   "asunto": "SPK-FC-V4 adjuntos 1793716866"
-  },
-  "D_sss": {
-   "http": 202,
-   "internetMessageId": "<BL0PR06MB46755618B3739E7C3D265742D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
-   "t_envio_epoch": 1793716867.5591981,
-   "asunto": "SPK-FC-V4 adjuntos SSS 1793716867"
-  }
- },
  "ventana_salida": {
   "original": {
    "mailboxid": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
@@ -566,6 +543,29 @@
    "internetMessageId": "<PH9PR06MB61061295FC95F20C851CD3FD52D1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
    "t_envio_epoch": 1793717538.6625583,
    "asunto": "RE: SPK-FC-E2E consulta 1793717467"
+  }
+ },
+ "v4_r9": {
+  "desde": "2026-11-03T14:39:52Z",
+  "A": {
+   "http": 202,
+   "internetMessageId": "<BL0PR06MB467513CD2106865253287DD2D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793716793.2269428,
+   "asunto": "SPK-FC-V4 nuevo 1793716792"
+  },
+  "A_email": "a7b85288-94d7-f111-84e8-0022480c5699",
+  "A_conv": "bc1b7d8b-94d7-f111-84e8-70a8a5afa5ce",
+  "D": {
+   "http": 202,
+   "internetMessageId": "<BL0PR06MB467504EA35A4D99F1DFE9AF0D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793716866.9530816,
+   "asunto": "SPK-FC-V4 adjuntos 1793716866"
+  },
+  "D_sss": {
+   "http": 202,
+   "internetMessageId": "<BL0PR06MB46755618B3739E7C3D265742D0692@BL0PR06MB4675.namprd06.prod.outlook.com>",
+   "t_envio_epoch": 1793716867.5591981,
+   "asunto": "SPK-FC-V4 adjuntos SSS 1793716867"
   }
  }
 }

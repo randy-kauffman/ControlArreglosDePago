@@ -1,4 +1,4 @@
-"""V-4, parte 1 (requiere el flujo V4 (r9) ACTIVADO por admin@): entrada por flujo sobre el buzón 4 con S-34 real.
+"""V-4, parte 1 (requiere el flujo V4 (r10) ACTIVADO por admin@): entrada por flujo sobre el buzón 4 con S-34 real.
 Casos: A) correo nuevo sin adjuntos (ruta C, dueño/BU/cola/categoría); D) correo con adjuntos (archivo, imagen normal, imagen en línea, .eml)
 enviado al buzón 4 (flujo) y al buzón 1 (SSS, para comparar); E) mide qué hace S-34 en cada uno. Cada caso: fila SPK-DIAG + Email + adjuntos."""
 import base64
@@ -9,9 +9,9 @@ R = Res("v21_v4_entrada.json")
 c = Correo()
 e = est()
 V = e.get("v4", {})
-nombre_flujo = "Cloud Flow - CARP - SPK - V4 Entrada completa (r9)"
+nombre_flujo = "Cloud Flow - CARP - SPK - V4 Entrada completa (r10)"
 fl = {f["name"]: f["statecode"] for f in flujos_spk(dv)}
-R.v("V-4", "flujo V4 (r9) encendido", fl.get(nombre_flujo) == 1, "statecode 1", fl)
+R.v("V-4", "flujo V4 (r10) encendido", fl.get(nombre_flujo) == 1, "statecode 1", fl)
 desde = reloj(dv)
 V.setdefault("desde", iso(desde))
 poner("v4", V)
@@ -100,7 +100,10 @@ fS, sS = esperar(lambda: (por_messageid(DS["internetMessageId"], V["desde"]) or 
 adj_sss = adjuntos_de(fS[0]["activityid"]) if fS else []
 volcar("v21_D_adjuntos_sss.json", adj_sss)
 R.v("V-4", "D: el mismo correo por SSS (buzón 1) entró a Dataverse", bool(fS), "email", sS)
-R.v("V-4", "D: adjuntos del flujo vs SSS (informativo; el flujo r7 NO crea adjuntos, F1)", True, "informativo", {"flujo": adj_flujo, "sss": adj_sss})
+R.v("V-4", "D: adjuntos del flujo vs SSS (informativo)", True, "informativo", {"flujo": adj_flujo, "sss": adj_sss})
+clave = lambda l: sorted((a["filename"], a["mimetype"], a.get("attachmentcontentid") or None) for a in l)
+R.v("V-4", "D (r10): el flujo crea los mismos adjuntos que SSS (nombre, tipo y cid de la imagen en línea)", clave(adj_flujo) == clave(adj_sss), clave(adj_sss), clave(adj_flujo))
+R.v("V-4", "D (r10): mismos tamaños que SSS", sorted(a["filesize"] for a in adj_flujo) == sorted(a["filesize"] for a in adj_sss), sorted(a["filesize"] for a in adj_sss), sorted(a["filesize"] for a in adj_flujo))
 if fD:
     hd = get(dv, f"emails({fD[0]['activityid']})?$select=description")["description"] or ""
     R.v("V-4", "D: el HTML conserva la referencia cid (informativo)", True, "informativo", None) if False else R.v("V-4", "D: el HTML conserva la referencia cid", "cid:logo-spk-fc" in hd, "cid:logo-spk-fc", "cid presente" if "cid:logo-spk-fc" in hd else hd[:200])

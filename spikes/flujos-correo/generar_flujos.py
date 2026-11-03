@@ -11,8 +11,9 @@ os.makedirs(OUT, exist_ok=True)
 
 K = "parameters('@@ev:sanic_carp_ev_spkbuzon@@')"       # buzón de prueba 4
 KS = "parameters('@@ev:sanic_carp_ev_spksalida@@')"     # buzón desde el que sale la respuesta del área (buzón 1)
-EQ = "parameters('@@ev:sanic_carp_ev_spkteamarea@@')"
-EC = "parameters('@@ev:sanic_carp_ev_spkcola@@')"
+NB = "parameters('@@ev:sanic_carp_ev_nombrebu@@')"   # nombre de la BU del área (variable de la solución principal)
+EQ = "variables('varTeam')"   # r10: team por defecto de la BU del área, buscado en la corrida (como hace el plugin)
+EC = "variables('varCola')"   # r10: cola cuyo emailaddress es el buzón que dispara
 G = "https://graph.microsoft.com/v1.0/users/"
 OFFICE = "/providers/Microsoft.PowerApps/apis/shared_office365"
 DV = "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
@@ -138,6 +139,8 @@ def flujo_v4():
     ac["Variable_correo"] = {"runAfter": ra("Variable_conversacion"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varEmailId", "type": "string", "value": ""}]}}
     ac["Variable_modo"] = {"runAfter": ra("Variable_correo"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varModo", "type": "string", "value": "sin_procesar"}]}}
     ac["Variable_opcionales"] = {"runAfter": ra("Variable_modo"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varOpc", "type": "string", "value": ""}]}}
+    ac["Variable_team"] = {"runAfter": ra("Variable_opcionales"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varTeam", "type": "string", "value": ""}]}}
+    ac["Variable_cola"] = {"runAfter": ra("Variable_team"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varCola", "type": "string", "value": ""}]}}
 
     cuerpo_comun = {
         "entityName": "emails",
@@ -195,11 +198,29 @@ def flujo_v4():
             "runtimeConfiguration": {"concurrency": {"repetitions": 1}},
             "actions": {"Es_archivo": {"runAfter": {}, "type": "If",
                 "expression": {"and": [{"not": {"equals": ["@coalesce(items('Por_cada_adjunto')?['contentBytes'], '')", ""]}}]},
-                "actions": {"Adjunto_sin_crear": compose({}, "@items('Por_cada_adjunto')?['name']")},  # r7: el CreateRecord de activitymimeattachments del conector exige una busqueda obligatoria aun sin identificar; adjuntos quedan para F1
+                # r10: el conector exige item/attachmentid@odata.bind (ApplicationRequired); la Web API acepta null y crea el adjunto igual (probado)
+                "actions": {"Crear_adjunto": dv("CreateRecord", {}, {
+                    "entityName": "activitymimeattachments",
+                    "item/filename": "@items('Por_cada_adjunto')?['name']",
+                    "item/subject": "@items('Por_cada_adjunto')?['name']",
+                    "item/mimetype": "@items('Por_cada_adjunto')?['contentType']",
+                    "item/body": "@items('Por_cada_adjunto')?['contentBytes']",
+                    "item/objectid_activitypointer@odata.bind": "@concat('/activitypointers(', variables('varEmailId'), ')')",
+                    "item/objecttypecode": "email",
+                    "item/attachmentid@odata.bind": "@json('null')",
+                    "item/attachmentcontentid": "@if(equals(items('Por_cada_adjunto')?['isInline'], true), items('Por_cada_adjunto')?['contentId'], '')"})},
                 "else": {"actions": {}}}}},
     }
-    ac["Intento"] = {"runAfter": ra("Variable_opcionales"), "type": "Scope", "actions": {
-        "Leer_mensaje": http({}, f"@concat({MSG}, '{HDR}')"),
+    ac["Intento"] = {"runAfter": ra("Variable_cola"), "type": "Scope", "actions": {
+        "Buscar_unidad": dv("ListRecords", {}, {"entityName": "businessunits", "$select": "businessunitid", "$top": 1,
+                                                "$filter": f"@concat('name eq ''', {NB}, '''')"}),
+        "Buscar_team": dv("ListRecords", ra("Buscar_unidad"), {"entityName": "teams", "$select": "teamid", "$top": 1,
+            "$filter": "@concat('isdefault eq true and _businessunitid_value eq ', first(outputs('Buscar_unidad')?['body/value'])?['businessunitid'])"}),
+        "Fijar_team": setv("varTeam", ra("Buscar_team"), "varTeam", "@first(outputs('Buscar_team')?['body/value'])?['teamid']"),
+        "Buscar_cola": dv("ListRecords", ra("Fijar_team"), {"entityName": "queues", "$select": "queueid", "$top": 1,
+            "$filter": f"@concat('emailaddress eq ''', {K}, '''')"}),
+        "Fijar_cola": setv("varCola", ra("Buscar_cola"), "varCola", "@first(outputs('Buscar_cola')?['body/value'])?['queueid']"),
+        "Leer_mensaje": http(ra("Fijar_cola"), f"@concat({MSG}, '{HDR}')"),
         "Filtrar_en_respuesta_a": query(ra("Leer_mensaje"), "@coalesce(body('Leer_mensaje')?['internetMessageHeaders'], json('[]'))",
                                         "@equals(toLower(item()?['name']), 'in-reply-to')"),
         "Variantes": compose(ra("Filtrar_en_respuesta_a"), {
@@ -333,9 +354,9 @@ FLUJOS = [
     ("carp-spk-v2", "Cloud Flow - CARP - SPK - V2 Encabezados y respuesta", flujo_v2,
      "Spike F0 V-2: lee los encabezados del correo nuevo del buzon de prueba 4 por Graph, responde con createReply y send y lee el internetMessageId. Deja una fila SPK-DIAG.",
      {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spkbuzon"]),
-    ("carp-spk-v4", "Cloud Flow - CARP - SPK - V4 Entrada completa (r9)", flujo_v4,
+    ("carp-spk-v4", "Cloud Flow - CARP - SPK - V4 Entrada completa (r10)", flujo_v4,
      "Spike F0 V-4: captura el correo nuevo del buzon de prueba 4 y crea el email en Dataverse con dueno el team del area (idempotencia, correlacion por In-Reply-To, adjuntos, cola, categoria). Deja una fila SPK-DIAG.",
-     {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spkbuzon", "sanic_carp_ev_spkteamarea", "sanic_carp_ev_spkcola"]),
+     {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spkbuzon", "sanic_carp_ev_nombrebu"]),
     ("carp-spk-snd", "Cloud Flow - CARP - SPK - SND Salida de respuestas (r2)", flujo_snd,
      "Spike F0 salida: toma el email saliente del area en Pending Send, lo envia desde el buzon del area con Graph (createReply, adjuntos, send) y lo pasa a Sent con el messageid real, o a Failed. Deja una fila SPK-DIAG.",
      {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spksalida"]),
@@ -346,7 +367,7 @@ for archivo, nombre, fn, desc, conex, variables in FLUJOS:
     # la herramienta exige que cada variable declarada se use
     for v in variables:
         assert f"@@ev:{v}@@" in texto, (archivo, v)
-    usadas_ev = {x for x in ("sanic_carp_ev_spkbuzon", "sanic_carp_ev_spkteamarea", "sanic_carp_ev_spkcola", "sanic_carp_ev_spksalida") if f"@@ev:{x}@@" in texto}
+    usadas_ev = {x for x in ("sanic_carp_ev_spkbuzon", "sanic_carp_ev_spkteamarea", "sanic_carp_ev_spkcola", "sanic_carp_ev_spksalida", "sanic_carp_ev_nombrebu") if f"@@ev:{x}@@" in texto}
     assert usadas_ev == set(variables), (archivo, usadas_ev)
     open(os.path.join(OUT, archivo + ".json"), "w", encoding="utf-8").write(texto)
     comp = {"tipo": "flujo", "nombre": nombre, "descripcion": desc, "archivo": f"spikes/flujos-correo/flujos/{archivo}.json",

@@ -89,16 +89,137 @@
         ]
       }
     },
-    "Intento": {
+    "Variable_team": {
       "runAfter": {
         "Variable_opcionales": [
           "Succeeded"
         ]
       },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varTeam",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    },
+    "Variable_cola": {
+      "runAfter": {
+        "Variable_team": [
+          "Succeeded"
+        ]
+      },
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "varCola",
+            "type": "string",
+            "value": ""
+          }
+        ]
+      }
+    },
+    "Intento": {
+      "runAfter": {
+        "Variable_cola": [
+          "Succeeded"
+        ]
+      },
       "type": "Scope",
       "actions": {
-        "Leer_mensaje": {
+        "Buscar_unidad": {
           "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:dataverse@@",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "businessunits",
+              "$select": "businessunitid",
+              "$top": 1,
+              "$filter": "@concat('name eq ''', parameters('@@ev:sanic_carp_ev_nombrebu@@'), '''')"
+            }
+          }
+        },
+        "Buscar_team": {
+          "runAfter": {
+            "Buscar_unidad": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:dataverse@@",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "teams",
+              "$select": "teamid",
+              "$top": 1,
+              "$filter": "@concat('isdefault eq true and _businessunitid_value eq ', first(outputs('Buscar_unidad')?['body/value'])?['businessunitid'])"
+            }
+          }
+        },
+        "Fijar_team": {
+          "runAfter": {
+            "Buscar_team": [
+              "Succeeded"
+            ]
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "varTeam",
+            "value": "@first(outputs('Buscar_team')?['body/value'])?['teamid']"
+          }
+        },
+        "Buscar_cola": {
+          "runAfter": {
+            "Fijar_team": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "@@conr:dataverse@@",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "queues",
+              "$select": "queueid",
+              "$top": 1,
+              "$filter": "@concat('emailaddress eq ''', parameters('@@ev:sanic_carp_ev_spkbuzon@@'), '''')"
+            }
+          }
+        },
+        "Fijar_cola": {
+          "runAfter": {
+            "Buscar_cola": [
+              "Succeeded"
+            ]
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "varCola",
+            "value": "@first(outputs('Buscar_cola')?['body/value'])?['queueid']"
+          }
+        },
+        "Leer_mensaje": {
+          "runAfter": {
+            "Fijar_cola": [
+              "Succeeded"
+            ]
+          },
           "type": "OpenApiConnection",
           "inputs": {
             "host": {
@@ -372,7 +493,7 @@
                       "item/sender": "@triggerOutputs()?['body/from']",
                       "item/torecipients": "@triggerOutputs()?['body/to']",
                       "item/actualend": "@triggerOutputs()?['body/receivedDateTime']",
-                      "item/ownerid_email@odata.bind": "@concat('/teams(', parameters('@@ev:sanic_carp_ev_spkteamarea@@'), ')')",
+                      "item/ownerid_email@odata.bind": "@concat('/teams(', variables('varTeam'), ')')",
                       "item/activitypointer_activity_parties": [
                         {
                           "participationtypemask": 1,
@@ -380,7 +501,7 @@
                         },
                         {
                           "participationtypemask": 2,
-                          "partyid_queue@odata.bind": "@concat('/queues(', parameters('@@ev:sanic_carp_ev_spkcola@@'), ')')"
+                          "partyid_queue@odata.bind": "@concat('/queues(', variables('varCola'), ')')"
                         }
                       ]
                     }
@@ -431,7 +552,7 @@
                         "item/sender": "@triggerOutputs()?['body/from']",
                         "item/torecipients": "@triggerOutputs()?['body/to']",
                         "item/actualend": "@triggerOutputs()?['body/receivedDateTime']",
-                        "item/ownerid_email@odata.bind": "@concat('/teams(', parameters('@@ev:sanic_carp_ev_spkteamarea@@'), ')')",
+                        "item/ownerid_email@odata.bind": "@concat('/teams(', variables('varTeam'), ')')",
                         "item/activitypointer_activity_parties": [
                           {
                             "participationtypemask": 1,
@@ -439,7 +560,7 @@
                           },
                           {
                             "participationtypemask": 2,
-                            "partyid_queue@odata.bind": "@concat('/queues(', parameters('@@ev:sanic_carp_ev_spkcola@@'), ')')"
+                            "partyid_queue@odata.bind": "@concat('/queues(', variables('varCola'), ')')"
                           }
                         ],
                         "item/regardingobjectid_sanic_carp_tbl_conversacion_email@odata.bind": "@concat('/sanic_carp_tbl_conversacions(', variables('varConv'), ')')"
@@ -524,10 +645,27 @@
                     ]
                   },
                   "actions": {
-                    "Adjunto_sin_crear": {
+                    "Crear_adjunto": {
                       "runAfter": {},
-                      "type": "Compose",
-                      "inputs": "@items('Por_cada_adjunto')?['name']"
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "@@conr:dataverse@@",
+                          "operationId": "CreateRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "activitymimeattachments",
+                          "item/filename": "@items('Por_cada_adjunto')?['name']",
+                          "item/subject": "@items('Por_cada_adjunto')?['name']",
+                          "item/mimetype": "@items('Por_cada_adjunto')?['contentType']",
+                          "item/body": "@items('Por_cada_adjunto')?['contentBytes']",
+                          "item/objectid_activitypointer@odata.bind": "@concat('/activitypointers(', variables('varEmailId'), ')')",
+                          "item/objecttypecode": "email",
+                          "item/attachmentid@odata.bind": "@json('null')",
+                          "item/attachmentcontentid": "@if(equals(items('Por_cada_adjunto')?['isInline'], true), items('Por_cada_adjunto')?['contentId'], '')"
+                        }
+                      }
                     }
                   },
                   "else": {
@@ -555,7 +693,7 @@
                     },
                     "parameters": {
                       "entityName": "queueitems",
-                      "item/queueid@odata.bind": "@concat('/queues(', parameters('@@ev:sanic_carp_ev_spkcola@@'), ')')",
+                      "item/queueid@odata.bind": "@concat('/queues(', variables('varCola'), ')')",
                       "item/objectid_email@odata.bind": "@concat('/emails(', variables('varEmailId'), ')')"
                     }
                   }
