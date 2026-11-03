@@ -115,3 +115,9 @@ Al activar `(r4)`: `WorkflowOperationParametersExtraParameter`, "The API operati
 ## Corrección 2026-11-02: V4 (r6)
 
 Al activar `(r5)`: `WorkflowOperationParametersExtraParameter` para `item/email_activity_parties`. En el conector, las partes de una actividad se exponen por la relación de `activitypointer` (`item/activitypointer_activity_parties`), no por la de `email`. Se creó `(r6)` con ese nombre; `(r5)` queda descartado. **Pendiente de confirmar al activar**: este nombre sale de flujos exportados conocidos, no de metadata leída; si falla, el plan es leerlo del diseñador (el usuario abre la acción y copia la vista de código).
+
+## Corrección 2026-11-02: V4 (r7)
+
+`(r6)` pasó la validación de las dos creaciones del email (`item/ownerid_email@odata.bind` y `item/activitypointer_activity_parties` quedan **confirmados**) y falló en `Crear_adjunto`: `OpenApiOperationParameterValidationFailed`, "CreateRecord is missing required property 'item/[EMAILPLACEHOLDER]'". La plataforma enmascara el nombre porque `xxx@odata.bind` parece una dirección de correo. En el diseñador, `activitymimeattachments` muestra la búsqueda del objeto como "Item (Activities)" (es decir, `activitypointer`) y marca como obligatoria "Attachment (Attachments)" (`attachmentid`). No se puede saber cuál de las dos es la que falta sin la vista de código.
+
+Decisión: `(r7)` **no crea adjuntos** (deja un Compose con el nombre de cada uno, para no frenar V-4 en lo central: dueño, BU, ruta A, cola) y el `queueitem` usa `item/objectid_activitypointer@odata.bind` = `/activitypointers(id)`, por analogía con lo que muestra el diseñador. Los adjuntos pasan a F1, con dos caminos: (a) leer los nombres del diseñador; (b) crear adjuntos con el conector "HTTP con Microsoft Entra ID (preautorizado)" contra la Web API, cuyas formas ya se ensayaron (`v40`). `(r6)` queda descartado.

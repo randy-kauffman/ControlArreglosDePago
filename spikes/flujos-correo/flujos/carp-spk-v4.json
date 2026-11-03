@@ -524,26 +524,10 @@
                     ]
                   },
                   "actions": {
-                    "Crear_adjunto": {
+                    "Adjunto_sin_crear": {
                       "runAfter": {},
-                      "type": "OpenApiConnection",
-                      "inputs": {
-                        "host": {
-                          "connectionName": "@@conr:dataverse@@",
-                          "operationId": "CreateRecord",
-                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
-                        },
-                        "parameters": {
-                          "entityName": "activitymimeattachments",
-                          "item/filename": "@items('Por_cada_adjunto')?['name']",
-                          "item/subject": "@items('Por_cada_adjunto')?['name']",
-                          "item/mimetype": "@items('Por_cada_adjunto')?['contentType']",
-                          "item/body": "@items('Por_cada_adjunto')?['contentBytes']",
-                          "item/objectid_email@odata.bind": "@concat('/emails(', variables('varEmailId'), ')')",
-                          "item/objecttypecode": "email",
-                          "item/attachmentcontentid": "@if(equals(items('Por_cada_adjunto')?['isInline'], true), items('Por_cada_adjunto')?['contentId'], '')"
-                        }
-                      }
+                      "type": "Compose",
+                      "inputs": "@items('Por_cada_adjunto')?['name']"
                     }
                   },
                   "else": {
@@ -572,7 +556,7 @@
                     "parameters": {
                       "entityName": "queueitems",
                       "item/queueid@odata.bind": "@concat('/queues(', parameters('@@ev:sanic_carp_ev_spkcola@@'), ')')",
-                      "item/objectid_email@odata.bind": "@concat('/emails(', variables('varEmailId'), ')')"
+                      "item/objectid_activitypointer@odata.bind": "@concat('/activitypointers(', variables('varEmailId'), ')')"
                     }
                   }
                 },

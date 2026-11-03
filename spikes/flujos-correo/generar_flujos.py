@@ -119,7 +119,7 @@ def flujo_v2():
 def _opcionales_v4(EC):
     cola = dv("CreateRecord", {}, {
         "entityName": "queueitems", "item/queueid@odata.bind": f"@concat('/queues(', {EC}, ')')",
-        "item/objectid_email@odata.bind": "@concat('/emails(', variables('varEmailId'), ')')"})
+        "item/objectid_activitypointer@odata.bind": "@concat('/activitypointers(', variables('varEmailId'), ')')"})
     return {
         "Opcionales": {"runAfter": ra("Por_cada_adjunto"), "type": "Scope", "actions": {
             "Agregar_a_la_cola": cola,
@@ -195,15 +195,7 @@ def flujo_v4():
             "runtimeConfiguration": {"concurrency": {"repetitions": 1}},
             "actions": {"Es_archivo": {"runAfter": {}, "type": "If",
                 "expression": {"and": [{"not": {"equals": ["@coalesce(items('Por_cada_adjunto')?['contentBytes'], '')", ""]}}]},
-                "actions": {"Crear_adjunto": dv("CreateRecord", {}, {
-                    "entityName": "activitymimeattachments",
-                    "item/filename": "@items('Por_cada_adjunto')?['name']",
-                    "item/subject": "@items('Por_cada_adjunto')?['name']",
-                    "item/mimetype": "@items('Por_cada_adjunto')?['contentType']",
-                    "item/body": "@items('Por_cada_adjunto')?['contentBytes']",
-                    "item/objectid_email@odata.bind": "@concat('/emails(', variables('varEmailId'), ')')",
-                    "item/objecttypecode": "email",
-                    "item/attachmentcontentid": "@if(equals(items('Por_cada_adjunto')?['isInline'], true), items('Por_cada_adjunto')?['contentId'], '')"})},
+                "actions": {"Adjunto_sin_crear": compose({}, "@items('Por_cada_adjunto')?['name']")},  # r7: el CreateRecord de activitymimeattachments del conector exige una busqueda obligatoria aun sin identificar; adjuntos quedan para F1
                 "else": {"actions": {}}}}},
     }
     ac["Intento"] = {"runAfter": ra("Variable_opcionales"), "type": "Scope", "actions": {
@@ -341,7 +333,7 @@ FLUJOS = [
     ("carp-spk-v2", "Cloud Flow - CARP - SPK - V2 Encabezados y respuesta", flujo_v2,
      "Spike F0 V-2: lee los encabezados del correo nuevo del buzon de prueba 4 por Graph, responde con createReply y send y lee el internetMessageId. Deja una fila SPK-DIAG.",
      {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spkbuzon"]),
-    ("carp-spk-v4", "Cloud Flow - CARP - SPK - V4 Entrada completa (r6)", flujo_v4,
+    ("carp-spk-v4", "Cloud Flow - CARP - SPK - V4 Entrada completa (r7)", flujo_v4,
      "Spike F0 V-4: captura el correo nuevo del buzon de prueba 4 y crea el email en Dataverse con dueno el team del area (idempotencia, correlacion por In-Reply-To, adjuntos, cola, categoria). Deja una fila SPK-DIAG.",
      {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spkbuzon", "sanic_carp_ev_spkteamarea", "sanic_carp_ev_spkcola"]),
     ("carp-spk-snd", "Cloud Flow - CARP - SPK - SND Salida de respuestas (r2)", flujo_snd,
