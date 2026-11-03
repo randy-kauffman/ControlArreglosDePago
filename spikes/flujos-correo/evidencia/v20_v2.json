@@ -39,8 +39,8 @@
   "ok": true,
   "esperado": "iguales",
   "obtenido": [
-   "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
-   "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+   "<<correo>>",
+   "<<correo>>"
   ]
  },
  {
@@ -49,8 +49,8 @@
   "ok": true,
   "esperado": "iguales",
   "obtenido": [
-   "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>",
-   "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com>"
+   "<<correo>>",
+   "<<correo>>"
   ]
  },
  {
@@ -69,8 +69,8 @@
   "ok": true,
   "esperado": "presente",
   "obtenido": [
-   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
-   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+   "<<correo>>",
+   "<<correo>>"
   ]
  },
  {
@@ -85,7 +85,7 @@
   "sub": "en Enviados el internetMessageId es el del borrador",
   "ok": true,
   "esperado": true,
-  "obtenido": "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+  "obtenido": "<<correo>>"
  },
  {
   "prueba": "V-2",
@@ -116,8 +116,8 @@
   "ok": true,
   "esperado": "iguales",
   "obtenido": [
-   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
-   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+   "<<correo>>",
+   "<<correo>>"
   ]
  },
  {
@@ -133,8 +133,8 @@
   "ok": true,
   "esperado": "iguales",
   "obtenido": [
-   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>",
-   "<MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+   "<<correo>>",
+   "<<correo>>"
   ]
  },
  {
@@ -142,6 +142,6 @@
   "sub": "References leído (informativo)",
   "ok": true,
   "esperado": "informativo",
-  "obtenido": "<PH9PR06MB610612E4F9AA73C53066724D7DD1692@PH9PR06MB610612.namprd06.prod.outlook.com> <MWHPR06MB9998389EF59F2DF8278549C35ED7692@MWHPR06MB999838.namprd06.prod.outlook.com>"
+  "obtenido": "<<correo>> <<correo>>"
  }
 ]

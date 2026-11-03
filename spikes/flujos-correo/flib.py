@@ -177,3 +177,15 @@ def esperar_email(dv, imid, t_envio_epoch, maximo=1500, paso=30):
             return h[0], round(time.time() - t0)
         time.sleep(paso)
     return None, round(time.time() - t0)
+
+
+_volcar_original = _h.volcar
+
+
+def _volcar_saneado(nombre, obj):
+    """Todo lo que se vuelca a evidencia pasa por sanear (Res incluido): el repo es público."""
+    _volcar_original(nombre, json.loads(sanear(json.dumps(obj, ensure_ascii=False, default=str))))
+
+
+_h.volcar = _volcar_saneado
+volcar = _volcar_saneado
