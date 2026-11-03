@@ -556,7 +556,7 @@
                     "parameters": {
                       "entityName": "queueitems",
                       "item/queueid@odata.bind": "@concat('/queues(', parameters('@@ev:sanic_carp_ev_spkcola@@'), ')')",
-                      "item/objectid_activitypointer@odata.bind": "@concat('/activitypointers(', variables('varEmailId'), ')')"
+                      "item/objectid_email@odata.bind": "@concat('/emails(', variables('varEmailId'), ')')"
                     }
                   }
                 },

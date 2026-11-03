@@ -1,0 +1,101 @@
+{
+ "flujo": "V4 entrada completa",
+ "recibido": "2026-11-03T04:24:24.1606001Z",
+ "modo": "ruta_C_sin_regarding+registrado",
+ "correo_creado": "6203816b-3ed7-f111-84e8-0022480c5699",
+ "conversacion_encontrada": "",
+ "in_reply_to": "",
+ "trigger_internetMessageId": "<<correo>>",
+ "graph_internetMessageId": "<<correo>>",
+ "trigger_adjuntos_cantidad": 4,
+ "trigger_hasAttachment": null,
+ "graph_adjuntos": [
+  {
+   "nombre": "nota.txt",
+   "tipo": "archivo",
+   "enLinea": false,
+   "contentId": null,
+   "tamano": 182,
+   "tieneBytes": true
+  },
+  {
+   "nombre": "pixel.png",
+   "tipo": "archivo",
+   "enLinea": false,
+   "contentId": null,
+   "tamano": 242,
+   "tieneBytes": true
+  },
+  {
+   "nombre": "logo-en-linea.png",
+   "tipo": "archivo",
+   "enLinea": true,
+   "contentId": "logo-spk-fc",
+   "tamano": 302,
+   "tieneBytes": true
+  },
+  {
+   "nombre": "reenviado.eml",
+   "tipo": "archivo",
+   "enLinea": false,
+   "contentId": null,
+   "tamano": 326,
+   "tieneBytes": true
+  }
+ ],
+ "duplicado": false,
+ "acciones": [
+  {
+   "nombre": "Leer_mensaje",
+   "estado": "Succeeded",
+   "codigo": "OK",
+   "error": null,
+   "cuerpo": "{\"@odata.context\":\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages(id,internetMessageId,conversationId,internetMessageHeaders,subject,hasAttachments,receivedDateTime)/$entity\",\"@odata.etag\":\"W/\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG7r\\\"\",\"id\":\"AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaSAAA=\",\"receivedDateTime\":\"2026-11-03T04:23:58Z\",\"hasAttachments\":true,\"internetMessageId\":\"<<correo>"
+  },
+  {
+   "nombre": "Filtrar_en_respuesta_a",
+   "estado": "Succeeded",
+   "codigo": null,
+   "error": null,
+   "cuerpo": "[]"
+  },
+  {
+   "nombre": "Variantes",
+   "estado": "Succeeded",
+   "codigo": "OK",
+   "error": null,
+   "cuerpo": ""
+  },
+  {
+   "nombre": "Leer_adjuntos",
+   "estado": "Succeeded",
+   "codigo": "OK",
+   "error": null,
+   "cuerpo": "{\"@odata.context\":\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages('AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaSAAA%3D')/attachments\",\"value\":[{\"@odata.type\":\"#microsoft.graph.fileAttachment\",\"@odata.mediaContentType\":\"text/plain\",\"id\":\"AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaSAAABEgAQAMKZ5MbufvdImdmiUJS05vA=\",\"lastModifiedDateTime\":\"202"
+  },
+  {
+   "nombre": "Resumen_adjuntos",
+   "estado": "Succeeded",
+   "codigo": null,
+   "error": null,
+   "cuerpo": "[{\"nombre\":\"nota.txt\",\"tipo\":\"archivo\",\"enLinea\":false,\"contentId\":null,\"tamano\":182,\"tieneBytes\":true},{\"nombre\":\"pixel.png\",\"tipo\":\"archivo\",\"enLinea\":false,\"contentId\":null,\"tamano\":242,\"tieneBytes\":true},{\"nombre\":\"logo-en-linea.png\",\"tipo\":\"archivo\",\"enLinea\":true,\"contentId\":\"logo-spk-fc\",\"tamano\":302,\"tieneBytes\":true},{\"nombre\":\"reenviado.eml\",\"tipo\":\"archivo\",\"enLinea\":false,\"contentId\":null,\"tamano\":326,\"tieneBytes\":true}]"
+  },
+  {
+   "nombre": "Buscar_duplicado",
+   "estado": "Succeeded",
+   "codigo": "OK",
+   "error": null,
+   "cuerpo": "{\"@odata.context\":\"https://org36e60d9d.crm.dynamics.com/api/data/v9.1/$metadata#emails(activityid)\",\"@Microsoft.Dynamics.CRM.totalrecordcount\":-1,\"@Microsoft.Dynamics.CRM.totalrecordcountlimitexceeded\":false,\"@Microsoft.Dynamics.CRM.globalmetadataversion\":\"16853960\",\"value\":[]}"
+  },
+  {
+   "nombre": "Es_nuevo",
+   "estado": "Succeeded",
+   "codigo": null,
+   "error": null,
+   "cuerpo": ""
+  }
+ ],
+ "opcionales": "[{\"nombre\":\"Agregar_a_la_cola\",\"estado\":\"Failed\",\"codigo\":\"BadRequest\",\"error\":null,\"cuerpo\":\"{\\\"error\\\":{\\\"code\\\":\\\"0x800404e7\\\",\\\"message\\\":\\\"This object type cannot be queued\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiExceptionSourceKey\\\":\\\"Plugin/Microsoft.Crm.ObjectModel.QueueItemService\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiStepKey\\\":\\\"b87e41c4-32c4-4196-912a-6fa4600d553e\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiDepthKey\\\":\\\"1\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiActivityIdKey\\\":\\\"49b42b6e-1bdf-4925-a5bd-d4e601358fd6\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiPluginSolutionNameKey\\\":\\\"System\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiStepSolutionNameKey\\\":\\\"System\\\",\\\"@Microsoft.PowerApps.\"},{\"nombre\":\"Marcar_categoria\",\"estado\":\"Succeeded\",\"codigo\":\"OK\",\"error\":null,\"cuerpo\":\"{\\\"@odata.context\\\":\\\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages/$entity\\\",\\\"@odata.etag\\\":\\\"W/\\\\\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG7t\\\\\\\"\\\",\\\"id\\\":\\\"AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaSAAA=\\\",\\\"createdDateTime\\\":\\\"2026-11-03T04:23:58Z\\\",\\\"lastModifiedDateTime\\\":\\\"2026-11-03T04:24:23Z\\\",\\\"changeKey\\\":\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG7t\\\",\\\"categories\\\":[\\\"CARP-registrado\\\"],\\\"receivedDateTime\\\":\\\"2026-11-03T04:23:58Z\\\",\\\"sentDateTime\\\":\\\"2026-11-03T04:23:2\"}]",
+ "_activityid": "a98eb771-3ed7-f111-84e8-0022480c5699",
+ "_createdon": "2026-11-03T04:24:24Z"
+}

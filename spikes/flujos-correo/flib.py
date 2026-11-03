@@ -135,6 +135,7 @@ def sanear(texto, c=None):
     """Reemplaza direcciones de correo por el nombre de su buzón de prueba (o <correo>): nada de direcciones en la evidencia."""
     def rep(m):
         return c.nombre(m.group(0)) if c else "<correo>"
+    texto = _re.sub(r"%40", "@", texto, flags=_re.I)  # Graph devuelve la dirección codificada en las URL de @odata.context
     return _re.sub(r"[\w.+-]+@[\w-]+(\.[\w-]+)+", lambda m: (c.nombre(m.group(0)) if c and c.nombre(m.group(0)) != "otra" else "<correo>") if "invalid" not in m.group(0) else m.group(0), texto)
 
 

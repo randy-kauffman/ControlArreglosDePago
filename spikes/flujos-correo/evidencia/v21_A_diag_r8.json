@@ -1,0 +1,68 @@
+{
+ "flujo": "V4 entrada completa",
+ "recibido": "2026-11-03T04:23:11.8996006Z",
+ "modo": "ruta_C_sin_regarding+registrado",
+ "correo_creado": "1be7cc42-3ed7-f111-84e8-0022480c5699",
+ "conversacion_encontrada": "",
+ "in_reply_to": "",
+ "trigger_internetMessageId": "<<correo>>",
+ "graph_internetMessageId": "<<correo>>",
+ "trigger_adjuntos_cantidad": 0,
+ "trigger_hasAttachment": null,
+ "graph_adjuntos": [],
+ "duplicado": false,
+ "acciones": [
+  {
+   "nombre": "Leer_mensaje",
+   "estado": "Succeeded",
+   "codigo": "OK",
+   "error": null,
+   "cuerpo": "{\"@odata.context\":\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages(id,internetMessageId,conversationId,internetMessageHeaders,subject,hasAttachments,receivedDateTime)/$entity\",\"@odata.etag\":\"W/\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG7d\\\"\",\"id\":\"AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaRAAA=\",\"receivedDateTime\":\"2026-11-03T04:22:37Z\",\"hasAttachments\":false,\"internetMessageId\":\"<<correo>"
+  },
+  {
+   "nombre": "Filtrar_en_respuesta_a",
+   "estado": "Succeeded",
+   "codigo": null,
+   "error": null,
+   "cuerpo": "[]"
+  },
+  {
+   "nombre": "Variantes",
+   "estado": "Succeeded",
+   "codigo": "OK",
+   "error": null,
+   "cuerpo": ""
+  },
+  {
+   "nombre": "Leer_adjuntos",
+   "estado": "Succeeded",
+   "codigo": "OK",
+   "error": null,
+   "cuerpo": "{\"@odata.context\":\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages('AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaRAAA%3D')/attachments\",\"value\":[]}"
+  },
+  {
+   "nombre": "Resumen_adjuntos",
+   "estado": "Succeeded",
+   "codigo": null,
+   "error": null,
+   "cuerpo": "[]"
+  },
+  {
+   "nombre": "Buscar_duplicado",
+   "estado": "Succeeded",
+   "codigo": "OK",
+   "error": null,
+   "cuerpo": "{\"@odata.context\":\"https://org36e60d9d.crm.dynamics.com/api/data/v9.1/$metadata#emails(activityid)\",\"@Microsoft.Dynamics.CRM.totalrecordcount\":-1,\"@Microsoft.Dynamics.CRM.totalrecordcountlimitexceeded\":false,\"@Microsoft.Dynamics.CRM.globalmetadataversion\":\"16853960\",\"value\":[]}"
+  },
+  {
+   "nombre": "Es_nuevo",
+   "estado": "Succeeded",
+   "codigo": null,
+   "error": null,
+   "cuerpo": ""
+  }
+ ],
+ "opcionales": "[{\"nombre\":\"Agregar_a_la_cola\",\"estado\":\"Failed\",\"codigo\":\"BadRequest\",\"error\":null,\"cuerpo\":\"{\\\"error\\\":{\\\"code\\\":\\\"0x800404e7\\\",\\\"message\\\":\\\"This object type cannot be queued\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiExceptionSourceKey\\\":\\\"Plugin/Microsoft.Crm.ObjectModel.QueueItemService\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiStepKey\\\":\\\"b87e41c4-32c4-4196-912a-6fa4600d553e\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiDepthKey\\\":\\\"1\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiActivityIdKey\\\":\\\"7c847a8c-e350-4a80-bc88-e0afe0a6dc49\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiPluginSolutionNameKey\\\":\\\"System\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiStepSolutionNameKey\\\":\\\"System\\\",\\\"@Microsoft.PowerApps.\"},{\"nombre\":\"Marcar_categoria\",\"estado\":\"Succeeded\",\"codigo\":\"OK\",\"error\":null,\"cuerpo\":\"{\\\"@odata.context\\\":\\\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages/$entity\\\",\\\"@odata.etag\\\":\\\"W/\\\\\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG7g\\\\\\\"\\\",\\\"id\\\":\\\"AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaRAAA=\\\",\\\"createdDateTime\\\":\\\"2026-11-03T04:22:37Z\\\",\\\"lastModifiedDateTime\\\":\\\"2026-11-03T04:23:11Z\\\",\\\"changeKey\\\":\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG7g\\\",\\\"categories\\\":[\\\"CARP-registrado\\\"],\\\"receivedDateTime\\\":\\\"2026-11-03T04:22:37Z\\\",\\\"sentDateTime\\\":\\\"2026-11-03T04:22:3\"}]",
+ "_activityid": "27e7cc42-3ed7-f111-84e8-0022480c5699",
+ "_createdon": "2026-11-03T04:23:11Z"
+}

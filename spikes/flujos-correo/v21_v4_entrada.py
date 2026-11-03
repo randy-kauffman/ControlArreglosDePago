@@ -1,4 +1,4 @@
-"""V-4, parte 1 (requiere el flujo V4 (r8) ACTIVADO por admin@): entrada por flujo sobre el buzón 4 con S-34 real.
+"""V-4, parte 1 (requiere el flujo V4 (r9) ACTIVADO por admin@): entrada por flujo sobre el buzón 4 con S-34 real.
 Casos: A) correo nuevo sin adjuntos (ruta C, dueño/BU/cola/categoría); D) correo con adjuntos (archivo, imagen normal, imagen en línea, .eml)
 enviado al buzón 4 (flujo) y al buzón 1 (SSS, para comparar); E) mide qué hace S-34 en cada uno. Cada caso: fila SPK-DIAG + Email + adjuntos."""
 import base64
@@ -9,9 +9,9 @@ R = Res("v21_v4_entrada.json")
 c = Correo()
 e = est()
 V = e.get("v4", {})
-nombre_flujo = "Cloud Flow - CARP - SPK - V4 Entrada completa (r8)"
+nombre_flujo = "Cloud Flow - CARP - SPK - V4 Entrada completa (r9)"
 fl = {f["name"]: f["statecode"] for f in flujos_spk(dv)}
-R.v("V-4", "flujo V4 (r8) encendido", fl.get(nombre_flujo) == 1, "statecode 1", fl)
+R.v("V-4", "flujo V4 (r9) encendido", fl.get(nombre_flujo) == 1, "statecode 1", fl)
 desde = reloj(dv)
 V.setdefault("desde", iso(desde))
 poner("v4", V)
