@@ -199,14 +199,6 @@
           "inputs": {
             "name": "varTeam",
             "value": "@first(outputs('Buscar_team')?['body/value'])?['teamid']"
-          },
-          "runtimeConfiguration": {
-            "secureData": {
-              "properties": [
-                "inputs",
-                "outputs"
-              ]
-            }
           }
         },
         "Buscar_cola": {
@@ -248,14 +240,6 @@
           "inputs": {
             "name": "varCola",
             "value": "@first(outputs('Buscar_cola')?['body/value'])?['queueid']"
-          },
-          "runtimeConfiguration": {
-            "secureData": {
-              "properties": [
-                "inputs",
-                "outputs"
-              ]
-            }
           }
         },
         "Leer_mensaje": {
@@ -326,8 +310,7 @@
           "runtimeConfiguration": {
             "secureData": {
               "properties": [
-                "inputs",
-                "outputs"
+                "inputs"
               ]
             }
           }
@@ -521,14 +504,6 @@
                           "inputs": {
                             "name": "varConv",
                             "value": "@first(outputs('Buscar_conversacion')?['body/value'])?['sanic_carp_tbl_conversacionid']"
-                          },
-                          "runtimeConfiguration": {
-                            "secureData": {
-                              "properties": [
-                                "inputs",
-                                "outputs"
-                              ]
-                            }
                           }
                         }
                       },
@@ -614,14 +589,6 @@
                   "inputs": {
                     "name": "varEmailId",
                     "value": "@outputs('Crear_sin_conversacion')?['body/activityid']"
-                  },
-                  "runtimeConfiguration": {
-                    "secureData": {
-                      "properties": [
-                        "inputs",
-                        "outputs"
-                      ]
-                    }
                   }
                 }
               },
@@ -678,14 +645,6 @@
                     "inputs": {
                       "name": "varEmailId",
                       "value": "@outputs('Crear_con_conversacion')?['body/activityid']"
-                    },
-                    "runtimeConfiguration": {
-                      "secureData": {
-                        "properties": [
-                          "inputs",
-                          "outputs"
-                        ]
-                      }
                     }
                   }
                 }

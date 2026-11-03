@@ -147,10 +147,12 @@ def _opcionales(EC, MSG, diag):
 
 def _asegurar(acciones):
     """Producción (diseno/07 §8.1): secure inputs y outputs en toda acción que lee o escribe correo o filas de Dataverse.
-    Recorre también las ramas If/Else y los Scope. Foreach/If/Scope no admiten el ajuste (no tienen contenido propio)."""
+    Recorre también las ramas If/Else y los Scope. Tipos admitidos según Learn (Logic Apps, "Access to workflow run history"):
+    variables, Foreach, If, Scope y Terminate no admiten ninguno; Compose solo inputs (SecureDataPropertyNotSupported al activar ENT con SetVariable)."""
     for a in acciones.values():
-        if a["type"] in ("OpenApiConnection", "Compose", "Query", "Select", "SetVariable"):
-            a["runtimeConfiguration"] = dict(a.get("runtimeConfiguration", {}), secureData={"properties": ["inputs", "outputs"]})
+        props = {"OpenApiConnection": ["inputs", "outputs"], "Query": ["inputs", "outputs"], "Select": ["inputs", "outputs"], "Compose": ["inputs"]}.get(a["type"])
+        if props:
+            a["runtimeConfiguration"] = dict(a.get("runtimeConfiguration", {}), secureData={"properties": props})
         _asegurar(a.get("actions", {}))
         _asegurar(a.get("else", {}).get("actions", {}))
 

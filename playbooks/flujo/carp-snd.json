@@ -297,14 +297,6 @@
           "inputs": {
             "name": "varBloqueado",
             "value": true
-          },
-          "runtimeConfiguration": {
-            "secureData": {
-              "properties": [
-                "inputs",
-                "outputs"
-              ]
-            }
           }
         },
         "Envio": {
@@ -543,14 +535,6 @@
                   "inputs": {
                     "name": "varOriginal",
                     "value": "@coalesce(first(body('Buscar_original')?['value'])?['id'], '')"
-                  },
-                  "runtimeConfiguration": {
-                    "secureData": {
-                      "properties": [
-                        "inputs",
-                        "outputs"
-                      ]
-                    }
                   }
                 }
               },
@@ -626,8 +610,7 @@
                   "runtimeConfiguration": {
                     "secureData": {
                       "properties": [
-                        "inputs",
-                        "outputs"
+                        "inputs"
                       ]
                     }
                   }
@@ -676,14 +659,6 @@
                   "inputs": {
                     "name": "varBorrador",
                     "value": "@body('Crear_respuesta')?['id']"
-                  },
-                  "runtimeConfiguration": {
-                    "secureData": {
-                      "properties": [
-                        "inputs",
-                        "outputs"
-                      ]
-                    }
                   }
                 }
               },
@@ -704,8 +679,7 @@
                     "runtimeConfiguration": {
                       "secureData": {
                         "properties": [
-                          "inputs",
-                          "outputs"
+                          "inputs"
                         ]
                       }
                     }
@@ -754,14 +728,6 @@
                     "inputs": {
                       "name": "varBorrador",
                       "value": "@body('Crear_mensaje_nuevo')?['id']"
-                    },
-                    "runtimeConfiguration": {
-                      "secureData": {
-                        "properties": [
-                          "inputs",
-                          "outputs"
-                        ]
-                      }
                     }
                   }
                 }
@@ -822,8 +788,7 @@
                   "runtimeConfiguration": {
                     "secureData": {
                       "properties": [
-                        "inputs",
-                        "outputs"
+                        "inputs"
                       ]
                     }
                   }
@@ -907,14 +872,6 @@
               "inputs": {
                 "name": "varImid",
                 "value": "@body('Leer_borrador')?['internetMessageId']"
-              },
-              "runtimeConfiguration": {
-                "secureData": {
-                  "properties": [
-                    "inputs",
-                    "outputs"
-                  ]
-                }
               }
             },
             "Enviar_respuesta": {

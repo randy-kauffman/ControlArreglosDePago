@@ -620,5 +620,19 @@
    "t_envio_epoch": 1793720185.8957798,
    "asunto": "SPK-FC-V4 adjuntos SSS 1793720185"
   }
+ },
+ "f4_modo_flujos": {
+  "mailbox1_original": {
+   "mailboxid": "8ab4a845-b1cc-f111-a05b-00224808ffcd",
+   "statuscode": 1,
+   "incomingemaildeliverymethod": 2,
+   "enabledforoutgoingemail": true,
+   "outgoingemailstatus": 1,
+   "enabledforincomingemail": true,
+   "emailrouteraccessapproval": 1,
+   "outgoingemaildeliverymethod": 2,
+   "incomingemailstatus": 1
+  },
+  "desde": "2026-11-03T16:43:18Z"
  }
 }
