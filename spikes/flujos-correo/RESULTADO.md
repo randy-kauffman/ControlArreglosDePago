@@ -103,3 +103,7 @@ Ensayado por API antes de armar V4 (`v40_simular_entrada.py`, sin tocar la BU de
 ## 7. Archivos
 
 `flib.py` (utilidades) · `v10`–`v13` (V-1) · `v30` (V-3) · `v40` (ensayo de escritura) · `v50` (solución y variables) · `generar_flujos.py` + `flujos/` + `playbooks/` (flujos) · `v20`–`v23` y `v60`, `v62` (pendientes de activación) · `evidencia/` · `estado.json`.
+
+## Corrección 2026-11-02: V4 (r4)
+
+Al activar `V4 Entrada completa (r3)` la plataforma respondió `WorkflowRunActionInputsInvalidProperty`: la acción `Fijar_modo_final` (SetVariable) usaba `variables('varModo')` para fijar `varModo` ("Self reference is not supported"). Se reemplazó por `AppendToStringVariable` con `+registrado` y se creó `Cloud Flow - CARP - SPK - V4 Entrada completa (r4)` (`5c1c8e11-1ad7-f111-84e8-0022480c5699`), apagado. `(r3)` queda descartado. Se revisaron los tres flujos: no hay otra autorreferencia. **Aprendizaje:** el intento de activación como service principal NO detecta esta regla (responde `ConnectionAuthorizationFailed` antes); sí la detecta la activación por una persona. También se apagó `SND Salida de respuestas` (sin sufijo, descartado), que había quedado encendido por error: dos flujos de salida encendidos duplicarían los envíos.

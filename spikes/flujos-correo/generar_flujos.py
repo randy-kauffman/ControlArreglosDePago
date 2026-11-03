@@ -128,7 +128,7 @@ def _opcionales_v4(EC):
             "nombre": "@item()?['name']", "estado": "@item()?['status']", "codigo": "@item()?['code']",
             "error": "@coalesce(item()?['error']?['message'], item()?['outputs']?['body']?['error']?['message'], '')"}),
         "Fijar_opcionales": {"runAfter": {"Resumen_opcionales": TODOS}, "type": "SetVariable", "inputs": {"name": "varOpc", "value": "@string(body('Resumen_opcionales'))"}},
-        "Fijar_modo_final": {"runAfter": {"Fijar_opcionales": TODOS}, "type": "SetVariable", "inputs": {"name": "varModo", "value": "@concat(variables('varModo'), '+registrado')"}},
+        "Fijar_modo_final": {"runAfter": {"Fijar_opcionales": TODOS}, "type": "AppendToStringVariable", "inputs": {"name": "varModo", "value": "+registrado"}},
     }
 
 
@@ -341,7 +341,7 @@ FLUJOS = [
     ("carp-spk-v2", "Cloud Flow - CARP - SPK - V2 Encabezados y respuesta", flujo_v2,
      "Spike F0 V-2: lee los encabezados del correo nuevo del buzon de prueba 4 por Graph, responde con createReply y send y lee el internetMessageId. Deja una fila SPK-DIAG.",
      {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spkbuzon"]),
-    ("carp-spk-v4", "Cloud Flow - CARP - SPK - V4 Entrada completa (r3)", flujo_v4,
+    ("carp-spk-v4", "Cloud Flow - CARP - SPK - V4 Entrada completa (r4)", flujo_v4,
      "Spike F0 V-4: captura el correo nuevo del buzon de prueba 4 y crea el email en Dataverse con dueno el team del area (idempotencia, correlacion por In-Reply-To, adjuntos, cola, categoria). Deja una fila SPK-DIAG.",
      {"outlook": CONN_O, "dataverse": CONN_D}, ["sanic_carp_ev_spkbuzon", "sanic_carp_ev_spkteamarea", "sanic_carp_ev_spkcola"]),
     ("carp-spk-snd", "Cloud Flow - CARP - SPK - SND Salida de respuestas (r2)", flujo_snd,

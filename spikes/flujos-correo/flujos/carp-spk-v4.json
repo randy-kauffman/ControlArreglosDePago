@@ -649,10 +649,10 @@
                   "TimedOut"
                 ]
               },
-              "type": "SetVariable",
+              "type": "AppendToStringVariable",
               "inputs": {
                 "name": "varModo",
-                "value": "@concat(variables('varModo'), '+registrado')"
+                "value": "+registrado"
               }
             }
           },
