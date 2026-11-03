@@ -1,8 +1,8 @@
 {
  "flujo": "V4 entrada completa",
- "recibido": "2026-11-03T04:23:11.8996006Z",
+ "recibido": "2026-11-03T14:40:45.1450720Z",
  "modo": "ruta_C_sin_regarding+registrado",
- "correo_creado": "1be7cc42-3ed7-f111-84e8-0022480c5699",
+ "correo_creado": "a7b85288-94d7-f111-84e8-0022480c5699",
  "conversacion_encontrada": "",
  "in_reply_to": "",
  "trigger_internetMessageId": "<<correo>>",
@@ -17,7 +17,7 @@
    "estado": "Succeeded",
    "codigo": "OK",
    "error": null,
-   "cuerpo": "{\"@odata.context\":\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages(id,internetMessageId,conversationId,internetMessageHeaders,subject,hasAttachments,receivedDateTime)/$entity\",\"@odata.etag\":\"W/\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG7d\\\"\",\"id\":\"AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaRAAA=\",\"receivedDateTime\":\"2026-11-03T04:22:37Z\",\"hasAttachments\":false,\"internetMessageId\":\"<<correo>"
+   "cuerpo": "{\"@odata.context\":\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages(id,internetMessageId,conversationId,internetMessageHeaders,subject,hasAttachments,receivedDateTime)/$entity\",\"@odata.etag\":\"W/\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG8c\\\"\",\"id\":\"AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaTAAA=\",\"receivedDateTime\":\"2026-11-03T14:39:55Z\",\"hasAttachments\":false,\"internetMessageId\":\"<<correo>"
   },
   {
    "nombre": "Filtrar_en_respuesta_a",
@@ -38,7 +38,7 @@
    "estado": "Succeeded",
    "codigo": "OK",
    "error": null,
-   "cuerpo": "{\"@odata.context\":\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages('AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaRAAA%3D')/attachments\",\"value\":[]}"
+   "cuerpo": "{\"@odata.context\":\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages('AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaTAAA%3D')/attachments\",\"value\":[]}"
   },
   {
    "nombre": "Resumen_adjuntos",
@@ -62,7 +62,7 @@
    "cuerpo": ""
   }
  ],
- "opcionales": "[{\"nombre\":\"Agregar_a_la_cola\",\"estado\":\"Failed\",\"codigo\":\"BadRequest\",\"error\":null,\"cuerpo\":\"{\\\"error\\\":{\\\"code\\\":\\\"0x800404e7\\\",\\\"message\\\":\\\"This object type cannot be queued\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiExceptionSourceKey\\\":\\\"Plugin/Microsoft.Crm.ObjectModel.QueueItemService\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiStepKey\\\":\\\"b87e41c4-32c4-4196-912a-6fa4600d553e\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiDepthKey\\\":\\\"1\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiActivityIdKey\\\":\\\"7c847a8c-e350-4a80-bc88-e0afe0a6dc49\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiPluginSolutionNameKey\\\":\\\"System\\\",\\\"@Microsoft.PowerApps.CDS.ErrorDetails.ApiStepSolutionNameKey\\\":\\\"System\\\",\\\"@Microsoft.PowerApps.\"},{\"nombre\":\"Marcar_categoria\",\"estado\":\"Succeeded\",\"codigo\":\"OK\",\"error\":null,\"cuerpo\":\"{\\\"@odata.context\\\":\\\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages/$entity\\\",\\\"@odata.etag\\\":\\\"W/\\\\\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG7g\\\\\\\"\\\",\\\"id\\\":\\\"AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaRAAA=\\\",\\\"createdDateTime\\\":\\\"2026-11-03T04:22:37Z\\\",\\\"lastModifiedDateTime\\\":\\\"2026-11-03T04:23:11Z\\\",\\\"changeKey\\\":\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG7g\\\",\\\"categories\\\":[\\\"CARP-registrado\\\"],\\\"receivedDateTime\\\":\\\"2026-11-03T04:22:37Z\\\",\\\"sentDateTime\\\":\\\"2026-11-03T04:22:3\"}]",
- "_activityid": "27e7cc42-3ed7-f111-84e8-0022480c5699",
- "_createdon": "2026-11-03T04:23:11Z"
+ "opcionales": "[{\"nombre\":\"Agregar_a_la_cola\",\"estado\":\"Succeeded\",\"codigo\":\"Created\",\"error\":null,\"cuerpo\":\"{\\\"@odata.context\\\":\\\"https://org36e60d9d.crm.dynamics.com/api/data/v9.1/$metadata#queueitems/$entity\\\",\\\"@odata.etag\\\":\\\"W/\\\\\\\"16932501\\\\\\\"\\\",\\\"<correo>\\\":\\\"11/3/2026 8:40 AM\\\",\\\"modifiedon\\\":\\\"2026-11-03T14:40:43Z\\\",\\\"_owninguser_value\\\":\\\"ffc778df-d287-f111-8075-70a8a5af5a32\\\",\\\"<correo>\\\":\\\"Email\\\",\\\"objecttypecode\\\":4202,\\\"<correo>\\\":\\\"SPK - Correo por flujos (prueba, buzon 4)\\\",\\\"<correo>\\\":\\\"queueid\\\",\\\"<correo>\"},{\"nombre\":\"Marcar_categoria\",\"estado\":\"Succeeded\",\"codigo\":\"OK\",\"error\":null,\"cuerpo\":\"{\\\"@odata.context\\\":\\\"https://graph.microsoft.com/v1.0/$metadata#users('PP_MAIL_BUZON_4')/messages/$entity\\\",\\\"@odata.etag\\\":\\\"W/\\\\\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG8f\\\\\\\"\\\",\\\"id\\\":\\\"AAMkAGNkZWQ1NmVhLWI4YmEtNGRjZC05OGU5LWYyMzliN2MwMmVkNwBGAAAAAADXCp0d2NbaSZIhdBCNH5tRBwBsixnIfXWgSqZ01pgeMfUkAAAAAAEMAABsixnIfXWgSqZ01pgeMfUkAAAXIgaTAAA=\\\",\\\"createdDateTime\\\":\\\"2026-11-03T14:39:55Z\\\",\\\"lastModifiedDateTime\\\":\\\"2026-11-03T14:40:44Z\\\",\\\"changeKey\\\":\\\"CQAAABYAAABsixnIfXWgSqZ01pgeMfUkAAAXIG8f\\\",\\\"categories\\\":[\\\"CARP-registrado\\\"],\\\"receivedDateTime\\\":\\\"2026-11-03T14:39:55Z\\\",\\\"sentDateTime\\\":\\\"2026-11-03T14:39:5\"}]",
+ "_activityid": "b3b85288-94d7-f111-84e8-0022480c5699",
+ "_createdon": "2026-11-03T14:40:45Z"
 }
