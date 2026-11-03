@@ -149,3 +149,7 @@ Con la salida SSS del buzón 1 en None, el flujo SND (r2) pasó la respuesta del
 ## F1: V4 (r10) con adjuntos, 2026-11-03: 17 de 17 OK
 
 El conector de Dataverse exige `item/attachmentid@odata.bind` en `activitymimeattachments` (`attachmentid` es ApplicationRequired; `attachment` no admite Create). La Web API acepta ese bind en `null` y crea el adjunto igual (probado con `objectid_email` y con `objectid_activitypointer`). `(r10)` manda `@json('null')` y `objectid_activitypointer`: activó sin error y creó los 4 adjuntos del caso D **idénticos a los de SSS** (nombre, tipo, tamaño y `attachmentcontentid` de la imagen en línea; el `.eml` enviado como archivo también). Además, `(r10)` busca el team por defecto de la BU con `sanic_carp_ev_nombrebu` y la cola por `emailaddress` = buzón que dispara, como el plugin: ya no usa `spkteamarea` ni `spkcola`. `(r9)` apagado.
+
+## F1: flujo ENT de producción, 2026-11-03
+
+El flujo de producción `Cloud Flow - CARP - ENT - Capturar correo entrante` (playbook `playbooks/flujo/carp-ent.md`, definición `playbooks/flujo/carp-ent.json`) usa la lógica de V4 (r10) generada por la misma función de `generar_flujos.py`; regenerar el spike no cambia `flujos/carp-spk-v4.json`. Se creó en la solución principal, **apagado**, junto con la variable `sanic_carp_ev_modocorreo` (`playbooks/variable-entorno/sanic_carp_ev_modocorreo.md`, valor `sss`). No se enciende mientras el buzón del área use SSS; la validación en ejecución con `flujos` es de F3/F4.

@@ -160,3 +160,14 @@ Regla para todas: correos solo entre los buzones de prueba 1 a 4, nunca el buzó
   - `manual/procedimiento-instalacion.md` con una sección "modo flujos" en vez de cola y buzón con SSS;
   - inventario: grupo 11 con dos filas nuevas.
 - **Selección de modo por entorno:** una variable de entorno nueva (`sanic_carp_ev_modocorreo`: `sss` | `flujos`) deja apagados los flujos ENT y SND cuando el entorno usa SSS. Se instala la misma solución en los dos casos.
+
+## 11. Notas de la construcción de F1 (2026-11-03)
+
+Flujo ENT construido (`playbooks/flujo/carp-ent.md`, inventario 11.4) y variable `sanic_carp_ev_modocorreo` (inventario 10.9) creados en Dev. ENT queda **apagado** y el modo en `sss`. Desviaciones respecto de lo escrito arriba:
+
+1. **Team, cola y BU por variables ya existentes.** ENT busca el team por defecto de la BU (`sanic_carp_ev_nombrebu`) y la queue por `emailaddress` = `sanic_carp_ev_buzonarea`; no hay variables nuevas con GUID (el spike las tenía y se retiraron en r10).
+2. **Compuerta de modo** en el primer paso (§10): si la variable no vale `flujos` (vacía o distinta), el flujo termina en Succeeded sin tocar nada. Vale `sss` por defecto.
+3. **Falla visible:** si el intento principal falla, la corrida termina Failed (`CARP-ENT-FALLO`). Si fallan solo la cola o la categoría, el email ya está creado y la corrida termina Succeeded; SAL lo ve por la categoría ausente (§3, punto 9).
+4. **Secure data y `diseno/07` §8.1:** esa regla dice que los flujos «no leen cuerpos ni adjuntos». ENT sí los lee; por eso secure inputs y outputs son obligatorios en todas sus acciones y en las salidas del disparador.
+5. **Adjuntos por el conector de Dataverse** (no por Graph ni por HTTP con Entra ID): ver las trampas del conector en el playbook, §2.2. `DeliverIncomingEmail` queda descartada (V-3).
+6. **Un solo código para spike y producción:** `spikes/flujos-correo/generar_flujos.py` genera el spike V4 y ENT con la misma función (`_entrada`); el JSON del spike no cambió.

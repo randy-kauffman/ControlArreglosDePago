@@ -28,14 +28,15 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 7 | Código de plugins (C#, TDD estricto) | 22 | 22 | 0 | 0 |
 | 8 | Registro de paquete, Custom API y steps | 7 | 7 | 0 | 0 |
 | 9 | Datos semilla y de configuración | 3 | 2 | 0 | 1 |
-| 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 7 | 7 | 0 | 0 |
-| 11 | Flujos | 3 | 2 | 0 | 1 |
+| 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 8 | 8 | 0 | 0 |
+| 11 | Flujos | 4 | 3 | 0 | 1 |
 | 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 27 | 27 | 0 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 15 | 2 |
-| **Total** | | **129** | **77** | **44** | **8** |
+| **Total** | | **131** | **79** | **44** | **8** |
 
 Notas del resumen:
 
+- 2026-11-03 (Dev, F1 del plan B de `diseno/08`): filas nuevas 10.9 (`sanic_carp_ev_modocorreo`) y 11.4 (flujo ENT, apagado), ambas `hecho`. El grupo 10 pasó de 7 a 8 filas y el grupo 11 de 3 a 4 (hechas, de 2 a 3); el total, de 129 filas y 77 hechas a 131 y 79 (pendientes 44 y diseño detallado pendiente 8, sin cambio).
 - 2026-10-28 (Dev, lote F de íconos): fila nueva 12.27, ya `hecho`: 41 SVG propios (1 de la app, 20 del sitemap, 13 de comandos y 7 de tablas, DA-22, `diseno/07` §13) y el ícono de las 7 tablas (`IconVectorName`), verificados `ya_existia`; títulos del sitemap en inglés (1033) y español (3082). Era la propuesta 12.27 de `diseno/07` §11 (4 iconos compartidos, DA-10). El grupo 12 pasó de 26 filas y 26 hechas a 27 y 27; el total, de 128 filas y 76 hechas a 129 y 77 (`pruebas-humo/lote-f/RESULTADO.md`).
 
 - 2026-10-20 (Dev): 11.1 y 11.2 pasaron a `hecho` tras activarlos el usuario con la cuenta de servicio (la API no puede activarlos: Power Automate autoriza la conexión contra la identidad del token, `CallerObjectId` no alcanza). El grupo 11 pasó de 0 hechas y 2 pendientes a 2 y 0; el total, de 74 y 46 a 76 y 44.
@@ -263,6 +264,7 @@ Las **definiciones** viajan en la solución; los **valores** y las **conexiones*
 | 10.4 | Environment variable `sanic_carp_ev_umbralesmonitoreo` *(prov.)*: umbrales de monitoreo (puede ser más de una variable) | `playbooks/variable-entorno/sanic_carp_ev_umbralesmonitoreo.md` | 1.1 | §6 Entornos, Operación | hecho (2026-10-20, Dev: una sola variable JSON con las cuatro claves de `diseno/07` §8.2; `creado` y `ya_existia`; `horasSinEntrada` = 4 sigue a confirmar con el jefe, DA-03) |
 | 10.7 | ~~Environment variable `sanic_carp_ev_upncuentaservicio` *(prov.)*: UPN de la cuenta de servicio licenciada (RNF-06), por el que los plugins reconocen las escrituras del sistema (`domainname`)~~ | ~~`playbooks/variable-entorno/sanic_carp_ev_upncuentaservicio.md`~~ | ~~1.1~~ | ~~Decisión del usuario del 2026-10-09 (inconsistencia 4), D-23~~ | **RETIRADA (OA-12, 2026-10-10).** Ningún plugin reconoce a la cuenta de servicio: solo SYSTEM escribe columnas solo-sistema. La fila 10.7 no se reutiliza ni se renumera |
 | 10.8 | Environment variable `sanic_carp_ev_buzonarea` *(prov.)*: dirección del buzón del área, por la que se resuelve la queue remitente | `playbooks/variable-entorno/sanic_carp_ev_buzonarea.md` | 1.1 | Decisión del usuario del 2026-10-09 (inconsistencia 4), D-23 | hecho (2026-10-20, Dev: valor = buzón de prueba 1; `ya_existia` con `--solo-verificar`. En Test y Prod el valor se carga por entorno, 13.13) |
+| 10.9 | Environment variable `sanic_carp_ev_modocorreo`: modo de correo del entorno, `sss` (por defecto) o `flujos`; deja inactivos los flujos del modo flujos cuando el entorno usa SSS | `playbooks/variable-entorno/sanic_carp_ev_modocorreo.md` | 1.1 | `diseno/08` §10 (plan B de correo por flujos, F1) | hecho (2026-11-03, Dev: valor `sss`; `creado` y `ya_existia`. En cada entorno el valor se carga por separado, 13.13) |
 | 10.5 | Connection reference `sanic_carp_conr_outlook` (`CONR - CARP - Outlook`), conector Office 365 Outlook | `playbooks/referencia-conexion/sanic_carp_conr_outlook.md` | 1.1 | §6 Integraciones; convenciones §2 | hecho (2026-10-20, Dev: referencia creada en la solución con `referencia_conexion.py`, **sin conexión**: la plataforma no deja que la identidad de la herramienta asocie una conexión de Outlook de otra persona (`ConnectionAuthorizationFailed`); la asocia el usuario desde el portal, paso manual de `pruebas-humo/lote-d/RESULTADO.md`) |
 | 10.6 | Connection reference `sanic_carp_conr_dataverse` *(prov.)*, conector Dataverse | `playbooks/referencia-conexion/sanic_carp_conr_dataverse.md` | 1.1 | §6 Integraciones | hecho (2026-10-20, Dev: `creado` y `ya_existia`, asociada a una conexión de Dataverse que ya existía en Dev a nombre de la cuenta de servicio) |
 
@@ -270,13 +272,14 @@ Ambos conectores deben estar en el mismo grupo de DLP (definición §6, Integrac
 
 ## 11. Flujos
 
-Solo monitoreo. La captura de correos no pasa por flujos (D-21). Son propiedad de la cuenta de servicio (13.6), con secure inputs y outputs en todas las acciones sobre tablas de ARP. Un cloud flow no tiene nombre lógico: se identifica por su display name, `Cloud Flow - CARP - COD - Nombre`, con `COD` de tres letras (BP-PP-196).
+Monitoreo (11.1 a 11.3) y, solo en el plan B de `diseno/08`, la captura de correo entrante (11.4, apagado por defecto). En el camino principal la captura de correos no pasa por flujos (D-21). Son propiedad de la cuenta de servicio (13.6), con secure inputs y outputs en todas las acciones sobre tablas de ARP. Un cloud flow no tiene nombre lógico: se identifica por su display name, `Cloud Flow - CARP - COD - Nombre`, con `COD` de tres letras (BP-PP-196).
 
 | # | Componente | Disparador | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|---|
 | 11.1 | `Cloud Flow - CARP - COD - Avisar estado del mailbox` *(prov.; `COD` por definir)*: avisa por Outlook al jefe y al equipo cuando la entrada o la salida del buzón pasan a fallo | `playbooks/flujo/carp-est.md` | `playbooks/flujo/<cod>.md` | 10.1 a 10.6, 6.4, 13.5, 13.6 | D-21, §6 Operación | hecho (2026-10-20, Dev: activado a mano por la cuenta de servicio en el portal; `como_servicio.py flujo --solo-verificar` da `ya_existia`, activado, 2 conexiones) |
 | 11.2 | `Cloud Flow - CARP - SAL - Salud del buzon` (ID `CARP-SAL`): cada 30 minutos en horario hábil comprueba correos entrantes recientes, correos sin conversación, respuestas con error de envío y **trabajos de eliminación masiva fallidos en las últimas 24 h** (cuarta comprobación, OA-3, 2026-10-10); si hay correos sin conversación invoca 8.3. El privilegio con que `SR - CARP - Servicio` lee esos trabajos está PENDIENTE de verificar en Dev al construir este flujo (`04-matriz-privilegios.md`, duda D-09). Hasta que el flujo exista, revisión manual semanal de System Jobs | recurrente | `playbooks/flujo/carp-sal.md` | 8.3, 10.3 a 10.6, 6.4, 13.5, 13.6 | D-21, RNF-08, §6 Operación | hecho (2026-10-20, Dev: activado a mano por la cuenta de servicio en el portal; `como_servicio.py flujo --solo-verificar` da `ya_existia`, activado, 2 conexiones) |
 | 11.3 | Flujo diario de marcado de cuotas vencidas sin pago (respaldo de D-11). **Condicional: no se activa**, el spike 2 mostró que el operador de fecha relativa sirve. Requeriría una Custom API que la definición no lista entre las cinco | recurrente diario | — | D-11, D-21; escribe Cuota con rol Servicio | diseño detallado pendiente (condicional; no se construye salvo que se active) |
+| 11.4 | `Cloud Flow - CARP - ENT - Capturar correo entrante`: **plan B del correo (modo flujos)**. Captura el correo nuevo del buzón del área y crea el email entrante en Dataverse (idempotencia, In-Reply-To, adjuntos, cola, categoría). Compuerta por `sanic_carp_ev_modocorreo`: si no vale `flujos`, termina sin hacer nada. **No se activa** salvo en modo flujos | Outlook, correo nuevo en buzón compartido (cada minuto) | `playbooks/flujo/carp-ent.md` | 10.1, 10.5, 10.6, 10.8, 10.9 | `diseno/08` §3 y §10 (F1) | hecho (2026-11-03, Dev: creado APAGADO por `como_servicio.py`, `ya_existia`; NO se enciende en Dev mientras el buzón del área use SSS. Lo enciende una persona en F3/F4) |
 
 ## 12. App model-driven
 

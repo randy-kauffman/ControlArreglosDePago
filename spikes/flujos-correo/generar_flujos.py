@@ -52,15 +52,22 @@ def select(corre_despues, desde, mapa):
     return {"runAfter": corre_despues, "type": "Select", "inputs": {"from": desde, "select": mapa}}
 
 
-def trigger_buzon(filtro_asunto, con_adjuntos):
-    return {"Al_llegar_correo": {
-        "recurrence": {"interval": 1, "frequency": "Minute"},
-        "splitOn": "@triggerOutputs()?['body/value']",
-        "type": "OpenApiConnection",
-        "inputs": {"host": {"connectionName": "@@conr:outlook@@", "operationId": "SharedMailboxOnNewEmailV2", "apiId": OFFICE},
-                   "parameters": {"mailboxAddress": f"@{K}", "folderId": "Inbox", "subjectFilter": filtro_asunto,
-                                  "importance": "Any", "includeAttachments": con_adjuntos},
-                   "authentication": "@parameters('$authentication')"}}}
+def trigger_buzon(filtro_asunto, con_adjuntos, buzon=K, seguro=False):
+    """Disparador de correo nuevo en el buzón compartido. Sin `filtro_asunto` (producción) no se filtra por asunto.
+    `seguro`: salidas del disparador ocultas en el historial (traen el correo entero)."""
+    parametros = {"mailboxAddress": f"@{buzon}", "folderId": "Inbox"}
+    if filtro_asunto is not None:
+        parametros["subjectFilter"] = filtro_asunto
+    parametros.update({"importance": "Any", "includeAttachments": con_adjuntos})
+    t = {"recurrence": {"interval": 1, "frequency": "Minute"},
+         "splitOn": "@triggerOutputs()?['body/value']",
+         "type": "OpenApiConnection",
+         "inputs": {"host": {"connectionName": "@@conr:outlook@@", "operationId": "SharedMailboxOnNewEmailV2", "apiId": OFFICE},
+                    "parameters": parametros,
+                    "authentication": "@parameters('$authentication')"}}
+    if seguro:
+        t["runtimeConfiguration"] = {"secureData": {"properties": ["outputs"]}}
+    return {"Al_llegar_correo": t}
 
 
 TODOS = ["Succeeded", "Failed", "Skipped", "TimedOut"]
@@ -71,7 +78,8 @@ DIAG = lambda quien, prefijo, ra_: dv("CreateRecord", ra_, {
     "entityName": "emails", "item/subject": f"@concat('SPK-DIAG {quien} ', coalesce({prefijo}, ''))",
     "item/description": "@string(outputs('Armar_diagnostico'))", "item/directioncode": True})
 HDR = ("?$select=id,internetMessageId,conversationId,internetMessageHeaders,subject,hasAttachments,receivedDateTime")
-MSG = f"concat('{G}', {K}, '/messages/', triggerOutputs()?['body/id'])"
+msg = lambda buzon: f"concat('{G}', {buzon}, '/messages/', triggerOutputs()?['body/id'])"
+MSG = msg(K)
 
 
 # --------------------------------------------------------------------------------------------- V-2
@@ -117,30 +125,57 @@ def flujo_v2():
 
 
 # --------------------------------------------------------------------------------------------- V-4 entrada
-def _opcionales_v4(EC):
+def _opcionales(EC, MSG, diag):
     cola = dv("CreateRecord", {}, {
         "entityName": "queueitems", "item/queueid@odata.bind": f"@concat('/queues(', {EC}, ')')",
         "item/objectid_email@odata.bind": "@concat('/emails(', variables('varEmailId'), ')')"})
-    return {
+    op = {
         "Opcionales": {"runAfter": ra("Por_cada_adjunto"), "type": "Scope", "actions": {
             "Agregar_a_la_cola": cola,
-            "Marcar_categoria": http(ra("Agregar_a_la_cola", estados=["Succeeded", "Failed"]), f"@{MSG}", "PATCH", "{\"categories\": [\"CARP-registrado\"]}")}},
+            "Marcar_categoria": http(ra("Agregar_a_la_cola", estados=["Succeeded", "Failed"]), f"@{MSG}", "PATCH", "{\"categories\": [\"CARP-registrado\"]}")}}}
+    if not diag:
+        return op
+    op.update({
         "Resumen_opcionales": select({"Opcionales": TODOS}, "@result('Opcionales')", {
             "nombre": "@item()?['name']", "estado": "@item()?['status']", "codigo": "@item()?['code']",
             "error": "@item()?['error']", "cuerpo": "@take(string(item()?['outputs']?['body']), 600)"}),
         "Fijar_opcionales": {"runAfter": {"Resumen_opcionales": TODOS}, "type": "SetVariable", "inputs": {"name": "varOpc", "value": "@string(body('Resumen_opcionales'))"}},
         "Fijar_modo_final": {"runAfter": {"Fijar_opcionales": TODOS}, "type": "AppendToStringVariable", "inputs": {"name": "varModo", "value": "+registrado"}},
-    }
+    })
+    return op
 
 
-def flujo_v4():
+def _asegurar(acciones):
+    """Producción (diseno/07 §8.1): secure inputs y outputs en toda acción que lee o escribe correo o filas de Dataverse.
+    Recorre también las ramas If/Else y los Scope. Foreach/If/Scope no admiten el ajuste (no tienen contenido propio)."""
+    for a in acciones.values():
+        if a["type"] in ("OpenApiConnection", "Compose", "Query", "Select", "SetVariable"):
+            a["runtimeConfiguration"] = dict(a.get("runtimeConfiguration", {}), secureData={"properties": ["inputs", "outputs"]})
+        _asegurar(a.get("actions", {}))
+        _asegurar(a.get("else", {}).get("actions", {}))
+
+
+def _entrada(K, diag, seguro, despues=None):
+    """Cuerpo COMPARTIDO de la entrada de correo: lo usan el spike V4 (`flujo_v4`) y el flujo de producción ENT (`flujo_ent`), para que
+    no se separen. `K` = expresión del buzón que dispara (spike: sanic_carp_ev_spkbuzon; producción: sanic_carp_ev_buzonarea).
+    `diag`=True agrega el andamiaje del spike (varModo, varOpc, Resumen_adjuntos, Resumen_opcionales). `seguro`=True aplica secure data.
+    `despues`: acción tras la que arranca (producción: la compuerta de modo). Devuelve las acciones hasta `Intento` inclusive."""
+    MSG = msg(K)
     ac = {}
-    ac["Variable_conversacion"] = {"runAfter": {}, "type": "InitializeVariable", "inputs": {"variables": [{"name": "varConv", "type": "string", "value": ""}]}}
-    ac["Variable_correo"] = {"runAfter": ra("Variable_conversacion"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varEmailId", "type": "string", "value": ""}]}}
-    ac["Variable_modo"] = {"runAfter": ra("Variable_correo"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varModo", "type": "string", "value": "sin_procesar"}]}}
-    ac["Variable_opcionales"] = {"runAfter": ra("Variable_modo"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varOpc", "type": "string", "value": ""}]}}
-    ac["Variable_team"] = {"runAfter": ra("Variable_opcionales"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varTeam", "type": "string", "value": ""}]}}
-    ac["Variable_cola"] = {"runAfter": ra("Variable_team"), "type": "InitializeVariable", "inputs": {"variables": [{"name": "varCola", "type": "string", "value": ""}]}}
+    previa = [despues]
+
+    def init(clave, nombre, tipo_valor, valor):
+        ac[clave] = {"runAfter": ra(previa[0]) if previa[0] else {}, "type": "InitializeVariable",
+                     "inputs": {"variables": [{"name": nombre, "type": tipo_valor, "value": valor}]}}
+        previa[0] = clave
+
+    init("Variable_conversacion", "varConv", "string", "")
+    init("Variable_correo", "varEmailId", "string", "")
+    if diag:
+        init("Variable_modo", "varModo", "string", "sin_procesar")
+        init("Variable_opcionales", "varOpc", "string", "")
+    init("Variable_team", "varTeam", "string", "")
+    init("Variable_cola", "varCola", "string", "")
 
     cuerpo_comun = {
         "entityName": "emails",
@@ -161,7 +196,17 @@ def flujo_v4():
     def setv(nombre, ra_, nom, valor):
         return {"runAfter": ra_, "type": "SetVariable", "inputs": {"name": nom, "value": valor}}
 
-    OPCIONALES_V4 = _opcionales_v4(EC)
+    def modo(nombre, ra_, valor):
+        """Fija varModo: solo existe en el spike (diag); en producción no se emite."""
+        return {nombre: setv(nombre, ra_, "varModo", valor)} if diag else {}
+
+    crear_a = {"Crear_sin_conversacion": dv("CreateRecord", {}, cuerpo_comun),
+               "Fijar_correo_a": setv("varEmailId", ra("Crear_sin_conversacion"), "varEmailId", "@outputs('Crear_sin_conversacion')?['body/activityid']")}
+    crear_a.update(modo("Fijar_modo_a", ra("Fijar_correo_a"), "ruta_C_sin_regarding"))
+    crear_b = {"Crear_con_conversacion": dv("CreateRecord", {}, con_conv),
+               "Fijar_correo_b": setv("varEmailId", ra("Crear_con_conversacion"), "varEmailId", "@outputs('Crear_con_conversacion')?['body/activityid']")}
+    crear_b.update(modo("Fijar_modo_b", ra("Fijar_correo_b"), "ruta_A_con_regarding"))
+
     procesar = {
         "Hay_en_respuesta_a": {"runAfter": {}, "type": "If",
             "expression": {"and": [{"not": {"equals": ["@outputs('Variantes')?['a']", ""]}}]},
@@ -183,14 +228,8 @@ def flujo_v4():
             "else": {"actions": {}}},
         "Crear_el_correo": {"runAfter": ra("Hay_en_respuesta_a"), "type": "If",
             "expression": {"and": [{"equals": ["@variables('varConv')", ""]}]},
-            "actions": {
-                "Crear_sin_conversacion": dv("CreateRecord", {}, cuerpo_comun),
-                "Fijar_correo_a": setv("varEmailId", ra("Crear_sin_conversacion"), "varEmailId", "@outputs('Crear_sin_conversacion')?['body/activityid']"),
-                "Fijar_modo_a": setv("varModo", ra("Fijar_correo_a"), "varModo", "ruta_C_sin_regarding")},
-            "else": {"actions": {
-                "Crear_con_conversacion": dv("CreateRecord", {}, con_conv),
-                "Fijar_correo_b": setv("varEmailId", ra("Crear_con_conversacion"), "varEmailId", "@outputs('Crear_con_conversacion')?['body/activityid']"),
-                "Fijar_modo_b": setv("varModo", ra("Fijar_correo_b"), "varModo", "ruta_A_con_regarding")}}},
+            "actions": crear_a,
+            "else": {"actions": crear_b}},
         "Cerrar_como_recibido": dv("UpdateOnlyRecord", ra("Crear_el_correo"), {
             "entityName": "emails", "recordId": "@variables('varEmailId')", "item/statecode": 1, "item/statuscode": 4}),
         "Por_cada_adjunto": {"runAfter": ra("Cerrar_como_recibido"), "type": "Foreach",
@@ -211,7 +250,9 @@ def flujo_v4():
                     "item/attachmentcontentid": "@if(equals(items('Por_cada_adjunto')?['isInline'], true), items('Por_cada_adjunto')?['contentId'], '')"})},
                 "else": {"actions": {}}}}},
     }
-    ac["Intento"] = {"runAfter": ra("Variable_cola"), "type": "Scope", "actions": {
+    procesar.update(_opcionales(EC, MSG, diag))
+
+    intento = {
         "Buscar_unidad": dv("ListRecords", {}, {"entityName": "businessunits", "$select": "businessunitid", "$top": 1,
                                                 "$filter": f"@concat('name eq ''', {NB}, '''')"}),
         "Buscar_team": dv("ListRecords", ra("Buscar_unidad"), {"entityName": "teams", "$select": "teamid", "$top": 1,
@@ -228,17 +269,28 @@ def flujo_v4():
             "b": "@replace(replace(trim(coalesce(first(body('Filtrar_en_respuesta_a'))?['value'], '')), '<', ''), '>', '')",
             "c": "@concat('<', replace(replace(trim(coalesce(first(body('Filtrar_en_respuesta_a'))?['value'], '')), '<', ''), '>', ''), '>')"}),
         "Leer_adjuntos": http(ra("Variantes"), f"@concat({MSG}, '/attachments')"),  # r8: $select=contentBytes falla en /attachments; el tipo base attachment no la tiene
-        "Resumen_adjuntos": select(ra("Leer_adjuntos"), "@coalesce(body('Leer_adjuntos')?['value'], json('[]'))", {
+    }
+    antes_duplicado = "Leer_adjuntos"
+    if diag:
+        intento["Resumen_adjuntos"] = select(ra("Leer_adjuntos"), "@coalesce(body('Leer_adjuntos')?['value'], json('[]'))", {
             "nombre": "@item()?['name']", "tipo": "@if(empty(item()?['contentBytes']), 'sin_contenido_incrustado', 'archivo')", "enLinea": "@item()?['isInline']", "contentId": "@item()?['contentId']",
-            "tamano": "@item()?['size']", "tieneBytes": "@not(empty(item()?['contentBytes']))"}),
-        "Buscar_duplicado": dv("ListRecords", ra("Resumen_adjuntos"), {
-            "entityName": "emails", "$select": "activityid", "$top": 1,
-            "$filter": "@concat('directioncode eq false and messageid eq ''', triggerOutputs()?['body/internetMessageId'], '''')"}),
-        "Es_nuevo": {"runAfter": ra("Buscar_duplicado"), "type": "If",
-            "expression": {"and": [{"equals": ["@length(outputs('Buscar_duplicado')?['body/value'])", 0]}]},
-            "actions": dict(procesar, **OPCIONALES_V4),
-            "else": {"actions": {"Fijar_modo_duplicado": setv("varModo", {}, "varModo", "duplicado_no_se_crea")}}},
-    }}
+            "tamano": "@item()?['size']", "tieneBytes": "@not(empty(item()?['contentBytes']))"})
+        antes_duplicado = "Resumen_adjuntos"
+    intento["Buscar_duplicado"] = dv("ListRecords", ra(antes_duplicado), {
+        "entityName": "emails", "$select": "activityid", "$top": 1,
+        "$filter": "@concat('directioncode eq false and messageid eq ''', triggerOutputs()?['body/internetMessageId'], '''')"})
+    intento["Es_nuevo"] = {"runAfter": ra("Buscar_duplicado"), "type": "If",
+        "expression": {"and": [{"equals": ["@length(outputs('Buscar_duplicado')?['body/value'])", 0]}]},
+        "actions": procesar,
+        "else": {"actions": modo("Fijar_modo_duplicado", {}, "duplicado_no_se_crea")}}
+    ac["Intento"] = {"runAfter": ra(previa[0]), "type": "Scope", "actions": intento}
+    if seguro:
+        _asegurar(ac)
+    return ac
+
+
+def flujo_v4():
+    ac = _entrada(K, diag=True, seguro=False)
     ac["Estado_de_las_acciones"] = ESTADO_ACCIONES("Intento", None)
     ac["Armar_diagnostico"] = compose({"Estado_de_las_acciones": TODOS}, {
         "flujo": "V4 entrada completa", "recibido": "@utcNow()",
@@ -256,6 +308,28 @@ def flujo_v4():
         "opcionales": "@variables('varOpc')"})
     ac["Registrar_diagnostico"] = DIAG("V4", "triggerOutputs()?['body/subject']", ra("Armar_diagnostico", estados=TODOS))
     return {"triggers": trigger_buzon("SPK-FC-V4", True), "actions": ac}
+
+
+# --------------------------------------------------------------------------------------------- ENT (producción, F1)
+BZ = "parameters('@@ev:sanic_carp_ev_buzonarea@@')"       # buzón del área (variable de la solución principal)
+MODO = "parameters('@@ev:sanic_carp_ev_modocorreo@@')"    # sss | flujos
+
+
+def flujo_ent():
+    """Flujo de producción `Cloud Flow - CARP - ENT - Capturar correo entrante` (diseno/08 §3). Misma lógica que el spike V4 (r10),
+    generada por `_entrada`; difiere en lo que el spike necesita y producción no: sin filtro de asunto, sin filas SPK-DIAG ni
+    andamiaje de diagnóstico, con secure data, con compuerta de modo y con cierre en Failed si falla el intento."""
+    ac = {"Verificar_modo": {"runAfter": {}, "type": "If",
+            # vacío o cualquier valor distinto de `flujos` = modo SSS: no se hace nada
+            "expression": {"and": [{"not": {"equals": [f"@toLower(trim(coalesce({MODO}, '')))", "flujos"]}}]},
+            "actions": {"Terminar_modo_sss": {"runAfter": {}, "type": "Terminate", "inputs": {"runStatus": "Succeeded"}}},
+            "else": {"actions": {}}}}
+    ac.update(_entrada(BZ, diag=False, seguro=True, despues="Verificar_modo"))
+    # que la corrida termine Failed si el intento falla, para que el monitoreo (SAL, historial de corridas) la vea
+    ac["Fallar_si_el_intento_fallo"] = {"runAfter": {"Intento": ["Failed", "TimedOut"]}, "type": "Terminate",
+        "inputs": {"runStatus": "Failed", "runError": {"code": "CARP-ENT-FALLO",
+                   "message": "El flujo ENT no pudo registrar el correo entrante; ver la accion que fallo en el historial de la corrida."}}}
+    return {"triggers": trigger_buzon(None, True, buzon=BZ, seguro=True), "actions": ac}
 
 
 # --------------------------------------------------------------------------------------------- salida (e2e)
@@ -390,6 +464,15 @@ for archivo, nombre, fn, desc, conex, variables in FLUJOS:
 """
     open(os.path.join(PB, archivo + ".md"), "w", encoding="utf-8").write(md)
 print("generados:", [f[0] for f in FLUJOS])
+
+# flujo de producción ENT: el JSON va a playbooks/flujo/ (lo sube herramientas/construir/flujo.py); el playbook .md se escribe a mano
+RAIZ = os.path.abspath(os.path.join(AQUI, "..", ".."))
+def_ent = json.dumps(flujo_ent(), ensure_ascii=False, indent=2)
+for v in ("sanic_carp_ev_buzonarea", "sanic_carp_ev_nombrebu", "sanic_carp_ev_modocorreo"):
+    assert f"@@ev:{v}@@" in def_ent, v
+assert "SPK" not in def_ent and "spk" not in def_ent, "el flujo de producción no puede tener restos del spike"
+open(os.path.join(RAIZ, "playbooks", "flujo", "carp-ent.json"), "w", encoding="utf-8").write(def_ent)
+print("generado: playbooks/flujo/carp-ent.json")
 
 # variables de entorno del spike (valor null: lo carga v50_solucion_y_variables.py desde memoria)
 VARS = [("sanic_carp_ev_spkbuzon", "EV - CARP - SPK Buzon de prueba 4", "Direccion del buzon de prueba 4 (PP_MAIL_BUZON_4) que leen y usan los flujos del spike F0. El valor solo vive en este entorno."),
