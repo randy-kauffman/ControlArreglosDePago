@@ -1,0 +1,20 @@
+[
+ {
+  "prueba": "V-4",
+  "sub": "idempotencia (caso D reenviado 2 veces): sigue habiendo UN email del flujo con ese messageid",
+  "ok": true,
+  "esperado": 1,
+  "obtenido": 1
+ },
+ {
+  "prueba": "V-4",
+  "sub": "idempotencia: las 2 corridas reenviadas quedaron como duplicado_no_se_crea",
+  "ok": true,
+  "esperado": "2 duplicados",
+  "obtenido": [
+   "duplicado_no_se_crea",
+   "duplicado_no_se_crea",
+   "ruta_C_sin_regarding+registrado"
+  ]
+ }
+]

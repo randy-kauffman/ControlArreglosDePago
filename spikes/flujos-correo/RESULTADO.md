@@ -133,3 +133,7 @@ Caso A (nuevo, sin adjuntos): un email con el `messageid` real, dueño = team de
 ## Corrección 2026-11-03: V4 (r9)
 
 `queueitem` con `item/objectid_email@odata.bind` = `/emails(id)` (la navegación que acepta la Web API, confirmada en metadata). `(r8)` apagado por API; su evidencia queda en `evidencia/v21_*_r8.json`. `sanear` ahora también limpia direcciones codificadas (`%40`) en las URL de Graph.
+
+## Resultado V-4 entrada con (r9), 2026-11-03 14:39 UTC: 14 de 14 OK, idempotencia OK
+
+Con `objectid_email` el `queueitem` existe en la cola de prueba (verificado en Dev). Idempotencia: el usuario reenvió (Resubmit) dos veces la corrida del caso D (con adjuntos); las dos quedaron `duplicado_no_se_crea` y sigue habiendo un solo email del flujo con ese `messageid` (`evidencia/v23_idempotencia.json`). V-4 entrada cerrada; falta V-4 salida (ventana SSS, `v60`).
