@@ -217,9 +217,10 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         /// <b>Tipos de entrada.</b> Los decimales pueden llegar como <c>decimal</c> o <c>ValorDeDinero</c>, los choices como <c>ValorDeOpcion</c> o <c>int</c>; el plazo, como <c>int</c>. Un valor de otro tipo cuenta como faltante.
         /// </para>
         /// </summary>
-        public static ResultadoDeEvaluacion EvaluarAlta(PedidoDeAlta pedido, IReadOnlyList<VersionVigente> versionesVigentes)
+        public static ResultadoDeEvaluacion EvaluarAlta(PedidoDeAlta pedido, IReadOnlyList<VersionVigente> versionesVigentes, IConsecutivos consecutivos)
         {
             if (pedido == null) throw new ArgumentNullException(nameof(pedido));
+            if (consecutivos == null) throw new ArgumentNullException(nameof(consecutivos));
             if (versionesVigentes == null) throw new ArgumentNullException(nameof(versionesVigentes));
             var target = pedido.Target;
 
@@ -263,6 +264,10 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
             if (!plazo.HasValue) faltan.Add(ColPlazo);
             if (!fechaInicio.HasValue) faltan.Add(ColFechaInicio);
             if (faltan.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_006.Crear(Lista(faltan)));
+
+            // D-43 (2026-11-04): el numero de credito es unico entre productos; un alta con otro producto para un numero ya registrado se rechaza.
+            var choque = ProductoDeOtroArregloConElNumero(consecutivos, numeroDeProducto, Entero(Valor(target, ColProducto)).Value, Guid.Empty);
+            if (choque != null) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_032.Crear(numeroDeProducto, choque));
 
             // Pasos 4 y 5: la version vigente (exactamente una).
             if (versionesVigentes.Count == 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_001.Crear());
@@ -442,7 +447,7 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
             }
 
             if (gestos.Count == 1) return EvaluarGesto(pedido, gestos[0], consecutivos, jefatura);
-            return EvaluarEdicion(pedido, cambiadas);
+            return EvaluarEdicion(pedido, cambiadas, consecutivos);
         }
 
         // ------------------------------------------------------------------ gestos (2.6, paso 3)
@@ -481,7 +486,7 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
                     if (sinCredito.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_006.Crear(Lista(sinCredito)));
 
                     // D-43 (2026-11-04): un credito no tiene dos Vigentes. Va ANTES del consecutivo: si otro arreglo se formalizo despues de imprimir, la razon real es esta.
-                    var otrosVigentes = consecutivos.VigentesDelCredito((ProductoCrediticio)productoPrevio.Value, numeroPrevio, pedido.ArregloId);
+                    var otrosVigentes = consecutivos.VigentesDelCredito(numeroPrevio, pedido.ArregloId);
                     if (otrosVigentes.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_030.Crear(NumeroParaElMensaje(otrosVigentes)));
 
                     // El consecutivo se recalcula con el producto y el numero de la pre-imagen (2.0.5): otro arreglo del credito pudo formalizarse despues de imprimir.
@@ -518,11 +523,10 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
                     // D-43 (2026-11-04): Terminado -> Vigente tampoco puede dejar dos Vigentes en el credito. Reabrir un Vigente (descongelar) no crea otro: no se revisa.
                     if (gesto == Gesto.ReabrirTerminado)
                     {
-                        var productoDelCredito = Entero(Valor(preImagen, ColProducto));
                         var numeroDelCredito = NormalizadorDeTexto.NumeroDeProducto(Valor(preImagen, ColNumeroProducto) as string);
-                        if (productoDelCredito.HasValue && numeroDelCredito != null)
+                        if (numeroDelCredito != null)
                         {
-                            var otros = consecutivos.VigentesDelCredito((ProductoCrediticio)productoDelCredito.Value, numeroDelCredito, pedido.ArregloId);
+                            var otros = consecutivos.VigentesDelCredito(numeroDelCredito, pedido.ArregloId);
                             if (otros.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_031.Crear(NumeroParaElMensaje(otros)));
                         }
                     }
@@ -543,6 +547,17 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
                     break;
             }
             return Cerrar(pedido, escribir);
+        }
+
+        // El texto del producto del otro arreglo si el numero ya figura con un producto DISTINTO del dado; null si no hay choque. Una sola lectura con SYSTEM.
+        private static string ProductoDeOtroArregloConElNumero(IConsecutivos consecutivos, string numeroProducto, int producto, Guid excluirId)
+        {
+            foreach (var otro in consecutivos.ProductosDelNumero(numeroProducto, excluirId))
+            {
+                if (otro == producto) continue;
+                return otro == (int)ProductoCrediticio.Tarjeta ? "tarjeta" : otro == (int)ProductoCrediticio.Prestamo ? "préstamo" : "otro producto";
+            }
+            return null;
         }
 
         private static string NumeroParaElMensaje(IReadOnlyList<int?> numeros)
@@ -576,7 +591,7 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
 
         // ------------------------------------------------------------------ edicion (2.6, paso 4)
 
-        private static ResultadoDeEvaluacion EvaluarEdicion(PedidoDeActualizacion pedido, List<string> cambiadas)
+        private static ResultadoDeEvaluacion EvaluarEdicion(PedidoDeActualizacion pedido, List<string> cambiadas, IConsecutivos consecutivos)
         {
             var tabla = Columnas.De(Columnas.TablaArreglo);
             var target = pedido.Target;
@@ -604,6 +619,18 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
             // 3. El numero de producto, normalizado; sin contenido no sirve para calcular.
             if (target.ContainsKey(ColNumeroProducto) && NormalizadorDeTexto.NumeroDeProducto(Valor(target, ColNumeroProducto) as string) == null)
                 return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_006.Crear(ColNumeroProducto));
+
+            // 3b. D-43 (2026-11-04): si cambia el producto o el numero, el numero de credito no puede figurar con otro producto en otro arreglo. Solo un Borrador sin congelar llega aqui con estas columnas.
+            if (Cambio(pedido, ColProducto) || Cambio(pedido, ColNumeroProducto))
+            {
+                var productoEfectivo = Entero(Efectivo(pedido, ColProducto));
+                var numeroEfectivo = NormalizadorDeTexto.NumeroDeProducto(Efectivo(pedido, ColNumeroProducto) as string);
+                if (productoEfectivo.HasValue && numeroEfectivo != null)
+                {
+                    var choque = ProductoDeOtroArregloConElNumero(consecutivos, numeroEfectivo, productoEfectivo.Value, pedido.ArregloId);
+                    if (choque != null) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_032.Crear(numeroEfectivo, choque));
+                }
+            }
 
             // 4. Montos con los valores EFECTIVOS (el del Target si viene, si no el de la pre-imagen).
             var cambioMontos = Cambio(pedido, ColSaldoInicial) || Cambio(pedido, ColMontoAbonado) || Cambio(pedido, ColCuotaMensual) || Cambio(pedido, ColPlazo);

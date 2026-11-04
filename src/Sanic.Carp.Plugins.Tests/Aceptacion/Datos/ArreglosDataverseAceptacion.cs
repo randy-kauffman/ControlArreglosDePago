@@ -86,14 +86,31 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Datos
             Sembrar(almacen, DelCredito(EstadoDeArreglo.Vigente, ProductoCrediticio.Prestamo, credito).Con("sanic_numeroarreglo", 2));
             Sembrar(almacen, DelCredito(EstadoDeArreglo.Terminado, ProductoCrediticio.Prestamo, credito).Con("sanic_numeroarreglo", 3));
             Sembrar(almacen, DelCredito(EstadoDeArreglo.Borrador, ProductoCrediticio.Prestamo, credito));
-            Sembrar(almacen, DelCredito(EstadoDeArreglo.Vigente, ProductoCrediticio.Tarjeta, credito).Con("sanic_numeroarreglo", 9));
+            Sembrar(almacen, DelCredito(EstadoDeArreglo.Vigente, ProductoCrediticio.Tarjeta, credito).Con("sanic_numeroarreglo", 9));   // mismo numero con otro producto: tambien es el mismo credito
             Sembrar(almacen, DelCredito(EstadoDeArreglo.Vigente, ProductoCrediticio.Prestamo, "ZZF-VIG-2").Con("sanic_numeroarreglo", 8));
             var repo = new ArreglosDataverse(almacen);
 
-            Assert.Equal(new int?[] { 2 }, repo.VigentesDelCredito(ProductoCrediticio.Prestamo, credito, propio).ToArray());
-            Assert.Equal(new int?[] { 1, 2 }, repo.VigentesDelCredito(ProductoCrediticio.Prestamo, credito, Guid.NewGuid()).OrderBy(n => n).ToArray());
-            Assert.Empty(repo.VigentesDelCredito(ProductoCrediticio.Prestamo, "ZZF-NADA", Guid.NewGuid()));
-            Assert.Throws<ArgumentException>(() => repo.VigentesDelCredito(ProductoCrediticio.Prestamo, "", Guid.NewGuid()));
+            Assert.Equal(new int?[] { 2, 9 }, repo.VigentesDelCredito(credito, propio).OrderBy(n => n).ToArray());
+            Assert.Equal(new int?[] { 1, 2, 9 }, repo.VigentesDelCredito(credito, Guid.NewGuid()).OrderBy(n => n).ToArray());
+            Assert.Empty(repo.VigentesDelCredito("ZZF-NADA", Guid.NewGuid()));
+            Assert.Throws<ArgumentException>(() => repo.VigentesDelCredito("", Guid.NewGuid()));
+        }
+
+        [Fact]
+        public void PA_ARD_14_ProductosDelNumero_TraeLosProductosDeOtrosArreglosDeCualquierEstado_SinRepetidos_YSinElExcluido()
+        {
+            var almacen = new OrganizationServiceEnMemoria();
+            const string credito = "ZZF-PRO-1";
+            var propio = Sembrar(almacen, DelCredito(EstadoDeArreglo.Borrador, ProductoCrediticio.Prestamo, credito));
+            Sembrar(almacen, DelCredito(EstadoDeArreglo.Anulado, ProductoCrediticio.Tarjeta, credito));
+            Sembrar(almacen, DelCredito(EstadoDeArreglo.Borrador, ProductoCrediticio.Tarjeta, credito));
+            Sembrar(almacen, DelCredito(EstadoDeArreglo.Vigente, ProductoCrediticio.Prestamo, "ZZF-PRO-2"));
+            var repo = new ArreglosDataverse(almacen);
+
+            Assert.Equal(new[] { (int)ProductoCrediticio.Tarjeta }, repo.ProductosDelNumero(credito, propio).ToArray());
+            Assert.Equal(new[] { (int)ProductoCrediticio.Prestamo, (int)ProductoCrediticio.Tarjeta }, repo.ProductosDelNumero(credito, Guid.Empty).OrderBy(n => n).ToArray());
+            Assert.Empty(repo.ProductosDelNumero("ZZF-NADA", Guid.Empty));
+            Assert.Throws<ArgumentException>(() => repo.ProductosDelNumero("", Guid.Empty));
         }
 
         [Fact]

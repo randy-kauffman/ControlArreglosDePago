@@ -40,7 +40,7 @@ Inventario 13.15. Versión 1 (2026-10-20), escrita a partir de lo construido y p
 **Verificación:**
 - `GET solutions?$filter=uniquename eq 'sanic_carp_sol_controlarreglospago'&$select=version,ismanaged` da `ismanaged = true` y la versión exportada.
 - **Paquete de plugins.** El paquete viaja dentro de la solución. Hay que comprobar dos cosas:
-  - `GET pluginassemblies?$filter=name eq 'Sanic.Carp.Plugins'&$select=version` da **1.0.2.0** (`playbooks/paquete-plugins/Sanic.Carp.Plugins.md`);
+  - `GET pluginassemblies?$filter=name eq 'Sanic.Carp.Plugins'&$select=version` da **1.0.3.0** (`playbooks/paquete-plugins/Sanic.Carp.Plugins.md`);
   - la versión del paquete (`pluginpackages`, `sanic_carp_pkg_plugins`) sigue en 1.0.0.
 - **Steps.** `GET sdkmessageprocessingsteps?$filter=statecode eq 1&$select=name` sobre los steps del ensamblado **no debe devolver ninguno**. Tienen que estar habilitados los 37 steps de `playbooks/steps/sanic_carp_pkg_plugins.md` y los 5 que la plataforma crea para las Custom API.
   - En Dev, una importación de ribbon apagó los 37 steps. `herramientas/construir/importar_solucion.py` los rehabilita (`statecode 0`, `statuscode 1`), y la función que lista los deshabilitados está en el mismo archivo.

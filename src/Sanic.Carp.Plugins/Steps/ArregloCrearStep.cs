@@ -48,7 +48,8 @@ namespace Sanic.Carp.Plugins.Steps
                 versiones.Add(new VersionVigente(fila.Id, capacidad is int ? (int)capacidad : 0));
             }
 
-            var resultado = ReglasDeArreglo.EvaluarAlta(new PedidoDeAlta(contexto.TargetNeutro(), contexto.Identidad), versiones);
+            var resultado = ReglasDeArreglo.EvaluarAlta(new PedidoDeAlta(contexto.TargetNeutro(), contexto.Identidad), versiones,
+                new ConsecutivosDataverse(contexto.ServicioComoSistema));
             if (!resultado.Permitida) throw resultado.Error;
 
             // Solo lo que la regla escribe; nunca sanic_nombre (V-8, caso B2: quitarlo o reemplazarlo dejaria la primaria vacia).

@@ -28,9 +28,15 @@ namespace Sanic.Carp.Plugins.Datos
         }
 
         /// <inheritdoc />
-        public IReadOnlyList<int?> VigentesDelCredito(ProductoCrediticio producto, string numeroProducto, Guid excluirId)
+        public IReadOnlyList<int?> VigentesDelCredito(string numeroProducto, Guid excluirId)
         {
-            return new ArreglosDataverse(_s).VigentesDelCredito(producto, numeroProducto, excluirId);
+            return new ArreglosDataverse(_s).VigentesDelCredito(numeroProducto, excluirId);
+        }
+
+        /// <inheritdoc />
+        public IReadOnlyList<int> ProductosDelNumero(string numeroProducto, Guid excluirId)
+        {
+            return new ArreglosDataverse(_s).ProductosDelNumero(numeroProducto, excluirId);
         }
     }
 

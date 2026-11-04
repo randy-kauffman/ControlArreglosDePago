@@ -35,13 +35,24 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
 
         public List<Guid> ExcluidosEnLasLecturasDeVigentes { get; } = new List<Guid>();
 
-        public List<KeyValuePair<ProductoCrediticio, string>> LlamadasDeVigentes { get; } = new List<KeyValuePair<ProductoCrediticio, string>>();
+        public List<string> LlamadasDeVigentes { get; } = new List<string>();
 
-        public IReadOnlyList<int?> VigentesDelCredito(ProductoCrediticio producto, string numeroProducto, Guid excluirId)
+        public IReadOnlyList<int?> VigentesDelCredito(string numeroProducto, Guid excluirId)
         {
-            LlamadasDeVigentes.Add(new KeyValuePair<ProductoCrediticio, string>(producto, numeroProducto));
+            LlamadasDeVigentes.Add(numeroProducto);
             ExcluidosEnLasLecturasDeVigentes.Add(excluirId);
             return Vigentes;
+        }
+
+        /// <summary>Los productos (valor del choice) con los que el número figura en OTROS arreglos (por defecto ninguno).</summary>
+        public int[] ProductosDelOtro { get; set; } = new int[0];
+
+        public List<KeyValuePair<string, Guid>> LlamadasDeProductos { get; } = new List<KeyValuePair<string, Guid>>();
+
+        public IReadOnlyList<int> ProductosDelNumero(string numeroProducto, Guid excluirId)
+        {
+            LlamadasDeProductos.Add(new KeyValuePair<string, Guid>(numeroProducto, excluirId));
+            return ProductosDelOtro;
         }
     }
 
@@ -223,9 +234,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
             return new IdentidadContadora(Actor, sistema: true);
         }
 
-        private static ResultadoDeEvaluacion Alta(IReadOnlyDictionary<string, object> target, IReadOnlyList<VersionVigente> versiones, IIdentidadDeEjecucion identidad)
+        private static ResultadoDeEvaluacion Alta(IReadOnlyDictionary<string, object> target, IReadOnlyList<VersionVigente> versiones, IIdentidadDeEjecucion identidad, IConsecutivos consecutivos = null)
         {
-            return ReglasDeArreglo.EvaluarAlta(new PedidoDeAlta(target, identidad), versiones);
+            return ReglasDeArreglo.EvaluarAlta(new PedidoDeAlta(target, identidad), versiones, consecutivos ?? new ConsecutivosFalsos());
         }
 
         private static IReadOnlyList<VersionVigente> UnaVersion(int capacidad = 60)
@@ -724,8 +735,9 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
         [Fact]
         public void PA5C_RAR_45_Alta_ValidaSusArgumentos()
         {
-            Assert.Throws<ArgumentNullException>(() => ReglasDeArreglo.EvaluarAlta(null, UnaVersion()));
-            Assert.Throws<ArgumentNullException>(() => ReglasDeArreglo.EvaluarAlta(new PedidoDeAlta(AltaValida(), Persona()), null));
+            Assert.Throws<ArgumentNullException>(() => ReglasDeArreglo.EvaluarAlta(null, UnaVersion(), new ConsecutivosFalsos()));
+            Assert.Throws<ArgumentNullException>(() => ReglasDeArreglo.EvaluarAlta(new PedidoDeAlta(AltaValida(), Persona()), null, new ConsecutivosFalsos()));
+            Assert.Throws<ArgumentNullException>(() => ReglasDeArreglo.EvaluarAlta(new PedidoDeAlta(AltaValida(), Persona()), UnaVersion(), null));
             Assert.Throws<ArgumentNullException>(() => new PedidoDeAlta(null, Persona()));
             Assert.Throws<ArgumentNullException>(() => new PedidoDeAlta(AltaValida(), null));
             Assert.Throws<ArgumentException>(() => new VersionVigente(Guid.Empty, 60));
@@ -1379,7 +1391,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
 
             AssertRechaza(Act(Formalizar(), Previa(EstadoDeArreglo.Borrador, congelado: true), Persona(), consecutivos), CodigosDeError.ARR_030, 1);
 
-            Assert.Equal(new[] { new KeyValuePair<ProductoCrediticio, string>(ProductoCrediticio.Prestamo, "AB12") }, consecutivos.LlamadasDeVigentes.ToArray());
+            Assert.Equal(new[] { "AB12" }, consecutivos.LlamadasDeVigentes.ToArray());
             Assert.Equal(new[] { IdDelArreglo }, consecutivos.ExcluidosEnLasLecturasDeVigentes.ToArray());
             Assert.Empty(consecutivos.Llamadas);
         }
@@ -1401,6 +1413,52 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
             var consecutivos = new ConsecutivosFalsos(1, 2, 3) { Vigentes = new int?[] { 3 } };
 
             AssertRechaza(Act(Formalizar(), Previa(EstadoDeArreglo.Borrador, congelado: true), Persona(), consecutivos), CodigosDeError.ARR_030, 3);
+        }
+
+        [Fact]
+        public void PA_ARR_92_D43_Alta_ConUnNumeroQueYaFiguraConOtroProducto_CARP_ARR_032_ConElNumeroNormalizadoYElProductoDelOtro()
+        {
+            var consecutivos = new ConsecutivosFalsos { ProductosDelOtro = new[] { (int)ProductoCrediticio.Tarjeta } };
+
+            var resultado = Alta(AltaValida(), UnaVersion(), Persona(), consecutivos);
+
+            AssertRechaza(resultado, CodigosDeError.ARR_032, "54127500", "tarjeta");
+            Assert.Equal(new[] { new KeyValuePair<string, Guid>("54127500", Guid.Empty) }, consecutivos.LlamadasDeProductos.ToArray());
+        }
+
+        [Fact]
+        public void PA_ARR_93_D43_Alta_ConElMismoProductoOSinOtrosArreglos_Pasa_YElSistemaNoConsulta()
+        {
+            var mismo = new ConsecutivosFalsos { ProductosDelOtro = new[] { (int)ProductoCrediticio.Prestamo } };
+            AssertPermite(Alta(AltaValida(), UnaVersion(), Persona(), mismo));
+            AssertPermite(Alta(AltaValida(), UnaVersion(), Persona(), new ConsecutivosFalsos()));
+
+            var delSistema = new ConsecutivosFalsos { ProductosDelOtro = new[] { (int)ProductoCrediticio.Tarjeta } };
+            AssertPermiteSinEscribir(Alta(AltaValida(), UnaVersion(), Sistema(), delSistema));
+            Assert.Empty(delSistema.LlamadasDeProductos);
+        }
+
+        [Fact]
+        public void PA_ARR_94_D43_Edicion_QueCambiaElProductoOElNumero_CARP_ARR_032_ExcluyendoAlPropioArreglo()
+        {
+            var consecutivos = new ConsecutivosFalsos { ProductosDelOtro = new[] { (int)ProductoCrediticio.Tarjeta } };
+
+            AssertRechaza(Act(D("sanic_numeroproducto", " zz 9 "), Previa(EstadoDeArreglo.Borrador), Persona(), consecutivos), CodigosDeError.ARR_032, "ZZ9", "tarjeta");
+            AssertRechaza(Act(D("sanic_producto", new ValorDeOpcion((int)ProductoCrediticio.Prestamo)), Previa(EstadoDeArreglo.Borrador, false, "sanic_producto", new ValorDeOpcion((int)ProductoCrediticio.Tarjeta)),
+                Persona(), consecutivos), CodigosDeError.ARR_032, "AB12", "tarjeta");
+
+            Assert.Equal(new[] { IdDelArreglo, IdDelArreglo }, consecutivos.LlamadasDeProductos.Select(l => l.Value).ToArray());
+        }
+
+        [Fact]
+        public void PA_ARR_95_D43_Edicion_SinCambiarElProductoNiElNumero_NoConsultaNada()
+        {
+            var consecutivos = new ConsecutivosFalsos { ProductosDelOtro = new[] { (int)ProductoCrediticio.Tarjeta } };
+
+            AssertPermite(Act(D("sanic_comentarios", "x"), Previa(EstadoDeArreglo.Borrador), Persona(), consecutivos));
+            AssertPermite(Act(D("sanic_numeroproducto", " ab12 "), Previa(EstadoDeArreglo.Borrador), Persona(), consecutivos));
+
+            Assert.Empty(consecutivos.LlamadasDeProductos);
         }
 
         [Fact]

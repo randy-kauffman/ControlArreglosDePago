@@ -326,6 +326,8 @@ Notas:
 | 12.12 | A | En **Documento firmado** del arreglo 1 adjunte otro PDF, JPG o PNG de prueba (reemplaza al anterior) | Queda el nombre del archivo nuevo. Con un `.txt` o `.docx` el sistema responde "El documento firmado debe ser PDF, JPG o PNG." | [ ] OK [ ] Falla |
 | 12.13 | A | **Error esperado (un solo vigente por crédito).** Cree un arreglo nuevo (borrador) con el cliente `HUMO GUIA Cliente Uno` y **Número de préstamo o tarjeta** = `HUMOGUIA0001` (el mismo crédito del arreglo 1, que está Vigente). **Generar formato**, adjunte el documento firmado de prueba y pulse **Formalizar** | "Este crédito ya tiene un arreglo vigente (1). Anúlelo antes de formalizar otro." (código interno CARP-ARR-030, no se muestra). El borrador sigue como borrador | [ ] OK [ ] Falla |
 | 12.14 | A | En ese borrador, quite el documento firmado, **Desbloquear** si hace falta, escriba **Motivo de descarte** = `Prueba guiada HUMO` y pulse **Descartar** | Estado **Descartado**. El arreglo 1 sigue Vigente | [ ] OK [ ] Falla |
+| 12.15 | A | **Error esperado (número único entre productos).** Cree un arreglo nuevo con el cliente `HUMO GUIA Cliente Uno`, **Producto** = Tarjeta y **Número de préstamo o tarjeta** = `HUMOGUIA0001` (el mismo número del arreglo 1, que es un préstamo) y pulse **Guardar** | "El número HUMOGUIA0001 ya está registrado como préstamo en otro arreglo. Revise el producto o el número." (código interno CARP-ARR-032, no se muestra). No se crea el arreglo | [ ] OK [ ] Falla |
+| 12.16 | A | En el mismo formulario cambie el **Producto** a Préstamo o el número a `HUMOGUIA0004` y guarde; luego descarte ese borrador como en 12.14 | Se guarda (queda como borrador) y se descarta con su motivo | [ ] OK [ ] Falla |
 
 Notas:
 

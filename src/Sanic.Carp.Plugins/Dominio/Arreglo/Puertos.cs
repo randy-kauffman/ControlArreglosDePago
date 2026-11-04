@@ -16,9 +16,16 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
 
         /// <summary>
         /// Los <c>sanic_numeroarreglo</c> de los OTROS arreglos VIGENTES del crédito (<paramref name="excluirId"/> no cuenta: es el arreglo que se formaliza o reabre). Un crédito no puede tener dos vigentes a la vez
-        /// (D-43, 2026-11-04). Vacío ⇒ no hay otro vigente. Un vigente sin número (no debería existir) aparece como <c>null</c>. Se lee con SYSTEM: el llamador puede no ver todos los arreglos.
+        /// (D-43, 2026-11-04). "Mismo crédito" es el mismo <paramref name="numeroProducto"/> (ya normalizado) SIN mirar el producto: el número de crédito es único entre productos (decisión del usuario). Vacío ⇒ no hay
+        /// otro vigente. Un vigente sin número (no debería existir) aparece como <c>null</c>. Se lee con SYSTEM: el llamador puede no ver todos los arreglos.
         /// </summary>
-        IReadOnlyList<int?> VigentesDelCredito(ProductoCrediticio producto, string numeroProducto, Guid excluirId);
+        IReadOnlyList<int?> VigentesDelCredito(string numeroProducto, Guid excluirId);
+
+        /// <summary>
+        /// Los <c>sanic_producto</c> (valor del choice) de los OTROS arreglos, en CUALQUIER estado, que tienen el mismo <paramref name="numeroProducto"/> (ya normalizado). <paramref name="excluirId"/> no cuenta
+        /// (<c>Guid.Empty</c> en un alta). Sin repetidos. Sirve para que un número de crédito no figure con dos productos (D-43, 2026-11-04). Se lee con SYSTEM.
+        /// </summary>
+        IReadOnlyList<int> ProductosDelNumero(string numeroProducto, Guid excluirId);
     }
 
     /// <summary>

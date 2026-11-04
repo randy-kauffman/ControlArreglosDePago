@@ -47,12 +47,12 @@ namespace Sanic.Carp.Plugins.Datos
             return numeros;
         }
 
-        public IReadOnlyList<int?> VigentesDelCredito(ProductoCrediticio producto, string numeroProducto, Guid excluirId)
+        public IReadOnlyList<int?> VigentesDelCredito(string numeroProducto, Guid excluirId)
         {
             if (string.IsNullOrEmpty(numeroProducto)) throw new ArgumentException("El numero de producto es obligatorio.", nameof(numeroProducto));
             var vigente = Estados.De(EstadoDeArreglo.Vigente);
             var consulta = new QueryExpression(Tabla) { ColumnSet = new ColumnSet("sanic_numeroarreglo") };
-            consulta.Criteria.AddCondition("sanic_producto", ConditionOperator.Equal, (int)producto);
+            // Mismo credito = mismo numero, sin mirar el producto (el numero de credito es unico entre productos; decision del usuario, 2026-11-04).
             consulta.Criteria.AddCondition("sanic_numeroproducto", ConditionOperator.Equal, numeroProducto);
             consulta.Criteria.AddCondition("statecode", ConditionOperator.Equal, vigente.StateCode);
             consulta.Criteria.AddCondition("statuscode", ConditionOperator.Equal, vigente.StatusCode);
@@ -61,6 +61,22 @@ namespace Sanic.Carp.Plugins.Datos
             var numeros = new List<int?>();
             foreach (var arreglo in AyudaDeConsultas.Todas(_servicio, consulta)) numeros.Add(arreglo.GetAttributeValue<int?>("sanic_numeroarreglo"));
             return numeros;
+        }
+
+        public IReadOnlyList<int> ProductosDelNumero(string numeroProducto, Guid excluirId)
+        {
+            if (string.IsNullOrEmpty(numeroProducto)) throw new ArgumentException("El numero de producto es obligatorio.", nameof(numeroProducto));
+            var consulta = new QueryExpression(Tabla) { ColumnSet = new ColumnSet("sanic_producto") };
+            consulta.Criteria.AddCondition("sanic_numeroproducto", ConditionOperator.Equal, numeroProducto);
+            consulta.Criteria.AddCondition(AyudaDeConsultas.ColumnaDeId(Tabla), ConditionOperator.NotEqual, excluirId);
+
+            var productos = new List<int>();
+            foreach (var arreglo in AyudaDeConsultas.Todas(_servicio, consulta))
+            {
+                var producto = arreglo.GetAttributeValue<OptionSetValue>("sanic_producto");
+                if (producto != null && !productos.Contains(producto.Value)) productos.Add(producto.Value);
+            }
+            return productos;
         }
 
         public IReadOnlyList<Guid> IdsDeConversacion(Guid conversacionId)

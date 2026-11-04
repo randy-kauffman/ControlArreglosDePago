@@ -234,7 +234,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             e.ComoOficial.Create(UnAlta());
 
-            var lectura = Assert.Single(ConsultasDe(e, Arr));
+            // D-43 (2026-11-04): el alta suma una lectura del producto del numero (S-20, solo la columna sanic_producto); aqui se mira la del calendario.
+            var lectura = Assert.Single(ConsultasDe(e, Arr), c => !(c.Columnas.Count == 1 && c.Columnas[0] == "sanic_producto"));
             Assert.Equal(e.Almacen.IdDeSystem, lectura.Identidad);
             Assert.False(lectura.TodasLasColumnas);
             Assert.Equal(Ordenadas(new[] { "sanic_nombre", "statecode", "statuscode", "sanic_fechacongelamiento", "sanic_plazo", "sanic_cuotamensual", "sanic_fechainicio", "sanic_saldoinicial", "sanic_montoabonado", "ownerid" }),
