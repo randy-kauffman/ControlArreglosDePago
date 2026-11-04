@@ -189,6 +189,24 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             Assert.Equal(conversacion, Assert.IsType<EntityReference>(Valor(e, id, "sanic_conversacionid")).Id);
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void PA_ARR_17b_Vigente_CambiarLaConversacion_UnaPersonaRechaza_CARP_ARR_029_ElSistemaPasa(bool congelado)
+        {
+            // Pedido del usuario en la prueba guiada (2026-11-03): formalizado, la conversacion de origen no se cambia (el repunte al unir lo hace el sistema).
+            var e = UnEscenario();
+            var original = UnaConversacion(e);
+            var id = e.Sembrar(Fila(e, EstadoDeArreglo.Vigente, congelado).Con("sanic_conversacionid", new EntityReference(Conversacion, original)));
+            var otra = UnaConversacion(e);
+
+            Rechaza(() => e.ComoOficial.Update(Cambio(id, "sanic_conversacionid", new EntityReference(Conversacion, otra))), CodigosDeError.ARR_029);
+            Assert.Equal(original, Assert.IsType<EntityReference>(Valor(e, id, "sanic_conversacionid")).Id);
+
+            e.ComoSistema.Update(Cambio(id, "sanic_conversacionid", new EntityReference(Conversacion, otra)));
+            Assert.Equal(otra, Assert.IsType<EntityReference>(Valor(e, id, "sanic_conversacionid")).Id);
+        }
+
         [Fact]
         public void PA_ARR_18_BorradorCongelado_ReenviarLosMismosValores_Pasa_SinConsultarLaIdentidad()
         {

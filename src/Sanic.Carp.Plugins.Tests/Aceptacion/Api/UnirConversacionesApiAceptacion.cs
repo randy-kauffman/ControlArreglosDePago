@@ -489,5 +489,24 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
                 ApoyoDeSteps.Rechaza(() => e.ComoOficial.Update(directo), CodigosDeError.ARR_022);                      // PA-ARR-51
             }
         }
+
+        [Fact]
+        public void PA_UNI_26_LaCadenaDeArreglo_UnVigente_S21AceptaElRepunteDelSistema_YRechazaElMismoUpdateDeUnOficial_CARP_ARR_029()
+        {
+            // 2026-11-03 (pedido del usuario en la prueba guiada): formalizado, la conversacion de origen no la cambia una persona; el repunte al unir lo hace el sistema (DC-03).
+            var e = ApoyoDeArreglo.Escenario(false, false, false, true);
+            var par = Par(e);
+            var vigente = e.Sembrar(ApoyoDeArreglo.Fila(e, EstadoDeArreglo.Vigente, true).Con("sanic_conversacionid", RefConv(par.Key)));
+            var otra = e.Sembrar(Abierta());
+
+            Unir(e, ContextoDeUnir(e.Oficial, par.Key, par.Value));
+
+            var delStep = e.Pipeline.Ejecuciones.Where(x => x.Step.Plugin is ArregloActualizarStep).ToList();
+            Assert.Single(delStep);
+            Assert.Null(delStep[0].Excepcion);
+            Assert.Equal(par.Value, Ref(e.Fila(Arreglo, vigente), "sanic_conversacionid"));
+            var directo = new Entity(Arreglo, vigente) { ["sanic_conversacionid"] = RefConv(otra) };
+            ApoyoDeSteps.Rechaza(() => e.ComoOficial.Update(directo), CodigosDeError.ARR_029);
+        }
     }
 }

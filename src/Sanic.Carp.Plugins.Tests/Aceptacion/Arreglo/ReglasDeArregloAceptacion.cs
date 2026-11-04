@@ -1095,16 +1095,50 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
             AssertPermiteSinEscribir(Act(target, Previa(estado), Sistema()));
         }
 
-        [Theory]
-        [InlineData(EstadoDeArreglo.Borrador)]
-        [InlineData(EstadoDeArreglo.Vigente)]
-        public void PA5C_RAR_102_LaConversacionEnUnAbierto_EsLibre(EstadoDeArreglo estado)
+        [Fact]
+        public void PA5C_RAR_102_LaConversacionEnUnBorrador_EsLibre()
         {
+            // Desde el 2026-11-03 solo el Borrador la deja libre: un Vigente la bloquea (PA5C_RAR_103).
             var identidad = Persona();
 
-            AssertPermiteSinEscribir(Act(D("sanic_conversacionid", new ReferenciaDeEntidad(TablaConversacion, Guid.NewGuid())), Previa(estado), identidad));
+            AssertPermiteSinEscribir(Act(D("sanic_conversacionid", new ReferenciaDeEntidad(TablaConversacion, Guid.NewGuid())), Previa(EstadoDeArreglo.Borrador), identidad));
 
             Assert.Equal(0, identidad.LecturasDeSistema);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void PA5C_RAR_103_LaConversacionEnUnVigente_UnaPersonaRechaza_CARP_ARR_029_ElSistemaPasa(bool congelado)
+        {
+            // Pedido del usuario en la prueba guiada (2026-11-03): formalizado, la conversacion de origen no se cambia. Congelado o reabierto (sin congelar) da igual.
+            var target = D("sanic_conversacionid", new ReferenciaDeEntidad(TablaConversacion, Guid.NewGuid()));
+            var persona = Persona();
+
+            AssertRechaza(Act(target, Previa(EstadoDeArreglo.Vigente, congelado), persona), CodigosDeError.ARR_029);
+            Assert.Equal(1, persona.LecturasDeSistema);
+            AssertPermiteSinEscribir(Act(target, Previa(EstadoDeArreglo.Vigente, congelado), Sistema()));
+        }
+
+        [Fact]
+        public void PA5C_RAR_104_LaConversacionEnUnVigente_ReenviarLaMisma_NoEsUnCambio_SinConsultarLaIdentidad()
+        {
+            var identidad = Persona();
+            var conversacion = new ReferenciaDeEntidad(TablaConversacion, IdDeConversacion);
+
+            AssertPermiteSinEscribir(Act(D("sanic_conversacionid", conversacion), Previa(EstadoDeArreglo.Vigente, true, "sanic_conversacionid", conversacion), identidad));
+
+            Assert.Equal(0, identidad.LecturasDeSistema);
+        }
+
+        [Fact]
+        public void PA5C_RAR_105_LaConversacionEnUnVigente_GanaLaSoloSistemaYElMotivoSinGesto_PeroNoLosDatosDelAcuerdo()
+        {
+            var conversacion = new ReferenciaDeEntidad(TablaConversacion, Guid.NewGuid());
+
+            AssertRechaza(Act(D("sanic_conversacionid", conversacion, "sanic_numeroarreglo", 9), Previa(EstadoDeArreglo.Vigente, true), Persona()), CodigosDeError.ARR_009, "sanic_numeroarreglo");
+            AssertRechaza(Act(D("sanic_conversacionid", conversacion, "sanic_motivoanulacion", "x"), Previa(EstadoDeArreglo.Vigente, true), Persona()), CodigosDeError.ARR_024);
+            AssertRechaza(Act(D("sanic_conversacionid", conversacion, "sanic_plazo", 3), Previa(EstadoDeArreglo.Vigente, true), Persona()), CodigosDeError.ARR_029);
         }
 
         // ------------------------------------------------------------ actualización: cerrados (paso 1)

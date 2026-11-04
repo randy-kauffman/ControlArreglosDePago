@@ -324,7 +324,7 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         /// </para>
         /// <para>
         /// <b>Pasos</b> (gana el primero que rechaza). <b>0.</b> Columnas contadas = las de <see cref="ColumnasDeLaPreImagenDeActualizacion"/> menos <c>statecode</c>, <c>statuscode</c> y <c>sanic_conversacionid</c>
-        /// (la única columna libre), más <c>sanic_conversacionid</c> cuando la pre-imagen es Terminado, Anulado o Descartado (V-2). Los gestos Desbloquear y Reabrir (un Vigente con <c>sanic_motivoreapertura</c> en el <c>Target</c>) se reconocen por lo que el <c>Target</c> TRAE, no por "cambió" (paso 2): su
+        /// (la única columna libre), más <c>sanic_conversacionid</c> cuando la pre-imagen es Vigente (2026-11-03: <c>CARP-ARR-029</c> en la edición) o Terminado, Anulado o Descartado (V-2). Los gestos Desbloquear y Reabrir (un Vigente con <c>sanic_motivoreapertura</c> en el <c>Target</c>) se reconocen por lo que el <c>Target</c> TRAE, no por "cambió" (paso 2): su
         /// disparador cuenta como "algo que decidir" aunque el valor sea igual al de la pre-imagen. Si el estado no cambió, ninguna columna contada cambió y no hay disparador ⇒ permitir sin escribir y SIN
         /// consultar la identidad. Si cambió algo o hay disparador y <c>EsEscrituraDelSistema</c> ⇒ permitir sin escribir (DC-03: así pasan la generación del formato, el paso a Terminado y el repunte al unir).
         /// </para>
@@ -357,7 +357,7 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         /// </para>
         /// <para>
         /// <b>4. Edición</b> (origen Borrador o Vigente, sin gesto, sin cambio de estado). (1) Cambió alguna solo-sistema (incluida <c>sanic_nombre</c>, sea cual sea su formato) ⇒ <c>CARP-ARR-009</c> nombrándolas; si no,
-        /// cambió un motivo (descarte, anulación o reapertura) ⇒ <c>CARP-ARR-024</c>. (2) Congelado y cambió una columna de datos del acuerdo ⇒ <c>CARP-ARR-011</c> nombrando TODAS las que cambiaron (una o más, en el
+        /// cambió un motivo (descarte, anulación o reapertura) ⇒ <c>CARP-ARR-024</c>; si no, cambió <c>sanic_conversacionid</c> de un Vigente ⇒ <c>CARP-ARR-029</c>. (2) Congelado y cambió una columna de datos del acuerdo ⇒ <c>CARP-ARR-011</c> nombrando TODAS las que cambiaron (una o más, en el
         /// orden de la lista de 43). (3) <c>sanic_numeroproducto</c> en el <c>Target</c> ⇒ lo escribe normalizado; si queda vacío, <c>CARP-ARR-006</c> nombrándolo. (4) Si cambió <c>sanic_saldoinicial</c>,
         /// <c>sanic_montoabonado</c>, <c>sanic_cuotamensual</c> o <c>sanic_plazo</c>: con los valores EFECTIVOS (el del <c>Target</c> si viene, si no el de la pre-imagen) y, si alguno de los cuatro es nulo,
         /// <c>CARP-ARR-006</c> nombrándolo; plazo fuera de 1 a 60 o mayor que <c>Lecturas.CapacidadDeLaVersion(sanic_versionplantillaid de la pre-imagen)</c> ⇒ <c>CARP-ARR-003</c> (mismos marcadores que el alta;
@@ -380,12 +380,14 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
             var estadoCambio = !destino.Equals(actual);
             var cerrado = origen == EstadoDeArreglo.Terminado || origen == EstadoDeArreglo.Anulado || origen == EstadoDeArreglo.Descartado;
 
-            // Paso 0: las columnas contadas que cambiaron, en el orden de la lista de 43. sanic_conversacionid (la unica libre) cuenta solo en un arreglo cerrado (V-2).
+            // Paso 0: las columnas contadas que cambiaron, en el orden de la lista de 43. sanic_conversacionid (la unica libre) cuenta en un arreglo cerrado (V-2) y, desde el 2026-11-03,
+            // tambien en un Vigente (pedido del usuario en la prueba guiada: formalizado, la conversacion de origen no se cambia). Solo en un Borrador sigue libre.
+            var conversacionBloqueada = cerrado || origen == EstadoDeArreglo.Vigente;
             var cambiadas = new List<string>();
             foreach (var columna in PreImagenDeActualizacion)
             {
                 if (string.Equals(columna, ColEstado, StringComparison.Ordinal) || string.Equals(columna, ColMotivoDeEstado, StringComparison.Ordinal)) continue;
-                if (string.Equals(columna, ColConversacion, StringComparison.Ordinal) && !cerrado) continue;
+                if (string.Equals(columna, ColConversacion, StringComparison.Ordinal) && !conversacionBloqueada) continue;
                 if (Cambio(pedido, columna)) cambiadas.Add(columna);
             }
 
@@ -564,6 +566,9 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
             if (cambiadas.Any(c => string.Equals(c, ColMotivoDescarte, StringComparison.Ordinal) || string.Equals(c, ColMotivoAnulacion, StringComparison.Ordinal)
                 || string.Equals(c, ColMotivoReapertura, StringComparison.Ordinal)))
                 return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_024.Crear());
+
+            // 1b. Un Vigente (congelado o reabierto) no cambia la conversacion de origen: solo llega aqui contada si el arreglo es Vigente (en un cerrado ya rechazo el paso 1).
+            if (cambiadas.Any(c => string.Equals(c, ColConversacion, StringComparison.Ordinal))) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_029.Crear());
 
             // 2. Congelado: ninguna columna de datos del acuerdo (se nombran todas las que cambiaron).
             if (Valor(preImagen, ColCongelamiento) != null)
