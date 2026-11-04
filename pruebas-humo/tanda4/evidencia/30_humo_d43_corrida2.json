@@ -1,0 +1,151 @@
+[
+ {
+  "paso": "cliente HUMO (admin)",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": 201
+ },
+ {
+  "paso": "1 Oficial crea borrador A (prestamo)",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": 201
+ },
+ {
+  "paso": "2 mismo numero como Tarjeta: rechazo sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "El número HUMO-D43-1001 ya está registrado como préstamo en otro arreglo. Revise el producto o el número."
+  ]
+ },
+ {
+  "paso": "2b borrador C del mismo credito (los borradores son libres)",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": 201
+ },
+ {
+  "paso": "3 generar formato A",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": 200
+ },
+ {
+  "paso": "3 generar formato C",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": 200
+ },
+ {
+  "paso": "3b Formalizar A sin documento: texto sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "Adjunte el documento firmado (PDF, JPG o PNG) antes de formalizar."
+  ]
+ },
+ {
+  "paso": "4 subir .txt: pasa (el tipo se revisa al formalizar)",
+  "ok": true,
+  "esperado": "2xx",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "paso": "4b Formalizar con .txt: rechazo ARR-026 sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "El documento firmado debe ser PDF, JPG o PNG."
+  ]
+ },
+ {
+  "paso": "4c reemplazar por .pdf: pasa (antes quedaba atrapado)",
+  "ok": true,
+  "esperado": "2xx",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "paso": "4d DELETE de la columna sobre C sin archivo: sin error de tipo",
+  "ok": true,
+  "esperado": "sin ARR-026",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "paso": "5 Formalizar A con .pdf: Vigente con numero 1",
+  "ok": true,
+  "esperado": "204 Vigente 1",
+  "obtenido": [
+   204,
+   "",
+   159460001,
+   1
+  ]
+ },
+ {
+  "paso": "6 Vigente recien formalizado: reemplazar rechazado ARR-027 sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "El documento firmado solo se puede adjuntar o reemplazar en un borrador, o en un arreglo reabierto, con el formato ya generado."
+  ]
+ },
+ {
+  "paso": "7 subir documento a C",
+  "ok": true,
+  "esperado": "2xx",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "paso": "7b D-43 Formalizar C con A vigente: rechazo con el numero del otro, sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "Este crédito ya tiene un arreglo vigente (1). Anúlelo antes de formalizar otro."
+  ]
+ },
+ {
+  "paso": "8 desbloquear C con documento: ARR-028 sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "Quite el documento firmado antes de desbloquear: corresponde al formato impreso que va a dejar de valer."
+  ]
+ },
+ {
+  "paso": "8b descartar C con motivo",
+  "ok": true,
+  "esperado": "204",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "paso": "9 anular A",
+  "ok": true,
+  "esperado": "204",
+  "obtenido": [
+   204,
+   ""
+  ]
+ }
+]

@@ -1,0 +1,46 @@
+{
+ "filas": [
+  {
+   "clave": "cliente-d43",
+   "conjunto": "sanic_carp_tbl_clientes",
+   "id": "f7fe9a43-09d8-f111-84e8-0022480c5699",
+   "nota": "HUMO D43"
+  },
+  {
+   "clave": "arreglo-d43-A",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "f8fe9a43-09d8-f111-84e8-0022480c5699",
+   "nota": "HUMO D43"
+  },
+  {
+   "clave": "arreglo-d43-tarjeta2",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "fffe9a43-09d8-f111-84e8-0022480c5699",
+   "nota": "HUMO D43"
+  },
+  {
+   "clave": "arreglo-d43-C",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "87cebf4d-09d8-f111-84e8-0022480c5699",
+   "nota": "HUMO D43"
+  },
+  {
+   "clave": "cliente-d43b",
+   "conjunto": "sanic_carp_tbl_clientes",
+   "id": "692f33c9-09d8-f111-84e8-0022480c5699",
+   "nota": "HUMO D43"
+  },
+  {
+   "clave": "arreglo-d43b-A",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "6a2f33c9-09d8-f111-84e8-0022480c5699",
+   "nota": "HUMO D43"
+  },
+  {
+   "clave": "arreglo-d43b-C",
+   "conjunto": "sanic_carp_tbl_arreglos",
+   "id": "712f33c9-09d8-f111-84e8-0022480c5699",
+   "nota": "HUMO D43"
+  }
+ ]
+}

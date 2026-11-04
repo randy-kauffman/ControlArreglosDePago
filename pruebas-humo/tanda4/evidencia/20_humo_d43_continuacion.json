@@ -1,0 +1,83 @@
+[
+ {
+  "paso": "H-36 Oficial borra el archivo de A (DELETE columna) estando congelado",
+  "ok": false,
+  "esperado": "2xx",
+  "obtenido": [
+   400,
+   "El documento firmado debe ser PDF, JPG o PNG.",
+   "firmado.txt"
+  ]
+ },
+ {
+  "paso": "reemplazo por .pdf tras borrar: pasa",
+  "ok": false,
+  "esperado": "2xx",
+  "obtenido": [
+   400,
+   "El documento firmado debe ser PDF, JPG o PNG."
+  ]
+ },
+ {
+  "paso": "D-43: Formalizar A con C vigente (mismo numero): rechazo con el numero del otro, sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "Este crédito ya tiene un arreglo vigente (1). Anúlelo antes de formalizar otro."
+  ]
+ },
+ {
+  "paso": "A sigue Borrador",
+  "ok": true,
+  "esperado": 1,
+  "obtenido": 1
+ },
+ {
+  "paso": "Desbloquear A con documento: rechazo ARR-028 sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "Quite el documento firmado antes de desbloquear: corresponde al formato impreso que va a dejar de valer."
+  ]
+ },
+ {
+  "paso": "Desbloquear A sin documento",
+  "ok": false,
+  "esperado": 204,
+  "obtenido": [
+   400,
+   "Quite el documento firmado antes de desbloquear: corresponde al formato impreso que va a dejar de valer."
+  ]
+ },
+ {
+  "paso": "Descartar A con motivo",
+  "ok": true,
+  "esperado": "204 Descartado",
+  "obtenido": [
+   204,
+   "",
+   159460003
+  ]
+ },
+ {
+  "paso": "C Vigente recien formalizado: reemplazar el documento rechazado ARR-027 sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "El documento firmado solo se puede adjuntar o reemplazar en un borrador, o en un arreglo reabierto, con el formato ya generado."
+  ]
+ },
+ {
+  "paso": "Anular C",
+  "ok": true,
+  "esperado": "204 Anulado",
+  "obtenido": [
+   204,
+   "",
+   159460002
+  ]
+ }
+]

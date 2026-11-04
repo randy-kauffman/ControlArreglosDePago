@@ -514,6 +514,47 @@
                 <Description description="Identificador único del usuario propietario del registro." languagecode="3082" />
               </Descriptions>
             </attribute>
+            <attribute PhysicalName="sanic_anuladoporid">
+              <Type>lookup</Type>
+              <Name>sanic_anuladoporid</Name>
+              <LogicalName>sanic_anuladoporid</LogicalName>
+              <RequiredLevel>none</RequiredLevel>
+              <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+              <ImeMode>auto</ImeMode>
+              <ValidForUpdateApi>1</ValidForUpdateApi>
+              <ValidForReadApi>1</ValidForReadApi>
+              <ValidForCreateApi>1</ValidForCreateApi>
+              <IsCustomField>1</IsCustomField>
+              <IsAuditEnabled>1</IsAuditEnabled>
+              <IsSecured>0</IsSecured>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>1</IsCustomizable>
+              <IsRenameable>1</IsRenameable>
+              <CanModifySearchSettings>1</CanModifySearchSettings>
+              <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+              <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+              <SourceType>0</SourceType>
+              <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>
+              <IsSortableEnabled>0</IsSortableEnabled>
+              <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>
+              <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
+              <IsDataSourceSecret>0</IsDataSourceSecret>
+              <AutoNumberFormat />
+              <IsSearchable>0</IsSearchable>
+              <IsFilterable>0</IsFilterable>
+              <IsRetrievable>0</IsRetrievable>
+              <IsLocalizable>0</IsLocalizable>
+              <LookupStyle>single</LookupStyle>
+              <LookupTypes />
+              <displaynames>
+                <displayname description="Anulado por" languagecode="1033" />
+                <displayname description="Anulado por" languagecode="3082" />
+              </displaynames>
+              <Descriptions>
+                <Description description="Usuario que anuló el arreglo vigente. Lo escribe el sistema al anular." languagecode="1033" />
+                <Description description="Usuario que anuló el arreglo vigente. Lo escribe el sistema al anular." languagecode="3082" />
+              </Descriptions>
+            </attribute>
             <attribute PhysicalName="sanic_canalorigen">
               <Type>picklist</Type>
               <Name>sanic_canalorigen</Name>
@@ -544,6 +585,7 @@
               <IsFilterable>0</IsFilterable>
               <IsRetrievable>0</IsRetrievable>
               <IsLocalizable>0</IsLocalizable>
+              <AppDefaultValue>-1</AppDefaultValue>
               <OptionSetName>sanic_carp_ch_canalorigen</OptionSetName>
               <displaynames>
                 <displayname description="Canal de origen" languagecode="1033" />
@@ -635,6 +677,47 @@
                 <Description description="Identificador único de instancias de entidad" languagecode="3082" />
               </Descriptions>
             </attribute>
+            <attribute PhysicalName="sanic_clienteid">
+              <Type>lookup</Type>
+              <Name>sanic_clienteid</Name>
+              <LogicalName>sanic_clienteid</LogicalName>
+              <RequiredLevel>required</RequiredLevel>
+              <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+              <ImeMode>auto</ImeMode>
+              <ValidForUpdateApi>1</ValidForUpdateApi>
+              <ValidForReadApi>1</ValidForReadApi>
+              <ValidForCreateApi>1</ValidForCreateApi>
+              <IsCustomField>1</IsCustomField>
+              <IsAuditEnabled>0</IsAuditEnabled>
+              <IsSecured>0</IsSecured>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>1</IsCustomizable>
+              <IsRenameable>1</IsRenameable>
+              <CanModifySearchSettings>1</CanModifySearchSettings>
+              <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+              <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+              <SourceType>0</SourceType>
+              <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>
+              <IsSortableEnabled>0</IsSortableEnabled>
+              <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>
+              <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
+              <IsDataSourceSecret>0</IsDataSourceSecret>
+              <AutoNumberFormat />
+              <IsSearchable>0</IsSearchable>
+              <IsFilterable>0</IsFilterable>
+              <IsRetrievable>1</IsRetrievable>
+              <IsLocalizable>0</IsLocalizable>
+              <LookupStyle>single</LookupStyle>
+              <LookupTypes />
+              <displaynames>
+                <displayname description="Cliente" languagecode="1033" />
+                <displayname description="Cliente" languagecode="3082" />
+              </displaynames>
+              <Descriptions>
+                <Description description="Cliente al que pertenece el arreglo. Todo arreglo tiene un cliente." languagecode="1033" />
+                <Description description="Cliente al que pertenece el arreglo. Todo arreglo tiene un cliente." languagecode="3082" />
+              </Descriptions>
+            </attribute>
             <attribute PhysicalName="sanic_comentarios">
               <Type>ntext</Type>
               <Name>sanic_comentarios</Name>
@@ -674,6 +757,47 @@
               <Descriptions>
                 <Description description="Comentarios del oficial, que se imprimen en el formato. El largo que cabe en la celda de la plantilla está abierto." languagecode="1033" />
                 <Description description="Comentarios del oficial, que se imprimen en el formato. El largo que cabe en la celda de la plantilla está abierto." languagecode="3082" />
+              </Descriptions>
+            </attribute>
+            <attribute PhysicalName="sanic_conversacionid">
+              <Type>lookup</Type>
+              <Name>sanic_conversacionid</Name>
+              <LogicalName>sanic_conversacionid</LogicalName>
+              <RequiredLevel>none</RequiredLevel>
+              <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+              <ImeMode>auto</ImeMode>
+              <ValidForUpdateApi>1</ValidForUpdateApi>
+              <ValidForReadApi>1</ValidForReadApi>
+              <ValidForCreateApi>1</ValidForCreateApi>
+              <IsCustomField>1</IsCustomField>
+              <IsAuditEnabled>0</IsAuditEnabled>
+              <IsSecured>0</IsSecured>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>1</IsCustomizable>
+              <IsRenameable>1</IsRenameable>
+              <CanModifySearchSettings>1</CanModifySearchSettings>
+              <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+              <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+              <SourceType>0</SourceType>
+              <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>
+              <IsSortableEnabled>0</IsSortableEnabled>
+              <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>
+              <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
+              <IsDataSourceSecret>0</IsDataSourceSecret>
+              <AutoNumberFormat />
+              <IsSearchable>0</IsSearchable>
+              <IsFilterable>0</IsFilterable>
+              <IsRetrievable>0</IsRetrievable>
+              <IsLocalizable>0</IsLocalizable>
+              <LookupStyle>single</LookupStyle>
+              <LookupTypes />
+              <displaynames>
+                <displayname description="Conversacion de origen" languagecode="1033" />
+                <displayname description="Conversacion de origen" languagecode="3082" />
+              </displaynames>
+              <Descriptions>
+                <Description description="Conversación de correo de la que nació el arreglo. Queda vacío cuando el arreglo se originó por teléfono, en persona o en una sucursal." languagecode="1033" />
+                <Description description="Conversación de correo de la que nació el arreglo. Queda vacío cuando el arreglo se originó por teléfono, en persona o en una sucursal." languagecode="3082" />
               </Descriptions>
             </attribute>
             <attribute PhysicalName="sanic_cuentadebitar">
@@ -758,6 +882,87 @@
               <Descriptions>
                 <Description description="Monto de la cuota mensual, en la moneda del arreglo." languagecode="1033" />
                 <Description description="Monto de la cuota mensual, en la moneda del arreglo." languagecode="3082" />
+              </Descriptions>
+            </attribute>
+            <attribute PhysicalName="sanic_descartadoporid">
+              <Type>lookup</Type>
+              <Name>sanic_descartadoporid</Name>
+              <LogicalName>sanic_descartadoporid</LogicalName>
+              <RequiredLevel>none</RequiredLevel>
+              <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+              <ImeMode>auto</ImeMode>
+              <ValidForUpdateApi>1</ValidForUpdateApi>
+              <ValidForReadApi>1</ValidForReadApi>
+              <ValidForCreateApi>1</ValidForCreateApi>
+              <IsCustomField>1</IsCustomField>
+              <IsAuditEnabled>1</IsAuditEnabled>
+              <IsSecured>0</IsSecured>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>1</IsCustomizable>
+              <IsRenameable>1</IsRenameable>
+              <CanModifySearchSettings>1</CanModifySearchSettings>
+              <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+              <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+              <SourceType>0</SourceType>
+              <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>
+              <IsSortableEnabled>0</IsSortableEnabled>
+              <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>
+              <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
+              <IsDataSourceSecret>0</IsDataSourceSecret>
+              <AutoNumberFormat />
+              <IsSearchable>0</IsSearchable>
+              <IsFilterable>0</IsFilterable>
+              <IsRetrievable>0</IsRetrievable>
+              <IsLocalizable>0</IsLocalizable>
+              <LookupStyle>single</LookupStyle>
+              <LookupTypes />
+              <displaynames>
+                <displayname description="Descartado por" languagecode="1033" />
+                <displayname description="Descartado por" languagecode="3082" />
+              </displaynames>
+              <Descriptions>
+                <Description description="Usuario que descartó el borrador del arreglo. Lo escribe el sistema al descartar." languagecode="1033" />
+                <Description description="Usuario que descartó el borrador del arreglo. Lo escribe el sistema al descartar." languagecode="3082" />
+              </Descriptions>
+            </attribute>
+            <attribute PhysicalName="sanic_documentofirmado">
+              <Type>file</Type>
+              <Name>sanic_documentofirmado</Name>
+              <LogicalName>sanic_documentofirmado</LogicalName>
+              <RequiredLevel>none</RequiredLevel>
+              <DisplayMask>ValidForForm|ValidForGrid</DisplayMask>
+              <ImeMode>disabled</ImeMode>
+              <ValidForUpdateApi>0</ValidForUpdateApi>
+              <ValidForReadApi>1</ValidForReadApi>
+              <ValidForCreateApi>0</ValidForCreateApi>
+              <IsCustomField>1</IsCustomField>
+              <IsAuditEnabled>1</IsAuditEnabled>
+              <IsSecured>1</IsSecured>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>1</IsCustomizable>
+              <IsRenameable>1</IsRenameable>
+              <CanModifySearchSettings>0</CanModifySearchSettings>
+              <CanModifyRequirementLevelSettings>0</CanModifyRequirementLevelSettings>
+              <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+              <SourceType>0</SourceType>
+              <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>
+              <IsSortableEnabled>0</IsSortableEnabled>
+              <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>
+              <CanModifyIsSortableSettings>0</CanModifyIsSortableSettings>
+              <IsDataSourceSecret>0</IsDataSourceSecret>
+              <AutoNumberFormat />
+              <IsSearchable>0</IsSearchable>
+              <IsFilterable>0</IsFilterable>
+              <IsRetrievable>0</IsRetrievable>
+              <IsLocalizable>0</IsLocalizable>
+              <MaxValue>10240</MaxValue>
+              <displaynames>
+                <displayname description="Documento firmado" languagecode="1033" />
+                <displayname description="Documento firmado" languagecode="3082" />
+              </displaynames>
+              <Descriptions>
+                <Description description="PDF, JPG o PNG del formato firmado por el cliente: uno solo. Lo adjunta el oficial en un borrador con el formato ya generado y es obligatorio para formalizar; desde que el arreglo es vigente solo lo cambia el sistema, salvo si se reabre y se vuelve a congelar el formato. Se guarda solo en Dataverse. Lleva la cédula del cliente: seguridad por columna y auditoría." languagecode="1033" />
+                <Description description="PDF, JPG o PNG del formato firmado por el cliente: uno solo. Lo adjunta el oficial en un borrador con el formato ya generado y es obligatorio para formalizar; desde que el arreglo es vigente solo lo cambia el sistema, salvo si se reabre y se vuelve a congelar el formato. Se guarda solo en Dataverse. Lleva la cédula del cliente: seguridad por columna y auditoría." languagecode="3082" />
               </Descriptions>
             </attribute>
             <attribute PhysicalName="sanic_fechaanulacion">
@@ -1138,6 +1343,47 @@
                 <Description description="Fecha y hora en que el arreglo terminó, se anuló o se descartó. Alimenta la retención de 2 años (BulkDelete). Un borrador sin resolver no la tiene." languagecode="3082" />
               </Descriptions>
             </attribute>
+            <attribute PhysicalName="sanic_formalizadoporid">
+              <Type>lookup</Type>
+              <Name>sanic_formalizadoporid</Name>
+              <LogicalName>sanic_formalizadoporid</LogicalName>
+              <RequiredLevel>none</RequiredLevel>
+              <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+              <ImeMode>auto</ImeMode>
+              <ValidForUpdateApi>1</ValidForUpdateApi>
+              <ValidForReadApi>1</ValidForReadApi>
+              <ValidForCreateApi>1</ValidForCreateApi>
+              <IsCustomField>1</IsCustomField>
+              <IsAuditEnabled>1</IsAuditEnabled>
+              <IsSecured>0</IsSecured>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>1</IsCustomizable>
+              <IsRenameable>1</IsRenameable>
+              <CanModifySearchSettings>1</CanModifySearchSettings>
+              <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+              <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+              <SourceType>0</SourceType>
+              <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>
+              <IsSortableEnabled>0</IsSortableEnabled>
+              <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>
+              <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
+              <IsDataSourceSecret>0</IsDataSourceSecret>
+              <AutoNumberFormat />
+              <IsSearchable>0</IsSearchable>
+              <IsFilterable>0</IsFilterable>
+              <IsRetrievable>0</IsRetrievable>
+              <IsLocalizable>0</IsLocalizable>
+              <LookupStyle>single</LookupStyle>
+              <LookupTypes />
+              <displaynames>
+                <displayname description="Formalizado por" languagecode="1033" />
+                <displayname description="Formalizado por" languagecode="3082" />
+              </displaynames>
+              <Descriptions>
+                <Description description="Usuario que formalizó el arreglo. Lo escribe el sistema al formalizar." languagecode="1033" />
+                <Description description="Usuario que formalizó el arreglo. Lo escribe el sistema al formalizar." languagecode="3082" />
+              </Descriptions>
+            </attribute>
             <attribute PhysicalName="sanic_instantaneacedula">
               <Type>nvarchar</Type>
               <Name>sanic_instantaneacedula</Name>
@@ -1336,6 +1582,7 @@
               <IsFilterable>0</IsFilterable>
               <IsRetrievable>0</IsRetrievable>
               <IsLocalizable>0</IsLocalizable>
+              <AppDefaultValue>-1</AppDefaultValue>
               <OptionSetName>sanic_carp_ch_moneda</OptionSetName>
               <displaynames>
                 <displayname description="Moneda" languagecode="1033" />
@@ -1537,7 +1784,7 @@
               <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
               <IsDataSourceSecret>0</IsDataSourceSecret>
               <AutoNumberFormat>ARR-{SEQNUM:6}</AutoNumberFormat>
-              <IsSearchable>1</IsSearchable>
+              <IsSearchable>0</IsSearchable>
               <IsFilterable>0</IsFilterable>
               <IsRetrievable>1</IsRetrievable>
               <IsLocalizable>0</IsLocalizable>
@@ -1581,7 +1828,7 @@
               <AutoNumberFormat />
               <IsSearchable>0</IsSearchable>
               <IsFilterable>0</IsFilterable>
-              <IsRetrievable>0</IsRetrievable>
+              <IsRetrievable>1</IsRetrievable>
               <IsLocalizable>0</IsLocalizable>
               <Format>none</Format>
               <MinValue>1</MinValue>
@@ -1621,9 +1868,9 @@
               <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
               <IsDataSourceSecret>0</IsDataSourceSecret>
               <AutoNumberFormat />
-              <IsSearchable>0</IsSearchable>
+              <IsSearchable>1</IsSearchable>
               <IsFilterable>0</IsFilterable>
-              <IsRetrievable>0</IsRetrievable>
+              <IsRetrievable>1</IsRetrievable>
               <IsLocalizable>0</IsLocalizable>
               <Format>text</Format>
               <MaxLength>30</MaxLength>
@@ -1677,6 +1924,47 @@
               <Descriptions>
                 <Description description="Número que salió impreso en el formato para firma (max+1 de los arreglos formalizados del crédito). El sistema lo compara al formalizar. Se vacía al desbloquear o reabrir." languagecode="1033" />
                 <Description description="Número que salió impreso en el formato para firma (max+1 de los arreglos formalizados del crédito). El sistema lo compara al formalizar. Se vacía al desbloquear o reabrir." languagecode="3082" />
+              </Descriptions>
+            </attribute>
+            <attribute PhysicalName="sanic_oficialid">
+              <Type>lookup</Type>
+              <Name>sanic_oficialid</Name>
+              <LogicalName>sanic_oficialid</LogicalName>
+              <RequiredLevel>required</RequiredLevel>
+              <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+              <ImeMode>auto</ImeMode>
+              <ValidForUpdateApi>1</ValidForUpdateApi>
+              <ValidForReadApi>1</ValidForReadApi>
+              <ValidForCreateApi>1</ValidForCreateApi>
+              <IsCustomField>1</IsCustomField>
+              <IsAuditEnabled>0</IsAuditEnabled>
+              <IsSecured>0</IsSecured>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>1</IsCustomizable>
+              <IsRenameable>1</IsRenameable>
+              <CanModifySearchSettings>1</CanModifySearchSettings>
+              <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+              <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+              <SourceType>0</SourceType>
+              <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>
+              <IsSortableEnabled>0</IsSortableEnabled>
+              <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>
+              <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
+              <IsDataSourceSecret>0</IsDataSourceSecret>
+              <AutoNumberFormat />
+              <IsSearchable>0</IsSearchable>
+              <IsFilterable>0</IsFilterable>
+              <IsRetrievable>0</IsRetrievable>
+              <IsLocalizable>0</IsLocalizable>
+              <LookupStyle>single</LookupStyle>
+              <LookupTypes />
+              <displaynames>
+                <displayname description="Oficial de arreglo" languagecode="1033" />
+                <displayname description="Oficial de arreglo" languagecode="3082" />
+              </displaynames>
+              <Descriptions>
+                <Description description="Oficial responsable del arreglo." languagecode="1033" />
+                <Description description="Oficial responsable del arreglo." languagecode="3082" />
               </Descriptions>
             </attribute>
             <attribute PhysicalName="sanic_plazo">
@@ -1749,8 +2037,9 @@
               <AutoNumberFormat />
               <IsSearchable>0</IsSearchable>
               <IsFilterable>0</IsFilterable>
-              <IsRetrievable>0</IsRetrievable>
+              <IsRetrievable>1</IsRetrievable>
               <IsLocalizable>0</IsLocalizable>
+              <AppDefaultValue>-1</AppDefaultValue>
               <OptionSetName>sanic_carp_ch_productocrediticio</OptionSetName>
               <displaynames>
                 <displayname description="Producto crediticio" languagecode="1033" />
@@ -1759,6 +2048,47 @@
               <Descriptions>
                 <Description description="Producto sobre el que se hace el arreglo: préstamo o tarjeta. No se cambia una vez que el borrador se congela." languagecode="1033" />
                 <Description description="Producto sobre el que se hace el arreglo: préstamo o tarjeta. No se cambia una vez que el borrador se congela." languagecode="3082" />
+              </Descriptions>
+            </attribute>
+            <attribute PhysicalName="sanic_reabiertoporid">
+              <Type>lookup</Type>
+              <Name>sanic_reabiertoporid</Name>
+              <LogicalName>sanic_reabiertoporid</LogicalName>
+              <RequiredLevel>none</RequiredLevel>
+              <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+              <ImeMode>auto</ImeMode>
+              <ValidForUpdateApi>1</ValidForUpdateApi>
+              <ValidForReadApi>1</ValidForReadApi>
+              <ValidForCreateApi>1</ValidForCreateApi>
+              <IsCustomField>1</IsCustomField>
+              <IsAuditEnabled>1</IsAuditEnabled>
+              <IsSecured>0</IsSecured>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>1</IsCustomizable>
+              <IsRenameable>1</IsRenameable>
+              <CanModifySearchSettings>1</CanModifySearchSettings>
+              <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+              <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+              <SourceType>0</SourceType>
+              <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>
+              <IsSortableEnabled>0</IsSortableEnabled>
+              <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>
+              <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
+              <IsDataSourceSecret>0</IsDataSourceSecret>
+              <AutoNumberFormat />
+              <IsSearchable>0</IsSearchable>
+              <IsFilterable>0</IsFilterable>
+              <IsRetrievable>0</IsRetrievable>
+              <IsLocalizable>0</IsLocalizable>
+              <LookupStyle>single</LookupStyle>
+              <LookupTypes />
+              <displaynames>
+                <displayname description="Reabierto por" languagecode="1033" />
+                <displayname description="Reabierto por" languagecode="3082" />
+              </displaynames>
+              <Descriptions>
+                <Description description="Último usuario que reabrió el arreglo. Lo escribe el sistema al reabrir." languagecode="1033" />
+                <Description description="Último usuario que reabrió el arreglo. Lo escribe el sistema al reabrir." languagecode="3082" />
               </Descriptions>
             </attribute>
             <attribute PhysicalName="sanic_saldoinicial">
@@ -1875,6 +2205,7 @@
               <IsFilterable>0</IsFilterable>
               <IsRetrievable>0</IsRetrievable>
               <IsLocalizable>0</IsLocalizable>
+              <AppDefaultValue>-1</AppDefaultValue>
               <OptionSetName>sanic_carp_ch_tipoarreglo</OptionSetName>
               <displaynames>
                 <displayname description="Tipo de arreglo" languagecode="1033" />
@@ -1927,6 +2258,47 @@
                 <Description description="Total a pagar del arreglo = el menor entre cuota mensual × plazo y el saldo remanente, en la moneda del arreglo (si cuota × plazo supera el saldo remanente, la última cuota se achica y el total es el saldo remanente). Lo calcula el plugin al crear el arreglo y al modificar el borrador, y queda congelado con el resto del acuerdo; nadie lo digita. No es una columna calculada ni de fórmula de Dataverse: el plugin escribe el valor." languagecode="3082" />
               </Descriptions>
             </attribute>
+            <attribute PhysicalName="sanic_versionplantillaid">
+              <Type>lookup</Type>
+              <Name>sanic_versionplantillaid</Name>
+              <LogicalName>sanic_versionplantillaid</LogicalName>
+              <RequiredLevel>required</RequiredLevel>
+              <DisplayMask>ValidForAdvancedFind|ValidForForm|ValidForGrid</DisplayMask>
+              <ImeMode>auto</ImeMode>
+              <ValidForUpdateApi>1</ValidForUpdateApi>
+              <ValidForReadApi>1</ValidForReadApi>
+              <ValidForCreateApi>1</ValidForCreateApi>
+              <IsCustomField>1</IsCustomField>
+              <IsAuditEnabled>1</IsAuditEnabled>
+              <IsSecured>0</IsSecured>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>1</IsCustomizable>
+              <IsRenameable>1</IsRenameable>
+              <CanModifySearchSettings>1</CanModifySearchSettings>
+              <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>
+              <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
+              <SourceType>0</SourceType>
+              <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>
+              <IsSortableEnabled>0</IsSortableEnabled>
+              <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>
+              <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>
+              <IsDataSourceSecret>0</IsDataSourceSecret>
+              <AutoNumberFormat />
+              <IsSearchable>0</IsSearchable>
+              <IsFilterable>0</IsFilterable>
+              <IsRetrievable>0</IsRetrievable>
+              <IsLocalizable>0</IsLocalizable>
+              <LookupStyle>single</LookupStyle>
+              <LookupTypes />
+              <displaynames>
+                <displayname description="Version de plantilla" languagecode="1033" />
+                <displayname description="Version de plantilla" languagecode="3082" />
+              </displaynames>
+              <Descriptions>
+                <Description description="Versión de la plantilla del formato que usa el arreglo. La fija el sistema al crearlo, con la versión Vigente." languagecode="1033" />
+                <Description description="Versión de la plantilla del formato que usa el arreglo. La fija el sistema al crearlo, con la versión Vigente." languagecode="3082" />
+              </Descriptions>
+            </attribute>
             <attribute PhysicalName="statecode">
               <Type>state</Type>
               <Name>statecode</Name>
@@ -1954,7 +2326,7 @@
               <IsDataSourceSecret>0</IsDataSourceSecret>
               <AutoNumberFormat />
               <IsSearchable>0</IsSearchable>
-              <IsFilterable>1</IsFilterable>
+              <IsFilterable>0</IsFilterable>
               <IsRetrievable>0</IsRetrievable>
               <IsLocalizable>0</IsLocalizable>
               <optionset Name="sanic_carp_tbl_arreglo_statecode">
@@ -2021,7 +2393,7 @@
               <AutoNumberFormat />
               <IsSearchable>0</IsSearchable>
               <IsFilterable>0</IsFilterable>
-              <IsRetrievable>0</IsRetrievable>
+              <IsRetrievable>1</IsRetrievable>
               <IsLocalizable>0</IsLocalizable>
               <optionset Name="sanic_carp_tbl_arreglo_statuscode">
                 <OptionSetType>status</OptionSetType>
@@ -2160,6 +2532,23 @@
               </Descriptions>
             </attribute>
           </attributes>
+          <EntityKeys>
+            <EntityKey>
+              <Name>sanic_carp_key_arreglo_producto_numeroproducto_numeroarreglo</Name>
+              <LogicalName>sanic_carp_key_arreglo_producto_numeroproducto_numeroarreglo</LogicalName>
+              <IntroducedVersion>1.0.0.0</IntroducedVersion>
+              <IsCustomizable>0</IsCustomizable>
+              <EntityKeyAttributes>
+                <AttributeName>sanic_numeroarreglo</AttributeName>
+                <AttributeName>sanic_numeroproducto</AttributeName>
+                <AttributeName>sanic_producto</AttributeName>
+              </EntityKeyAttributes>
+              <displaynames>
+                <displayname description="KEY - CARP - Arreglo - Producto, numero de producto y numero de arreglo" languagecode="1033" />
+                <displayname description="KEY - CARP - Arreglo - Producto, numero de producto y numero de arreglo" languagecode="3082" />
+              </displaynames>
+            </EntityKey>
+          </EntityKeys>
           <EntitySetName>sanic_carp_tbl_arreglos</EntitySetName>
           <IsDuplicateCheckSupported>0</IsDuplicateCheckSupported>
           <IsBusinessProcessEnabled>0</IsBusinessProcessEnabled>
@@ -2214,6 +2603,7 @@
           <CanCreateViews>1</CanCreateViews>
           <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>
           <CanEnableSyncToExternalSearchIndex>1</CanEnableSyncToExternalSearchIndex>
+          <IconVectorName>sanic_carp_wr_svg_tbl_arreglo</IconVectorName>
           <EnforceStateTransitions>0</EnforceStateTransitions>
           <CanChangeHierarchicalRelationship>1</CanChangeHierarchicalRelationship>
           <EntityHelpUrlEnabled>0</EntityHelpUrlEnabled>
@@ -2349,36 +2739,523 @@
             <IntroducedVersion>1.0.0.0</IntroducedVersion>
             <FormPresentation>1</FormPresentation>
             <FormActivationState>1</FormActivationState>
-            <form>
+            <form headerdensity="HighWithControls">
               <tabs>
-                <tab verticallayout="true" id="{5b5dc146-69b2-4e88-82bf-d92dac6e2dfa}" IsUserDefined="1">
+                <tab verticallayout="true" id="{1988B5BA-7915-503C-AE75-64AE9385A3BB}" IsUserDefined="1" labelid="{D6E5C047-4C8A-543E-B913-CB0EC30119A6}">
                   <labels>
                     <label description="General" languagecode="1033" />
+                    <label description="General" languagecode="3082" />
                   </labels>
                   <columns>
                     <column width="100%">
                       <sections>
-                        <section showlabel="false" showbar="false" IsUserDefined="0" id="{3bc8a87d-797a-4496-a37d-92a6831477b5}">
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{7D24B56E-0E9E-5A2D-AD0C-14FA45500EED}" labelid="{2F32BCCB-9BD8-5457-BF00-8B6589FBB8FA}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
                           <labels>
-                            <label description="General" languagecode="1033" />
+                            <label description="Acuerdo" languagecode="1033" />
+                            <label description="Acuerdo" languagecode="3082" />
                           </labels>
                           <rows>
                             <row>
-                              <cell id="{dc17b62d-c3fd-438c-bbbb-30b405f2f99f}">
+                              <cell id="{2D5DB57C-728D-5770-8579-82D8DB64AEAA}" locklevel="0" colspan="1" rowspan="1" labelid="{F965CAEF-F659-5C33-89D4-6619243AAB46}">
                                 <labels>
                                   <label description="Codigo interno" languagecode="1033" />
                                   <label description="Codigo interno" languagecode="3082" />
                                 </labels>
-                                <control id="sanic_nombre" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="sanic_nombre" />
+                                <control id="sanic_nombre" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="sanic_nombre" disabled="true" />
                               </cell>
                             </row>
                             <row>
-                              <cell id="{c5c01e8c-d469-4796-92da-8d1363f6c36b}">
+                              <cell id="{D56A8A20-1336-5231-BB2E-C070976C2584}" locklevel="0" colspan="1" rowspan="1" labelid="{5C4D46CA-2CF6-5EF5-B86F-26535CA6E982}">
                                 <labels>
-                                  <label description="Owner" languagecode="1033" />
-                                  <label description="Propietario" languagecode="3082" />
+                                  <label description="Cliente" languagecode="1033" />
+                                  <label description="Cliente" languagecode="3082" />
                                 </labels>
-                                <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                                <control id="sanic_clienteid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="sanic_clienteid" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{20CFC1B9-D71E-519D-BE86-937F02C1166D}" locklevel="0" colspan="1" rowspan="1" labelid="{BDCB5D96-B444-543C-956C-7DBD06075016}">
+                                <labels>
+                                  <label description="Conversacion de origen" languagecode="1033" />
+                                  <label description="Conversacion de origen" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_conversacionid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="sanic_conversacionid" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{AEE5FBAF-A69A-5428-9446-15325D2B5AE5}" locklevel="0" colspan="1" rowspan="1" labelid="{A54E5AC3-7F0B-5986-9E95-8B1B168FE1FF}">
+                                <labels>
+                                  <label description="Producto crediticio" languagecode="1033" />
+                                  <label description="Producto crediticio" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_producto" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="sanic_producto" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{6DFE5373-1564-5DED-8BA6-09705D51A682}" locklevel="0" colspan="1" rowspan="1" labelid="{129DC5F2-DED8-5B90-9D4F-7902A115AABD}">
+                                <labels>
+                                  <label description="Numero de prestamo o tarjeta" languagecode="1033" />
+                                  <label description="Numero de prestamo o tarjeta" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_numeroproducto" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="sanic_numeroproducto" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{853C0E32-728D-50B7-AE1D-0307C5579711}" locklevel="0" colspan="1" rowspan="1" labelid="{1D1A8C8F-F029-5A57-A55D-B6671BECC482}">
+                                <labels>
+                                  <label description="Tipo de arreglo" languagecode="1033" />
+                                  <label description="Tipo de arreglo" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_tipo" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="sanic_tipo" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{16D98A3D-C475-5482-9FE8-930D4DA0B746}" locklevel="0" colspan="1" rowspan="1" labelid="{A95CFEDB-DA03-5BCC-A419-8557607C9366}">
+                                <labels>
+                                  <label description="Moneda" languagecode="1033" />
+                                  <label description="Moneda" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_moneda" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="sanic_moneda" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{ED620EFB-100A-5F44-9274-FC2F45228356}" locklevel="0" colspan="1" rowspan="1" labelid="{C8841B2A-9E64-58E0-BEFE-DCB59557C13F}">
+                                <labels>
+                                  <label description="Canal de origen" languagecode="1033" />
+                                  <label description="Canal de origen" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_canalorigen" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="sanic_canalorigen" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{C27DA8CD-FAA2-5459-95A3-EFC871E74C31}" locklevel="0" colspan="1" rowspan="1" labelid="{FBFF938E-4DAD-51B6-BC5B-3D69F74D1DE1}">
+                                <labels>
+                                  <label description="Oficial de arreglo" languagecode="1033" />
+                                  <label description="Oficial de arreglo" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_oficialid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="sanic_oficialid" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{EAEC568D-34EB-5D5F-B4B3-C955FBA8F41A}" locklevel="0" colspan="1" rowspan="1" labelid="{D6A3279C-A907-5DB0-B7E3-28116C3573A7}">
+                                <labels>
+                                  <label description="Cuenta a debitar" languagecode="1033" />
+                                  <label description="Cuenta a debitar" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_cuentadebitar" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="sanic_cuentadebitar" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{5B904208-94B8-5B5F-B9D5-9ECF884D2FD1}" locklevel="0" colspan="1" rowspan="1" labelid="{0D327FC2-2D68-5AD6-B428-6958B927291D}">
+                                <labels>
+                                  <label description="Fecha de formalizacion" languagecode="1033" />
+                                  <label description="Fecha de formalizacion" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_fechaformalizacion" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="sanic_fechaformalizacion" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{9370DD83-04C7-5A5D-B246-068E19C285E6}" locklevel="0" colspan="1" rowspan="1" labelid="{3D256A6C-B097-5820-8525-1D081860C2CD}">
+                                <labels>
+                                  <label description="Comentarios" languagecode="1033" />
+                                  <label description="Comentarios" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_comentarios" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="sanic_comentarios" disabled="false" />
+                              </cell>
+                            </row>
+                          </rows>
+                        </section>
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{BECD9607-A051-5150-9ECE-B7265BF12CAE}" labelid="{D7B3285D-172F-5033-9062-3B2EB02E9821}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                          <labels>
+                            <label description="Montos y plazo" languagecode="1033" />
+                            <label description="Montos y plazo" languagecode="3082" />
+                          </labels>
+                          <rows>
+                            <row>
+                              <cell id="{6F59302F-C7E0-5A13-BB52-9813144EA14E}" locklevel="0" colspan="1" rowspan="1" labelid="{64D2199B-2486-5C54-82E0-ECC6FE106F47}">
+                                <labels>
+                                  <label description="Saldo inicial" languagecode="1033" />
+                                  <label description="Saldo inicial" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_saldoinicial" classid="{C3EFE0C3-0EC6-42be-8349-CBD9079DFD8E}" datafieldname="sanic_saldoinicial" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{F7D87888-C028-57B2-B3D4-3D4ABB7AE5E8}" locklevel="0" colspan="1" rowspan="1" labelid="{5FFBA4C1-7AE9-5D99-8A65-F53E9279FCE5}">
+                                <labels>
+                                  <label description="Monto abonado" languagecode="1033" />
+                                  <label description="Monto abonado" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_montoabonado" classid="{C3EFE0C3-0EC6-42be-8349-CBD9079DFD8E}" datafieldname="sanic_montoabonado" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{F1481B63-E0C3-57B8-BFD5-A06C43C026E5}" locklevel="0" colspan="1" rowspan="1" labelid="{7D7A08E0-BF5D-59A1-944D-B8E2A89ACC39}">
+                                <labels>
+                                  <label description="Saldo remanente" languagecode="1033" />
+                                  <label description="Saldo remanente" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_saldoremanente" classid="{C3EFE0C3-0EC6-42be-8349-CBD9079DFD8E}" datafieldname="sanic_saldoremanente" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{3E38D689-C98B-5044-A48B-F47D4BEA3279}" locklevel="0" colspan="1" rowspan="1" labelid="{1DCAB26D-5E59-5713-ACBD-80A3AE3B60D9}">
+                                <labels>
+                                  <label description="Plazo en cuotas" languagecode="1033" />
+                                  <label description="Plazo en cuotas" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_plazo" classid="{C6D124CA-7EDA-4a60-AEA9-7FB8D318B68F}" datafieldname="sanic_plazo" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{15948478-9740-5C83-939E-C902FA223ED7}" locklevel="0" colspan="1" rowspan="1" labelid="{4997685E-031F-5EC3-B64D-66F474D605A2}">
+                                <labels>
+                                  <label description="Cuota mensual" languagecode="1033" />
+                                  <label description="Cuota mensual" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_cuotamensual" classid="{C3EFE0C3-0EC6-42be-8349-CBD9079DFD8E}" datafieldname="sanic_cuotamensual" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{13AEB434-85FE-52DE-8FBD-729BE74F034B}" locklevel="0" colspan="1" rowspan="1" labelid="{0F3FFD00-04D3-58C0-8C21-4B4EB88F44BF}">
+                                <labels>
+                                  <label description="Total a pagar" languagecode="1033" />
+                                  <label description="Total a pagar" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_totalpagar" classid="{C3EFE0C3-0EC6-42be-8349-CBD9079DFD8E}" datafieldname="sanic_totalpagar" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{86FF58B8-3679-5899-A2F7-5FD3B00FF7E2}" locklevel="0" colspan="1" rowspan="1" labelid="{6FB15569-8260-532E-A9D3-12BD3BDB6C89}">
+                                <labels>
+                                  <label description="Fecha de inicio" languagecode="1033" />
+                                  <label description="Fecha de inicio" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_fechainicio" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="sanic_fechainicio" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{EB29E622-8D54-5FE9-974B-4462E6B6ADB1}" locklevel="0" colspan="1" rowspan="1" labelid="{BD5DE0ED-DA4A-5F83-A3A8-67574648D1FB}">
+                                <labels>
+                                  <label description="Fecha de finalizacion" languagecode="1033" />
+                                  <label description="Fecha de finalizacion" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_fechafin" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="sanic_fechafin" disabled="true" />
+                              </cell>
+                            </row>
+                          </rows>
+                        </section>
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{EE8F4D57-78E5-5EE4-81B4-AD37547D0E2E}" labelid="{6529ACD2-11FF-5E1A-AD6B-BFD8BF3A3B35}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                          <labels>
+                            <label description="Plantilla y numeracion" languagecode="1033" />
+                            <label description="Plantilla y numeracion" languagecode="3082" />
+                          </labels>
+                          <rows>
+                            <row>
+                              <cell id="{8B0CAC02-32B4-5BE3-95F6-468A79B49C78}" locklevel="0" colspan="1" rowspan="1" labelid="{BB279548-063C-5E23-A6D8-E389DC0B0CD2}">
+                                <labels>
+                                  <label description="Version de plantilla" languagecode="1033" />
+                                  <label description="Version de plantilla" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_versionplantillaid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="sanic_versionplantillaid" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{04363E90-6A9C-554C-8D16-7FF7388DC305}" locklevel="0" colspan="1" rowspan="1" labelid="{545E9FFA-3951-5235-BDAF-7A7DE0E0FE85}">
+                                <labels>
+                                  <label description="Numero provisional impreso" languagecode="1033" />
+                                  <label description="Numero provisional impreso" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_numeroprovisional" classid="{C6D124CA-7EDA-4a60-AEA9-7FB8D318B68F}" datafieldname="sanic_numeroprovisional" disabled="true" />
+                              </cell>
+                            </row>
+                          </rows>
+                        </section>
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{5CAAA33E-F6C1-5FCA-879F-2E521C030815}" labelid="{1F8C70DA-2AE0-501B-BCBE-F9CA24BBA5BA}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                          <labels>
+                            <label description="Cliente al congelar" languagecode="1033" />
+                            <label description="Cliente al congelar" languagecode="3082" />
+                          </labels>
+                          <rows>
+                            <row>
+                              <cell id="{0C450F5F-E133-5D5D-B7BC-C2650891046F}" locklevel="0" colspan="1" rowspan="1" labelid="{2505F211-6195-576E-BDC4-68943EDC7189}">
+                                <labels>
+                                  <label description="Cliente al congelar: nombre" languagecode="1033" />
+                                  <label description="Cliente al congelar: nombre" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_instantaneanombre" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="sanic_instantaneanombre" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{4A2A9B5B-8E70-5977-88F1-87C21D270642}" locklevel="0" colspan="1" rowspan="1" labelid="{2743733D-A850-5C04-86F3-3318BEE2E9D5}">
+                                <labels>
+                                  <label description="Cliente al congelar: cedula" languagecode="1033" />
+                                  <label description="Cliente al congelar: cedula" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_instantaneacedula" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="sanic_instantaneacedula" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{314BC83E-A83F-5C91-B55D-5BAF03505BB8}" locklevel="0" colspan="1" rowspan="1" labelid="{28EB3926-0E19-5698-B5E6-59580E10FE1D}">
+                                <labels>
+                                  <label description="Cliente al congelar: correo" languagecode="1033" />
+                                  <label description="Cliente al congelar: correo" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_instantaneacorreo" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="sanic_instantaneacorreo" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{424818D8-2163-58EC-9B56-B5DB40563CCC}" locklevel="0" colspan="1" rowspan="1" labelid="{72B5A306-7378-5B34-A36F-C855B9112312}">
+                                <labels>
+                                  <label description="Cliente al congelar: celular" languagecode="1033" />
+                                  <label description="Cliente al congelar: celular" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_instantaneacelular" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="sanic_instantaneacelular" disabled="true" />
+                              </cell>
+                            </row>
+                          </rows>
+                        </section>
+                      </sections>
+                    </column>
+                  </columns>
+                </tab>
+                <tab verticallayout="true" id="{D27E6A4B-4D9F-5886-918E-FAC574AFA9F4}" IsUserDefined="1" labelid="{8187D0BD-7B4D-5D35-87BF-28861C0CA8B7}">
+                  <labels>
+                    <label description="Cuotas" languagecode="1033" />
+                    <label description="Cuotas" languagecode="3082" />
+                  </labels>
+                  <columns>
+                    <column width="100%">
+                      <sections>
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{52A72808-46E6-5498-8C92-ED9AAEDD6BF5}" labelid="{9E6B5CA2-2190-5F02-85B1-EA7EE1173288}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                          <labels>
+                            <label description="Cuotas" languagecode="1033" />
+                            <label description="Cuotas" languagecode="3082" />
+                          </labels>
+                          <rows>
+                            <row>
+                              <cell id="{E9544B64-E610-53A1-B2F8-D366116C77DD}" locklevel="0" colspan="1" rowspan="6" auto="false" labelid="{5D87E590-5D05-59FF-AC87-A01384ABD7E8}">
+                                <labels>
+                                  <label description="Cuotas" languagecode="1033" />
+                                  <label description="Cuotas" languagecode="3082" />
+                                </labels>
+                                <control indicationOfSubgrid="true" id="Subgrid_4" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                                  <parameters>
+                                    <RecordsPerPage>60</RecordsPerPage>
+                                    <AutoExpand>Fixed</AutoExpand>
+                                    <EnableQuickFind>false</EnableQuickFind>
+                                    <EnableViewPicker>false</EnableViewPicker>
+                                    <EnableChartPicker>false</EnableChartPicker>
+                                    <ChartGridMode>Grid</ChartGridMode>
+                                    <TargetEntityType>sanic_carp_tbl_cuota</TargetEntityType>
+                                    <ViewId>{A4758F44-9ACC-F111-A05B-00224808FFCD}</ViewId>
+                                    <ViewIds>{A4758F44-9ACC-F111-A05B-00224808FFCD}</ViewIds>
+                                    <RelationshipName>sanic_carp_arreglo_cuota</RelationshipName>
+                                  </parameters>
+                                </control>
+                              </cell>
+                            </row>
+                          </rows>
+                        </section>
+                      </sections>
+                    </column>
+                  </columns>
+                </tab>
+                <tab verticallayout="true" id="{1D6C8A09-79C8-5068-96F4-79D1A4116EB6}" IsUserDefined="1" labelid="{88C0979E-1499-5555-8F6D-3B75C4C45CEC}">
+                  <labels>
+                    <label description="Formatos" languagecode="1033" />
+                    <label description="Formatos" languagecode="3082" />
+                  </labels>
+                  <columns>
+                    <column width="100%">
+                      <sections>
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{833D8010-49D2-52AE-AF30-B57B8CA7CEC0}" labelid="{39237D87-7B15-56E3-81EE-8EB0511C8DC6}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                          <labels>
+                            <label description="Formatos generados" languagecode="1033" />
+                            <label description="Formatos generados" languagecode="3082" />
+                          </labels>
+                          <rows>
+                            <row>
+                              <cell id="{869115C1-065F-530A-9FA7-3872BE5829AD}" locklevel="0" colspan="1" rowspan="6" auto="false" labelid="{7C27F1B8-C3D5-51EE-BE4C-E9D3F85664E4}">
+                                <labels>
+                                  <label description="Formatos generados" languagecode="1033" />
+                                  <label description="Formatos generados" languagecode="3082" />
+                                </labels>
+                                <control indicationOfSubgrid="true" id="Subgrid_5" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                                  <parameters>
+                                    <RecordsPerPage>10</RecordsPerPage>
+                                    <AutoExpand>Fixed</AutoExpand>
+                                    <EnableQuickFind>false</EnableQuickFind>
+                                    <EnableViewPicker>false</EnableViewPicker>
+                                    <EnableChartPicker>false</EnableChartPicker>
+                                    <ChartGridMode>Grid</ChartGridMode>
+                                    <TargetEntityType>sanic_carp_tbl_generacionformato</TargetEntityType>
+                                    <ViewId>{7FD8B2A9-9ACC-F111-A05B-00224808FFCD}</ViewId>
+                                    <ViewIds>{7FD8B2A9-9ACC-F111-A05B-00224808FFCD}</ViewIds>
+                                    <RelationshipName>sanic_carp_arreglo_generacionformato</RelationshipName>
+                                  </parameters>
+                                </control>
+                              </cell>
+                            </row>
+                          </rows>
+                        </section>
+                      </sections>
+                    </column>
+                  </columns>
+                </tab>
+                <tab verticallayout="true" id="{ACAA8499-4D6E-57AB-A6E9-CB3D473474E0}" IsUserDefined="1" labelid="{3FB12661-209C-5CDF-920F-2C3AB776E7C6}">
+                  <labels>
+                    <label description="Cierre" languagecode="1033" />
+                    <label description="Cierre" languagecode="3082" />
+                  </labels>
+                  <columns>
+                    <column width="100%">
+                      <sections>
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{BAC8E1FA-CEEA-574A-B61F-11CFAA790664}" labelid="{0399C4CC-4E5C-5961-A6DE-005BA15D3FB0}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                          <labels>
+                            <label description="Formalizacion" languagecode="1033" />
+                            <label description="Formalizacion" languagecode="3082" />
+                          </labels>
+                          <rows>
+                            <row>
+                              <cell id="{264CA109-5C8F-520D-AE34-C4303792526D}" locklevel="0" colspan="1" rowspan="1" labelid="{C6408BDF-64C4-5D4C-A0EF-5D9146D30A52}">
+                                <labels>
+                                  <label description="Formalizado el" languagecode="1033" />
+                                  <label description="Formalizado el" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_fechaformalizado" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="sanic_fechaformalizado" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{D5921C60-0E74-55C5-8F10-E4C91910C5BB}" locklevel="0" colspan="1" rowspan="1" labelid="{BBA19626-1819-55C1-A2D6-D8EEF4BF32BC}">
+                                <labels>
+                                  <label description="Formalizado por" languagecode="1033" />
+                                  <label description="Formalizado por" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_formalizadoporid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="sanic_formalizadoporid" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{8BB7A064-EFE7-571F-A403-95DFBFE9B9EA}" locklevel="0" colspan="1" rowspan="1" labelid="{D4865B24-7886-59DB-908A-3864CA7ECF69}">
+                                <labels>
+                                  <label description="Fecha de termino" languagecode="1033" />
+                                  <label description="Fecha de termino" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_fechatermino" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="sanic_fechatermino" disabled="true" />
+                              </cell>
+                            </row>
+                          </rows>
+                        </section>
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{D3528DB8-4AA2-5A2A-B513-1184F7A507B8}" labelid="{29F0F19E-88A7-5F37-943A-67F9886A6C11}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                          <labels>
+                            <label description="Descarte" languagecode="1033" />
+                            <label description="Descarte" languagecode="3082" />
+                          </labels>
+                          <rows>
+                            <row>
+                              <cell id="{6D6C52EE-0130-5DBE-8279-D188B1D3F3BB}" locklevel="0" colspan="1" rowspan="1" labelid="{1D760979-986A-5F11-BB42-A04B6BF1F2C9}">
+                                <labels>
+                                  <label description="Motivo de descarte" languagecode="1033" />
+                                  <label description="Motivo de descarte" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_motivodescarte" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="sanic_motivodescarte" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{A220C5CE-44B6-589A-A27E-4DF0A1B6F4EE}" locklevel="0" colspan="1" rowspan="1" labelid="{79D63FDC-CDCC-5890-845B-9829CFA23103}">
+                                <labels>
+                                  <label description="Fecha de descarte" languagecode="1033" />
+                                  <label description="Fecha de descarte" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_fechadescarte" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="sanic_fechadescarte" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{D3101328-3A6B-5A13-99AA-A5C48963E509}" locklevel="0" colspan="1" rowspan="1" labelid="{D834911A-E2D4-5F9D-9D27-DF615311D072}">
+                                <labels>
+                                  <label description="Descartado por" languagecode="1033" />
+                                  <label description="Descartado por" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_descartadoporid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="sanic_descartadoporid" disabled="true" />
+                              </cell>
+                            </row>
+                          </rows>
+                        </section>
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{EBFDB19F-C8D8-5241-90B0-FC1DFDAD9FD0}" labelid="{0A4D0ACC-857C-5492-BF21-8CFF900FD1A6}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                          <labels>
+                            <label description="Anulacion" languagecode="1033" />
+                            <label description="Anulacion" languagecode="3082" />
+                          </labels>
+                          <rows>
+                            <row>
+                              <cell id="{C6E813FA-5D97-5219-831C-AB37221ECB83}" locklevel="0" colspan="1" rowspan="1" labelid="{A08F8BA9-995F-5CA2-833A-FE654AF717C4}">
+                                <labels>
+                                  <label description="Motivo de anulacion" languagecode="1033" />
+                                  <label description="Motivo de anulacion" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_motivoanulacion" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="sanic_motivoanulacion" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{8BB41419-44CC-5E95-9F2B-7EDB87936250}" locklevel="0" colspan="1" rowspan="1" labelid="{03F560C0-C977-5F5B-848D-78987863327B}">
+                                <labels>
+                                  <label description="Fecha de anulacion" languagecode="1033" />
+                                  <label description="Fecha de anulacion" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_fechaanulacion" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="sanic_fechaanulacion" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{F36A1E8F-1C6E-5381-A734-DE4A72A0D8F6}" locklevel="0" colspan="1" rowspan="1" labelid="{CF4AE981-8CFF-584B-B598-AE966CFF623F}">
+                                <labels>
+                                  <label description="Anulado por" languagecode="1033" />
+                                  <label description="Anulado por" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_anuladoporid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="sanic_anuladoporid" disabled="true" />
+                              </cell>
+                            </row>
+                          </rows>
+                        </section>
+                        <section showlabel="true" showbar="false" IsUserDefined="0" id="{557F96D5-C0BA-5384-9103-7138626F199F}" labelid="{FC009CD1-AAE8-5B4E-AA42-059B382F239F}" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left">
+                          <labels>
+                            <label description="Reapertura" languagecode="1033" />
+                            <label description="Reapertura" languagecode="3082" />
+                          </labels>
+                          <rows>
+                            <row>
+                              <cell id="{5A1636F4-33FC-5411-97F0-A714FA5F1734}" locklevel="0" colspan="1" rowspan="1" labelid="{5FF42391-DB91-5C2E-84F3-AF955BC93E19}">
+                                <labels>
+                                  <label description="Motivo de reapertura" languagecode="1033" />
+                                  <label description="Motivo de reapertura" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_motivoreapertura" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="sanic_motivoreapertura" disabled="false" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{00027867-4259-53D9-BA1C-9AA05F51D6E3}" locklevel="0" colspan="1" rowspan="1" labelid="{C3BCCEFC-8FAE-5521-9415-5037E4809C87}">
+                                <labels>
+                                  <label description="Fecha de reapertura" languagecode="1033" />
+                                  <label description="Fecha de reapertura" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_fechareapertura" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="sanic_fechareapertura" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{5CBADD24-04FE-55E3-A865-D61E2EFF0492}" locklevel="0" colspan="1" rowspan="1" labelid="{546B0494-CF76-5995-83FB-F1C13E100BE0}">
+                                <labels>
+                                  <label description="Reabierto por" languagecode="1033" />
+                                  <label description="Reabierto por" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_reabiertoporid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="sanic_reabiertoporid" disabled="true" />
+                              </cell>
+                            </row>
+                            <row>
+                              <cell id="{7F82D015-55DD-5F9E-A02B-5341134EF2BE}" locklevel="0" colspan="1" rowspan="1" labelid="{D3FED4F5-1743-5087-A49A-7286C5CBE1BE}">
+                                <labels>
+                                  <label description="Cantidad de reaperturas" languagecode="1033" />
+                                  <label description="Cantidad de reaperturas" languagecode="3082" />
+                                </labels>
+                                <control id="sanic_cantidadreaperturas" classid="{C6D124CA-7EDA-4a60-AEA9-7FB8D318B68F}" datafieldname="sanic_cantidadreaperturas" disabled="true" />
                               </cell>
                             </row>
                           </rows>
@@ -2388,14 +3265,56 @@
                   </columns>
                 </tab>
               </tabs>
+              <header id="{F55E359D-AB22-5698-8DC1-615EB0A0DFB7}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+                <rows>
+                  <row>
+                    <cell id="{9D9EA82E-BE43-55D8-A42C-785D48D363F5}" locklevel="0" colspan="1" rowspan="1" labelid="{F000342E-3644-50F1-9DDB-9471FA69EDD7}">
+                      <labels>
+                        <label description="Status Reason" languagecode="1033" />
+                        <label description="Razón para el estado" languagecode="3082" />
+                      </labels>
+                      <control id="statuscode" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="statuscode" disabled="true" />
+                    </cell>
+                    <cell id="{816DB254-BF7F-5C5B-A39F-B3D5D4EC235B}" locklevel="0" colspan="1" rowspan="1" labelid="{C0418AC9-8DE5-5AED-88E2-56BF21B09945}">
+                      <labels>
+                        <label description="Numero de arreglo" languagecode="1033" />
+                        <label description="Numero de arreglo" languagecode="3082" />
+                      </labels>
+                      <control id="sanic_numeroarreglo" classid="{C6D124CA-7EDA-4a60-AEA9-7FB8D318B68F}" datafieldname="sanic_numeroarreglo" disabled="true" />
+                    </cell>
+                    <cell id="{CD91E934-2D80-5113-89D6-1FEF781F27C6}" locklevel="0" colspan="1" rowspan="1" labelid="{2A354E4C-7621-5878-9A44-0BFD3A10DB87}">
+                      <labels>
+                        <label description="Fecha de congelamiento" languagecode="1033" />
+                        <label description="Fecha de congelamiento" languagecode="3082" />
+                      </labels>
+                      <control id="sanic_fechacongelamiento" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="sanic_fechacongelamiento" disabled="true" />
+                    </cell>
+                  </row>
+                </rows>
+              </header>
+              <formLibraries>
+                <Library name="sanic_carp_wr_js_comandos" libraryUniqueId="{5EB5E1A9-144B-5570-854F-3072D7ED7A13}" />
+              </formLibraries>
+              <events>
+                <event name="onload" application="false" active="false">
+                  <Handlers>
+                    <Handler functionName="SanicCarp.Arreglo.alCargar" libraryName="sanic_carp_wr_js_comandos" handlerUniqueId="{B85B1011-9639-50C0-9A26-7CEEC15A0FD0}" enabled="true" parameters="" passExecutionContext="true" />
+                  </Handlers>
+                </event>
+                <event name="onsave" application="false" active="false">
+                  <Handlers>
+                    <Handler functionName="SanicCarp.Arreglo.alGuardar" libraryName="sanic_carp_wr_js_comandos" handlerUniqueId="{AAA1452A-4403-5BAF-9E0C-DB6D2EBBB241}" enabled="true" parameters="" passExecutionContext="true" />
+                  </Handlers>
+                </event>
+              </events>
             </form>
             <IsCustomizable>1</IsCustomizable>
             <CanBeDeleted>1</CanBeDeleted>
             <LocalizedNames>
-              <LocalizedName description="Information" languagecode="1033" />
+              <LocalizedName description="FRM - CARP - Arreglo - Principal" languagecode="1033" />
             </LocalizedNames>
             <Descriptions>
-              <Description description="A form for this entity." languagecode="1033" />
+              <Description description="Formulario principal de Arreglo (cuatro pestañas: General, Cuotas, Formatos y Cierre): datos del acuerdo, montos, cuotas, formatos generados y los campos de motivo de descarte, anulación y reapertura, que envían los botones del lote B. Los campos calculados por el sistema son de solo lectura." languagecode="1033" />
             </Descriptions>
           </systemform>
         </forms>
@@ -2460,7 +3379,7 @@
             <CanBeDeleted>0</CanBeDeleted>
             <isquickfindquery>0</isquickfindquery>
             <isprivate>0</isprivate>
-            <isdefault>1</isdefault>
+            <isdefault>0</isdefault>
             <savedqueryid>{9f14b062-ff8c-4e0a-91d5-3986f8c2ba14}</savedqueryid>
             <layoutxml>
               <grid name="resultset" jump="sanic_nombre" select="1" icon="1" preview="1">
@@ -2589,6 +3508,473 @@
           </savedquery>
           <savedquery>
             <IsCustomizable>1</IsCustomizable>
+            <CanBeDeleted>1</CanBeDeleted>
+            <isquickfindquery>0</isquickfindquery>
+            <isprivate>0</isprivate>
+            <isdefault>0</isdefault>
+            <savedqueryid>{af812494-9acc-f111-a05b-00224808ffcd}</savedqueryid>
+            <layoutxml>
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
+                <row name="result" id="sanic_carp_tbl_arregloid">
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_clienteid" width="180" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroproducto" width="140" />
+                  <cell name="sanic_numeroarreglo" width="90" />
+                  <cell name="statuscode" width="110" />
+                  <cell name="sanic_tipo" width="100" />
+                  <cell name="sanic_moneda" width="90" />
+                  <cell name="sanic_cuotamensual" width="110" />
+                  <cell name="sanic_plazo" width="70" />
+                  <cell name="sanic_oficialid" width="160" />
+                  <cell name="sanic_fechatermino" width="150" />
+                  <cell name="modifiedon" width="150" />
+                </row>
+              </grid>
+            </layoutxml>
+            <querytype>0</querytype>
+            <fetchxml>
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
+                <entity name="sanic_carp_tbl_arreglo">
+                  <attribute name="sanic_carp_tbl_arregloid" />
+                  <attribute name="sanic_nombre" />
+                  <attribute name="sanic_clienteid" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_numeroarreglo" />
+                  <attribute name="statuscode" />
+                  <attribute name="sanic_tipo" />
+                  <attribute name="sanic_moneda" />
+                  <attribute name="sanic_cuotamensual" />
+                  <attribute name="sanic_plazo" />
+                  <attribute name="sanic_oficialid" />
+                  <attribute name="sanic_fechatermino" />
+                  <attribute name="modifiedon" />
+                  <order attribute="sanic_fechatermino" descending="true" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="1" />
+                  </filter>
+                </entity>
+              </fetch>
+            </fetchxml>
+            <IntroducedVersion>1.0.0.0</IntroducedVersion>
+            <LocalizedNames>
+              <LocalizedName description="Arreglos cerrados" languagecode="1033" />
+            </LocalizedNames>
+            <Descriptions>
+              <Description description="Arreglos terminados, anulados o descartados." languagecode="1033" />
+            </Descriptions>
+          </savedquery>
+          <savedquery>
+            <IsCustomizable>1</IsCustomizable>
+            <CanBeDeleted>1</CanBeDeleted>
+            <isquickfindquery>0</isquickfindquery>
+            <isprivate>0</isprivate>
+            <isdefault>0</isdefault>
+            <savedqueryid>{61cf8190-a1cc-f111-a05b-00224808ffcd}</savedqueryid>
+            <layoutxml>
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
+                <row name="result" id="sanic_carp_tbl_arregloid">
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_clienteid" width="180" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroproducto" width="140" />
+                  <cell name="sanic_numeroarreglo" width="90" />
+                  <cell name="statuscode" width="110" />
+                  <cell name="sanic_tipo" width="100" />
+                  <cell name="sanic_moneda" width="90" />
+                  <cell name="sanic_cuotamensual" width="110" />
+                  <cell name="sanic_plazo" width="70" />
+                  <cell name="sanic_oficialid" width="160" />
+                  <cell name="modifiedon" width="150" />
+                </row>
+              </grid>
+            </layoutxml>
+            <querytype>0</querytype>
+            <fetchxml>
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
+                <entity name="sanic_carp_tbl_arreglo">
+                  <attribute name="sanic_carp_tbl_arregloid" />
+                  <attribute name="sanic_nombre" />
+                  <attribute name="sanic_clienteid" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_numeroarreglo" />
+                  <attribute name="statuscode" />
+                  <attribute name="sanic_tipo" />
+                  <attribute name="sanic_moneda" />
+                  <attribute name="sanic_cuotamensual" />
+                  <attribute name="sanic_plazo" />
+                  <attribute name="sanic_oficialid" />
+                  <attribute name="modifiedon" />
+                  <order attribute="modifiedon" descending="true" />
+                  <filter type="and">
+                    <condition attribute="sanic_producto" operator="eq" value="159460001" />
+                  </filter>
+                </entity>
+              </fetch>
+            </fetchxml>
+            <IntroducedVersion>1.0.0.0</IntroducedVersion>
+            <LocalizedNames>
+              <LocalizedName description="Arreglos de prestamo" languagecode="1033" />
+            </LocalizedNames>
+            <Descriptions>
+              <Description description="Arreglos cuyo producto es préstamo, en cualquier estado. El filtro de la columna Estado permite acotar." languagecode="1033" />
+            </Descriptions>
+          </savedquery>
+          <savedquery>
+            <IsCustomizable>1</IsCustomizable>
+            <CanBeDeleted>1</CanBeDeleted>
+            <isquickfindquery>0</isquickfindquery>
+            <isprivate>0</isprivate>
+            <isdefault>0</isdefault>
+            <savedqueryid>{64cf8190-a1cc-f111-a05b-00224808ffcd}</savedqueryid>
+            <layoutxml>
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
+                <row name="result" id="sanic_carp_tbl_arregloid">
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_clienteid" width="180" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroproducto" width="140" />
+                  <cell name="sanic_numeroarreglo" width="90" />
+                  <cell name="statuscode" width="110" />
+                  <cell name="sanic_tipo" width="100" />
+                  <cell name="sanic_moneda" width="90" />
+                  <cell name="sanic_cuotamensual" width="110" />
+                  <cell name="sanic_plazo" width="70" />
+                  <cell name="sanic_oficialid" width="160" />
+                  <cell name="modifiedon" width="150" />
+                </row>
+              </grid>
+            </layoutxml>
+            <querytype>0</querytype>
+            <fetchxml>
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
+                <entity name="sanic_carp_tbl_arreglo">
+                  <attribute name="sanic_carp_tbl_arregloid" />
+                  <attribute name="sanic_nombre" />
+                  <attribute name="sanic_clienteid" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_numeroarreglo" />
+                  <attribute name="statuscode" />
+                  <attribute name="sanic_tipo" />
+                  <attribute name="sanic_moneda" />
+                  <attribute name="sanic_cuotamensual" />
+                  <attribute name="sanic_plazo" />
+                  <attribute name="sanic_oficialid" />
+                  <attribute name="modifiedon" />
+                  <order attribute="modifiedon" descending="true" />
+                  <filter type="and">
+                    <condition attribute="sanic_producto" operator="eq" value="159460002" />
+                  </filter>
+                </entity>
+              </fetch>
+            </fetchxml>
+            <IntroducedVersion>1.0.0.0</IntroducedVersion>
+            <LocalizedNames>
+              <LocalizedName description="Arreglos de tarjeta" languagecode="1033" />
+            </LocalizedNames>
+            <Descriptions>
+              <Description description="Arreglos cuyo producto es tarjeta, en cualquier estado. El filtro de la columna Estado permite acotar." languagecode="1033" />
+            </Descriptions>
+          </savedquery>
+          <savedquery>
+            <IsCustomizable>1</IsCustomizable>
+            <CanBeDeleted>1</CanBeDeleted>
+            <isquickfindquery>0</isquickfindquery>
+            <isprivate>0</isprivate>
+            <isdefault>0</isdefault>
+            <savedqueryid>{741206b3-9bcc-f111-a05b-00224808ffcd}</savedqueryid>
+            <layoutxml>
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
+                <row name="result" id="sanic_carp_tbl_arregloid">
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroproducto" width="140" />
+                  <cell name="sanic_numeroarreglo" width="90" />
+                  <cell name="statuscode" width="110" />
+                  <cell name="sanic_tipo" width="100" />
+                  <cell name="sanic_moneda" width="90" />
+                  <cell name="sanic_cuotamensual" width="110" />
+                  <cell name="sanic_plazo" width="70" />
+                  <cell name="sanic_fechainicio" width="120" />
+                  <cell name="sanic_oficialid" width="160" />
+                  <cell name="createdon" width="150" />
+                </row>
+              </grid>
+            </layoutxml>
+            <querytype>0</querytype>
+            <fetchxml>
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
+                <entity name="sanic_carp_tbl_arreglo">
+                  <attribute name="sanic_carp_tbl_arregloid" />
+                  <attribute name="sanic_nombre" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_numeroarreglo" />
+                  <attribute name="statuscode" />
+                  <attribute name="sanic_tipo" />
+                  <attribute name="sanic_moneda" />
+                  <attribute name="sanic_cuotamensual" />
+                  <attribute name="sanic_plazo" />
+                  <attribute name="sanic_fechainicio" />
+                  <attribute name="sanic_oficialid" />
+                  <attribute name="createdon" />
+                  <order attribute="createdon" descending="true" />
+                </entity>
+              </fetch>
+            </fetchxml>
+            <IntroducedVersion>1.0.0.0</IntroducedVersion>
+            <LocalizedNames>
+              <LocalizedName description="Arreglos del cliente" languagecode="1033" />
+            </LocalizedNames>
+            <Descriptions>
+              <Description description="Arreglos de un cliente en todos los estados, para las subgrillas de los formularios de Cliente y de Conversación." languagecode="1033" />
+            </Descriptions>
+          </savedquery>
+          <savedquery>
+            <IsCustomizable>1</IsCustomizable>
+            <CanBeDeleted>1</CanBeDeleted>
+            <isquickfindquery>0</isquickfindquery>
+            <isprivate>0</isprivate>
+            <isdefault>0</isdefault>
+            <savedqueryid>{5ecf8190-a1cc-f111-a05b-00224808ffcd}</savedqueryid>
+            <layoutxml>
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
+                <row name="result" id="sanic_carp_tbl_arregloid">
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_clienteid" width="180" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroproducto" width="140" />
+                  <cell name="sanic_numeroarreglo" width="90" />
+                  <cell name="sanic_tipo" width="100" />
+                  <cell name="sanic_moneda" width="90" />
+                  <cell name="sanic_cuotamensual" width="110" />
+                  <cell name="sanic_plazo" width="70" />
+                  <cell name="sanic_fechainicio" width="120" />
+                  <cell name="sanic_oficialid" width="160" />
+                </row>
+              </grid>
+            </layoutxml>
+            <querytype>0</querytype>
+            <fetchxml>
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
+                <entity name="sanic_carp_tbl_arreglo">
+                  <attribute name="sanic_carp_tbl_arregloid" />
+                  <attribute name="sanic_nombre" />
+                  <attribute name="sanic_clienteid" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_numeroarreglo" />
+                  <attribute name="sanic_tipo" />
+                  <attribute name="sanic_moneda" />
+                  <attribute name="sanic_cuotamensual" />
+                  <attribute name="sanic_plazo" />
+                  <attribute name="sanic_fechainicio" />
+                  <attribute name="sanic_oficialid" />
+                  <order attribute="sanic_fechainicio" descending="false" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="0" />
+                    <condition attribute="statuscode" operator="eq" value="159460001" />
+                    <link-entity name="sanic_carp_tbl_cuota" from="sanic_arregloid" to="sanic_carp_tbl_arregloid" link-type="any">
+                      <filter type="and">
+                        <condition attribute="sanic_fechapago" operator="null" />
+                        <filter type="or">
+                          <condition attribute="sanic_fechavencimiento" operator="olderthan-x-days" value="1" />
+                          <condition attribute="sanic_fechavencimiento" operator="yesterday" />
+                        </filter>
+                      </filter>
+                    </link-entity>
+                  </filter>
+                </entity>
+              </fetch>
+            </fetchxml>
+            <IntroducedVersion>1.0.0.0</IntroducedVersion>
+            <LocalizedNames>
+              <LocalizedName description="Arreglos en riesgo" languagecode="1033" />
+            </LocalizedNames>
+            <Descriptions>
+              <Description description="Arreglos vigentes con al menos una cuota vencida y sin pagar. Una cuota está vencida si su fecha de vencimiento es anterior a hoy." languagecode="1033" />
+            </Descriptions>
+          </savedquery>
+          <savedquery>
+            <IsCustomizable>1</IsCustomizable>
+            <CanBeDeleted>1</CanBeDeleted>
+            <isquickfindquery>0</isquickfindquery>
+            <isprivate>0</isprivate>
+            <isdefault>1</isdefault>
+            <savedqueryid>{be812494-9acc-f111-a05b-00224808ffcd}</savedqueryid>
+            <layoutxml>
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
+                <row name="result" id="sanic_carp_tbl_arregloid">
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_clienteid" width="180" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroproducto" width="140" />
+                  <cell name="sanic_numeroarreglo" width="90" />
+                  <cell name="statuscode" width="110" />
+                  <cell name="sanic_tipo" width="100" />
+                  <cell name="sanic_moneda" width="90" />
+                  <cell name="sanic_cuotamensual" width="110" />
+                  <cell name="sanic_plazo" width="70" />
+                  <cell name="sanic_oficialid" width="160" />
+                  <cell name="modifiedon" width="150" />
+                </row>
+              </grid>
+            </layoutxml>
+            <querytype>0</querytype>
+            <fetchxml>
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
+                <entity name="sanic_carp_tbl_arreglo">
+                  <attribute name="sanic_carp_tbl_arregloid" />
+                  <attribute name="sanic_nombre" />
+                  <attribute name="sanic_clienteid" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_numeroarreglo" />
+                  <attribute name="statuscode" />
+                  <attribute name="sanic_tipo" />
+                  <attribute name="sanic_moneda" />
+                  <attribute name="sanic_cuotamensual" />
+                  <attribute name="sanic_plazo" />
+                  <attribute name="sanic_oficialid" />
+                  <attribute name="modifiedon" />
+                  <order attribute="modifiedon" descending="true" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="0" />
+                    <condition attribute="statuscode" operator="eq" value="159460001" />
+                  </filter>
+                </entity>
+              </fetch>
+            </fetchxml>
+            <IntroducedVersion>1.0.0.0</IntroducedVersion>
+            <LocalizedNames>
+              <LocalizedName description="Arreglos vigentes" languagecode="1033" />
+            </LocalizedNames>
+            <Descriptions>
+              <Description description="Arreglos formalizados y en curso. Vista por defecto de Arreglo." languagecode="1033" />
+            </Descriptions>
+          </savedquery>
+          <savedquery>
+            <IsCustomizable>1</IsCustomizable>
+            <CanBeDeleted>1</CanBeDeleted>
+            <isquickfindquery>0</isquickfindquery>
+            <isprivate>0</isprivate>
+            <isdefault>0</isdefault>
+            <savedqueryid>{096c4c89-a1cc-f111-a05b-00224808ffcd}</savedqueryid>
+            <layoutxml>
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
+                <row name="result" id="sanic_carp_tbl_arregloid">
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_clienteid" width="180" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroproducto" width="140" />
+                  <cell name="sanic_tipo" width="100" />
+                  <cell name="sanic_moneda" width="90" />
+                  <cell name="sanic_saldoremanente" width="120" />
+                  <cell name="sanic_cuotamensual" width="110" />
+                  <cell name="sanic_plazo" width="70" />
+                  <cell name="sanic_fechacongelamiento" width="150" />
+                  <cell name="sanic_oficialid" width="160" />
+                  <cell name="modifiedon" width="150" />
+                </row>
+              </grid>
+            </layoutxml>
+            <querytype>0</querytype>
+            <fetchxml>
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
+                <entity name="sanic_carp_tbl_arreglo">
+                  <attribute name="sanic_carp_tbl_arregloid" />
+                  <attribute name="sanic_nombre" />
+                  <attribute name="sanic_clienteid" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_tipo" />
+                  <attribute name="sanic_moneda" />
+                  <attribute name="sanic_saldoremanente" />
+                  <attribute name="sanic_cuotamensual" />
+                  <attribute name="sanic_plazo" />
+                  <attribute name="sanic_fechacongelamiento" />
+                  <attribute name="sanic_oficialid" />
+                  <attribute name="modifiedon" />
+                  <order attribute="modifiedon" descending="false" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="0" />
+                    <condition attribute="statuscode" operator="eq" value="1" />
+                    <condition attribute="modifiedon" operator="olderthan-x-days" value="30" />
+                  </filter>
+                </entity>
+              </fetch>
+            </fetchxml>
+            <IntroducedVersion>1.0.0.0</IntroducedVersion>
+            <LocalizedNames>
+              <LocalizedName description="Borradores sin movimiento" languagecode="1033" />
+            </LocalizedNames>
+            <Descriptions>
+              <Description description="Arreglos en borrador que no se modifican hace más de 30 días. Para que la jefatura los revise." languagecode="1033" />
+            </Descriptions>
+          </savedquery>
+          <savedquery>
+            <IsCustomizable>1</IsCustomizable>
+            <CanBeDeleted>1</CanBeDeleted>
+            <isquickfindquery>0</isquickfindquery>
+            <isprivate>0</isprivate>
+            <isdefault>0</isdefault>
+            <savedqueryid>{12b5299c-9acc-f111-a05b-00224808ffcd}</savedqueryid>
+            <layoutxml>
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
+                <row name="result" id="sanic_carp_tbl_arregloid">
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_clienteid" width="180" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroproducto" width="140" />
+                  <cell name="sanic_tipo" width="100" />
+                  <cell name="sanic_moneda" width="90" />
+                  <cell name="sanic_saldoremanente" width="120" />
+                  <cell name="sanic_cuotamensual" width="110" />
+                  <cell name="sanic_plazo" width="70" />
+                  <cell name="sanic_fechacongelamiento" width="150" />
+                  <cell name="sanic_oficialid" width="160" />
+                  <cell name="modifiedon" width="150" />
+                </row>
+              </grid>
+            </layoutxml>
+            <querytype>0</querytype>
+            <fetchxml>
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
+                <entity name="sanic_carp_tbl_arreglo">
+                  <attribute name="sanic_carp_tbl_arregloid" />
+                  <attribute name="sanic_nombre" />
+                  <attribute name="sanic_clienteid" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_tipo" />
+                  <attribute name="sanic_moneda" />
+                  <attribute name="sanic_saldoremanente" />
+                  <attribute name="sanic_cuotamensual" />
+                  <attribute name="sanic_plazo" />
+                  <attribute name="sanic_fechacongelamiento" />
+                  <attribute name="sanic_oficialid" />
+                  <attribute name="modifiedon" />
+                  <order attribute="modifiedon" descending="true" />
+                  <filter type="and">
+                    <condition attribute="statecode" operator="eq" value="0" />
+                    <condition attribute="statuscode" operator="eq" value="1" />
+                  </filter>
+                </entity>
+              </fetch>
+            </fetchxml>
+            <IntroducedVersion>1.0.0.0</IntroducedVersion>
+            <LocalizedNames>
+              <LocalizedName description="Borradores" languagecode="1033" />
+            </LocalizedNames>
+            <Descriptions>
+              <Description description="Arreglos en borrador, todavía no formalizados. Incluye los congelados por la generación del formato." languagecode="1033" />
+            </Descriptions>
+          </savedquery>
+          <savedquery>
+            <IsCustomizable>1</IsCustomizable>
             <CanBeDeleted>0</CanBeDeleted>
             <isquickfindquery>0</isquickfindquery>
             <isprivate>0</isprivate>
@@ -2656,26 +4042,30 @@
             <isdefault>1</isdefault>
             <savedqueryid>{23a2b96e-8eee-41f7-8b1a-e6db2915a8b2}</savedqueryid>
             <layoutxml>
-              <grid name="resultset" jump="sanic_nombre" select="1" icon="1" preview="1">
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
                 <row name="result" id="sanic_carp_tbl_arregloid">
-                  <cell name="sanic_nombre" width="300" />
-                  <cell name="createdon" width="125" />
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_numeroproducto" width="150" />
+                  <cell name="sanic_clienteid" width="180" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroarreglo" width="90" />
+                  <cell name="statuscode" width="110" />
                 </row>
               </grid>
             </layoutxml>
             <querytype>4</querytype>
             <fetchxml>
-              <fetch version="1.0" mapping="logical">
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
                 <entity name="sanic_carp_tbl_arreglo">
                   <attribute name="sanic_carp_tbl_arregloid" />
                   <attribute name="sanic_nombre" />
-                  <attribute name="createdon" />
-                  <order attribute="sanic_nombre" descending="false" />
-                  <filter type="and">
-                    <condition attribute="statecode" operator="eq" value="0" />
-                  </filter>
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_clienteid" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroarreglo" />
+                  <attribute name="statuscode" />
                   <filter type="or" isquickfindfields="1">
-                    <condition attribute="sanic_nombre" operator="like" value="{0}" />
+                    <condition attribute="sanic_numeroproducto" operator="like" value="{0}" />
                   </filter>
                 </entity>
               </fetch>
@@ -2684,21 +4074,316 @@
             <LocalizedNames>
               <LocalizedName description="Quick Find Active Arreglos" languagecode="1033" />
             </LocalizedNames>
+            <Descriptions>
+              <Description description="Búsqueda rápida de Arreglo por número de préstamo o tarjeta." languagecode="1033" />
+            </Descriptions>
+          </savedquery>
+          <savedquery>
+            <IsCustomizable>1</IsCustomizable>
+            <CanBeDeleted>1</CanBeDeleted>
+            <isquickfindquery>0</isquickfindquery>
+            <isprivate>0</isprivate>
+            <isdefault>0</isdefault>
+            <savedqueryid>{a6a74bb8-9acc-f111-a05b-00224808ffcd}</savedqueryid>
+            <layoutxml>
+              <grid name="resultset" jump="sanic_nombre" select="1" preview="1" icon="1">
+                <row name="result" id="sanic_carp_tbl_arregloid">
+                  <cell name="sanic_nombre" width="110" />
+                  <cell name="sanic_clienteid" width="180" />
+                  <cell name="sanic_producto" width="100" />
+                  <cell name="sanic_numeroproducto" width="140" />
+                  <cell name="sanic_numeroarreglo" width="90" />
+                  <cell name="statuscode" width="110" />
+                  <cell name="sanic_tipo" width="100" />
+                  <cell name="sanic_moneda" width="90" />
+                  <cell name="sanic_cuotamensual" width="110" />
+                  <cell name="sanic_plazo" width="70" />
+                  <cell name="sanic_oficialid" width="160" />
+                  <cell name="modifiedon" width="150" />
+                </row>
+              </grid>
+            </layoutxml>
+            <querytype>0</querytype>
+            <fetchxml>
+              <fetch version="1.0" output-format="xml-platform" mapping="logical">
+                <entity name="sanic_carp_tbl_arreglo">
+                  <attribute name="sanic_carp_tbl_arregloid" />
+                  <attribute name="sanic_nombre" />
+                  <attribute name="sanic_clienteid" />
+                  <attribute name="sanic_producto" />
+                  <attribute name="sanic_numeroproducto" />
+                  <attribute name="sanic_numeroarreglo" />
+                  <attribute name="statuscode" />
+                  <attribute name="sanic_tipo" />
+                  <attribute name="sanic_moneda" />
+                  <attribute name="sanic_cuotamensual" />
+                  <attribute name="sanic_plazo" />
+                  <attribute name="sanic_oficialid" />
+                  <attribute name="modifiedon" />
+                  <order attribute="modifiedon" descending="true" />
+                </entity>
+              </fetch>
+            </fetchxml>
+            <IntroducedVersion>1.0.0.0</IntroducedVersion>
+            <LocalizedNames>
+              <LocalizedName description="Todos los arreglos" languagecode="1033" />
+            </LocalizedNames>
+            <Descriptions>
+              <Description description="Todos los arreglos, en cualquier estado." languagecode="1033" />
+            </Descriptions>
           </savedquery>
         </savedqueries>
       </SavedQueries>
       <RibbonDiffXml>
-        <CustomActions />
+        <CustomActions>
+          <CustomAction Id="sanic.carp.arreglo.anular.Form.CustomAction" Location="Mscrm.Form.sanic_carp_tbl_arreglo.MainTab.Actions.Controls._children" Sequence="50">
+            <CommandUIDefinition>
+              <Button Command="sanic.carp.arreglo.anular.Command" Id="sanic.carp.arreglo.anular.Form.Button" LabelText="$LocLabels:sanic.carp.arreglo.anular.Button.LabelText" Sequence="50" TemplateAlias="o1" ToolTipTitle="$LocLabels:sanic.carp.arreglo.anular.Button.ToolTipTitle" ToolTipDescription="$LocLabels:sanic.carp.arreglo.anular.Button.ToolTipDescription" Image16by16="$webresource:sanic_carp_wr_svg_cmd_anular" Image32by32="$webresource:sanic_carp_wr_svg_cmd_anular" ModernImage="$webresource:sanic_carp_wr_svg_cmd_anular" />
+            </CommandUIDefinition>
+          </CustomAction>
+          <CustomAction Id="sanic.carp.arreglo.desbloquear.Form.CustomAction" Location="Mscrm.Form.sanic_carp_tbl_arreglo.MainTab.Actions.Controls._children" Sequence="20">
+            <CommandUIDefinition>
+              <Button Command="sanic.carp.arreglo.desbloquear.Command" Id="sanic.carp.arreglo.desbloquear.Form.Button" LabelText="$LocLabels:sanic.carp.arreglo.desbloquear.Button.LabelText" Sequence="20" TemplateAlias="o1" ToolTipTitle="$LocLabels:sanic.carp.arreglo.desbloquear.Button.ToolTipTitle" ToolTipDescription="$LocLabels:sanic.carp.arreglo.desbloquear.Button.ToolTipDescription" Image16by16="$webresource:sanic_carp_wr_svg_cmd_desbloquear" Image32by32="$webresource:sanic_carp_wr_svg_cmd_desbloquear" ModernImage="$webresource:sanic_carp_wr_svg_cmd_desbloquear" />
+            </CommandUIDefinition>
+          </CustomAction>
+          <CustomAction Id="sanic.carp.arreglo.descartar.Form.CustomAction" Location="Mscrm.Form.sanic_carp_tbl_arreglo.MainTab.Actions.Controls._children" Sequence="40">
+            <CommandUIDefinition>
+              <Button Command="sanic.carp.arreglo.descartar.Command" Id="sanic.carp.arreglo.descartar.Form.Button" LabelText="$LocLabels:sanic.carp.arreglo.descartar.Button.LabelText" Sequence="40" TemplateAlias="o1" ToolTipTitle="$LocLabels:sanic.carp.arreglo.descartar.Button.ToolTipTitle" ToolTipDescription="$LocLabels:sanic.carp.arreglo.descartar.Button.ToolTipDescription" Image16by16="$webresource:sanic_carp_wr_svg_cmd_descartar" Image32by32="$webresource:sanic_carp_wr_svg_cmd_descartar" ModernImage="$webresource:sanic_carp_wr_svg_cmd_descartar" />
+            </CommandUIDefinition>
+          </CustomAction>
+          <CustomAction Id="sanic.carp.arreglo.formalizar.Form.CustomAction" Location="Mscrm.Form.sanic_carp_tbl_arreglo.MainTab.Actions.Controls._children" Sequence="30">
+            <CommandUIDefinition>
+              <Button Command="sanic.carp.arreglo.formalizar.Command" Id="sanic.carp.arreglo.formalizar.Form.Button" LabelText="$LocLabels:sanic.carp.arreglo.formalizar.Button.LabelText" Sequence="30" TemplateAlias="o1" ToolTipTitle="$LocLabels:sanic.carp.arreglo.formalizar.Button.ToolTipTitle" ToolTipDescription="$LocLabels:sanic.carp.arreglo.formalizar.Button.ToolTipDescription" Image16by16="$webresource:sanic_carp_wr_svg_cmd_formalizar" Image32by32="$webresource:sanic_carp_wr_svg_cmd_formalizar" ModernImage="$webresource:sanic_carp_wr_svg_cmd_formalizar" />
+            </CommandUIDefinition>
+          </CustomAction>
+          <CustomAction Id="sanic.carp.arreglo.generar.Form.CustomAction" Location="Mscrm.Form.sanic_carp_tbl_arreglo.MainTab.Actions.Controls._children" Sequence="10">
+            <CommandUIDefinition>
+              <Button Command="sanic.carp.arreglo.generar.Command" Id="sanic.carp.arreglo.generar.Form.Button" LabelText="$LocLabels:sanic.carp.arreglo.generar.Button.LabelText" Sequence="10" TemplateAlias="o1" ToolTipTitle="$LocLabels:sanic.carp.arreglo.generar.Button.ToolTipTitle" ToolTipDescription="$LocLabels:sanic.carp.arreglo.generar.Button.ToolTipDescription" Image16by16="$webresource:sanic_carp_wr_svg_cmd_generar" Image32by32="$webresource:sanic_carp_wr_svg_cmd_generar" ModernImage="$webresource:sanic_carp_wr_svg_cmd_generar" />
+            </CommandUIDefinition>
+          </CustomAction>
+          <CustomAction Id="sanic.carp.arreglo.reabrir.Form.CustomAction" Location="Mscrm.Form.sanic_carp_tbl_arreglo.MainTab.Actions.Controls._children" Sequence="60">
+            <CommandUIDefinition>
+              <Button Command="sanic.carp.arreglo.reabrir.Command" Id="sanic.carp.arreglo.reabrir.Form.Button" LabelText="$LocLabels:sanic.carp.arreglo.reabrir.Button.LabelText" Sequence="60" TemplateAlias="o1" ToolTipTitle="$LocLabels:sanic.carp.arreglo.reabrir.Button.ToolTipTitle" ToolTipDescription="$LocLabels:sanic.carp.arreglo.reabrir.Button.ToolTipDescription" Image16by16="$webresource:sanic_carp_wr_svg_cmd_reabrirarreglo" Image32by32="$webresource:sanic_carp_wr_svg_cmd_reabrirarreglo" ModernImage="$webresource:sanic_carp_wr_svg_cmd_reabrirarreglo" />
+            </CommandUIDefinition>
+          </CustomAction>
+        </CustomActions>
         <Templates>
           <RibbonTemplates Id="Mscrm.Templates" />
         </Templates>
-        <CommandDefinitions />
+        <CommandDefinitions>
+          <CommandDefinition Id="sanic.carp.arreglo.anular.Command">
+            <EnableRules>
+              <EnableRule Id="sanic.carp.arreglo.anular.EnableRule" />
+            </EnableRules>
+            <DisplayRules />
+            <Actions>
+              <JavaScriptFunction FunctionName="SanicCarp.Arreglo.anular" Library="$webresource:sanic_carp_wr_js_comandos">
+                <CrmParameter Value="PrimaryControl" />
+              </JavaScriptFunction>
+            </Actions>
+          </CommandDefinition>
+          <CommandDefinition Id="sanic.carp.arreglo.desbloquear.Command">
+            <EnableRules>
+              <EnableRule Id="sanic.carp.arreglo.desbloquear.EnableRule" />
+            </EnableRules>
+            <DisplayRules />
+            <Actions>
+              <JavaScriptFunction FunctionName="SanicCarp.Arreglo.desbloquear" Library="$webresource:sanic_carp_wr_js_comandos">
+                <CrmParameter Value="PrimaryControl" />
+              </JavaScriptFunction>
+            </Actions>
+          </CommandDefinition>
+          <CommandDefinition Id="sanic.carp.arreglo.descartar.Command">
+            <EnableRules>
+              <EnableRule Id="sanic.carp.arreglo.descartar.EnableRule" />
+            </EnableRules>
+            <DisplayRules />
+            <Actions>
+              <JavaScriptFunction FunctionName="SanicCarp.Arreglo.descartar" Library="$webresource:sanic_carp_wr_js_comandos">
+                <CrmParameter Value="PrimaryControl" />
+              </JavaScriptFunction>
+            </Actions>
+          </CommandDefinition>
+          <CommandDefinition Id="sanic.carp.arreglo.formalizar.Command">
+            <EnableRules>
+              <EnableRule Id="sanic.carp.arreglo.formalizar.EnableRule" />
+            </EnableRules>
+            <DisplayRules />
+            <Actions>
+              <JavaScriptFunction FunctionName="SanicCarp.Arreglo.formalizar" Library="$webresource:sanic_carp_wr_js_comandos">
+                <CrmParameter Value="PrimaryControl" />
+              </JavaScriptFunction>
+            </Actions>
+          </CommandDefinition>
+          <CommandDefinition Id="sanic.carp.arreglo.generar.Command">
+            <EnableRules>
+              <EnableRule Id="sanic.carp.arreglo.generar.EnableRule" />
+            </EnableRules>
+            <DisplayRules />
+            <Actions>
+              <JavaScriptFunction FunctionName="SanicCarp.Arreglo.generar" Library="$webresource:sanic_carp_wr_js_comandos">
+                <CrmParameter Value="PrimaryControl" />
+              </JavaScriptFunction>
+            </Actions>
+          </CommandDefinition>
+          <CommandDefinition Id="sanic.carp.arreglo.reabrir.Command">
+            <EnableRules>
+              <EnableRule Id="sanic.carp.arreglo.reabrir.EnableRule" />
+            </EnableRules>
+            <DisplayRules />
+            <Actions>
+              <JavaScriptFunction FunctionName="SanicCarp.Arreglo.reabrir" Library="$webresource:sanic_carp_wr_js_comandos">
+                <CrmParameter Value="PrimaryControl" />
+              </JavaScriptFunction>
+            </Actions>
+          </CommandDefinition>
+        </CommandDefinitions>
         <RuleDefinitions>
           <TabDisplayRules />
           <DisplayRules />
-          <EnableRules />
+          <EnableRules>
+            <EnableRule Id="sanic.carp.arreglo.anular.EnableRule">
+              <CustomRule FunctionName="SanicCarp.Arreglo.puedeAnular" Library="$webresource:sanic_carp_wr_js_comandos" Default="false">
+                <CrmParameter Value="PrimaryControl" />
+              </CustomRule>
+            </EnableRule>
+            <EnableRule Id="sanic.carp.arreglo.desbloquear.EnableRule">
+              <CustomRule FunctionName="SanicCarp.Arreglo.puedeDesbloquear" Library="$webresource:sanic_carp_wr_js_comandos" Default="false">
+                <CrmParameter Value="PrimaryControl" />
+              </CustomRule>
+            </EnableRule>
+            <EnableRule Id="sanic.carp.arreglo.descartar.EnableRule">
+              <CustomRule FunctionName="SanicCarp.Arreglo.puedeDescartar" Library="$webresource:sanic_carp_wr_js_comandos" Default="false">
+                <CrmParameter Value="PrimaryControl" />
+              </CustomRule>
+            </EnableRule>
+            <EnableRule Id="sanic.carp.arreglo.formalizar.EnableRule">
+              <CustomRule FunctionName="SanicCarp.Arreglo.puedeFormalizar" Library="$webresource:sanic_carp_wr_js_comandos" Default="false">
+                <CrmParameter Value="PrimaryControl" />
+              </CustomRule>
+            </EnableRule>
+            <EnableRule Id="sanic.carp.arreglo.generar.EnableRule">
+              <CustomRule FunctionName="SanicCarp.Arreglo.puedeGenerar" Library="$webresource:sanic_carp_wr_js_comandos" Default="false">
+                <CrmParameter Value="PrimaryControl" />
+              </CustomRule>
+            </EnableRule>
+            <EnableRule Id="sanic.carp.arreglo.reabrir.EnableRule">
+              <CustomRule FunctionName="SanicCarp.Arreglo.puedeReabrir" Library="$webresource:sanic_carp_wr_js_comandos" Default="false">
+                <CrmParameter Value="PrimaryControl" />
+              </CustomRule>
+            </EnableRule>
+          </EnableRules>
         </RuleDefinitions>
-        <LocLabels />
+        <LocLabels>
+          <LocLabel Id="sanic.carp.arreglo.anular.Button.LabelText">
+            <Titles>
+              <Title description="Void" languagecode="1033" />
+              <Title description="Anular" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.anular.Button.ToolTipDescription">
+            <Titles>
+              <Title description="Voids the agreement with the reason typed in the form. It cannot be undone." languagecode="1033" />
+              <Title description="Anula el arreglo con el motivo escrito en el formulario. No se puede revertir." languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.anular.Button.ToolTipTitle">
+            <Titles>
+              <Title description="Void" languagecode="1033" />
+              <Title description="Anular" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.desbloquear.Button.LabelText">
+            <Titles>
+              <Title description="Unlock" languagecode="1033" />
+              <Title description="Desbloquear" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.desbloquear.Button.ToolTipDescription">
+            <Titles>
+              <Title description="Unlocks the agreement data of a frozen draft." languagecode="1033" />
+              <Title description="Desbloquea los datos del acuerdo de un borrador congelado." languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.desbloquear.Button.ToolTipTitle">
+            <Titles>
+              <Title description="Unlock" languagecode="1033" />
+              <Title description="Desbloquear" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.descartar.Button.LabelText">
+            <Titles>
+              <Title description="Discard" languagecode="1033" />
+              <Title description="Descartar" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.descartar.Button.ToolTipDescription">
+            <Titles>
+              <Title description="Discards the draft with the reason typed in the form." languagecode="1033" />
+              <Title description="Descarta el borrador con el motivo escrito en el formulario." languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.descartar.Button.ToolTipTitle">
+            <Titles>
+              <Title description="Discard" languagecode="1033" />
+              <Title description="Descartar" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.formalizar.Button.LabelText">
+            <Titles>
+              <Title description="Formalize" languagecode="1033" />
+              <Title description="Formalizar" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.formalizar.Button.ToolTipDescription">
+            <Titles>
+              <Title description="Formalizes the frozen draft once the customer signed the printed form." languagecode="1033" />
+              <Title description="Formaliza el borrador congelado cuando el cliente firmó el formato impreso." languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.formalizar.Button.ToolTipTitle">
+            <Titles>
+              <Title description="Formalize" languagecode="1033" />
+              <Title description="Formalizar" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.generar.Button.LabelText">
+            <Titles>
+              <Title description="Generate form" languagecode="1033" />
+              <Title description="Generar formato" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.generar.Button.ToolTipDescription">
+            <Titles>
+              <Title description="Generates the Excel form F-NIC-0000052 for signature. A draft is frozen on generation." languagecode="1033" />
+              <Title description="Genera el formato F-NIC-0000052 en Excel para la firma. Un borrador se congela al generar." languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.generar.Button.ToolTipTitle">
+            <Titles>
+              <Title description="Generate form" languagecode="1033" />
+              <Title description="Generar formato" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.reabrir.Button.LabelText">
+            <Titles>
+              <Title description="Reopen agreement" languagecode="1033" />
+              <Title description="Reabrir arreglo" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.reabrir.Button.ToolTipDescription">
+            <Titles>
+              <Title description="Unfreezes the data to correct it, with the reason typed in the form. Managers only." languagecode="1033" />
+              <Title description="Descongela los datos para corregirlos, con el motivo escrito en el formulario. Solo jefatura." languagecode="3082" />
+            </Titles>
+          </LocLabel>
+          <LocLabel Id="sanic.carp.arreglo.reabrir.Button.ToolTipTitle">
+            <Titles>
+              <Title description="Reopen agreement" languagecode="1033" />
+              <Title description="Reabrir arreglo" languagecode="3082" />
+            </Titles>
+          </LocLabel>
+        </LocLabels>
       </RibbonDiffXml>
     </Entity>
     

@@ -1,0 +1,183 @@
+[
+ {
+  "paso": "cliente HUMO (admin)",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": 201
+ },
+ {
+  "paso": "1 Oficial crea borrador A (prestamo)",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": 201
+ },
+ {
+  "paso": "2 Oficial crea el mismo numero como Tarjeta: rechazo, texto sin codigo",
+  "ok": true,
+  "esperado": "4xx y texto en espanol sin CARP-",
+  "obtenido": [
+   400,
+   "El número HUMO-D43-0001 ya está registrado como préstamo en otro arreglo. Revise el producto o el número."
+  ]
+ },
+ {
+  "paso": "2b Tarjeta con otro numero pasa",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": 201
+ },
+ {
+  "paso": "2c cambiar el numero del borrador Tarjeta a HUMO-D43-0001: rechazo sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "El número HUMO-D43-0001 ya está registrado como préstamo en otro arreglo. Revise el producto o el número."
+  ]
+ },
+ {
+  "paso": "3 generar formato A (Oficial)",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": 200
+ },
+ {
+  "paso": "3b Formalizar sin documento: ARR-025 sin codigo",
+  "ok": true,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "Adjunte el documento firmado (PDF, JPG o PNG) antes de formalizar."
+  ]
+ },
+ {
+  "paso": "4 subir .txt: rechazo ARR-026 sin codigo",
+  "ok": false,
+  "esperado": "4xx",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "paso": "4b subir .pdf: pasa",
+  "ok": false,
+  "esperado": "2xx",
+  "obtenido": [
+   400,
+   "El documento firmado debe ser PDF, JPG o PNG."
+  ]
+ },
+ {
+  "paso": "5 Formalizar A con documento: Vigente con numero",
+  "ok": false,
+  "esperado": "204 Vigente numero 1",
+  "obtenido": [
+   400,
+   "El documento firmado debe ser PDF, JPG o PNG.",
+   {
+    "statuscode": 1,
+    "sanic_fechacongelamiento": "2026-11-04T04:36:19Z",
+    "sanic_documentofirmado_name": "firmado.txt",
+    "sanic_carp_tbl_arregloid": "f8fe9a43-09d8-f111-84e8-0022480c5699",
+    "sanic_numeroarreglo": null,
+    "statecode": 0
+   }
+  ]
+ },
+ {
+  "paso": "6 Vigente recien formalizado: reemplazar el documento rechazado ARR-027 sin codigo",
+  "ok": false,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "El documento firmado debe ser PDF, JPG o PNG."
+  ]
+ },
+ {
+  "paso": "7 borrador C del mismo credito (los borradores son libres)",
+  "ok": true,
+  "esperado": 201,
+  "obtenido": 201
+ },
+ {
+  "paso": "7b generar formato C",
+  "ok": true,
+  "esperado": 200,
+  "obtenido": 200
+ },
+ {
+  "paso": "7c subir documento a C",
+  "ok": true,
+  "esperado": "2xx",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "paso": "7d Formalizar C con A vigente: rechazo ARR-030 con el numero del otro, sin codigo",
+  "ok": false,
+  "esperado": "4xx",
+  "obtenido": [
+   204,
+   ""
+  ]
+ },
+ {
+  "paso": "7e C sigue Borrador",
+  "ok": false,
+  "esperado": "statuscode 1",
+  "obtenido": {
+   "statuscode": 159460001,
+   "sanic_fechacongelamiento": "2026-11-04T04:36:31Z",
+   "sanic_documentofirmado_name": "firmado.pdf",
+   "sanic_carp_tbl_arregloid": "87cebf4d-09d8-f111-84e8-0022480c5699",
+   "sanic_numeroarreglo": 1,
+   "statecode": 0
+  }
+ },
+ {
+  "paso": "8 desbloquear C con documento: rechazo ARR-028 sin codigo",
+  "ok": false,
+  "esperado": "4xx",
+  "obtenido": [
+   400,
+   "Un arreglo vigente no se desbloquea. Solo la jefatura puede reabrirlo."
+  ]
+ },
+ {
+  "paso": "8b descartar C con motivo",
+  "ok": false,
+  "esperado": "204 Descartado",
+  "obtenido": [
+   400,
+   "Esa transición de estado no está permitida.",
+   {
+    "statuscode": 159460001,
+    "sanic_fechacongelamiento": "2026-11-04T04:36:31Z",
+    "sanic_documentofirmado_name": "firmado.pdf",
+    "sanic_carp_tbl_arregloid": "87cebf4d-09d8-f111-84e8-0022480c5699",
+    "sanic_numeroarreglo": 1,
+    "statecode": 0
+   }
+  ]
+ },
+ {
+  "paso": "9 anular A",
+  "ok": false,
+  "esperado": "204 Anulado",
+  "obtenido": [
+   400,
+   "Esa transición de estado no está permitida.",
+   {
+    "statuscode": 1,
+    "sanic_fechacongelamiento": "2026-11-04T04:36:19Z",
+    "sanic_documentofirmado_name": "firmado.txt",
+    "sanic_carp_tbl_arregloid": "f8fe9a43-09d8-f111-84e8-0022480c5699",
+    "sanic_numeroarreglo": null,
+    "statecode": 0
+   }
+  ]
+ }
+]

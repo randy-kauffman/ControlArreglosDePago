@@ -686,6 +686,8 @@ python3 herramientas/construir/tabla.py playbooks/tabla/sanic_carp_tbl_arreglo.m
 python3 herramientas/construir/muestra_tabla.py playbooks/tabla/sanic_carp_tbl_arreglo.md --guardar    # renueva la muestra exportada
 ```
 
+**Resultado (2026-11-04, Dev):** ensayado primero en la tabla descartable `sanic_carp_tbl_zzarchivo` (`playbooks/tabla/ensayos/sanic_carp_tbl_zzarchivo.md`, **sigue en Dev: la borra el usuario**): la plataforma acepta archivo + `IsSecured = true` + `IsAuditEnabled = true` (`CanBeSecuredForRead/Create/Update` en `true`); en la tabla real `--agregar-columnas` la creó (`ya_existia` después) y `muestra_tabla.py --guardar` coincide; la columna `sanic_documentofirmado_name` aparece sola y es solo lectura. Lo que sigue es el texto original de lo que había por verificar.
+
 **Por verificar la primera vez** (no se construyó nada todavía): (1) la combinación archivo + `IsSecured = true` + `IsAuditEnabled = true` no se ensayó con esta herramienta (Learn dice que una columna de archivo se puede asegurar pero no enmascarar; la plataforma decide con `CanBeSecuredForCreate/Read/Update`). Antes de tocar Dev se ensaya agregando una columna igual a una tabla descartable (`playbooks/tabla/ensayos/`, tablas `zz`), como se hizo con el texto protegido el 2026-09-21. Si la plataforma rechaza la seguridad por columna sobre un archivo, se informa: queda la columna sin proteger, el aislamiento por unidad de negocio y la auditoría, y se decide con el usuario (H-33 de `diseno/03`). (2) La plataforma crea sola la columna `sanic_documentofirmado_name` (solo lectura), que el playbook no declara. (3) La herramienta de la muestra debe aceptar la columna de archivo con `IsSecured`; si la compara distinto, se anota aquí.
 
 ## 7. Reversa
