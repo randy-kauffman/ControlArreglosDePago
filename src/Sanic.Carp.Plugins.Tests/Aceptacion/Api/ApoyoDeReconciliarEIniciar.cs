@@ -254,7 +254,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
         /// <summary>El texto del rechazo de una Custom API: la excepción de la plataforma con el mensaje del catálogo, tal cual.</summary>
         public static InvalidPluginExecutionException AssertRechazo(Action accion, Sanic.Carp.Plugins.Dominio.Errores.DefinicionDeError esperado, params object[] marcadores)
         {
-            return ApoyoDeSteps.Rechaza(accion, esperado, marcadores);
+            return ApoyoDeSteps.RechazaApi(accion, esperado, marcadores);
         }
 
         // ---------------------------------------------------------------- Filas de partida (iniciar)

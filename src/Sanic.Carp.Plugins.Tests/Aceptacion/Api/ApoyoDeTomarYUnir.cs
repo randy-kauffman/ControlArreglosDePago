@@ -68,13 +68,13 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
         /// <summary>La llamada termina en <c>InvalidPluginExecutionException</c> con el texto exacto del catálogo y SIN ningún parámetro de salida.</summary>
         public static void RechazaTomar(EscenarioDeSteps e, ContextoDePluginSimulado contexto, DefinicionDeError esperado, params object[] marcadores)
         {
-            ApoyoDeSteps.Rechaza(() => Tomar(e, contexto), esperado, marcadores);
+            ApoyoDeSteps.RechazaApi(() => Tomar(e, contexto), esperado, marcadores);
             Assert.Empty(contexto.OutputParameters);
         }
 
         public static void RechazaUnir(EscenarioDeSteps e, ContextoDePluginSimulado contexto, DefinicionDeError esperado, params object[] marcadores)
         {
-            ApoyoDeSteps.Rechaza(() => Unir(e, contexto), esperado, marcadores);
+            ApoyoDeSteps.RechazaApi(() => Unir(e, contexto), esperado, marcadores);
             Assert.Empty(contexto.OutputParameters);
         }
 

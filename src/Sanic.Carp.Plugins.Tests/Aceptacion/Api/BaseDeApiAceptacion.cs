@@ -262,7 +262,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
             }, Nombre, CodigosDeError.UNI_900);
             var plataforma = UnContexto();
 
-            var rechazo = ApoyoDeSteps.Rechaza(() => e.Fabrica.EjecutarComoPlataforma(api, plataforma), CodigosDeError.UNI_900);
+            var rechazo = ApoyoDeSteps.RechazaApi(() => e.Fabrica.EjecutarComoPlataforma(api, plataforma), CodigosDeError.UNI_900);
 
             Assert.Equal(CodigosDeError.UNI_900.Crear().ToString(), rechazo.Message);
             Assert.Equal("ZZF asunto original", EscenarioDeSteps.Valor(e.Fila(Conv, id), "sanic_asunto"));

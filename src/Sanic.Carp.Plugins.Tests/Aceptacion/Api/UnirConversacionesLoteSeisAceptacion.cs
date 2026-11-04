@@ -139,7 +139,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
             SembrarCorreos(e, par.Value, 5000);
             e.Almacen.LimpiarRegistros();
 
-            var rechazo = ApoyoDeSteps.Rechaza(() => Unir(e, ContextoDeUnir(e.Oficial, par.Key, par.Value)), CodigosDeError.UNI_011);
+            var rechazo = ApoyoDeSteps.RechazaApi(() => Unir(e, ContextoDeUnir(e.Oficial, par.Key, par.Value)), CodigosDeError.UNI_011);
 
             Assert.StartsWith("CARP-UNI-011: ", rechazo.Message, StringComparison.Ordinal);
             AssertSinEscrituras(e);
@@ -396,7 +396,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
             var correos = SembrarCorreos(e, par.Key, 3);
             var arreglo = e.Sembrar(ApoyoDeArreglo.Fila(e, EstadoDeArreglo.Borrador).Con("sanic_conversacionid", RefConv(par.Key)));
             e.Almacen.FallarEn(OperacionDeDatos.Update, tabla, ordinal, CodigosDeFalla.ClaveDuplicada);
-            var rechazo = ApoyoDeSteps.Rechaza(() => Unir(e, ContextoDeUnir(e.Oficial, par.Key, par.Value)), CodigosDeError.UNI_900);
+            var rechazo = ApoyoDeSteps.RechazaApi(() => Unir(e, ContextoDeUnir(e.Oficial, par.Key, par.Value)), CodigosDeError.UNI_900);
 
             Assert.Equal("CARP-UNI-900: No se pudo unir. No se guardó ningún cambio. Intente de nuevo.", rechazo.Message);
             foreach (var correo in correos) Assert.Equal(par.Key, Ref(e.Fila(Correo, correo), "regardingobjectid"));

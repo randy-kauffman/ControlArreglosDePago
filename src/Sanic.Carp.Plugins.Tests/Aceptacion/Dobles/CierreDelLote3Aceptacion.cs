@@ -458,12 +458,12 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Dobles
         }
 
         [Fact]
-        public void CL3_H8_02_LasColumnasDeFormulaYArchivoDelDiccionarioSonSanicAntiguedadYSanicArchivo()
+        public void CL3_H8_02_LasColumnasDeFormulaYArchivoDelDiccionarioSonSanicAntiguedadSanicArchivoYSanicDocumentofirmado()
         {
-            // cierre del lote 3, revisión vuelta 2, H8 (guarda: si el diccionario suma una, la teoría la cubre sola; este es el conteo conocido al 2026-10-14)
+            // cierre del lote 3, revisión vuelta 2, H8 (guarda: si el diccionario suma una, la teoría la cubre sola; este es el conteo conocido al 2026-11-04, con el documento firmado del arreglo)
             var columnas = ColumnasDeFormulaYArchivo().Select(o => (string)o[0] + "." + (string)o[1]).OrderBy(x => x, StringComparer.Ordinal).ToArray();
 
-            Assert.Equal(new[] { "sanic_carp_tbl_conversacion.sanic_antiguedad", "sanic_carp_tbl_versionplantilla.sanic_archivo" }, columnas);
+            Assert.Equal(new[] { "sanic_carp_tbl_arreglo.sanic_documentofirmado", "sanic_carp_tbl_conversacion.sanic_antiguedad", "sanic_carp_tbl_versionplantilla.sanic_archivo" }, columnas);
         }
 
         [Theory]

@@ -351,6 +351,14 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             return rechazo;
         }
 
+        /// <summary>Como <see cref="Rechaza"/> pero para las Custom API: el mensaje conserva el codigo (<c>CARP-XXX-NNN: texto</c>); la app lo quita en comandos.js.</summary>
+        public static InvalidPluginExecutionException RechazaApi(Action accion, DefinicionDeError esperado, params object[] marcadores)
+        {
+            var rechazo = Assert.Throws<InvalidPluginExecutionException>(accion);
+            Assert.Equal(esperado.Crear(marcadores).ToString(), rechazo.Message);
+            return rechazo;
+        }
+
         /// <summary>Lecturas del almacén de la tabla de clientes con un <c>RetrieveMultiple</c> que filtra por la cédula (la consulta de unicidad).</summary>
         public static IReadOnlyList<ConsultaRegistrada> ConsultasDeUnicidad(OrganizationServiceEnMemoria almacen)
         {

@@ -279,7 +279,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioApi
             e.Almacen.FallarEn(OperacionDeDatos.Update, Conv, 1, codigo);
             var contexto = ContextoDeTomar(e.Oficial, id);
 
-            var rechazo = ApoyoDeSteps.Rechaza(() => Tomar(e, contexto), CodigosDeError.TOM_900);
+            var rechazo = ApoyoDeSteps.RechazaApi(() => Tomar(e, contexto), CodigosDeError.TOM_900);
 
             Assert.Equal("CARP-TOM-900: La conversación cambió en este instante. Actualice la pantalla y vuelva a intentar.", rechazo.Message);
             Assert.DoesNotContain("Falla simulada", rechazo.Message);
