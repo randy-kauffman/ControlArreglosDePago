@@ -164,7 +164,7 @@ Lo que el mockup muestra en "En riesgo" y **una vista no puede dar**: cuotas ven
 | 12.10 | **Busqueda rapida de Cliente** | `sanic_carp_tbl_cliente` | BusquedaRapida | Oficial y Jefe | `or` de `like` `{0}` sobre `sanic_cedula`, `sanic_nombrecompleto`, `sanic_correo`, `sanic_celular` (G-V1) | — | `sanic_nombre` 200 · `sanic_cedula` 140 · `sanic_correo` 220 · `sanic_celular` 120 |
 | 12.13 | **Clientes** (por defecto) | `sanic_carp_tbl_cliente` | Publica | Oficial y Jefe | `statecode` `eq` `0` | `sanic_nombre` asc | `sanic_nombre` 220 · `sanic_cedula` 140 · `sanic_correo` 220 · `sanic_celular` 120 |
 | 12.13 | **Cuotas del arreglo** (subgrid de 12.19) | `sanic_carp_tbl_cuota` | Publica | — (subgrid) | ninguno | `sanic_numero` asc | `sanic_nombre` 110 · `sanic_numero` 70 · `sanic_fechavencimiento` 130 · `sanic_monto` 110 · `sanic_fechapago` 130 · `sanic_montopagado` 110 |
-| 12.13 | **Formatos generados del arreglo** (subgrid) | `sanic_carp_tbl_generacionformato` | Publica | — (subgrid) | ninguno | `sanic_fechageneracion` desc | `sanic_nombre` 110 · `sanic_fechageneracion` 150 · `sanic_generadoporid` 180 · `sanic_versionplantillaid` 120 |
+| 12.13 | **Formatos generados del arreglo** (subgrid) | `sanic_carp_tbl_generacionformato` | Publica | — (subgrid) | ninguno | `sanic_fechageneracion` desc | `sanic_nombre` 110 · `sanic_fechageneracion` 150 · `sanic_generadoporid` 180 · `sanic_versionplantillaid` 120 · `sanic_arregloid` 150 (2026-11-03) |
 | 12.13 | **Versiones de plantilla** (por defecto) | `sanic_carp_tbl_versionplantilla` | Publica | Jefe | ninguno | `sanic_nombre` desc | `sanic_nombre` 110 · `sanic_estado` 110 · `sanic_capacidad` 90 · `sanic_fechaaprobacion` 150 · `sanic_aprobadoporid` 180 |
 | 12.13 | **Mapeo de la version** (subgrid de 12.20) | `sanic_carp_tbl_mapeocelda` | Publica | Jefe | ninguno | `sanic_hoja` asc, `sanic_celda` asc | `sanic_nombre` 140 · `sanic_hoja` 170 · `sanic_celda` 80 · `sanic_tipo` 190 · `sanic_campo` 200 · `sanic_filasmaximas` 90 |
 
@@ -272,6 +272,10 @@ Encabezado (3): `sanic_estado` (ro) · `sanic_capacidad` (ed) · `sanic_fechaapr
 ### 4.6 12.21 `FRM - CARP - Mapeo de celda - Principal` (tabla `sanic_carp_tbl_mapeocelda`)
 
 Sin encabezado. Una sección "Celda del formato": `sanic_versionplantillaid` ro (se hereda de la subgrilla; moverlo da `CARP-MAP-006`) · `sanic_hoja` · `sanic_celda` · `sanic_tipo` · `sanic_campo` · `sanic_filasmaximas` (todos ed). Sin `sanic_nombre` (se calcula). Solo se edita con la versión en Borrador (`CARP-MAP-001`). `OnSave` cancela el autoguardado (`getSaveMode() === 70`) para que `CARP-MAP-003`/`-004` no rebote con el tipo y el campo a medio elegir.
+
+### 4.8 12.28 `FRM - CARP - Generacion de formato - Principal` (tabla `sanic_carp_tbl_generacionformato`; 2026-11-03)
+
+Pedido del usuario en la prueba guiada: al abrir una fila de "Formatos generados" el formulario de fábrica solo mostraba el número y el propietario. Encabezado: `ownerid` (ro). Una pestaña General, una sección **Generacion**: `sanic_nombre` ro · `sanic_arregloid` ro · `sanic_versionplantillaid` ro · `sanic_generadoporid` ro · `sanic_fechageneracion` ro. Todo es solo lectura porque la bitácora la escribe el sistema (D-26) y ningún rol humano tiene Create ni Write sobre la tabla; sin JavaScript. La subgrilla de formatos del Arreglo (sección 6 de 4.4) usa la vista "Formatos generados del arreglo", que desde el mismo día suma la columna `sanic_arregloid` a las que ya tenía (número, fecha, quién generó, versión). Playbook: `playbooks/formulario/generacionformato.md`. **[verificar en Dev]** que el clic en la fila de la subgrilla abre este formulario y que los lookups se ven.
 
 ### 4.7 Propuesta: `FRM - CARP - Cuota - Principal` (no está en el inventario; DA-09)
 

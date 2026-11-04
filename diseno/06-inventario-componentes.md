@@ -30,12 +30,13 @@ Fuentes: `definicion.md` (§6, D-01 a D-36, RF y RNF), `diseno/01-convenciones.m
 | 9 | Datos semilla y de configuración | 3 | 2 | 0 | 1 |
 | 10 | Configuración entre entornos (EV y connection references; 10.7 retirada, no cuenta) | 8 | 8 | 0 | 0 |
 | 11 | Flujos | 5 | 4 | 0 | 1 |
-| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 27 | 27 | 0 | 0 |
+| 12 | App model-driven (vistas, dashboard, formularios, web resource, comandos, sitemap, app) | 28 | 27 | 1 | 0 |
 | 13 | Identidades y puesta en marcha | 17 | 0 | 15 | 2 |
-| **Total** | | **135** | **81** | **46** | **8** |
+| **Total** | | **136** | **81** | **47** | **8** |
 
 Notas del resumen:
 
+- 2026-11-03 (pedido del usuario en la prueba guiada): fila nueva 12.28 (`FRM - CARP - Generacion de formato - Principal`), `pendiente`; además la vista "Formatos generados del arreglo" (12.13) suma la columna `sanic_arregloid` y queda por reaplicar en Dev. El grupo 12 pasó de 27 filas y 27 hechas a 28 y 27; el total, de 135 filas y 46 pendientes a 136 y 47.
 - 2026-11-03 (pedido del usuario en la prueba guiada, `definicion.md` RF-18 y D-42): filas nuevas 3.9 (columna `sanic_documentofirmado` del Arreglo) y 7.23 (regla y step del documento firmado, S-38), ambas `pendiente`. El grupo 3 pasó de 8 filas y 8 hechas a 9 y 8; el grupo 7, de 22 y 22 a 23 y 22; el total, de 133 filas y 44 pendientes a 135 y 46 (hechas 81 y diseño detallado pendiente 8, sin cambio). Además cambian filas que ya estaban `hecho`, sin sumar filas: 3.3 (34 columnas), 6.1 (4 columnas), 7.14 (conversación de origen bloqueada en un Vigente, `CARP-ARR-029`), 8.7 (38 registros sobre 22 clases), 12.19 (el campo en el formulario) y 12.22 (el JavaScript); cada una dice qué falta aplicar en Dev. Las etiquetas del ribbon y del sitemap en español en todos los idiomas (`diseno/07` §13) tocan 12.23 y 12.24 sin sumar filas.
 - 2026-11-03 (Dev, F3 del plan B de `diseno/08`): fila nueva 6.6 (`SR - CARP - Servicio flujos`, sin asignar a nadie), `hecho`. El grupo 6 pasó de 5 filas y 5 hechas a 6 y 6; el total, de 132 filas y 80 hechas a 133 y 81 (pendientes 44 y diseño detallado pendiente 8, sin cambio). `SR - CARP - Servicio` no se modificó.
 - 2026-11-03 (Dev, F2 del plan B de `diseno/08`): fila nueva 11.5 (flujo SND, apagado), `hecho`. El grupo 11 pasó de 4 filas y 3 hechas a 5 y 4; el total, de 131 filas y 79 hechas a 132 y 80 (pendientes 44 y diseño detallado pendiente 8, sin cambio). La columna `sanic_idoutlook` de `diseno/08` NO se agrega (`diseno/08` §11).
@@ -327,7 +328,7 @@ Los gráficos agregan promedios por oficial; las vistas no (D-27). En el proyect
 
 ### 12.3 Formularios principales
 
-Nombre: `FRM - CARP - Tabla - Tipo`. La definición no nombra un formulario para Cuota (los pagos se registran sobre la cuota; el diseño lo agrega como 12.26, `diseno/07` DA-09) ni para Generación de formato (bitácora); ese no se lista. La Conversación muestra el timeline con el editor de correo nativo, y avisa si el cliente tiene otra conversación abierta.
+Nombre: `FRM - CARP - Tabla - Tipo`. La definición no nombra un formulario para Cuota (los pagos se registran sobre la cuota; el diseño lo agrega como 12.26, `diseno/07` DA-09) ni para Generación de formato (bitácora); ese no se listaba y se agregó el 2026-11-03 como 12.28 (pedido del usuario: el Main de fábrica solo mostraba número y propietario). La Conversación muestra el timeline con el editor de correo nativo, y avisa si el cliente tiene otra conversación abierta.
 
 | # | Formulario | Playbook | Depende de | Origen | Estado |
 |---|---|---|---|---|---|
@@ -337,6 +338,7 @@ Nombre: `FRM - CARP - Tabla - Tipo`. La definición no nombra un formulario para
 | 12.20 | `FRM - CARP - Version de plantilla - Principal` (subgrid de mapeo) | `playbooks/formulario/versionplantilla.md` | 3.5, 3.6 | RF-09 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.5) |
 | 12.21 | `FRM - CARP - Mapeo de celda - Principal` | `playbooks/formulario/mapeocelda.md` | 3.6 | RF-09 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.6) |
 | 12.26 | `FRM - CARP - Cuota - Principal` (registro de pago: fecha y monto pagado juntos; el resto de solo lectura) | `playbooks/formulario/cuota.md` | 3.4, 12.13 | RF-10 | hecho (Dev, 2026-10-20) (diseño completo en `diseno/07` §4.7) |
+| 12.28 | `FRM - CARP - Generacion de formato - Principal` (solo lectura: arreglo, versión de plantilla, generado por y fecha de generación; propietario en el encabezado) | `playbooks/formulario/generacionformato.md` | 3.7, 4.x (REL-06, REL-07, REL-18) | RF-08 (bitácora), D-26; pedido del usuario del 2026-11-03 | pendiente (diseño y playbook 2026-11-03; falta aplicarlo en Dev; diseño en `diseno/07` §4.8) |
 | 12.27 | Iconos SVG propios: 41 web resources `sanic_carp_wr_svg_*` (app, 20 entradas del sitemap, 13 botones, 7 tablas) y el ícono `IconVectorName` de las 7 tablas propias | `playbooks/web-resource/sanic_carp_wr_svg_<nombre>.md` ×41, `playbooks/icono-tabla/tablas.md` | 1.1, 3.1 a 3.7, 12.23, 12.24 | Pedido del usuario del 2026-10-28, DA-22 | hecho (Dev, 2026-10-28: 41 web resources y 7 tablas `ya_existia`, sitemap y ribbon `ya_existia`, 42 steps en `statecode` 0 después del import) (diseño en `diseno/07` §13) |
 
 ### 12.4 Web resource, comandos, sitemap y app

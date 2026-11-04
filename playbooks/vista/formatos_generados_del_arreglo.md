@@ -34,7 +34,7 @@ Advertencias: `idiomas` solo cumple el formato común; una vista tiene un único
   "nombre": "Formatos generados del arreglo",
   "tabla": "sanic_carp_tbl_generacionformato",
   "clase": "Publica",
-  "descripcion": "Formatos generados de un arreglo, con quién los generó y con qué versión de la plantilla, para la subgrilla del formulario de Arreglo.",
+  "descripcion": "Formatos generados de un arreglo, con quién los generó, cuándo y con qué versión de la plantilla, para la subgrilla del formulario de Arreglo.",
   "pordefecto": false,
   "columnas": [
     {
@@ -52,6 +52,10 @@ Advertencias: `idiomas` solo cumple el formato común; una vista tiene un único
     {
       "nombre": "sanic_versionplantillaid",
       "ancho": 120
+    },
+    {
+      "nombre": "sanic_arregloid",
+      "ancho": 150
     }
   ],
   "orden": [
@@ -80,7 +84,7 @@ Decisiones que este playbook toma y el diseño no traía:
 
 | Decisión | Valor | Por qué |
 |---|---|---|
-| Descripción | «Formatos generados de un arreglo, con quién los generó y con qué versión de la plantilla, para la subgrilla del formulario de Arreglo.» | `vista.py` exige una descripción; el diseño trae el nombre, el propósito y el perfil, y el texto lo fija el playbook |
+| Descripción | «Formatos generados de un arreglo, con quién los generó, cuándo y con qué versión de la plantilla, para la subgrilla del formulario de Arreglo.» | `vista.py` exige una descripción; el diseño trae el nombre, el propósito y el perfil, y el texto lo fija el playbook |
 
 ## 3. Precondiciones
 
@@ -129,3 +133,5 @@ Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`
 - Que la vista aparezca en el sitemap de la app: `diseno/07` §7 (inventario 12.23 y 12.25).
 - Subgrillas y selectores que usan la vista: formularios 12.17 a 12.21, `diseno/07` §4.
 - Promedios, días de atraso y estado de la cuota: no se muestran en vistas (D-27, DA-11).
+
+**Cambio del 2026-11-03 (pedido del usuario en la prueba guiada):** se agrega la columna `sanic_arregloid` (Arreglo) al final de la vista, para que el subgrid y la vista muestren las cuatro columnas de la bitácora además del número (fecha, quién generó, versión y arreglo). En Dev la vista ya existe: `vista.py` responde `difiere` por las columnas y se aplica con `--completar` (`PATCH` del `fetchxml` y el `layoutxml` y publicación). Hay que renovar el subgrid del formulario del Arreglo (`playbooks/formulario/arreglo.md`) para que tome el layout.
