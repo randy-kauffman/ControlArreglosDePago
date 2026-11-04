@@ -956,7 +956,7 @@ Quién: cualquier usuario del área con Write sobre Conversación (Oficial; el J
 | `CARP-CNV-004` | Si el resultado es "Sin respuesta", el motivo y el detalle son obligatorios. |
 | `CARP-CNV-005` | El resultado, el motivo y el detalle solo se registran al finalizar la conversación. |
 | `CARP-CNV-006` | Una conversación solo pasa a Unida con la acción "Unir conversaciones". |
-| `CARP-CNV-008` | Solo la jefatura puede reasignar una conversación o dejarla sin asignar. (Ver 2.4.) |
+| `CARP-CNV-008` | Solo la jefatura puede reasignar una conversación o dejarla sin asignar. |
 | `CARP-CNV-009` | Una conversación finalizada o unida no se puede modificar. Para cambiar una finalizada, reábrala primero. |
 | `CARP-CNV-010` | Al reabrir una conversación no se puede cambiar nada más en el mismo guardado: {columnas}. Reabra la conversación, guarde, y haga el otro cambio después. |
 

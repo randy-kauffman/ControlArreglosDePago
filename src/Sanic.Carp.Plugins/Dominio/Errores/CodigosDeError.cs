@@ -64,7 +64,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
         public static readonly DefinicionDeError CNV_004 = new DefinicionDeError("CARP-CNV-004", "Si el resultado es \"Sin respuesta\", el motivo y el detalle son obligatorios.");
         public static readonly DefinicionDeError CNV_005 = new DefinicionDeError("CARP-CNV-005", "El resultado, el motivo y el detalle solo se registran al finalizar la conversación.");
         public static readonly DefinicionDeError CNV_006 = new DefinicionDeError("CARP-CNV-006", "Una conversación solo pasa a Unida con la acción \"Unir conversaciones\".");
-        public static readonly DefinicionDeError CNV_008 = new DefinicionDeError("CARP-CNV-008", "Solo la jefatura puede reasignar una conversación o dejarla sin asignar. (Ver 2.4.)");
+        public static readonly DefinicionDeError CNV_008 = new DefinicionDeError("CARP-CNV-008", "Solo la jefatura puede reasignar una conversación o dejarla sin asignar.");
         public static readonly DefinicionDeError CNV_009 = new DefinicionDeError("CARP-CNV-009", "Una conversación finalizada o unida no se puede modificar. Para cambiar una finalizada, reábrala primero.");
         public static readonly DefinicionDeError CNV_010 = new DefinicionDeError("CARP-CNV-010", "Al reabrir una conversación no se puede cambiar nada más en el mismo guardado: {columnas}. Reabra la conversación, guarde, y haga el otro cambio después.");
         public static readonly DefinicionDeError ARR_001 = new DefinicionDeError("CARP-ARR-001", "No hay una versión vigente de la plantilla. Publique una versión antes de registrar arreglos.");
