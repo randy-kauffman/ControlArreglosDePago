@@ -144,11 +144,15 @@ Un botón hace una sola cosa y la confirma el servidor. Si el servidor rechaza l
 - Mensajes frecuentes: `CARP-GEN-004` (el plazo supera la capacidad de la plantilla), `CARP-GEN-012` (no tiene permiso para ver los datos sensibles del cliente; pida acceso), `CARP-GEN-900` (falla temporal: no se guardó nada, intente de nuevo).
 
 **7. Desbloquear.** Aparece en un borrador **congelado**. Descongela los datos para corregirlos. El formato que ya imprimió deja de valer: hay que generarlo e imprimirlo de nuevo.
+- Si ya adjuntó el documento firmado, el sistema no deja desbloquear: quite primero el documento en su campo (pestaña **Cierre**, sección **Formalizacion**, campo **Documento firmado**) y vuelva a desbloquear (`CARP-ARR-028`).
 
 **8. Formalizar.** Aparece en un borrador congelado, una vez que el cliente firmó.
-- Confirme que el cliente firmó el formato impreso.
-- El arreglo pasa a **Vigente** y recibe su número definitivo, que aparece en el mensaje.
-- `CARP-ARR-019`: primero genere el formato. `CARP-ARR-020`: otro arreglo del mismo crédito se formalizó después de imprimir este formato.
+1. Adjunte el **documento firmado** (el formato firmado y formalizado, escaneado o en foto): pestaña **Cierre**, sección **Formalizacion**, campo **Documento firmado**. Es **uno solo**, **PDF, JPG o PNG**, de hasta 10 MB. El campo solo se habilita cuando el formato ya está generado y el arreglo es un borrador. Para cambiar el archivo, suba otro en el mismo campo mientras el arreglo siga en borrador.
+2. Pulse **Formalizar**. Si todavía no adjuntó el documento, la aplicación se lo avisa y no hace nada más.
+3. Confirme que el cliente firmó el formato impreso y que el documento adjunto es el correcto.
+4. El arreglo pasa a **Vigente** y recibe su número definitivo, que aparece en el mensaje.
+- Una vez Vigente, **nadie cambia el documento** y queda guardado para consultarlo cuando haga falta (con el permiso de datos sensibles, porque lleva la cédula del cliente). Si el Jefe reabre el arreglo, el documento se conserva.
+- `CARP-ARR-019`: primero genere el formato. `CARP-ARR-020`: otro arreglo del mismo crédito se formalizó después de imprimir este formato. `CARP-ARR-025`: falta adjuntar el documento firmado. `CARP-ARR-026`: el documento debe ser PDF, JPG o PNG. `CARP-ARR-027`: el documento solo se adjunta o reemplaza en un borrador con el formato ya generado.
 
 **9. Descartar.** Aparece en un borrador.
 1. En la pestaña **Cierre**, escriba el **Motivo de descarte**.
@@ -211,8 +215,8 @@ Mensajes frecuentes al guardar:
 
 | Estado | Cómo se llega | Qué se puede hacer |
 |---|---|---|
-| **Borrador** | Al registrar | Corregir, generar formato (congela), desbloquear, formalizar, descartar |
-| **Vigente** | Formalizar | Registrar pagos, generar formato, anular; el Jefe puede reabrir |
+| **Borrador** | Al registrar | Corregir, generar formato (congela), adjuntar el documento firmado, desbloquear (sin documento), formalizar (con documento), descartar |
+| **Vigente** | Formalizar | Registrar pagos, generar formato, anular; el Jefe puede reabrir. El documento firmado y la conversación de origen ya no se cambian |
 | **Terminado** | Solo, cuando todas las cuotas tienen un pago registrado (un pago parcial cuenta) | Generar formato; el Jefe puede reabrir |
 | **Anulado** | Anular | Solo consulta y formato |
 | **Descartado** | Descartar | Solo consulta y formato |
@@ -226,7 +230,7 @@ Mensajes frecuentes al guardar:
 - **General:** acuerdo, montos y plazo, plantilla y numeración, datos del cliente al congelar.
 - **Cuotas:** el calendario y los pagos.
 - **Formatos:** cada formato generado, con su fecha y versión.
-- **Cierre:** formalización, descarte, anulación y reapertura, con sus motivos.
+- **Cierre:** formalización (con el **Documento firmado**), descarte, anulación y reapertura, con sus motivos.
 
 ### 6.4 Historial de cambios
 

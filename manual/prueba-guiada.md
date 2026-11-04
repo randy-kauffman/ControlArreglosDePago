@@ -18,6 +18,7 @@ Todo lo que se carga es ficticio (prefijo `HUMO-GUIA`). No use datos de clientes
 | Buzón del área | **Buzón de prueba 1** (`PP_MAIL_BUZON_1`, `buzondevpp1@55xljh.onmicrosoft.com`), conectado a la cola "Arreglos de Pago" |
 | App | `https://org36e60d9d.crm.dynamics.com/main.aspx?appid=f13895ff-9bcc-f111-a05b-00224808ffcd` |
 | Excel de escritorio | Para abrir los formatos descargados |
+| Un archivo de prueba | Un PDF, JPG o PNG pequeño y ficticio (por ejemplo una captura cualquiera), para el **documento firmado** de la etapa 7; y un archivo `.txt` o `.docx` cualquiera para probar que se rechaza |
 
 **¿Por qué el buzón 3 y no el 2?** El buzón 2 ya tiene un cliente de prueba registrado con su correo (de la tanda 3). Un correo desde el buzón 2 se vincula solo a ese cliente, y entonces no se puede probar "crear y vincular el cliente". El buzón 3 no tiene cliente: es el caso real de un cliente nuevo. El buzón 2 se usa solo en la etapa 1b, para ver la vinculación automática.
 
@@ -217,7 +218,7 @@ Notas:
 
 ---
 
-## Etapa 7: generar el formato, congelar y desbloquear
+## Etapa 7: generar el formato, congelar, desbloquear y adjuntar el documento firmado
 
 | # | Quién | Qué hacer | Resultado esperado | Resultado |
 |---|---|---|---|---|
@@ -229,6 +230,10 @@ Notas:
 | 7.6 | A | Pulse **Desbloquear** y confirme | Se borra la **Fecha de congelamiento**. Avisa que el formato impreso deja de valer | [ ] OK [ ] Falla |
 | 7.7 | A | **Error esperado.** Pulse **Desbloquear** de nuevo, si el botón sigue visible | "El arreglo no está congelado ...", o el botón ya no aparece (las dos cosas son correctas) (código interno CARP-ARR-017, no se muestra) | [ ] OK [ ] Falla |
 | 7.8 | A | Pulse **Generar formato** otra vez y confirme | Vuelve a congelar y descarga otro `.xlsx`. En **Formatos** hay 2 filas | [ ] OK [ ] Falla |
+| 7.9 | A | **Error esperado.** Pulse **Formalizar** sin haber adjuntado nada | Avisa: "Antes de formalizar, adjunte el documento firmado (PDF, JPG o PNG) en el campo «Documento firmado» del formulario y vuelva a pulsar Formalizar." No pide confirmación y el arreglo sigue en **Borrador** | [ ] OK [ ] Falla |
+| 7.10 | A | **Error esperado.** Pestaña **Cierre**, sección **Formalizacion**, campo **Documento firmado**: adjunte el archivo `.txt` o `.docx` | "El documento firmado debe ser PDF, JPG o PNG." y el archivo no queda adjunto (código interno CARP-ARR-026, no se muestra) | [ ] OK [ ] Falla |
+| 7.11 | A | En el mismo campo adjunte el PDF, JPG o PNG de prueba | Queda el nombre del archivo en el campo y se puede abrir o descargar | [ ] OK [ ] Falla |
+| 7.12 | A | **Error esperado.** Pulse **Desbloquear** y confirme | "Quite el documento firmado antes de desbloquear: corresponde al formato impreso que va a dejar de valer." El arreglo sigue congelado (código interno CARP-ARR-028, no se muestra) | [ ] OK [ ] Falla |
 
 Notas:
 
@@ -238,11 +243,13 @@ Notas:
 
 | # | Quién | Qué hacer | Resultado esperado | Resultado |
 |---|---|---|---|---|
-| 8.1 | A | Pulse **Formalizar** | Pide confirmar que **el cliente firmó** el formato impreso | [ ] OK [ ] Falla |
+| 8.1 | A | Pulse **Formalizar** | Pide confirmar que **el cliente firmó** el formato impreso y que el **documento firmado adjunto** es el correcto | [ ] OK [ ] Falla |
 | 8.2 | A | Confirme | El arreglo pasa a **Vigente** y el mensaje dice el **número definitivo**. Anótelo: ____________ | [ ] OK [ ] Falla |
 | 8.3 | A | Mire la barra de comandos | Ya no están **Desbloquear**, **Formalizar** ni **Descartar**. Está **Anular** | [ ] OK [ ] Falla |
 | 8.4 | A | Vaya a **Clientes y arreglos → Arreglos vigentes** y a **Arreglos de préstamo** | El arreglo aparece en las dos | [ ] OK [ ] Falla |
 | 8.5 | A | **Error esperado.** Cambie **Plazo en cuotas** y guarde | El mismo mensaje de arreglo congelado del paso 7.5 (código interno CARP-ARR-011, no se muestra). Recargue | [ ] OK [ ] Falla |
+| 8.6 | A | Pestaña **General**, sección **Acuerdo**, y pestaña **Cierre**, sección **Formalizacion** | **Conversación de origen** y **Documento firmado** están en solo lectura (bloqueados). El documento adjunto sigue visible | [ ] OK [ ] Falla |
+| 8.7 | A | **Error esperado.** Si el arreglo tiene conversación de origen, intente cambiarla (si el campo está bloqueado, el paso se cumple) | El campo no se deja editar; por otra vía el sistema responde "La conversación de origen no se puede cambiar una vez formalizado el arreglo." (código interno CARP-ARR-029, no se muestra) | [ ] OK [ ] Falla |
 
 Notas:
 
@@ -309,11 +316,11 @@ Notas:
 | 12.2 | A | **Error esperado.** Pulse **Descartar** sin escribir motivo | "Para descartar el borrador hay que indicar el motivo." (código interno CARP-ARR-013, no se muestra) | [ ] OK [ ] Falla |
 | 12.3 | A | **Bloqueo esperado.** Pestaña **Cierre**, escriba **Motivo de descarte** = `Prueba guiada HUMO` y pulse **Guardar** (no Descartar) | La aplicación **no guarda** y pide usar el botón | [ ] OK [ ] Falla |
 | 12.4 | A | Con el motivo escrito, pulse **Descartar** y confirme | Estado **Descartado**. Aparece en **Arreglos cerrados** | [ ] OK [ ] Falla |
-| 12.5 | A | Cree el arreglo 3 igual que el 12.1 pero con **Número de préstamo o tarjeta** = `HUMOGUIA0003`. **Generar formato** y **Formalizar** | **Vigente** | [ ] OK [ ] Falla |
+| 12.5 | A | Cree el arreglo 3 igual que el 12.1 pero con **Número de préstamo o tarjeta** = `HUMOGUIA0003`. **Generar formato**, adjunte el PDF, JPG o PNG de prueba en **Documento firmado** y **Formalizar** | **Vigente** | [ ] OK [ ] Falla |
 | 12.6 | A | **Error esperado.** Pulse **Anular** sin motivo | "Para anular el arreglo hay que indicar el motivo." (código interno CARP-ARR-014, no se muestra) | [ ] OK [ ] Falla |
 | 12.7 | A | En **Cierre**, **Motivo de anulación** = `Prueba guiada HUMO`, pulse **Anular** y confirme | Estado **Anulado**. Aparece en **Arreglos cerrados** | [ ] OK [ ] Falla |
 | 12.8 | A | **Error esperado.** Abra el arreglo 1 (Vigente). Si ve **Reabrir arreglo**, escriba un motivo en **Cierre** y púlselo | "Solo la jefatura puede reabrir un arreglo.", o el botón no aparece para el Oficial (código interno CARP-ARR-016, no se muestra) | [ ] OK [ ] Falla |
-| 12.9 | B | Abra el arreglo 1. En **Cierre**, **Motivo de reapertura** = `Corrección solicitada por el cliente (HUMO)`. Pulse **Reabrir arreglo** y confirme | Se borra la **Fecha de congelamiento**. Sigue **Vigente** | [ ] OK [ ] Falla |
+| 12.9 | B | Abra el arreglo 1. En **Cierre**, **Motivo de reapertura** = `Corrección solicitada por el cliente (HUMO)`. Pulse **Reabrir arreglo** y confirme | Se borra la **Fecha de congelamiento**. Sigue **Vigente** y el **Documento firmado** sigue adjunto | [ ] OK [ ] Falla |
 | 12.10 | A | En el arreglo 1, **Generar formato** | El mensaje avisa que **se vuelve a congelar** con los datos actuales. Descarga el `.xlsx` | [ ] OK [ ] Falla |
 
 Notas:
@@ -368,15 +375,15 @@ Notas:
 | 4 | Responder y respuesta del cliente | 6 | | | |
 | 5 | Reasignar | 4 | | | |
 | 6 | Arreglo en Borrador | 8 | | | |
-| 7 | Formato, congelar, desbloquear | 8 | | | |
-| 8 | Formalizar | 5 | | | |
+| 7 | Formato, congelar, desbloquear, documento firmado | 12 | | | |
+| 8 | Formalizar | 7 | | | |
 | 9 | Pago de cuota | 5 | | | |
 | 10 | Gestos y finalizar | 7 | | | |
 | 11 | Iniciar nueva, unir, reabrir | 12 | | | |
 | 12 | Descartar, anular, reabrir arreglo | 10 | | | |
 | 13 | Supervisión | 7 | | | |
 | 14 | Plantilla | 8 | | | |
-| **Total** | | **99 (+2)** | | | |
+| **Total** | | **105 (+2)** | | | |
 
 ### Fallas encontradas
 

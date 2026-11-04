@@ -430,6 +430,19 @@ Advertencias: el idioma base del entorno de desarrollo es 1033. Las etiquetas so
       "auditoria": true
     },
     {
+      "nombre": "sanic_documentofirmado",
+      "displayname": {
+        "1033": "Documento firmado",
+        "3082": "Documento firmado"
+      },
+      "descripcion": "PDF, JPG o PNG del formato firmado por el cliente: uno solo. Lo adjunta el oficial en un borrador con el formato ya generado y es obligatorio para formalizar; desde que el arreglo es vigente solo lo cambia el sistema. Se guarda solo en Dataverse. Lleva la cédula del cliente: seguridad por columna y auditoría.",
+      "tipo": "archivo",
+      "requerida": false,
+      "protegida": true,
+      "auditoria": true,
+      "tamano_kb": 10240
+    },
+    {
       "nombre": "sanic_motivodescarte",
       "displayname": {
         "1033": "Motivo de descarte",
@@ -536,13 +549,13 @@ Advertencias: el idioma base del entorno de desarrollo es 1033. Las etiquetas so
 
 ### Conteo de columnas
 
-El diccionario (§4.3) lista 33 columnas propias que no son lookup, la primaria incluida, y 8 lookups. Este playbook declara **33**: la primaria más 32 en `columnas[]`. Los lookups no están: nacen con su relación (ver «Fuera de alcance»).
+El diccionario (§4.3) lista 34 columnas propias que no son lookup, la primaria incluida, y 8 lookups. Este playbook declara **34**: la primaria más 33 en `columnas[]` (la 34.ª, `sanic_documentofirmado`, se agregó el 2026-11-03). Los lookups no están: nacen con su relación (ver «Fuera de alcance»).
 
 ### Viene del diseño (no lo decide este playbook)
 
 - Nombre lógico de la tabla y de cada columna, tipo, largo, rango, decimales, requerida, protegida, auditoría y choice de cada columna: `02-diccionario-datos.md` §4.3.
 - Auditoría de la tabla = `true` y auditoría de cada columna según la columna «Aud» (D-20, P-15); la primaria hereda `true`. No se auditan el número de producto, la cuenta a debitar ni la cédula copiada (§4.3, línea 356).
-- Columnas protegidas: `sanic_cuentadebitar` y `sanic_instantaneacedula` (columna «Seg»; §8). Ninguna otra.
+- Columnas protegidas: `sanic_cuentadebitar`, `sanic_instantaneacedula` y, desde el 2026-11-03, `sanic_documentofirmado` (columna «Seg»; §8). Ninguna otra.
 - Propiedad `usuario` (DD-01), `notas` y `actividades` en `false` (§4.3, línea 355).
 - Primaria: `sanic_nombre`, autonumérica `ARR-{SEQNUM:6}`, largo 20, requerida `false` (§4.3 línea 357, §11.2 línea 681).
 - Los 5 motivos de estado, sus valores y etiquetas (§3.2, líneas 269 a 273; P-13): 1 Borrador y 2 Terminado renombran los motivos por defecto; 159460001 Vigente, 159460002 Anulado y 159460003 Descartado se agregan.
@@ -593,7 +606,7 @@ Receta: `power-platform-construir`, `references/modelo-datos/patrones.md` §2.2 
 python3 herramientas/construir/tabla.py playbooks/tabla/sanic_carp_tbl_arreglo.md
 ```
 
-La herramienta crea la tabla, la primaria y las columnas propias en un solo POST; agrega después, una por una, las columnas protegidas (`sanic_cuentadebitar`, `sanic_instantaneacedula`); la primaria es autonumérica, así que la plataforma respeta su largo al crear, y escribe los motivos de estado (`InsertStatusValue` para los agregados, `UpdateOptionValue` para renombrar los dos por defecto).
+La herramienta crea la tabla, la primaria y las columnas propias en un solo POST; agrega después, una por una, las columnas protegidas (`sanic_cuentadebitar`, `sanic_instantaneacedula`, `sanic_documentofirmado`); la primaria es autonumérica, así que la plataforma respeta su largo al crear, y escribe los motivos de estado (`InsertStatusValue` para los agregados, `UpdateOptionValue` para renombrar los dos por defecto).
 
 **Características todavía no verificadas.** Este playbook usa columnas `decimal`, `motivos_estado`: `tabla.py` las marca «todavía no verificadas contra la plataforma» y responde `bloqueado` hasta que se ensayen sobre una tabla descartable y pasen a verificadas. No es un defecto del playbook, y nunca se resuelve con `--permitir-no-verificadas` sobre esta tabla (la herramienta lo rechaza: no es una tabla `…_tbl_zz…`). Lo resuelve el arquitecto.
 
@@ -612,14 +625,14 @@ Los valores esperados salen del bloque de la sección 2; la primaria cuenta como
 |---|---|---|
 | 1 | `GET EntityDefinitions(LogicalName='sanic_carp_tbl_arreglo')` | 200 · `OwnershipType = UserOwned` · `HasNotes = false` · `HasActivities = false` · `IsAuditEnabled = true` · `IsManaged = false` · `IsCustomEntity = true` · `PrimaryNameAttribute = sanic_nombre` |
 | 2 | Nombre, plural y descripción de la tabla | nombre «Arreglo» y plural «Arreglos», cada uno con una etiqueta en 1033 y otra en 3082 y ninguna en otro idioma; descripción como en la sección 2 |
-| 3 | Cada columna, con la tabla de abajo: tipo, requerida, protegida, auditoría, nombre visible (una etiqueta en 1033 y otra en 3082, iguales), descripción y lo propio del tipo | las 33 filas de la tabla de abajo |
-| 4 | Ninguna columna propia de más, salvo lookups | solo las 33 de la tabla de abajo; lookups que nacerán con sus relaciones: `sanic_clienteid`, `sanic_conversacionid`, `sanic_versionplantillaid`, `sanic_oficialid`, `sanic_formalizadoporid`, `sanic_descartadoporid`, `sanic_anuladoporid`, `sanic_reabiertoporid` |
+| 3 | Cada columna, con la tabla de abajo: tipo, requerida, protegida, auditoría, nombre visible (una etiqueta en 1033 y otra en 3082, iguales), descripción y lo propio del tipo | las 34 filas de la tabla de abajo |
+| 4 | Ninguna columna propia de más, salvo lookups | solo las 34 de la tabla de abajo; lookups que nacerán con sus relaciones: `sanic_clienteid`, `sanic_conversacionid`, `sanic_versionplantillaid`, `sanic_oficialid`, `sanic_formalizadoporid`, `sanic_descartadoporid`, `sanic_anuladoporid`, `sanic_reabiertoporid` |
 | 5 | Pertenece a la solución de la sección 1 (tipo de componente 1) | exactamente una fila en `solutioncomponents` |
 | 6 | Segunda ejecución de `tabla.py` sin `--solo-verificar` | estado `ya_existia`, código de salida 0, no cambia nada |
 | 7 | Motivos de estado: `statecode` tiene exactamente los estados 0 y 1; `statuscode` tiene exactamente estos motivos, cada uno con una etiqueta en 1033 y otra en 3082 | 1 = «Borrador» (estado 0, defecto); 159460001 = «Vigente» (estado 0, agregado); 2 = «Terminado» (estado 1, defecto); 159460002 = «Anulado» (estado 1, agregado); 159460003 = «Descartado» (estado 1, agregado); ninguno más |
 | 8 | Muestra real: `muestra_tabla.py --guardar` (exporta la solución y compara contra el XML) | XML exportado en `playbooks/tabla/muestras/`, con las columnas, su tipo, requerida y etiquetas por idioma. Las columnas `decimal`, los motivos de estado figuran como «sin comparar» hasta que una muestra real fije la comparación (lo dice la herramienta); mientras tanto el playbook no sale `OK` en ese punto. |
 
-Columnas (33, la primaria incluida):
+Columnas (34, la primaria incluida):
 
 | # | Nombre lógico | Nombre visible | Tipo en la plataforma y lo propio | Requerida | Protegida | Auditada |
 |---|---|---|---|---|---|---|
@@ -648,18 +661,32 @@ Columnas (33, la primaria incluida):
 | 22 | `sanic_instantaneacorreo` | Cliente al congelar: correo | StringType · MaxLength 320 · FormatName Text | No | No | No |
 | 23 | `sanic_instantaneacelular` | Cliente al congelar: celular | StringType · MaxLength 20 · FormatName Text | No | No | No |
 | 24 | `sanic_fechaformalizado` | Formalizado el | DateTimeType · Format DateAndTime · DateTimeBehavior UserLocal | No | No | Sí |
-| 25 | `sanic_motivodescarte` | Motivo de descarte | MemoType · MaxLength 500 | No | No | Sí |
-| 26 | `sanic_fechadescarte` | Fecha de descarte | DateTimeType · Format DateAndTime · DateTimeBehavior UserLocal | No | No | Sí |
-| 27 | `sanic_motivoanulacion` | Motivo de anulacion | MemoType · MaxLength 500 | No | No | Sí |
-| 28 | `sanic_fechaanulacion` | Fecha de anulacion | DateTimeType · Format DateAndTime · DateTimeBehavior UserLocal | No | No | Sí |
-| 29 | `sanic_motivoreapertura` | Motivo de reapertura | MemoType · MaxLength 500 | No | No | Sí |
-| 30 | `sanic_fechareapertura` | Fecha de reapertura | DateTimeType · Format DateAndTime · DateTimeBehavior UserLocal | No | No | Sí |
-| 31 | `sanic_cantidadreaperturas` | Cantidad de reaperturas | IntegerType · MinValue 0 · MaxValue 999 | Sí | No | Sí |
-| 32 | `sanic_fechatermino` | Fecha de termino | DateTimeType · Format DateAndTime · DateTimeBehavior UserLocal | No | No | Sí |
+| 25 | `sanic_documentofirmado` | Documento firmado | FileType · MaxSizeInKB 10240 | No | Sí | Sí |
+| 26 | `sanic_motivodescarte` | Motivo de descarte | MemoType · MaxLength 500 | No | No | Sí |
+| 27 | `sanic_fechadescarte` | Fecha de descarte | DateTimeType · Format DateAndTime · DateTimeBehavior UserLocal | No | No | Sí |
+| 28 | `sanic_motivoanulacion` | Motivo de anulacion | MemoType · MaxLength 500 | No | No | Sí |
+| 29 | `sanic_fechaanulacion` | Fecha de anulacion | DateTimeType · Format DateAndTime · DateTimeBehavior UserLocal | No | No | Sí |
+| 30 | `sanic_motivoreapertura` | Motivo de reapertura | MemoType · MaxLength 500 | No | No | Sí |
+| 31 | `sanic_fechareapertura` | Fecha de reapertura | DateTimeType · Format DateAndTime · DateTimeBehavior UserLocal | No | No | Sí |
+| 32 | `sanic_cantidadreaperturas` | Cantidad de reaperturas | IntegerType · MinValue 0 · MaxValue 999 | Sí | No | Sí |
+| 33 | `sanic_fechatermino` | Fecha de termino | DateTimeType · Format DateAndTime · DateTimeBehavior UserLocal | No | No | Sí |
 
 ## 6. Si ya existe
 
 Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`. Si alguna no: `difiere`, con la diferencia exacta, **sin tocar nada** (ni columnas, ni nombres visibles, ni la primaria).
+
+### Columna agregada después de crear la tabla: `sanic_documentofirmado` (2026-11-03)
+
+La tabla ya existe en Dev con 33 columnas; la 34.ª, `sanic_documentofirmado` (archivo, 10 MB, protegida, auditada), se agregó al playbook por el pedido del usuario en la prueba guiada (documento firmado para formalizar, `definicion.md` RF-18, D-42). En Dev la comprobación da `difiere` con una sola diferencia, `falta la columna sanic_documentofirmado`, y se repara con la herramienta, que nunca cambia ni borra una columna existente:
+
+```
+python3 herramientas/construir/tabla.py playbooks/tabla/sanic_carp_tbl_arreglo.md --solo-verificar     # difiere: falta la columna sanic_documentofirmado
+python3 herramientas/construir/tabla.py playbooks/tabla/sanic_carp_tbl_arreglo.md --agregar-columnas    # POST de la columna con IsSecured e IsAuditEnabled, y publica
+python3 herramientas/construir/tabla.py playbooks/tabla/sanic_carp_tbl_arreglo.md --solo-verificar     # ya_existia
+python3 herramientas/construir/muestra_tabla.py playbooks/tabla/sanic_carp_tbl_arreglo.md --guardar    # renueva la muestra exportada
+```
+
+**Por verificar la primera vez** (no se construyó nada todavía): (1) la combinación archivo + `IsSecured = true` + `IsAuditEnabled = true` no se ensayó con esta herramienta (Learn dice que una columna de archivo se puede asegurar pero no enmascarar; la plataforma decide con `CanBeSecuredForCreate/Read/Update`). Antes de tocar Dev se ensaya agregando una columna igual a una tabla descartable (`playbooks/tabla/ensayos/`, tablas `zz`), como se hizo con el texto protegido el 2026-09-21. Si la plataforma rechaza la seguridad por columna sobre un archivo, se informa: queda la columna sin proteger, el aislamiento por unidad de negocio y la auditoría, y se decide con el usuario (H-33 de `diseno/03`). (2) La plataforma crea sola la columna `sanic_documentofirmado_name` (solo lectura), que el playbook no declara. (3) La herramienta de la muestra debe aceptar la columna de archivo con `IsSecured`; si la compara distinto, se anota aquí.
 
 ## 7. Reversa
 
@@ -670,6 +697,6 @@ Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`
 - Lookups de la tabla (no son columnas de este playbook; nacen con su relación, diccionario §6.2): `sanic_clienteid` (REL-02), `sanic_conversacionid` (REL-03), `sanic_versionplantillaid` (REL-04), `sanic_oficialid` (REL-12), `sanic_formalizadoporid` (REL-13), `sanic_descartadoporid` (REL-14), `sanic_anuladoporid` (REL-15) y `sanic_reabiertoporid` (REL-16). Los lookups requeridos del diseño (cliente, versión de plantilla, oficial) los exige la relación, no esta tabla.
 - Con qué motivo nace un registro: este playbook no fija el motivo con el que se crea un arreglo ni el motivo por defecto de cada estado. El diseño dice que nace en Borrador (diccionario §3.2, línea 269); el alta (plugin) manda `statuscode = 1` de forma explícita. Las transiciones (Vigente, Terminado, Anulado, Descartado, reapertura) las impone un plugin (D-30).
 - Clave alterna K-02 (`sanic_producto`, `sanic_numeroproducto`, `sanic_numeroarreglo`), diccionario §7.
-- Perfil de seguridad de columna `CSP - CARP - Datos sensibles`: da permisos sobre `sanic_cuentadebitar` y `sanic_instantaneacedula`, que este playbook deja con `protegida: true` (diccionario §8).
+- Perfil de seguridad de columna `CSP - CARP - Datos sensibles`: da permisos sobre `sanic_cuentadebitar`, `sanic_instantaneacedula` y `sanic_documentofirmado`, que este playbook deja con `protegida: true` (diccionario §8).
 - Plugins: normalización del número de producto (P-06), cálculo de `sanic_saldoremanente` y `sanic_totalpagar` (R-04), generación del calendario, congelamiento e instantánea del cliente, consecutivo del número de arreglo, reglas de los gestos y propietario team (D-31).
 - Vistas, formularios, quick find (número de producto; D-12), seguridad de registro y roles. Las reglas de negocio abiertas del diccionario (§11.4: R-03, R-06, R-07, R-09) siguen abiertas: este playbook no las decide.

@@ -54,6 +54,7 @@ Advertencias: un paquete no lleva etiquetas por idioma, así que `idiomas` solo 
     "Sanic.Carp.Plugins.Steps.ConversacionCrearStep",
     "Sanic.Carp.Plugins.Steps.CuotaActualizarStep",
     "Sanic.Carp.Plugins.Steps.CuotaTerminarArregloStep",
+    "Sanic.Carp.Plugins.Steps.DocumentoFirmadoStep",
     "Sanic.Carp.Plugins.Steps.EmailSoloSistemaStep",
     "Sanic.Carp.Plugins.Steps.MapeoCeldaActualizarStep",
     "Sanic.Carp.Plugins.Steps.MapeoCeldaCrearStep",
@@ -69,7 +70,7 @@ Advertencias: un paquete no lleva etiquetas por idioma, así que `idiomas` solo 
 }
 ```
 
-Un paquete de plugins con el ensamblado `Sanic.Carp.Plugins` (.NET Framework 4.6.2, sin firmar) y su dependencia `DocumentFormat.OpenXml` 2.20.0 como ensamblado dependiente (no firmar el ensamblado propio es a propósito: obligaría a firmar sus dependencias, `diseno/01-convenciones.md` §5). Los 26 tipos son las clases `IPlugin` concretas del código: las **5 Custom API** (`diseno/03` §1, «Registro» de cada una; clases de `src/Sanic.Carp.Plugins/Api/`) y las **21 clases de step** de `diseno/03` §5 (clases de `src/Sanic.Carp.Plugins/Steps/`). `BaseDeApi` y `BaseDeStep` son abstractas y no se registran. Namespace raíz `Sanic.Carp.Plugins`: **inmutable tras el primer registro**.
+Un paquete de plugins con el ensamblado `Sanic.Carp.Plugins` (.NET Framework 4.6.2, sin firmar) y su dependencia `DocumentFormat.OpenXml` 2.20.0 como ensamblado dependiente (no firmar el ensamblado propio es a propósito: obligaría a firmar sus dependencias, `diseno/01-convenciones.md` §5). Los 27 tipos (~~26~~: se suma `DocumentoFirmadoStep`, 2026-11-03) son las clases `IPlugin` concretas del código: las **5 Custom API** (`diseno/03` §1, «Registro» de cada una; clases de `src/Sanic.Carp.Plugins/Api/`) y las **22 clases de step** de `diseno/03` §5 (clases de `src/Sanic.Carp.Plugins/Steps/`). `BaseDeApi` y `BaseDeStep` son abstractas y no se registran. Namespace raíz `Sanic.Carp.Plugins`: **inmutable tras el primer registro**.
 
 Decisiones que este playbook toma y el diseño no traía:
 
@@ -79,11 +80,12 @@ Decisiones que este playbook toma y el diseño no traía:
 | `version` del paquete | `1.0.0` | **Hueco de diseño.** `diseno/03` §4.1 no la fija; el `.csproj` solo declara `AssemblyVersion` 1.0.0.0, que no es la versión de paquete. `1.0.0` es la que usaron todos los spikes del proyecto. **Irreversible**: el dueño la confirma antes de construir |
 | `version_ensamblado` | `1.0.1.0` (era `1.0.0.0` hasta el 2026-10-20) | El `AssemblyVersion` del ensamblado `Sanic.Carp.Plugins` (`<AssemblyVersion>` de los dos `.csproj`), que la plataforma guarda en `pluginassemblies.version`. **No es la `version` del paquete.** La herramienta compara contra él lo que lee del entorno y, con `--actualizar-contenido`, exige que `modifiedon` haya avanzado: **hay que subir el tercer número en cada despliegue** y actualizar este valor a la par (`alm.md`) |
 | Ruta del `.nupkg` | `src/Sanic.Carp.Plugins.Paquete/bin/Release/sanic_carp_pkg_plugins.1.0.0.nupkg` | **Ruta cerrada (2026-10-20).** El `.csproj` de producción no declara `PackageId` ni empaquetado de plugins; lo hace el proyecto aparte `src/Sanic.Carp.Plugins.Paquete/` (`PackageId` `sanic_carp_pkg_plugins`, `Version` `1.0.0`) y la ruta quedó confirmada con una corrida real. La `version` del paquete sigue siendo del dueño (irreversible) |
-| Lista `tipos` | Las 26 clases | Salen del código (clases `sealed` que heredan de `BaseDeApi` o `BaseDeStep`), no de memoria. `diseno/03` §5 cuenta 21 clases de step y 5 API |
+| Lista `tipos` | Las 27 clases (~~26~~: se suma `DocumentoFirmadoStep`, 2026-11-03) | Salen del código (clases `sealed` que heredan de `BaseDeApi` o `BaseDeStep`), no de memoria. `diseno/03` §5 cuenta 22 clases de step y 5 API |
 
 Declarado en prosa porque la herramienta no lo lee (no son claves del bloque):
 
 - `AssemblyVersion` y `FileVersion` esperados del ensamblado propio: **1.0.1.0** (`src/Sanic.Carp.Plugins/Sanic.Carp.Plugins.csproj` y el `.csproj` de empaquetado). En cada despliegue posterior se sube **solo el tercer número**. La `version` del paquete sigue en `1.0.0`: es inmutable en Dataverse y cambiarla obligaría a borrar el paquete con sus steps.
+- **Pendiente, despliegue 3 (2026-11-03, documento firmado):** se suma `DocumentoFirmadoStep` (S-38), cambian `ReglasDeArreglo` (conversación de origen bloqueada en un Vigente, `CARP-ARR-029`), `Columnas` y el catálogo de errores. Hay que subir el tercer número del ensamblado en los dos `.csproj` (a `1.0.2.0` o el que corresponda según lo que ya esté en Dev) antes de empaquetar, subir con `--actualizar-contenido` y registrar el step nuevo con `step.py` (no hay que tocar los otros 37). Aún no se compiló ni se desplegó nada.
 - **2026-10-20, despliegue 2 (1.0.0.0 → 1.0.1.0):** el generador de formatos aplica formato de fecha a una fecha escrita en una celda cuyo estilo no es de fecha (opción B del usuario, `diseno/03` 4.3 punto 19). Subido con `--actualizar-contenido`.
 - Dependencias que tienen que viajar dentro del `.nupkg`: `DocumentFormat.OpenXml` 2.20.0. **No** viaja `Microsoft.CrmSdk.CoreAssemblies` (el csproj lo marca `PrivateAssets=All`: ya está en el sandbox).
 - Destino de compilación que ejecuta el sandbox: `net462`.
@@ -93,7 +95,7 @@ Declarado en prosa porque la herramienta no lo lee (no son claves del bloque):
 | # | Qué tiene que cumplirse | Consulta | Esperado |
 |---|---|---|---|
 | 1 | La solución existe, no es managed, su publisher coincide en unique name, prefijo y prefijo de opciones; cada idioma está provisionado y el idioma base es uno de ellos | `solutions?$filter=uniquename eq '<solucion>'` con el publisher expandido; `organizations`; `RetrieveProvisionedLanguages` | los de la sección 1 |
-| 2 | El `.nupkg` existe en la ruta de la sección 2, no está vacío, pesa menos de 12 MB y trae cada tipo de `tipos` dentro de su `.dll` bajo la carpeta de ensamblados | lectura del archivo | los 26 tipos presentes |
+| 2 | El `.nupkg` existe en la ruta de la sección 2, no está vacío, pesa menos de 12 MB y trae cada tipo de `tipos` dentro de su `.dll` bajo la carpeta de ensamblados | lectura del archivo | los 27 tipos presentes |
 | 3 | El código está compilado y probado | inventario 7.1 a 7.22 | `hecho` (2026-10-20, 5820 pruebas en verde) |
 | 4 | Nombre y `uniquename` sin tildes ni ñ, uniquename con el prefijo `sanic_`, `nombre` igual a `uniquename` y `version_ensamblado` de cuatro números | sin red | el de la sección 2 |
 | 5 | **El hueco de la versión y de la ruta del `.nupkg` está cerrado por el dueño** | decisión escrita en `diseno/03` §4.1 | confirmación; mientras no esté, el constructor no corre |
@@ -126,7 +128,7 @@ python3 herramientas/construir/paquete_plugins.py playbooks/paquete-plugins/Sani
 | # | Comprobación | Esperado |
 |---|---|---|
 | 1 | `GET pluginpackages?$filter=uniquename eq 'sanic_carp_pkg_plugins'` | un paquete · `name` `sanic_carp_pkg_plugins` · `version` `1.0.0` · `ismanaged = false` |
-| 2 | `GET pluginassemblies` y `GET plugintypes` del paquete | **exactamente** los 26 tipos de la sección 2: uno que falta y uno de más son `error`/`difiere` |
+| 2 | `GET pluginassemblies` y `GET plugintypes` del paquete | **exactamente** los 27 tipos de la sección 2: uno que falta y uno de más son `error`/`difiere` |
 | 3 | `GET solutioncomponents` de la solución por el `pluginpackageid` | una fila; **se informa el `componenttype`** que puso la plataforma, no se compara con un número |
 | 4 | Contenido del `.nupkg` antes de subir (en el alta y con `--actualizar-contenido`; si falla, no se escribe nada) | el `.nuspec` dice `id` = `uniquename` y `version` = `version`; cada dependencia del nuspec que no es de plataforma (`DocumentFormat.OpenXml` entre ellas) tiene su `.dll` en `lib/net462/`; cada uno de los 26 tipos está definido, con su namespace completo, en un `.dll` de `lib/net462/` |
 | 5 | `GET pluginassemblies?$select=name,version,modifiedon&$filter=_packageid_value eq <id>` (la herramienta lo hace en los tres caminos) | cada ensamblado con `version` = `version_ensamblado` (`1.0.1.0`). Con `--actualizar-contenido` se lee antes y después del `PATCH` y `modifiedon` tiene que haber avanzado: si no, `error` |
@@ -144,6 +146,6 @@ Se hacen todas las comprobaciones de la sección 5. Si todas pasan: `ya_existia`
 
 - Compilar y empaquetar el código (`dotnet pack`): inventario 7.1 a 7.22 y el proyecto de empaquetado, pendiente de definir.
 - Registrar las cinco Custom API: inventario 8.2 a 8.6.
-- Registrar los 37 steps: inventario 8.7 (`playbooks/steps/sanic_carp_pkg_plugins.md`).
+- Registrar los 38 steps: inventario 8.7 (`playbooks/steps/sanic_carp_pkg_plugins.md`).
 - Los privilegios de ejecución de las API en los roles: inventario 6.2 a 6.5.
 - Subir de versión el paquete en un despliegue posterior: otra corrida con `--actualizar-contenido`, decidida por quien dirige.

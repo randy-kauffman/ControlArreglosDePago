@@ -93,6 +93,7 @@ erDiagram
         int sanic_numeroarreglo UK
         string sanic_cuentadebitar "CSP"
         string sanic_instantaneacedula "CSP"
+        file sanic_documentofirmado "CSP"
         decimal sanic_totalpagar
     }
     CUOTA {
@@ -388,6 +389,7 @@ Los valores de *Req* tomados del mockup v3 (el mockup valida como obligatorio ca
 | `sanic_instantaneacorreo` | Cliente al congelar: correo | texto T(320) | No | No | No | **Sí** | Correo del cliente copiado al congelar, tal como se imprimió. | D-25, D-30 |
 | `sanic_instantaneacelular` | Cliente al congelar: celular | texto T(20) | No | No | No | **Sí** | Celular del cliente copiado al congelar, tal como se imprimió. | D-25, D-30 |
 | `sanic_fechaformalizado` | Formalizado el | fechahora UL | No | **Sí** | No | **Sí** | Fecha y hora en que el oficial usó el gesto Formalizar (registro del gesto, distinto de la fecha impresa en el formato). | RF-16, D-30, ítem 9 |
+| `sanic_documentofirmado` | Documento firmado | archivo; `MaxSizeInKB` = 10240 (10 MB) | **No** (una columna de archivo nunca es requerida; la exigencia al formalizar la impone el plugin, `CARP-ARR-025`) | **Sí** | **Sí** | No | PDF, JPG o PNG del formato firmado por el cliente: **uno solo** (la columna guarda un archivo; reemplazar es subir otro). Lo adjunta el oficial en un borrador con el formato ya generado y es obligatorio para formalizar; desde que el arreglo es Vigente solo lo cambia el sistema (`CARP-ARR-027`), y se conserva al reabrir. Se guarda solo en Dataverse (RNF-03: ni SharePoint ni OneDrive). Lleva la cédula del cliente: seguridad por columna (sin enmascarar: Learn, "File and Image data types can be secured, but they can't be masked") y auditoría. La plataforma crea además la columna de solo lectura `sanic_documentofirmado_name` con el nombre del archivo, de la que el plugin valida la extensión. **No es el formato generado** (RF-08: ese nunca se guarda): es el escaneo firmado. | RF-18, D-42, RNF-03, RNF-10 |
 | `sanic_motivodescarte` | Motivo de descarte | memo M(500) | No (obligatorio al descartar, lo valida el plugin) | **Sí** | No | No | Por qué un borrador no se concretó. | RF-16, D-10 |
 | `sanic_fechadescarte` | Fecha de descarte | fechahora UL | No | **Sí** | No | **Sí** | Fecha y hora del gesto Descartar. | RF-16, D-30 |
 | `sanic_motivoanulacion` | Motivo de anulacion | memo M(500) | No (obligatorio al anular, lo valida el plugin) | **Sí** | No | No | Por qué se anuló un arreglo vigente. | RF-12 |
@@ -582,12 +584,12 @@ K-03 se decidió con P-19 (aceptada el 2026-10-09): clave sobre la primaria de V
 
 ## 8. Perfil de seguridad de columna
 
-Un solo perfil. Las columnas protegidas son tres, y las tres tienen `protegida: true` en el playbook de su tabla antes de construir el perfil. La plataforma rechaza un permiso sobre una columna sin proteger, y no deja asegurar una columna que ya está en una clave (ninguna lo está).
+Un solo perfil. Las columnas protegidas son cuatro (la cuarta, `sanic_documentofirmado`, desde el 2026-11-03), y las cuatro tienen `protegida: true` en el playbook de su tabla antes de construir el perfil. La plataforma rechaza un permiso sobre una columna sin proteger, y no deja asegurar una columna que ya está en una clave (ninguna lo está).
 
 | Dato | Valor |
 |---|---|
 | Nombre | `CSP - CARP - Datos sensibles` (sin nombre lógico: BP-PP-185) |
-| Descripción | Lectura y escritura de la cédula del cliente y de la cuenta a debitar, y lectura de la cédula copiada en el arreglo. Se da al team del área (el team del sistema de la business unit Arreglos de Pago) y al team Arreglos de Pago - Jefatura. |
+| Descripción | Lectura y escritura de la cédula del cliente y de la cuenta a debitar, lectura de la cédula copiada en el arreglo, y lectura y carga del documento firmado. Se da al team del área (el team del sistema de la business unit Arreglos de Pago) y al team Arreglos de Pago - Jefatura. |
 | Origen | RNF-03, RNF-10, D-19, D-30 |
 
 | Tabla | Columna | Leer | Crear | Actualizar | Motivo |
@@ -595,6 +597,7 @@ Un solo perfil. Las columnas protegidas son tres, y las tres tienen `protegida: 
 | `sanic_carp_tbl_cliente` | `sanic_cedula` | sí | sí | sí | El oficial busca por cédula (RF-13, criterio de éxito 6) y la digita al crear el cliente; D-19 confirmado en el spike 4: sin perfil, la fila no se encuentra por cédula y la columna llega vacía |
 | `sanic_carp_tbl_arreglo` | `sanic_cuentadebitar` | sí | sí | sí | El oficial la digita en el borrador y la corrige antes del congelamiento (RF-06) |
 | `sanic_carp_tbl_arreglo` | `sanic_instantaneacedula` | sí | no | sí | La escribe el sistema al congelar (D-30); el oficial la lee. Actualizar es solo para que Desbloquear y Reabrir puedan vaciarla desde el plugin (null en el Target del llamador); el cambio manual lo rechaza S-21 (CARP-ARR-009/011). Motivo 2026-10-20: hallazgo de la tanda 2 de humo (403 de todo no admin). "Leer sin enmascarar" queda siempre en no |
+| `sanic_carp_tbl_arreglo` | `sanic_documentofirmado` | sí | no | sí | El oficial adjunta el documento firmado en el borrador congelado (Actualizar: la subida provoca un `Update` del arreglo) y lo consulta después; el arreglo ya existe cuando se sube, así que Crear no. El escaneo lleva la cédula y la firma del cliente. Pedido del usuario en la prueba guiada, 2026-11-03. **Por verificar en Dev** que la columna de archivo admita seguridad (`CanBeSecuredFor*`) y que el perfil proteja también la descarga (H-33) |
 
 > Cambio del 2026-10-20 (hallazgo de la tanda 2 de humo, `pruebas-humo/tanda2/RESULTADO.md`): Desbloquear y Reabrir fallaban con 403 para todo usuario no administrador porque el plugin (`VaciarInstantanea`, vía el Target del llamador) escribe null en `sanic_instantaneacedula` y la plataforma exige permiso de actualizar sobre una columna protegida. Es la única columna protegida que esos gestos escriben. La regla de negocio sigue en el plugin: S-21 rechaza el cambio manual de esa columna (CARP-ARR-009 y CARP-ARR-011).
 
@@ -613,6 +616,7 @@ Fuente: RNF-02 y §6 Datos (Volumen): unas 4.000 conversaciones y 3.000 arreglos
 | Generación de formato | ≤ 9.000 (supuesto: 3 por arreglo: firma, reimpresión tras desbloqueo, reapertura) | ≤ 63.000 | ≈ 63 MB | Se purga con el arreglo |
 | Versión de plantilla | unas pocas | decenas (catálogo, no se purga) | archivos de decenas de KB; tope por `MaxSizeInKB` = 5 MB cada una | v07 pesa 32 KB (spike 1) |
 | Mapeo de celda | 27 por versión nueva | ≈ 1.400 con 50 versiones | despreciable | El mapeo v07 del mockup tiene 28 filas, porque `clienteNombre` y `fechaFormalizacion` van dos veces (medido en la tanda 1 de humo, 2026-10-20) |
+| Documento firmado (archivos del Arreglo) | ≤ 3.000 (uno por arreglo formalizado) | ≤ 21.000 | **capacidad de archivos, no de base**: un escaneo típico de 0,3 a 2 MB suma 6 a 42 GB; el tope de 10 MB por archivo da 210 GB en el peor caso | Se purga con el arreglo (D-22, retención de 2 años). A validar con el reporte de capacidad de archivos del tenant (C-02) |
 | **Total tablas propias** | | | **≈ 1,4 a 2,1 GB** | A validar con el reporte de capacidad del tenant (C-02, riesgo de capacidad) |
 
 **Log de auditoría.** La auditoría de tabla registra altas, cambios y bajas y consume capacidad de log, aparte de la de base de datos (Learn, *Manage Dataverse auditing*). Con Cuota auditada, cada alta de cuota es una fila de auditoría (hasta 180.000 por año), cada pago agrega otra (hasta 180.000 por año) y cada baja de la purga otra más. Los logs de auditoría no los purga el BulkDelete de la solución (D-20, pendiente de C-02): su retención es del entorno (P-15).
@@ -641,7 +645,7 @@ Fuente: RNF-02 y §6 Datos (Volumen): unas 4.000 conversaciones y 3.000 arreglos
 | RF-16 | Arreglo (estado Borrador, congelamiento, instantánea, formalización, descarte) |
 | RF-17 | `sanic_carp_ch_productocrediticio` (`sanic_producto`) |
 | RNF-02 | Sección 9 |
-| RNF-03 | CSP, columnas sin auditoría, sin SharePoint (archivo de plantilla en Dataverse) |
+| RNF-03 | CSP, columnas sin auditoría, sin SharePoint (archivo de plantilla y documento firmado en Dataverse) |
 | RNF-04 | Propiedad usuario o equipo (DD-01); P-11 |
 | RNF-07 | `sanic_fechatermino`, `sanic_fechafinalizacion`, relaciones restringidas y orden de purga |
 | RNF-10 | Auditoría por columna (D-20), CSP |

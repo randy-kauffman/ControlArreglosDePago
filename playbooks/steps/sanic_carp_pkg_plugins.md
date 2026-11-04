@@ -1,6 +1,6 @@
-# Playbook: steps · sanic_carp_pkg_plugins (37 registros, 21 clases)
+# Playbook: steps · sanic_carp_pkg_plugins (38 registros, 22 clases)
 
-> **Tipo con 0 ciclos** (`power-platform-especificar`, `references/step.md`). Un solo playbook con **todos** los steps del paquete: los de un mismo mensaje, tabla y etapa compiten por el orden de ejecución y solo se entienden mirándolos juntos. La entrada `n` del bloque de la sección 2 es la fila `S-n` de `diseno/03-contratos-custom-api.md` §5 (S-01 es la primera; S-37, la última). **S-18 (`ConversacionAsignacionStep`) fue el piloto** del tipo: se escribió primero como un playbook de un solo step (`playbooks/step/ConversacionAsignacionStep.md`) y quedó integrado acá como una entrada más; el piloto se borró.
+> **Tipo con 0 ciclos** (`power-platform-especificar`, `references/step.md`). Un solo playbook con **todos** los steps del paquete: los de un mismo mensaje, tabla y etapa compiten por el orden de ejecución y solo se entienden mirándolos juntos. La entrada `n` del bloque de la sección 2 es la fila `S-n` de `diseno/03-contratos-custom-api.md` §5 (S-01 es la primera; S-38, la última). **S-18 (`ConversacionAsignacionStep`) fue el piloto** del tipo: se escribió primero como un playbook de un solo step (`playbooks/step/ConversacionAsignacionStep.md`) y quedó integrado acá como una entrada más; el piloto se borró.
 
 ## 1. Identidad
 
@@ -24,7 +24,7 @@
 }
 ```
 
-De dónde sale cada dato: `diseno/01-convenciones.md` §0 (publisher, prefijo, abreviatura, solución e idiomas), verificados contra Dev el 2026-10-09. La lista de steps es `diseno/03-contratos-custom-api.md` §5 («Lista cerrada de steps a registrar», 37 registros sobre 21 clases) y figura en `diseno/06-inventario-componentes.md` §8, renglón 8.7.
+De dónde sale cada dato: `diseno/01-convenciones.md` §0 (publisher, prefijo, abreviatura, solución e idiomas), verificados contra Dev el 2026-10-09. La lista de steps es `diseno/03-contratos-custom-api.md` §5 («Lista cerrada de steps a registrar», 38 registros sobre 22 clases) y figura en `diseno/06-inventario-componentes.md` §8, renglón 8.7.
 
 Advertencias: en Dev hay otro publisher con el mismo prefijo `sanic` («Sanic Corp»): la herramienta se detiene si el publisher de la solución no es el de arriba. `tipo_playbook` es `steps`, como lo lee `step.py`.
 
@@ -649,6 +649,23 @@ Advertencias: en Dev hay otro publisher con el mismo prefijo `sanic` («Sanic Co
         "regardingobjectid"
       ],
       "preimagen": null
+    },
+    {
+      "nombre": "STEP - CARP - arreglo - Update - PreOperation - DocumentoFirmadoStep",
+      "descripcion": "Exige el documento firmado (PDF, JPG o PNG) para formalizar un arreglo, rechaza que una persona lo adjunte o lo reemplace fuera de un borrador con el formato ya generado, y no deja desbloquear un borrador que tiene documento adjunto.",
+      "plugintype": "Sanic.Carp.Plugins.Steps.DocumentoFirmadoStep",
+      "mensaje": "Update",
+      "tabla": "sanic_carp_tbl_arreglo",
+      "etapa": "PreOperation",
+      "modo": "Sincrono",
+      "orden": 20,
+      "filtro": [
+        "sanic_documentofirmado",
+        "statecode",
+        "statuscode",
+        "sanic_fechacongelamiento"
+      ],
+      "preimagen": null
     }
   ]
 }
@@ -660,7 +677,7 @@ Cada entrada copia una fila de `diseno/03` §5 (clase, mensaje, tabla, etapa, mo
 
 **Los dos asíncronos y el borrado del trabajo del sistema.** S-34 (`RegistrarCorreoEntranteStep`, Create de `email`) y S-35 (`RespuestaEnviadaStep`, Update de `email`) son `PostOperation` asíncronos. **Hueco de diseño:** ni `§5` ni `§2.10`/`§2.11` dicen si el trabajo del sistema (`asyncoperation`) se borra al terminar bien (`asyncautodelete`), y la herramienta tampoco lo escribe: queda el valor por defecto de la plataforma. Un asíncrono no revierte nada y su fallo no lo ve el usuario; el diseño lo cubre con la reconciliación (`sanic_carp_capi_reconciliarcorreos`, inventario 8.3) y con el aviso del flujo de salud (inventario 11.2). El dueño decide si se borran los trabajos exitosos antes de que el volumen de correo los acumule.
 
-**Nombres.** `STEP - CARP - <tabla limpia> - <Mensaje> - <Etapa> - <Clase>`: la tabla es el nombre de negocio sin prefijo ni tildes (`conversacion`, `versionplantilla`, `mapeocelda`, `generacionformato`; `email` es las dos cosas), como en el piloto S-18, y la clase al final es la de `diseno/03` DC-23. Como la clave (clase, mensaje, tabla) es única en los 37 registros (`DC-27`), **ningún par de registros da el mismo nombre** y no hizo falta ningún desempate; si una fila futura repitiera clase, mensaje y tabla, la herramienta la rechazaría antes que el nombre.
+**Nombres.** `STEP - CARP - <tabla limpia> - <Mensaje> - <Etapa> - <Clase>`: la tabla es el nombre de negocio sin prefijo ni tildes (`conversacion`, `versionplantilla`, `mapeocelda`, `generacionformato`; `email` es las dos cosas), como en el piloto S-18, y la clase al final es la de `diseno/03` DC-23. Como la clave (clase, mensaje, tabla) es única en los 38 registros (`DC-27`), **ningún par de registros da el mismo nombre** y no hizo falta ningún desempate; si una fila futura repitiera clase, mensaje y tabla, la herramienta la rechazaría antes que el nombre.
 
 **Orden de ejecución por (mensaje, tabla, etapa)** (BP-PP-060; ningún par repite el orden, y `§5` «Orden de ejecución» dice lo mismo):
 
@@ -678,7 +695,7 @@ Cada entrada copia una fila de `diseno/03` §5 (clase, mensaje, tabla, etapa, mo
 | Create · `email` · PostOperation asíncrono | 10 (S-34) |
 | Update · `cliente` · PreOperation | 5 (S-08), 10 (S-16) |
 | Update · `conversacion` · PreOperation | 5 (S-09), 10 (S-17), 20 (S-18) |
-| Update · `arreglo` · PreOperation | 5 (S-10), 10 (S-21) |
+| Update · `arreglo` · PreOperation | 5 (S-10), 10 (S-21), 20 (S-38) |
 | Update · `arreglo` · PostOperation | 10 (S-22) |
 | Update · `cuota` · PreOperation | 5 (S-11), 10 (S-23) |
 | Update · `cuota` · PostOperation | 20 (S-24) |
@@ -723,7 +740,7 @@ Si alguna falla: estado `bloqueado`, no se crea nada.
 
 ## 4. Cómo se construye
 
-Receta: `power-platform-construir`, `references/dataverse/patrones.md`, «Registro de steps desde un playbook». Herramienta del proyecto: `herramientas/construir/step.py`. **Un solo comando registra los 37 steps**, en el orden de la lista, con su pre-imagen donde la lleva.
+Receta: `power-platform-construir`, `references/dataverse/patrones.md`, «Registro de steps desde un playbook». Herramienta del proyecto: `herramientas/construir/step.py`. **Un solo comando registra los 38 steps**, en el orden de la lista, con su pre-imagen donde la lleva.
 
 ```
 python3 herramientas/construir/step.py playbooks/steps/sanic_carp_pkg_plugins.md
@@ -737,14 +754,14 @@ python3 herramientas/construir/step.py playbooks/steps/sanic_carp_pkg_plugins.md
 
 | # | Comprobación | Esperado |
 |---|---|---|
-| 1 | Por cada una de las 37 entradas, `GET sdkmessageprocessingsteps` por tipo de plugin, mensaje y filtro de mensaje de la tabla | **un** step · `name` y `description` de la sección 2 · `stage` (PreOperation = 20, PostOperation = 40) · `mode` (síncrono = 0, asíncrono = 1) · `rank` · `filteringattributes` (sin importar el orden de las columnas; sin filtro, nulo) · habilitado (`statecode = 0`) |
+| 1 | Por cada una de las 38 entradas, `GET sdkmessageprocessingsteps` por tipo de plugin, mensaje y filtro de mensaje de la tabla | **un** step · `name` y `description` de la sección 2 · `stage` (PreOperation = 20, PostOperation = 40) · `mode` (síncrono = 0, asíncrono = 1) · `rank` · `filteringattributes` (sin importar el orden de las columnas; sin filtro, nulo) · habilitado (`statecode = 0`) |
 | 2 | Por cada entrada con `preimagen` (S-16, S-17, S-18, S-21, S-23, S-26, S-29 y S-30), `GET sdkmessageprocessingstepimages` | **una** imagen de tipo pre (`imagetype = 0`) · `entityalias` `PreImagen` · `attributes` con las columnas del bloque (sin importar el orden) · `messagepropertyname = Target`. Para las 29 entradas sin pre-imagen, **ninguna**: una de más es `difiere` y no se borra sola |
 | 3 | Pertenencia a la solución | cada step figura en `solutioncomponents` de la solución; se informa el `componenttype` |
 | 4 | Segunda ejecución sin `--solo-verificar` | estado `ya_existia`, código de salida 0 |
 
 Lo que **esta verificación no mira** (ver `references/step.md` §6) y se revisa a mano con `GET sdkmessageprocessingsteps` sobre los tipos del paquete:
 
-- Steps de más: un step registrado sobre las clases del paquete que ninguna entrada declare no se denuncia. Esperado: **37** steps sobre las 21 clases de `Steps.*` (los 5 steps internos de las Custom API, sobre las clases `Api.*`, los crea la plataforma y no cuentan).
+- Steps de más: un step registrado sobre las clases del paquete que ninguna entrada declare no se denuncia. Esperado: **38** steps sobre las 22 clases de `Steps.*` (los 5 steps internos de las Custom API, sobre las clases `Api.*`, los crea la plataforma y no cuentan).
 - Orden único por (mensaje, tabla, etapa) contra el entorno: la herramienta no lo compara. Esperado: la tabla de órdenes de la sección 2, sin repetidos.
 - Que ningún filtro de `email` nombre `activityid`: la herramienta calcula la clave primaria como `<tabla>id` y para `email` esa cuenta daría `emailid`, que no es la clave. El bloque no tiene ese caso, pero la herramienta no lo atraparía.
 
