@@ -102,12 +102,18 @@ No hace falta tocarlos, pero conviene confirmarlos en la muestra del rol (`playb
    - **Aprobar correo**, porque el entorno puede exigirlo (`requireapprovalforqueueemail`);
    - después, **Test & Enable**.
    - El script anterior hace todo esto por API. Si la aprobación falla por permisos de Exchange, hágalo en el admin center: Configuración → Correo electrónico → Buzones → Arreglos de Pago → **Aprobar correo** → **Probar y habilitar buzón**.
+4. **Destinatarios no resueltos** (obligatorio, vale para SSS y para el modo flujos):
+   - en Configuración del sistema → Correo electrónico, poner *Permitir mensajes con destinatarios de correo electrónico no resueltos* en **Sí** (`organization.allowunresolvedpartiesonemailsend = true`);
+   - sin esto, el Oficial **no puede responderle a ningún cliente externo**: el Cliente (`sanic_carp_tbl_cliente`) no está habilitado para correo, así que la dirección del cliente nunca se resuelve a un registro, y la app rechaza el envío con *"Your organization doesn't allow emails to be sent to unresolved email recipients"*;
+   - es una configuración de toda la organización. La activa el administrador del entorno;
+   - hallazgo de la prueba guiada en Dev (2026-11-03, etapa 4): F4 no lo detectó porque los buzones de prueba son contactos.
 
 **Verificación:**
 - La cola existe, su dueño es el team del sistema y está en la BU del área. **Ojo:** la BU de la cola se lee de `_owningbusinessunit_value`, porque `_businessunitid_value` viene vacío.
 - El buzón tiene `incomingemailstatus = 1` y `outgoingemailstatus = 1` (Éxito).
 - Las alertas del buzón se leen en `tracelogs`, no en `traces`, que da 404.
 - `sanic_carp_ev_buzonarea` es igual a la dirección del buzón.
+- `allowunresolvedpartiesonemailsend = true` en `organizations`.
 
 ## 6. Plantilla del formato (9.1, 9.2)
 
