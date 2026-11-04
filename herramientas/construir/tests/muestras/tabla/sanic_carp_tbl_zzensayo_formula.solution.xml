@@ -17,7 +17,7 @@
       <Descriptions>
         <Description description="Sistemas Abiertos - BacCredomatic NIC" languagecode="1033" />
       </Descriptions>
-      <EMailAddress>hjiron@baccredomatic.ni</EMailAddress>
+      <EMailAddress>correo-del-publisher@ejemplo.invalid</EMailAddress>
       <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
       <CustomizationPrefix>sanic</CustomizationPrefix>
       <CustomizationOptionValuePrefix>15946</CustomizationOptionValuePrefix>
