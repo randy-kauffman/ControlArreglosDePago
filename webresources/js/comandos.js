@@ -637,6 +637,9 @@ SanicCarp.Arreglo = (function () {
     var ESTADO_VIGENTE = 159460001;      // statuscode del Vigente (statecode 0)
     var ESTADO_ANULADO = 159460002;      // statuscode del Anulado (statecode 1)
     var ESTADO_DESCARTADO = 159460003;   // statuscode del Descartado (statecode 1)
+    var CAMPO_DOCUMENTO = "sanic_documentofirmado";   // columna de archivo: PDF, JPG o PNG firmado (diseno/03 2.6, "Documento firmado")
+    var CAMPO_CONVERSACION = "sanic_conversacionid";
+    var AVISO_SIN_DOCUMENTO = "Antes de formalizar, adjunte el documento firmado (PDF, JPG o PNG) en el campo «Documento firmado» del formulario y vuelva a pulsar Formalizar.";
 
     /**
      * El formulario de un registro inactivo deshabilita todos los controles. Para que el jefe pueda escribir el motivo
@@ -657,8 +660,31 @@ SanicCarp.Arreglo = (function () {
         }
     }
 
+    /**
+     * Solo UX (el servidor decide: CARP-ARR-029 y CARP-ARR-027). La conversacion de origen solo se edita en un Borrador; el documento firmado solo se adjunta o reemplaza en un Borrador
+     * con el formato ya generado (congelado). Fuera de un Borrador solo se DESHABILITA (un registro inactivo ya viene deshabilitado entero y no se vuelve a habilitar nada que la plataforma
+     * haya bloqueado). Se llama al cargar y despues de cada gesto, porque Generar formato congela y Formalizar sale del Borrador sin recargar el formulario.
+     */
+    function aplicarBloqueos(fc) {
+        var estado = SanicCarp.Comun.valor(fc, "statuscode");
+        if (estado === undefined) {
+            return;
+        }
+        var enBorrador = estado === ESTADO_BORRADOR;
+        var conversacion = fc.getControl(CAMPO_CONVERSACION);
+        if (conversacion && !enBorrador) {
+            conversacion.setDisabled(true);
+        }
+        var documento = fc.getControl(CAMPO_DOCUMENTO);
+        if (documento) {
+            documento.setDisabled(!(enBorrador && estaCongelado(fc)));
+        }
+    }
+
     function alCargar(executionContext) {
-        habilitarMotivoDeReapertura(SanicCarp.Comun.formContext(executionContext));
+        var fc = SanicCarp.Comun.formContext(executionContext);
+        habilitarMotivoDeReapertura(fc);
+        aplicarBloqueos(fc);
     }
 
     function alGuardar(executionContext) {
@@ -750,6 +776,7 @@ SanicCarp.Arreglo = (function () {
                 }
                 await C.generarYDescargar({ arregloid: ctx.ids[0] });
                 await C.refrescar(ctx);
+                aplicarBloqueos(ctx.fc);   // el formato congelo: ya se puede adjuntar el documento firmado
             } catch (err) {
                 await C.mostrarError(err);
             }
@@ -759,15 +786,40 @@ SanicCarp.Arreglo = (function () {
     /** Gesto 7. SOLO sanic_fechacongelamiento = null (sobre un borrador no congelado daria CARP-ARR-017). */
     function desbloquear(primero) {
         return C.escribirGesto(C.contexto(primero), TABLA, "El formato ya impreso deja de valer; hay que reimprimirlo.",
-            { sanic_fechacongelamiento: null }, "Borrador desbloqueado.");
+            { sanic_fechacongelamiento: null }, function (ctx) {
+                aplicarBloqueos(ctx.fc);
+                return "Borrador desbloqueado.";
+            });
     }
 
-    /** Gesto 8. SOLO el estado Vigente; el numero de arreglo se relee del formulario ya refrescado. */
-    function formalizar(primero) {
-        return C.escribirGesto(C.contexto(primero), TABLA, "Confirme que el cliente firmó el formato impreso.",
+    /**
+     * El documento firmado esta adjunto? Pregunta al servidor el nombre del archivo (la columna de archivo no trae su contenido ni, en el formulario, un valor que se pueda comparar con
+     * seguridad). Si la consulta falla se deja pasar: el servidor decide (CARP-ARR-025) y la persona ve su mensaje. [verificar en Dev]: que el nombre se complete al terminar la subida.
+     */
+    async function tieneDocumentoFirmado(ctx) {
+        try {
+            var fila = await Xrm.WebApi.retrieveRecord(TABLA, ctx.ids[0], "?$select=sanic_documentofirmado_name");
+            return !C.vacio(fila && fila.sanic_documentofirmado_name);
+        } catch (err) {
+            return true;
+        }
+    }
+
+    /**
+     * Gesto 8. SOLO el estado Vigente; el numero de arreglo se relee del formulario ya refrescado. Antes de confirmar, sin documento firmado adjunto avisa y NO llama al servidor
+     * (diseno/07 M1: un dialogo no devuelve valores, asi que el documento se adjunta en su campo del formulario y el boton solo lo verifica).
+     */
+    async function formalizar(primero) {
+        var ctx = C.contexto(primero);
+        if (ctx.ids.length === 1 && !(await tieneDocumentoFirmado(ctx))) {
+            await C.alerta(AVISO_SIN_DOCUMENTO);
+            return false;
+        }
+        return C.escribirGesto(ctx, TABLA, "Confirme que el cliente firmó el formato impreso y que el documento firmado adjunto es el correcto.",
             { statecode: 0, statuscode: ESTADO_VIGENTE },
-            function (ctx) {
-                var numero = C.valor(ctx.fc, "sanic_numeroarreglo");
+            function (ctx2) {
+                aplicarBloqueos(ctx2.fc);
+                var numero = C.valor(ctx2.fc, "sanic_numeroarreglo");
                 return C.vacio(numero) ? "Arreglo formalizado." : "Arreglo formalizado con el N.º " + numero;
             });
     }
@@ -801,8 +853,11 @@ SanicCarp.Arreglo = (function () {
             datos.statuscode = ESTADO_VIGENTE;
         }
         return C.escribirGesto(ctx, TABLA,
-            "Descongela los datos para corregirlos. El próximo formato congela de nuevo con los datos actuales.",
-            datos, "Arreglo reabierto.");
+            "Descongela los datos para corregirlos. El próximo formato congela de nuevo con los datos actuales. El documento firmado adjunto se conserva.",
+            datos, function (ctx2) {
+                aplicarBloqueos(ctx2.fc);
+                return "Arreglo reabierto.";
+            });
     }
 
     return {

@@ -148,6 +148,7 @@ Advertencias: etiquetas de pestaña y sección en los dos LCID, en español y si
         "3082": "Formalizacion"
       },
       "campos": [
+        {"nombre": "sanic_documentofirmado", "solo_lectura": false},
         {"nombre": "sanic_fechaformalizado", "solo_lectura": true},
         {"nombre": "sanic_formalizadoporid", "solo_lectura": true},
         {"nombre": "sanic_fechatermino", "solo_lectura": true}
@@ -206,7 +207,8 @@ Decisiones y huecos:
 - **Subgrilla de cuotas con `registros_por_pagina` 60** (G-F6; el plazo máximo es 60). El 60 está dentro del rango 2 a 250 que valida la herramienta; que la plataforma lo acepte en Dev es `diseno/07` §12 punto 15. La de formatos generados queda en el 10 por omisión: **hueco**, `diseno/07` no fija un valor.
 - Los montos (`sanic_saldoinicial`, `sanic_montoabonado`, `sanic_saldoremanente`, `sanic_totalpagar`, `sanic_cuotamensual`) son `DecimalType` o Money según la tabla; el classid de decimal se agregó a `formulario.py` (G-F5). `sanic_fechafin` y `sanic_saldoremanente` los calcula el plugin: solo lectura (un requerido deshabilitado no bloquea el guardado).
 - **Campos gesto**: `sanic_motivodescarte`, `sanic_motivoanulacion`, `sanic_motivoreapertura` (editables, sin `setSubmitMode`: Learn dice que con `never` la columna no se puede editar). El `OnSave` (`alGuardar`) cancela el guardado en todos los modos mientras alguno esté *dirty* y avisa "Use el botón…", salvo que lo dispare un botón de gesto (bandera `SanicCarp.Comun.levantarBandera()`); los envían los botones del lote B.
-- `alCargar` habilita `sanic_motivoreapertura` para el jefe en un Terminado o Vigente congelado (`diseno/07` §4.4 punto 2; `diseno/07` §12 punto 12 a verificar en Dev). El respaldo del alta desde una conversación (heredar cliente y oficial) **no** está en el JS: primera opción, el mapeo de columnas de REL-03, paso manual del maker; `diseno/07` §12 puntos 13.
+- `alCargar` (también deshabilita `sanic_conversacionid` fuera de un Borrador y `sanic_documentofirmado` fuera de un Borrador congelado, 2026-11-03) habilita `sanic_motivoreapertura` para el jefe en un Terminado o Vigente congelado (`diseno/07` §4.4 punto 2; `diseno/07` §12 punto 12 a verificar en Dev). El respaldo del alta desde una conversación (heredar cliente y oficial) **no** está en el JS: primera opción, el mapeo de columnas de REL-03, paso manual del maker; `diseno/07` §12 puntos 13.
+- **Documento firmado (2026-11-03, `diseno/07` §4.4 y §5.4; `diseno/03` 2.6, "Documento firmado").** `sanic_documentofirmado` va en la sección **Formalizacion** de la pestaña Cierre, primera del orden, editable (`solo_lectura: false`: es el control de archivo con el que el oficial adjunta el PDF, JPG o PNG; en un formulario la subida y el borrado ocurren al instante, no al guardar, y la subida la valida S-38). No se agrega a ningún diálogo (decisión M1: un diálogo no devuelve valores): el botón Formalizar solo verifica que haya un archivo. `alCargar` lo deshabilita fuera de un Borrador congelado y deshabilita `sanic_conversacionid` fuera de un Borrador. La columna debe existir antes (`playbooks/tabla/sanic_carp_tbl_arreglo.md`, `--agregar-columnas`) y el usuario del formulario necesita el perfil de columna para verla. **Por verificar en Dev:** que el control de archivo se pinte en esa sección y que `setDisabled` sobre él funcione (`diseno/07` §12).
 - Los datos del acuerdo siguen editables con el arreglo congelado: el servidor responde `CARP-ARR-011`. `sanic_cuentadebitar` y `sanic_instantaneacedula` se ven solo con el perfil de columna.
 - `sanic_saldoremanente`, `sanic_totalpagar` y `sanic_fechafin` están en `Columnas.cs` como solo-sistema o datos del acuerdo: se muestran en solo lectura por decisión del diseño.
 
@@ -214,7 +216,7 @@ Decisiones y huecos:
 
 | # | Qué tiene que existir | Cómo se comprueba |
 |---|---|---|
-| 1 | La tabla y las 42 columnas del formulario (3 del encabezado y 39 en secciones), con etiqueta en 1033 y 3082, y con control conocido para cada tipo (incluido el decimal) | `GET EntityDefinitions(LogicalName='sanic_carp_tbl_arreglo')/Attributes` |
+| 1 | La tabla y las 43 columnas del formulario (3 del encabezado y 40 en secciones; `sanic_documentofirmado` es de tipo archivo, con su control), con etiqueta en 1033 y 3082, y con control conocido para cada tipo (incluido el decimal) | `GET EntityDefinitions(LogicalName='sanic_carp_tbl_arreglo')/Attributes` |
 | 2 | La tabla figura en la solución con `rootcomponentbehavior` 0 | `GET solutioncomponents` (`componenttype` 1) |
 | 3 | Vistas **Cuotas del arreglo** (sobre `sanic_carp_tbl_cuota`) y **Formatos generados del arreglo** (sobre `sanic_carp_tbl_generacionformato`), una cada una | `GET savedqueries?$filter=name eq '...' and returnedtypecode eq '...'` |
 | 4 | Relaciones `sanic_carp_arreglo_cuota` y `sanic_carp_arreglo_generacionformato` (lookup `sanic_arregloid`) | `GET .../OneToManyRelationships` |
@@ -240,7 +242,7 @@ python3 herramientas/construir/formulario.py playbooks/formulario/arreglo.md --s
 |---|---|---|
 | 1 | `GET systemforms?$filter=objecttypecode eq 'sanic_carp_tbl_arreglo' and type eq 2` | un solo Main · `name` y `description` los de la sección 2 · activo · no managed |
 | 2 | `formxml` | igual al generado, etiquetas en los dos idiomas |
-| 3 | Estructura | 4 pestañas, 10 secciones, 39 campos en secciones, 2 subgrillas (la de cuotas con `RecordsPerPage` 60), 3 en el encabezado, 1 biblioteca, 2 manejadores |
+| 3 | Estructura | 4 pestañas, 10 secciones, 40 campos en secciones, 2 subgrillas (la de cuotas con `RecordsPerPage` 60), 3 en el encabezado, 1 biblioteca, 2 manejadores |
 | 4 | Scripts | `onload` → `SanicCarp.Arreglo.alCargar`, `onsave` → `SanicCarp.Arreglo.alGuardar`, con `passExecutionContext` true |
 | 5 | Pertenencia | la tabla figura en la solución con `rootcomponentbehavior` 0 |
 | 6 | Segunda ejecución | `ya_existia` |

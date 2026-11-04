@@ -155,8 +155,8 @@ Etiquetas y tooltips: desde el 2026-11-03 el `1033` lleva el mismo texto en espa
           "icono": "sanic_carp_wr_svg_cmd_formalizar",
           "etiqueta": {"1033": "Formalizar", "3082": "Formalizar"},
           "tooltip": {
-            "1033": "Formaliza el borrador congelado cuando el cliente firmó el formato impreso.",
-            "3082": "Formaliza el borrador congelado cuando el cliente firmó el formato impreso."
+            "1033": "Formaliza el borrador congelado cuando el cliente firmó el formato impreso y el documento firmado está adjunto.",
+            "3082": "Formaliza el borrador congelado cuando el cliente firmó el formato impreso y el documento firmado está adjunto."
           },
           "ubicaciones": ["Form"],
           "secuencia": 30
