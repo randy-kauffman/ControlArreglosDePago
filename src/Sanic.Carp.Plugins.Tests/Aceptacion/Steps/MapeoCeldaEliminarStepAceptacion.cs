@@ -131,7 +131,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             Rechaza(() => comoMucho.ComoOficial.Delete(TablaMapeo, idA), CodigosDeError.MAP_001);
             var falla = Assert.Throws<InvalidPluginExecutionException>(() => alMenos.ComoOficial.Delete(TablaMapeo, idB));
-            Assert.StartsWith("CARP-MAP-900", falla.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", falla.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
         }
 
         [Fact]

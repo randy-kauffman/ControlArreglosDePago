@@ -272,7 +272,7 @@ namespace Sanic.Carp.Plugins.Dominio.Correo
             var motivo = Valor(conversacion, "statuscode") as ValorDeOpcion;
             if (estado == null || motivo == null) throw new InvalidOperationException("La conversacion no trae statecode y statuscode.");
             var conocido = Estados.DeConversacion(new EstadoEfectivo(estado.Valor, motivo.Valor));
-            if (!conocido.HasValue) throw new InvalidOperationException("La conversacion trae un par statecode/statuscode que no existe (diseno/03 0.7).");
+            if (!conocido.HasValue) throw new InvalidOperationException("La conversacion trae un par statecode/statuscode que no existe.");
             return conocido.Value;
         }
     }

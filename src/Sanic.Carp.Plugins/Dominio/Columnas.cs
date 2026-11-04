@@ -97,7 +97,7 @@ namespace Sanic.Carp.Plugins.Dominio
             ColumnasDeTabla columnas;
             if (!_porTabla.TryGetValue(tabla, out columnas))
             {
-                throw new ArgumentException("La tabla '" + tabla + "' no tiene categorías de columnas (diseno/03 2.0.8).", nameof(tabla));
+                throw new ArgumentException("La tabla '" + tabla + "' no tiene categorías de columnas.", nameof(tabla));
             }
             return columnas;
         }

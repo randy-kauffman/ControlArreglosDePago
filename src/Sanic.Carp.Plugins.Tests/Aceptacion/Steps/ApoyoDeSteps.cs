@@ -336,18 +336,18 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             paso.Execute(new ProveedorDeServiciosSimulado(contexto, fabrica));
         }
 
-        /// <summary>El rechazo es una <see cref="InvalidPluginExecutionException"/> (no cualquier otra) con el texto exacto <c>CARP-XXX-NNN: …</c> del catálogo.</summary>
+        /// <summary>El rechazo es una <see cref="InvalidPluginExecutionException"/> (no cualquier otra) con el texto exacto del catálogo, SIN el código (el código va a la traza).</summary>
         public static void AssertRechazo(Exception excepcion, DefinicionDeError esperado, params object[] marcadores)
         {
             var rechazo = Assert.IsType<InvalidPluginExecutionException>(excepcion);
-            Assert.Equal(esperado.Crear(marcadores).ToString(), rechazo.Message);
+            Assert.Equal(esperado.Crear(marcadores).Message, rechazo.Message);
         }
 
         /// <summary>Corre <paramref name="accion"/> y exige que lance EXACTAMENTE <see cref="InvalidPluginExecutionException"/> con el texto del catálogo.</summary>
         public static InvalidPluginExecutionException Rechaza(Action accion, DefinicionDeError esperado, params object[] marcadores)
         {
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(accion);
-            Assert.Equal(esperado.Crear(marcadores).ToString(), rechazo.Message);
+            Assert.Equal(esperado.Crear(marcadores).Message, rechazo.Message);
             return rechazo;
         }
 

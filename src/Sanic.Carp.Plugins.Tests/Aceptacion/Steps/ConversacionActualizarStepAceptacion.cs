@@ -441,7 +441,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(Con(Finalizar(id, ResultadoDeConversacion.ConArregloDePago),
                 "sanic_finalizadoporid", RefUsuario(e.OtroOficial), "sanic_fechafinalizacion", DateTime.UtcNow.AddDays(-1))));
 
-            Assert.StartsWith(CodigosDeError.CNV_001.Codigo + ":", rechazo.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", rechazo.Message, StringComparison.Ordinal);
             Assert.Contains("sanic_finalizadoporid", rechazo.Message);
             Assert.Contains("sanic_fechafinalizacion", rechazo.Message);
             AssertFilaIntacta(e);
@@ -471,7 +471,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var error = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(Finalizar(id, ResultadoDeConversacion.ConArregloDePago)));
 
-            Assert.StartsWith("CARP-CNV-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
         }
 
         // ---------------------------------------------------------------- conversación inactiva

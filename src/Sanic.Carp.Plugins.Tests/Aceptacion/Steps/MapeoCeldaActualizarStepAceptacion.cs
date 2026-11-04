@@ -407,7 +407,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             Rechaza(() => comoMucho.ComoOficial.Update(Cambio(idA, "statecode", Inactivo(), "sanic_nombre", "X!Z9", "sanic_celda", "B0")), CodigosDeError.MAP_007);
             var falla = Assert.Throws<InvalidPluginExecutionException>(() => alMenos.ComoOficial.Update(Cambio(idB, "statecode", Inactivo())));
 
-            Assert.StartsWith("CARP-MAP-900", falla.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", falla.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             var lectura = Assert.Single(ConsultasDeLaVersion(comoMucho));
             Assert.Equal(versionA, lectura.Id);
         }

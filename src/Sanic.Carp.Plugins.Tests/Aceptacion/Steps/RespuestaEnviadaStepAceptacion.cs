@@ -491,7 +491,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             p.E.Pipeline.EjecutarAsincronos();
 
             var excepcion = Assert.IsType<InvalidPluginExecutionException>(UnicaEjecucionDe<RespuestaEnviadaStep>(p.E).Excepcion);
-            Assert.StartsWith("CARP-RES-900: ", excepcion.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", excepcion.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             AssertRespondidoPor(p.E, p.Correo, p.E.Oficial);
             Assert.Equal(0, Valor(p.E, TablaConv, p.Conversacion, "sanic_cantidadrespuestas"));
             Assert.Equal(Hora(10, 0), Assert.IsType<DateTime>(Valor(p.E, TablaConv, p.Conversacion, "sanic_sinrespuestadesde")));

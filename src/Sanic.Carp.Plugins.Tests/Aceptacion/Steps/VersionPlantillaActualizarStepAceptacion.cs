@@ -376,7 +376,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             // Las filas del mapeo se leen "sin orden": el texto de cada error (cuál campo va primero en "dos campos en la misma celda") puede variar; el conjunto de errores, no.
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(Publicar(id)));
 
-            Assert.StartsWith(errores[0].Codigo + ": ", rechazo.Message);
+            Assert.DoesNotContain("CARP-", rechazo.Message, StringComparison.Ordinal);
             Assert.Contains("dos campos en la misma celda 'B7'", rechazo.Message);
             Assert.Contains("'B0'", rechazo.Message);
             Assert.Contains("mal escrita", rechazo.Message);
@@ -407,7 +407,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(Publicar(id)));
 
-            Assert.StartsWith("CARP-VER-009: ", rechazo.Message);
+            Assert.DoesNotContain("CARP-", rechazo.Message, StringComparison.Ordinal);
             Assert.Contains("'FORMATO'", rechazo.Message);
             Assert.Contains("' FORMATO ARP ELECTRONICO'", rechazo.Message);
             Assert.Contains("'CONTROL DE PAGOS'", rechazo.Message);
@@ -657,7 +657,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(Publicar(v08)));
 
-            Assert.StartsWith("CARP-VER-900: ", rechazo.Message);
+            Assert.DoesNotContain("CARP-", rechazo.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Single(ConsultasDe(e, TablaMapeo));        // la falla vino del cierre de la anterior, DESPUÉS de validar el mapeo, y no de otro lado
             Assert.Equal((int)EstadoDeVersionDePlantilla.Borrador, Estado(e, v08));
             Assert.Null(Valor(e, v08, "sanic_huella"));

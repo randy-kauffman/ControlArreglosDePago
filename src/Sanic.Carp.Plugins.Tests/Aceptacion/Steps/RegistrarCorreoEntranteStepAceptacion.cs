@@ -166,7 +166,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             e.Pipeline.EjecutarAsincronos();
 
             var excepcion = Assert.IsType<InvalidPluginExecutionException>(UnicaEjecucionDe<RegistrarCorreoEntranteStep>(e).Excepcion);
-            Assert.Equal(CodigosDeError.CFG_001.Crear().ToString(), excepcion.Message);
+            Assert.Equal(CodigosDeError.CFG_001.Crear().Message, excepcion.Message);
             AssertSinEscrituras(e);
             Assert.Empty(Conversaciones(e));
         }
@@ -182,7 +182,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             e.Pipeline.EjecutarAsincronos();
 
             var excepcion = Assert.IsType<InvalidPluginExecutionException>(UnicaEjecucionDe<RegistrarCorreoEntranteStep>(e).Excepcion);
-            Assert.StartsWith("CARP-ENT-900: ", excepcion.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", excepcion.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Empty(Conversaciones(e));
             Assert.False(e.Fila(TablaCorreo, id).Contains("regardingobjectid"));
 
@@ -284,7 +284,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var excepcion = Assert.Throws<InvalidPluginExecutionException>(() => EjecutarDirecto(e, new RegistrarCorreoEntranteStep(), "Create", id, e.Oficial));
 
-            Assert.StartsWith("CARP-ENT-900: ", excepcion.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", excepcion.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
         }
 
         // ---------------------------------------------------------------- Solo la BU del area (2.10 punto 13, cierre del sublote 5f)

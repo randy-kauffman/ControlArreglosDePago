@@ -633,7 +633,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var error = Assert.Throws<InvalidPluginExecutionException>(() => EjecutarDirecto(e, new ArregloActualizarStep(), vigente, e.Oficial, terminar, c => c.Depth = 2));
 
             Assert.Equal(3, Assert.IsType<int>(formalizar["sanic_numeroarreglo"]));
-            Assert.Equal(CodigosDeError.ARR_010.Crear().ToString(), error.Message);
+            Assert.Equal(CodigosDeError.ARR_010.Crear().Message, error.Message);
         }
 
         // ---------------------------------------------------------------- el nombre
@@ -1027,7 +1027,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var idOtro = UnBorradorCongeladoDeUnCredito(otro, 1, 2);
             ApoyoDeConversacion.SinConsultarLaIdentidad(otro);
             var error = Assert.Throws<InvalidPluginExecutionException>(() => otro.ComoOficial.Update(Formalizar(idOtro)));
-            Assert.StartsWith("CARP-ARR-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Contains("Falla simulada", error.Message);         // la falla del cable, no un error del step
         }
 

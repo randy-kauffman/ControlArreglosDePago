@@ -12,7 +12,7 @@
  *
  * Reglas del archivo (diseno/07 5.3):
  *  - Un gesto = una llamada: o una Custom API, o UN Xrm.WebApi.updateRecord con SOLO las columnas del gesto.
- *  - Los errores CARP-* se muestran tal cual (desde el codigo hasta el final del mensaje, con todas las lineas).
+ *  - Los errores CARP-* de las Custom API se muestran SIN el codigo (solo el texto, con todas las lineas); los de los steps ya llegan sin codigo.
  *  - Tras el gesto se refresca el formulario (data.refresh(false)) o la grilla (refresh()).
  *  - Las funciones de comando reciben (PrimaryControl) en un formulario y (SelectedControlSelectedItemIds, SelectedControl)
  *    en una grilla; las reglas de habilitacion (puedeX) reciben un solo parametro (PrimaryControl o SelectedControl) y
@@ -36,6 +36,10 @@ SanicCarp.Comun = (function () {
     var ID_AVISO = "sanic_carp_gesto_pendiente";
     var MIME_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     var PATRON_CARP = /CARP-[A-Z]{3,4}-\d{3}:[\s\S]*/;
+    // El codigo con su separador, en cada linea que lo traiga: la persona nunca lo ve (es de uso interno: traza e integraciones).
+    var PATRON_CODIGO = /CARP-[A-Z]{3,4}-\d{3}: ?/g;
+    // ErrorCode con que la plataforma devuelve la InvalidPluginExecutionException de un plugin (0x80040265).
+    var CODIGO_PLUGIN_RECHAZADO = -2147220891;
     var TEXTO_GENERICO = "No se pudo completar la acción. Intente de nuevo; si persiste, avise al equipo de soporte.";
 
     // Bandera de modulo: la levanta el boton de un gesto mientras guarda sus propias columnas.
@@ -175,14 +179,19 @@ SanicCarp.Comun = (function () {
     }
 
     /**
-     * El texto para la persona. Si el mensaje trae un CARP-xxx-nnn, es desde el codigo hasta el final, con todas las lineas
-     * (los errores de publicacion vienen unidos con salto de linea). Si no, un texto generico y el tecnico va a details.
+     * El texto para la persona, SIN el codigo interno. Si el mensaje trae CARP-xxx-nnn (Custom API: "CARP-XXX-NNN: texto"), se muestra
+     * solo el texto, con todas las lineas y quitando el codigo de CADA linea que lo traiga (los errores de publicacion vienen unidos con
+     * salto de linea). Si no, y la plataforma devolvio un rechazo de plugin (0x80040265, p. ej. un step anidado que subio por una API con
+     * texto plano), se muestra el mensaje tal cual. Si no, un texto generico y el tecnico va a details.
      */
     function textoDeError(err) {
         var crudo = err && err.message ? String(err.message) : "";
         var encontrado = PATRON_CARP.exec(crudo);
         if (encontrado) {
-            return { message: encontrado[0] };
+            return { message: encontrado[0].replace(PATRON_CODIGO, "") };
+        }
+        if (err && err.errorCode === CODIGO_PLUGIN_RECHAZADO && crudo) {
+            return { message: crudo };
         }
         return crudo ? { message: TEXTO_GENERICO, details: crudo } : { message: TEXTO_GENERICO };
     }

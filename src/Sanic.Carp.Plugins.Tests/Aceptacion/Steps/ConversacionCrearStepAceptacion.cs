@@ -94,7 +94,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var consultaba = UnEscenario();
             SinConsultarLaIdentidad(consultaba);
             var error = Assert.Throws<InvalidPluginExecutionException>(() => consultaba.ComoSistema.Create(UnAlta("sanic_nombre", "ZZV-NOMBRE")));
-            Assert.StartsWith("CARP-CNV-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
 
             var unaVez = UnEscenario();
             ComoMuchoUnaConsultaDeIdentidad(unaVez);
@@ -145,7 +145,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
                 var error = Record.Exception(() => Ejecutar(new ConversacionCrearStep(), e.Fabrica, contexto));
                 if (rechaza)
-                    Assert.StartsWith("CARP-CNV-001", Assert.IsType<InvalidPluginExecutionException>(error).Message, StringComparison.Ordinal);
+                    Assert.Equal(CodigosDeError.CNV_001.Crear("sanic_nombre").Message, Assert.IsType<InvalidPluginExecutionException>(error).Message);
                 else
                     Assert.Null(error);
 

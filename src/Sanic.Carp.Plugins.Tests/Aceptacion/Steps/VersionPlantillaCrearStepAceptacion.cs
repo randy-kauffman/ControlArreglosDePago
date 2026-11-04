@@ -131,7 +131,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var otro = SoloS25();
             ApoyoDeConversacion.AlMenosUnaConsultaDeIdentidad(otro);
             var sinIdentidad = Assert.Throws<InvalidPluginExecutionException>(() => otro.ComoOficial.Create(UnAlta("sanic_nombre", "7")));
-            Assert.StartsWith("CARP-VER-900", sinIdentidad.Message);
+            Assert.DoesNotContain("CARP-", sinIdentidad.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
         }
 
         [Fact]
@@ -143,7 +143,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => new VersionPlantillaCrearStep().Execute(proveedor));
 
-            Assert.Equal(CodigosDeError.VER_012.Crear().ToString(), rechazo.Message);
+            Assert.Equal(CodigosDeError.VER_012.Crear().Message, rechazo.Message);
             var lineas = proveedor.Espia.Lineas();
             Assert.Contains(lineas, l => l.Contains("rechazo CARP-VER-012"));
             Assert.DoesNotContain(lineas, l => l.Contains("SECRETO"));

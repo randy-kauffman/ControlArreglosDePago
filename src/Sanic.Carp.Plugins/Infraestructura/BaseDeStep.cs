@@ -25,12 +25,12 @@ namespace Sanic.Carp.Plugins.Infraestructura
     /// <c>-900</c>: es un error de registro, no de negocio, y no tiene código <c>CARP</c> (el catálogo de <c>Dominio</c> está cerrado).</item>
     /// <item>Arma el <see cref="ContextoDeStep"/> de esta ejecución, traza la entrada (<c>[Clase] …</c> con mensaje, tabla, id primario, etapa, modo y profundidad: solo
     /// ids) y llama a <see cref="Ejecutar"/>; al terminar bien traza la salida.</item>
-    /// <item><see cref="Dominio.Errores.ErrorDeNegocio"/> ⇒ <see cref="InvalidPluginExecutionException"/> cuyo mensaje es EXACTAMENTE <c>error.ToString()</c>
-    /// (<c>"CARP-XXX-NNN: texto"</c>); traza el código. Incluye los <c>CARP-CFG-*</c> que lanzan los puertos de configuración.</item>
+    /// <item><see cref="Dominio.Errores.ErrorDeNegocio"/> ⇒ <see cref="InvalidPluginExecutionException"/> cuyo mensaje es EXACTAMENTE <c>error.Message</c>
+    /// (el texto SIN código: la plataforma lo muestra tal cual a la persona); traza el código (<c>rechazo CARP-XXX-NNN</c>). Incluye los <c>CARP-CFG-*</c> que lanzan los puertos de configuración.</item>
     /// <item><see cref="InvalidPluginExecutionException"/> (la lanzó el step o un step anidado) ⇒ se relanza LA MISMA instancia.</item>
     /// <item>Cualquier otra excepción (una <c>FaultException</c> de la plataforma, un error de programación) ⇒ <see cref="InvalidPluginExecutionException"/> con
-    /// <c>"CARP-" + Area + "-900: " + mensaje</c>, el mensaje de la excepción recortado a 300 unidades UTF-16 (0.5). La traza lleva solo el TIPO de la excepción
-    /// (y la pila), nunca su mensaje, que puede traer valores del cliente.</item>
+    /// el mensaje de la excepción recortado a 300 unidades UTF-16, sin código (0.5). La traza lleva el TIPO de la excepción (y la pila), nunca su mensaje, que puede
+    /// traer valores del cliente, y el código <c>rechazo CARP-AREA-900</c>.</item>
     /// <item>Ningún <c>catch</c> convierte una falla de ESCRITURA en continuar: una falla atrapada dentro de un plugin aborta la transacción (<c>0x8009000C</c>, medido,
     /// 0.5); por eso la conversión siempre relanza.</item>
     /// </list>
@@ -75,8 +75,9 @@ namespace Sanic.Carp.Plugins.Infraestructura
             // La conversion SIEMPRE relanza: una falla de escritura atrapada para "seguir" aborta la transaccion (0x8009000C, 0.5).
             catch (ErrorDeNegocio error)
             {
+                // Al formulario llega SOLO el texto: el dialogo "Business Process Error" de la plataforma lo muestra tal cual. El codigo queda en la traza.
                 contexto.Trazar("rechazo " + error.Codigo);
-                throw new InvalidPluginExecutionException(error.ToString());
+                throw new InvalidPluginExecutionException(error.Message);
             }
             catch (InvalidPluginExecutionException)
             {
@@ -99,7 +100,9 @@ namespace Sanic.Carp.Plugins.Infraestructura
                 // Solo el TIPO y la pila: el mensaje de la plataforma puede repetir valores del cliente (0.5).
                 contexto.Trazar("falla inesperada " + error.GetType().Name);
                 contexto.Trazar(error.StackTrace);
-                throw new InvalidPluginExecutionException("CARP-" + Area + "-900: " + Recortar(error.Message));
+                // Texto sin codigo (ver arriba); el -900 queda en la traza para soporte.
+                contexto.Trazar("rechazo CARP-" + Area + "-900");
+                throw new InvalidPluginExecutionException(Recortar(error.Message));
             }
         }
 

@@ -241,7 +241,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var error = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(Asignar(id, e.OtroOficial)));
 
-            Assert.StartsWith("CARP-CNV-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Null(OficialDe(e, id));
         }
 

@@ -253,7 +253,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoSistema.Create(UnaFilaNueva(Cuota, Equipo(e.TeamAjeno))));
 
-            Assert.StartsWith("CARP-PRO-900: ", rechazo.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", rechazo.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Empty(e.Almacen.Todas(Cuota));
         }
 
@@ -282,7 +282,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(new Entity(Cliente, id) { ["ownerid"] = Equipo(e.TeamDelArea) }));
 
-            Assert.StartsWith(codigo + ": ", rechazo.Message, StringComparison.Ordinal);
+            Assert.Equal(CodigosDeError.CFG_001.Crear().Message, rechazo.Message);
+            Assert.DoesNotContain(codigo, rechazo.Message, StringComparison.Ordinal);
         }
 
         [Fact]

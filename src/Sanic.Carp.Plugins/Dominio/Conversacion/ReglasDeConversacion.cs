@@ -259,7 +259,7 @@ namespace Sanic.Carp.Plugins.Dominio.Conversacion
                 throw new ArgumentException("La pre-imagen de una actualizacion debe traer statecode y statuscode.", nameof(preImagen));
             var conocido = Estados.DeConversacion(new EstadoEfectivo(estado.Value, motivo.Value));
             if (!conocido.HasValue)
-                throw new ArgumentException("La pre-imagen trae un par statecode/statuscode que no existe (diseno/03 0.7).", nameof(preImagen));
+                throw new ArgumentException("La pre-imagen trae un par statecode/statuscode que no existe.", nameof(preImagen));
             return conocido.Value;
         }
 

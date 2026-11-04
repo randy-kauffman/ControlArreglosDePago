@@ -128,7 +128,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             Rechaza(() => e.ComoOficial.Create(UnAlta("sanic_montoabonado", 1500m)), CodigosDeError.ARR_004);
             Rechaza(() => e.ComoOficial.Create(UnAlta("sanic_cuotamensual", 0m)), CodigosDeError.ARR_007);
             var cubre = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Create(UnAlta("sanic_saldoinicial", 10000m, "sanic_montoabonado", 2000m, "sanic_cuotamensual", 1000m, "sanic_plazo", 9)));
-            Assert.StartsWith("CARP-ARR-005:", cubre.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", cubre.Message, StringComparison.Ordinal);
             Assert.Contains("8 cuotas", cubre.Message);
 
             Assert.Empty(e.Almacen.Todas(Arr));
@@ -237,7 +237,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var otro = UnEscenario(conPropietario: false);
             ApoyoDeConversacion.SinConsultarLaIdentidad(otro);
             var error = Assert.Throws<InvalidPluginExecutionException>(() => otro.ComoSistema.Create(UnAlta()));
-            Assert.StartsWith("CARP-ARR-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Contains("Falla simulada", error.Message);         // la falla del cable, no un error del step
         }
 
@@ -267,7 +267,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var error = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Create(UnAlta()));
 
-            Assert.StartsWith("CARP-ARR-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Contains("Falla simulada", error.Message);         // la falla del cable, no un error del step
         }
 

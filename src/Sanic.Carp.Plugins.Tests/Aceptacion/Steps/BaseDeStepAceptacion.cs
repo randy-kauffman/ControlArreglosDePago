@@ -407,17 +407,17 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         // ---------------------------------------------------------------- la conversión de errores
 
         [Fact]
-        public void PA_BAS_19_UnErrorDeNegocio_SeConvierteEnInvalidPluginExecution_ConElTextoCARP()
+        public void PA_BAS_19_UnErrorDeNegocio_SeConvierteEnInvalidPluginExecution_ConElTextoSinCodigo()
         {
-            // 0.5: "InvalidPluginExecutionException con mensaje CARP-<ÁREA>-<NNN>: <texto en español>".
+            // 0.5: "InvalidPluginExecutionException con el texto en español, SIN el código CARP-<ÁREA>-<NNN>" (el código va a la traza).
             var fabrica = UnaFabrica();
             var proveedor = new ProveedorConEspia(UnContextoDeUpdate(Guid.NewGuid()), fabrica);
             var error = CodigosDeError.ARR_006.Crear("sanic_plazo, sanic_cuotamensual");
 
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => UnPaso(c => { throw error; }).Execute(proveedor));
 
-            Assert.Equal(error.ToString(), rechazo.Message);
-            Assert.StartsWith("CARP-ARR-006: ", rechazo.Message, StringComparison.Ordinal);
+            Assert.Equal(error.Message, rechazo.Message);                                       // solo el texto: la plataforma lo muestra tal cual
+            Assert.DoesNotContain("CARP-", rechazo.Message, StringComparison.Ordinal);          // sin codigo
             Assert.Contains(proveedor.Espia.Lineas(), l => l.Contains("CARP-ARR-006"));        // el código queda en la traza
         }
 
@@ -439,13 +439,14 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         [InlineData(500)]
         public void PA_BAS_21_CualquierOtraExcepcion_SeConvierteEnCarpAreaNoventaYNueve_ConElMensajeRecortadoA300(int largo)
         {
-            // 0.5: "se relanza como CARP-<ÁREA>-900 con el mensaje de la plataforma recortado a 300 caracteres".
+            // 0.5: se relanza con el mensaje de la plataforma recortado a 300 caracteres, sin código; el CARP-<ÁREA>-900 va a la traza.
             var fabrica = UnaFabrica();
             var mensaje = new string('x', largo);
 
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => Ejecutar(UnPaso(c => { throw new InvalidOperationException(mensaje); }, "ZZB"), fabrica, UnContextoDeUpdate(Guid.NewGuid())));
 
-            Assert.Equal("CARP-ZZB-900: " + new string('x', Math.Min(largo, 300)), rechazo.Message);
+            Assert.Equal(new string('x', Math.Min(largo, 300)), rechazo.Message);           // solo el texto recortado, sin codigo
+            Assert.Contains(fabrica.Tracing.Lineas, l => l.Contains("rechazo CARP-ZZB-900"));   // el codigo queda en la traza
         }
 
         [Fact]
@@ -458,7 +459,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => paso.Execute(proveedor));
 
-            Assert.StartsWith("CARP-CLI-900: ", rechazo.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", rechazo.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
+            Assert.Contains(proveedor.Espia.Lineas(), l => l.Contains("rechazo CARP-CLI-900"));
             Assert.Contains(proveedor.Espia.Lineas(), l => l.Contains(nameof(FaultException)));
         }
 

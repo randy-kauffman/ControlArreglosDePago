@@ -125,9 +125,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(() => paso.Execute(proveedor));
 
             Assert.NotNull(recibida);
-            Assert.Equal("CARP-ZZB-900: " + recibida.Message, rechazo.Message);
+            Assert.Equal(recibida.Message, rechazo.Message);                              // el texto de la falla, sin codigo
+            Assert.DoesNotContain("CARP-", rechazo.Message, StringComparison.Ordinal);
             var lineas = proveedor.Espia.Lineas();
             Assert.Contains(lineas, l => l.Contains("FaultException"));                    // el tipo, como antes (PA_BAS_22)
+            Assert.Contains(lineas, l => l.Contains("rechazo CARP-ZZB-900"));             // el codigo va a la traza
             Assert.Contains(lineas, l => l.Contains("0x" + codigo.ToString("X8")));        // el ErrorCode en hexadecimal, 8 dígitos y mayúsculas
             Assert.DoesNotContain(lineas, l => l.Contains(recibida.Message));              // el mensaje sigue sin trazarse
         }
@@ -270,7 +272,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var error = Assert.Throws<InvalidPluginExecutionException>(() => Ejecutar(new PropietarioAlActualizarStep(), e.Fabrica, contexto));
 
-            Assert.Equal(CodigosDeError.PRO_001.Crear().ToString(), error.Message);
+            Assert.Equal(CodigosDeError.PRO_001.Crear().Message, error.Message);
             Assert.False(target.Contains("ownerid") && target["ownerid"] != null);           // no se modifica el Target
         }
 

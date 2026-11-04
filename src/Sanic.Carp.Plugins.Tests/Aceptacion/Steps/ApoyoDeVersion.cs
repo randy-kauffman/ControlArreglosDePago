@@ -191,11 +191,11 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
             return e.Almacen.Escrituras.Where(x => x.Tabla == tabla).ToList();
         }
 
-        /// <summary>El rechazo es una <see cref="InvalidPluginExecutionException"/> con EXACTAMENTE el texto <c>CARP-XXX-NNN: …</c> del error dado (para los mensajes que arma el dominio, no el catálogo).</summary>
+        /// <summary>El rechazo es una <see cref="InvalidPluginExecutionException"/> con EXACTAMENTE el texto (sin código) del error dado (para los mensajes que arma el dominio, no el catálogo).</summary>
         public static InvalidPluginExecutionException RechazaConTexto(Action accion, string codigo, string mensaje)
         {
             var rechazo = Assert.Throws<InvalidPluginExecutionException>(accion);
-            Assert.Equal(new ErrorDeNegocio(codigo, mensaje).ToString(), rechazo.Message);
+            Assert.Equal(mensaje, rechazo.Message);
             return rechazo;
         }
 

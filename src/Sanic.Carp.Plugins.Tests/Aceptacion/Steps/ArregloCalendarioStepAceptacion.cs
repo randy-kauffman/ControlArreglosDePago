@@ -161,7 +161,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var error = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Create(UnAlta("sanic_saldoinicial", 1500m, "sanic_plazo", 6, "sanic_cuotamensual", 250m)));
 
-            Assert.StartsWith("CARP-ARR-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Empty(e.Almacen.Todas(Arr));
             Assert.Empty(e.Almacen.Todas(Cuota));
             // Las cuatro primeras cuotas SÍ se escribieron (y la transacción las revirtió): el fallo es el de la quinta, no uno anterior.
@@ -180,7 +180,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var error = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(Cambio(id, "sanic_plazo", 4)));
 
-            Assert.StartsWith("CARP-ARR-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Equal(6, (int)Valor(e, id, "sanic_plazo"));
             Assert.Equal(viejas.OrderBy(g => g).ToArray(), CuotasDe(e, id).Select(c => c.Id).OrderBy(g => g).ToArray());
             // El fallo es el de la tercera cuota, no uno anterior: las 6 viejas se borraron y 2 nuevas se crearon (y la transacción lo revirtió todo).
@@ -336,7 +336,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var error = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoSistema.Create(SinColumna(UnAlta(), "sanic_plazo", "sanic_fechainicio")));
 
-            Assert.Equal(CodigosDeError.ARR_006.Crear("sanic_plazo, sanic_fechainicio").ToString(), error.Message);
+            Assert.Equal(CodigosDeError.ARR_006.Crear("sanic_plazo, sanic_fechainicio").Message, error.Message);
             Assert.Empty(e.Almacen.Todas(Arr));
             Assert.Empty(e.Almacen.Todas(Cuota));
         }
@@ -348,7 +348,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var error = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoSistema.Create(UnAlta("sanic_plazo", 61)));
 
-            Assert.StartsWith("CARP-ARR-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.Contains("plazo", error.Message);                      // el rango del plazo, no un step sin implementar
             Assert.Empty(e.Almacen.Todas(Arr));
         }

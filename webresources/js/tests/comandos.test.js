@@ -78,3 +78,29 @@ test("contexto toma el id del formulario", function () {
     const fc = { getAttribute: function () { return null; }, data: { entity: { getId: function () { return "{" + GUID.toUpperCase() + "}"; } } } };
     assert.deepStrictEqual(Array.from(C.contexto(fc).ids), [GUID]);
 });
+
+test("textoDeError muestra solo el texto de una Custom API, sin el codigo CARP", function () {
+    const { C } = cargar();
+    assert.strictEqual(C.textoDeError({ message: "CARP-TOM-001: La conversación ya está asignada." }).message, "La conversación ya está asignada.");
+});
+
+test("textoDeError quita el codigo de cada linea (errores de publicacion unidos con salto de linea)", function () {
+    const { C } = cargar();
+    const texto = C.textoDeError({ message: "CARP-VER-007: Primer error.\nCARP-VER-008: Segundo error.\nTercero sin codigo." }).message;
+    assert.strictEqual(texto, "Primer error.\nSegundo error.\nTercero sin codigo.");
+});
+
+test("textoDeError muestra tal cual el rechazo de un plugin (0x80040265) sin codigo", function () {
+    const { C } = cargar();
+    const r = C.textoDeError({ errorCode: -2147220891, message: "El arreglo no admite ese cambio." });
+    assert.strictEqual(r.message, "El arreglo no admite ese cambio.");
+    assert.strictEqual(r.details, undefined);
+});
+
+test("textoDeError usa el texto generico con details cuando no es un rechazo conocido", function () {
+    const { C } = cargar();
+    const r = C.textoDeError({ errorCode: 500, message: "Boom tecnico" });
+    assert.ok(r.message.indexOf("No se pudo completar la acción") === 0);
+    assert.strictEqual(r.details, "Boom tecnico");
+    assert.strictEqual(C.textoDeError({}).details, undefined);
+});

@@ -273,7 +273,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
 
             var error = Assert.Throws<InvalidPluginExecutionException>(() => e.ComoOficial.Update(Pago(ultima, Fecha(2027, 1, 3), 150m)));
 
-            Assert.StartsWith("CARP-CUO-900: ", error.Message, StringComparison.Ordinal);
+            Assert.DoesNotContain("CARP-", error.Message, StringComparison.Ordinal);   // sin codigo en el texto: el -900 va a la traza
             Assert.DoesNotContain("not implemented", error.Message, StringComparison.OrdinalIgnoreCase);
             Assert.Null(ValorDeCuota(e, ultima, "sanic_fechapago"));                   // la transacción revirtió el pago
             Assert.Equal(Estados.De(EstadoDeArreglo.Vigente).StatusCode, Assert.IsType<OptionSetValue>(Valor(e, arreglo, "statuscode")).Value);
