@@ -38,6 +38,43 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         bool TienePagos(Guid arregloId);
     }
 
+    /// <summary>
+    /// Lo que la regla del documento firmado necesita saber del arreglo (diseno/03 2.6, "Documento firmado"): el estado, si está congelado, si tiene archivo y cómo se llama.
+    /// <see cref="NombreDelArchivo"/> es <c>sanic_documentofirmado_name</c> (la plataforma lo completa al terminar la subida; puede estar vacío mientras la subida no cerró).
+    /// </summary>
+    public sealed class FichaDelDocumentoFirmado
+    {
+        /// <summary>El estado del arreglo; <c>null</c> si la fila trae un par statecode/statuscode que no existe (falla cerrado).</summary>
+        public EstadoDeArreglo? Estado { get; }
+
+        /// <summary>¿<c>sanic_fechacongelamiento</c> tiene valor?</summary>
+        public bool Congelado { get; }
+
+        /// <summary>¿La columna <c>sanic_documentofirmado</c> tiene un archivo?</summary>
+        public bool TieneArchivo { get; }
+
+        /// <summary>El nombre del archivo, o <c>null</c> si no hay.</summary>
+        public string NombreDelArchivo { get; }
+
+        public FichaDelDocumentoFirmado(EstadoDeArreglo? estado, bool congelado, bool tieneArchivo, string nombreDelArchivo)
+        {
+            Estado = estado;
+            Congelado = congelado;
+            TieneArchivo = tieneArchivo;
+            NombreDelArchivo = nombreDelArchivo;
+        }
+    }
+
+    /// <summary>
+    /// La lectura con SYSTEM que <see cref="ReglasDeDocumentoFirmado"/> pide solo cuando ya vio que hay algo que decidir y quien escribe no es el sistema (camino barato, 0.3). Lo implementa
+    /// <c>Datos/LecturasDelDocumentoDataverse</c>. Una falla de lectura escapa.
+    /// </summary>
+    public interface ILecturasDelDocumento
+    {
+        /// <summary>UNA consulta por id con las columnas de la ficha. <c>null</c> si el arreglo no existe.</summary>
+        FichaDelDocumentoFirmado FichaDelArreglo(Guid arregloId);
+    }
+
     /// <summary>La identidad de ejecución vista como <see cref="IJefatura"/>: delega en <see cref="IIdentidadDeEjecucion.EsJefatura"/> (no memoiza: la identidad ya lo hace).</summary>
     public sealed class JefaturaDeLaIdentidad : IJefatura
     {

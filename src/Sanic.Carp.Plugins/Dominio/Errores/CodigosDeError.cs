@@ -96,6 +96,11 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
         public static readonly DefinicionDeError ARR_022 = new DefinicionDeError("CARP-ARR-022", "Un arreglo terminado, anulado o descartado no se puede modificar. Un terminado solo se reabre por la jefatura.");
         public static readonly DefinicionDeError ARR_023 = new DefinicionDeError("CARP-ARR-023", "Este crédito alcanzó el máximo de 9.999 arreglos.");
         public static readonly DefinicionDeError ARR_024 = new DefinicionDeError("CARP-ARR-024", "El motivo solo se registra junto con su acción (descartar, anular o reabrir).");
+        public static readonly DefinicionDeError ARR_025 = new DefinicionDeError("CARP-ARR-025", "Adjunte el documento firmado (PDF, JPG o PNG) antes de formalizar.");
+        public static readonly DefinicionDeError ARR_026 = new DefinicionDeError("CARP-ARR-026", "El documento firmado debe ser PDF, JPG o PNG.");
+        public static readonly DefinicionDeError ARR_027 = new DefinicionDeError("CARP-ARR-027", "El documento firmado solo se puede adjuntar o reemplazar en un borrador con el formato ya generado.");
+        public static readonly DefinicionDeError ARR_028 = new DefinicionDeError("CARP-ARR-028", "Quite el documento firmado antes de desbloquear: corresponde al formato impreso que va a dejar de valer.");
+        public static readonly DefinicionDeError ARR_029 = new DefinicionDeError("CARP-ARR-029", "La conversación de origen no se puede cambiar una vez formalizado el arreglo.");
         public static readonly DefinicionDeError CUO_001 = new DefinicionDeError("CARP-CUO-001", "En una cuota solo se puede registrar la fecha y el monto de pago. Columna no permitida: {columna}.");
         public static readonly DefinicionDeError CUO_002 = new DefinicionDeError("CARP-CUO-002", "Solo se pueden registrar pagos en un arreglo vigente.");
         public static readonly DefinicionDeError CUO_003 = new DefinicionDeError("CARP-CUO-003", "El pago de una cuota se registra con su fecha y su monto juntos, y el monto debe ser mayor que cero.");
@@ -215,6 +220,11 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
             ARR_022,
             ARR_023,
             ARR_024,
+            ARR_025,
+            ARR_026,
+            ARR_027,
+            ARR_028,
+            ARR_029,
             CUO_001,
             CUO_002,
             CUO_003,

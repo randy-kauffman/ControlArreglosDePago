@@ -40,6 +40,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         [InlineData("ArregloCrearStep")]
         [InlineData("ArregloCalendarioStep")]
         [InlineData("ArregloActualizarStep")]
+        [InlineData("DocumentoFirmadoStep")]
         public void PA5C_REG_02_LoQueDeclaraCadaStepEsExactamenteLoDeLaSeccion5(string clase)
         {
             // VERDE A PROPÓSITO: mensaje, tabla, etapa, modo, orden, filtro y las columnas de la pre-imagen (43 en S-21, leídas de la fila de la tabla de pre-imágenes).
@@ -71,6 +72,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         [InlineData("ArregloCrearStep")]
         [InlineData("ArregloCalendarioStep")]
         [InlineData("ArregloActualizarStep")]
+        [InlineData("DocumentoFirmadoStep")]
         public void PA5C_REG_04_LaClaseEsPublica_ConConstructorSinParametros_Area_ARR_Y_SinOcultarExecute(string clase)
         {
             // VERDE A PROPÓSITO.
@@ -85,14 +87,31 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         }
 
         [Fact]
+        public void PA5G_REG_01_S38_EsElUpdateDeDocumentoFirmadoStep_ConLosValoresDeLaSeccion5()
+        {
+            // VERDE A PROPÓSITO (2026-11-03, pedido del usuario en la prueba guiada): orden 20 porque S-21 ya es el 10 de Update Pre sobre el arreglo (BP-PP-060), sin pre-imagen, y el filtro son las cuatro
+            // columnas que disparan la regla (el archivo, el estado para Formalizar y el congelamiento para Desbloquear). Los valores van escritos aqui: la fila del documento es la fuente.
+            var fila = Assert.Single(DocumentoDeSteps.Filas(), f => f.Numero == "S-38");
+
+            Assert.Equal("DocumentoFirmadoStep", fila.Clase);
+            Assert.Equal("Update", fila.Mensaje);
+            Assert.Equal("sanic_carp_tbl_arreglo", fila.Tabla);
+            Assert.Equal(20, fila.Etapa);
+            Assert.False(fila.Asincrono);
+            Assert.Equal(20, fila.Orden);
+            Assert.Equal(new[] { "sanic_documentofirmado", "sanic_fechacongelamiento", "statecode", "statuscode" }, fila.Filtro.OrderBy(c => c, StringComparer.Ordinal).ToArray());
+            Assert.False(fila.LlevaPreImagen);
+        }
+
+        [Fact]
         public void PA5C_REG_05_ElOrdenDeEjecucionDeArreglo_EsElDeLaSeccion5()
         {
-            // VERDE A PROPÓSITO: Create Pre 5 (S-03), 10 (S-19); Post 10 (S-20). Update Pre 5 (S-10), 10 (S-21); Post 10 (S-22).
+            // VERDE A PROPÓSITO: Create Pre 5 (S-03), 10 (S-19); Post 10 (S-20). Update Pre 5 (S-10), 10 (S-21), 20 (S-38); Post 10 (S-22).
             var filas = DocumentoDeSteps.Filas().Where(f => f.Tabla == "sanic_carp_tbl_arreglo").ToList();
 
             Assert.Equal(new[] { 5, 10 }, filas.Where(f => f.Mensaje == "Create" && f.Etapa == 20).Select(f => f.Orden).OrderBy(o => o).ToArray());
             Assert.Equal(new[] { 10 }, filas.Where(f => f.Mensaje == "Create" && f.Etapa == 40).Select(f => f.Orden).ToArray());
-            Assert.Equal(new[] { 5, 10 }, filas.Where(f => f.Mensaje == "Update" && f.Etapa == 20).Select(f => f.Orden).OrderBy(o => o).ToArray());
+            Assert.Equal(new[] { 5, 10, 20 }, filas.Where(f => f.Mensaje == "Update" && f.Etapa == 20).Select(f => f.Orden).OrderBy(o => o).ToArray());   // 20 = S-38 (documento firmado, 2026-11-03)
             Assert.Equal(new[] { 10 }, filas.Where(f => f.Mensaje == "Update" && f.Etapa == 40).Select(f => f.Orden).ToArray());
         }
 

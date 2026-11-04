@@ -226,7 +226,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion
                 "sanic_fechaformalizacion", "sanic_comentarios", "sanic_clienteid", "sanic_oficialid"
             }, t.DatosDelAcuerdo);
             AssertConjunto("libres", new[] { "sanic_conversacionid" }, t.Libres);
-            AssertConjunto("aparte", new[] { "ownerid", "statecode", "statuscode" }, t.Aparte);
+            // 2026-11-03: sanic_documentofirmado (archivo) la rige S-38 (ReglasDeDocumentoFirmado), no la regla de las 43 columnas: va aparte, como sanic_archivo seria de otro step.
+            AssertConjunto("aparte", new[] { "ownerid", "statecode", "statuscode", "sanic_documentofirmado" }, t.Aparte);
         }
 
         [Fact]

@@ -138,7 +138,7 @@ namespace Sanic.Carp.Plugins.Dominio
                         "sanic_saldoinicial", "sanic_montoabonado", "sanic_plazo", "sanic_cuotamensual", "sanic_fechainicio", "sanic_fechafin",
                         "sanic_cuentadebitar", "sanic_fechaformalizacion", "sanic_comentarios", "sanic_clienteid", "sanic_oficialid"),
                     libres: Lista("sanic_conversacionid"),
-                    aparte: Lista("ownerid", "statecode", "statuscode"))
+                    aparte: Lista("ownerid", "statecode", "statuscode", "sanic_documentofirmado"))
             },
             {
                 TablaCuota, new ColumnasDeTabla(TablaCuota,

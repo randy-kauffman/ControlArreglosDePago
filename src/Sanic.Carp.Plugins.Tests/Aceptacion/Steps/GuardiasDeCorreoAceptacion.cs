@@ -70,15 +70,15 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         }
 
         [Fact]
-        public void PA5F_REG_01c_LaSeccion5TieneLosTreintaYSieteRegistros_DeS01AS37_SinHuecosNiRepetidos()
+        public void PA5F_REG_01c_LaSeccion5TieneLosTreintaYOchoRegistros_DeS01AS38_SinHuecosNiRepetidos()
         {
-            // VERDE A PROPÓSITO: 37 registros (36 + S-37) sobre 21 clases. Una fila que se pierda al editar el documento, o un número repetido, lo delata.
+            // VERDE A PROPÓSITO: 38 registros (36 + S-37 + S-38, documento firmado, 2026-11-03) sobre 22 clases. Una fila que se pierda al editar el documento, o un número repetido, lo delata.
             var filas = DocumentoDeSteps.Filas();
 
-            Assert.Equal(37, filas.Count);
-            Assert.Equal(Enumerable.Range(1, 37).Select(n => "S-" + n.ToString("D2", System.Globalization.CultureInfo.InvariantCulture)).ToArray(),
+            Assert.Equal(38, filas.Count);
+            Assert.Equal(Enumerable.Range(1, 38).Select(n => "S-" + n.ToString("D2", System.Globalization.CultureInfo.InvariantCulture)).ToArray(),
                 filas.Select(f => f.Numero).OrderBy(n => n, StringComparer.Ordinal).ToArray());
-            Assert.Equal(21, filas.Select(f => f.Clase).Distinct(StringComparer.Ordinal).Count());
+            Assert.Equal(22, filas.Select(f => f.Clase).Distinct(StringComparer.Ordinal).Count());
         }
 
         [Fact]

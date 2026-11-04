@@ -59,4 +59,57 @@ namespace Sanic.Carp.Plugins.Datos
             return new CuotasDataverse(_s).HayPagos(arregloId);
         }
     }
+
+    /// <summary>
+    /// <see cref="ILecturasDelDocumento"/> con el servicio de SYSTEM (diseno/03 2.6, "Documento firmado"). UNA consulta por id con <c>statecode</c>, <c>statuscode</c>, <c>sanic_fechacongelamiento</c>,
+    /// <c>sanic_documentofirmado</c> (el id del archivo) y <c>sanic_documentofirmado_name</c> (el nombre, que la plataforma completa al cerrar la subida). Dev omite las columnas nulas: una ausente es
+    /// "sin valor". Un par statecode/statuscode que no existe deja el estado en <c>null</c> (la regla falla cerrado). <c>null</c> ⇒ <see cref="ArgumentNullException"/> al construirse.
+    /// </summary>
+    internal sealed class LecturasDelDocumentoDataverse : ILecturasDelDocumento
+    {
+        private const string ColEstado = "statecode";
+        private const string ColMotivoDeEstado = "statuscode";
+        private const string ColCongelamiento = "sanic_fechacongelamiento";
+        private const string ColDocumento = "sanic_documentofirmado";
+        private const string ColNombreDelDocumento = "sanic_documentofirmado_name";
+
+        private readonly IOrganizationService _s;
+
+        public LecturasDelDocumentoDataverse(IOrganizationService servicio)
+        {
+            if (servicio == null) throw new ArgumentNullException(nameof(servicio));
+            _s = servicio;
+        }
+
+        /// <inheritdoc />
+        public FichaDelDocumentoFirmado FichaDelArreglo(Guid arregloId)
+        {
+            var fila = new ArreglosDataverse(_s).Leer(arregloId, new[] { ColEstado, ColMotivoDeEstado, ColCongelamiento, ColDocumento, ColNombreDelDocumento });
+            if (fila == null) return null;
+
+            var estado = Opcion(fila, ColEstado);
+            var motivo = Opcion(fila, ColMotivoDeEstado);
+            EstadoDeArreglo? conocido = null;
+            if (estado.HasValue && motivo.HasValue) conocido = Estados.DeArreglo(new EstadoEfectivo(estado.Value, motivo.Value));
+
+            object congelamiento;
+            fila.Valores.TryGetValue(ColCongelamiento, out congelamiento);
+            object archivo;
+            fila.Valores.TryGetValue(ColDocumento, out archivo);
+            object nombre;
+            fila.Valores.TryGetValue(ColNombreDelDocumento, out nombre);
+            var texto = nombre as string;
+            var hayNombre = !string.IsNullOrWhiteSpace(texto);
+
+            return new FichaDelDocumentoFirmado(conocido, congelamiento != null, archivo != null || hayNombre, hayNombre ? texto : null);
+        }
+
+        private static int? Opcion(FilaDeDatos fila, string columna)
+        {
+            object valor;
+            if (!fila.Valores.TryGetValue(columna, out valor)) return null;
+            var opcion = valor as ValorDeOpcion;
+            return opcion == null ? (int?)null : opcion.Valor;
+        }
+    }
 }
