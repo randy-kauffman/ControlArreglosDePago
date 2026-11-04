@@ -480,6 +480,10 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
                     if (numeroPrevio == null) sinCredito.Add(ColNumeroProducto);
                     if (sinCredito.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_006.Crear(Lista(sinCredito)));
 
+                    // D-43 (2026-11-04): un credito no tiene dos Vigentes. Va ANTES del consecutivo: si otro arreglo se formalizo despues de imprimir, la razon real es esta.
+                    var otrosVigentes = consecutivos.VigentesDelCredito((ProductoCrediticio)productoPrevio.Value, numeroPrevio, pedido.ArregloId);
+                    if (otrosVigentes.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_030.Crear(NumeroParaElMensaje(otrosVigentes)));
+
                     // El consecutivo se recalcula con el producto y el numero de la pre-imagen (2.0.5): otro arreglo del credito pudo formalizarse despues de imprimir.
                     var producto = (ProductoCrediticio)productoPrevio.Value;
                     var existentes = consecutivos.NumerosDelCredito(producto, numeroPrevio);
@@ -511,6 +515,18 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
                     if (string.IsNullOrWhiteSpace(Valor(pedido.Target, ColMotivoReapertura) as string)) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_015.Crear());
                     if (!jefatura.EsJefatura()) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_016.Crear());
 
+                    // D-43 (2026-11-04): Terminado -> Vigente tampoco puede dejar dos Vigentes en el credito. Reabrir un Vigente (descongelar) no crea otro: no se revisa.
+                    if (gesto == Gesto.ReabrirTerminado)
+                    {
+                        var productoDelCredito = Entero(Valor(preImagen, ColProducto));
+                        var numeroDelCredito = NormalizadorDeTexto.NumeroDeProducto(Valor(preImagen, ColNumeroProducto) as string);
+                        if (productoDelCredito.HasValue && numeroDelCredito != null)
+                        {
+                            var otros = consecutivos.VigentesDelCredito((ProductoCrediticio)productoDelCredito.Value, numeroDelCredito, pedido.ArregloId);
+                            if (otros.Count > 0) return ResultadoDeEvaluacion.Rechazar(CodigosDeError.ARR_031.Crear(NumeroParaElMensaje(otros)));
+                        }
+                    }
+
                     // 10 claves; NUNCA statecode ni statuscode: el Vigente lo trae el Target (V-5).
                     escribir[ColReabiertoPor] = actor;
                     escribir[ColFechaReapertura] = ahora;
@@ -527,6 +543,12 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
                     break;
             }
             return Cerrar(pedido, escribir);
+        }
+
+        private static string NumeroParaElMensaje(IReadOnlyList<int?> numeros)
+        {
+            foreach (var n in numeros) if (n.HasValue) return n.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return string.Empty;
         }
 
         private static string ColumnaDelGesto(Gesto gesto)

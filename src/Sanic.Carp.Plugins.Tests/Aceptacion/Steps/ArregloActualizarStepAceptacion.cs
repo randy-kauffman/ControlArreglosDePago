@@ -74,7 +74,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Steps
         {
             const string numeroDeProducto = "ZZF-CREDITO-0001";
             foreach (var numero in numerosYaUsados)
-                e.Sembrar(Fila(e, EstadoDeArreglo.Vigente).Con("sanic_numeroproducto", numeroDeProducto).Con("sanic_numeroarreglo", numero));
+                e.Sembrar(Fila(e, EstadoDeArreglo.Terminado).Con("sanic_numeroproducto", numeroDeProducto).Con("sanic_numeroarreglo", numero));   // D-43: un credito no tiene dos vigentes
             return e.Sembrar(Fila(e, EstadoDeArreglo.Borrador, congelado: true).Con("sanic_numeroproducto", numeroDeProducto));
         }
 

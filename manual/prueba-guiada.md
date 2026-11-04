@@ -324,6 +324,8 @@ Notas:
 | 12.10 | A | En el arreglo 1, **Generar formato** | El mensaje avisa que **se vuelve a congelar** con los datos actuales. Descarga el `.xlsx` | [ ] OK [ ] Falla |
 | 12.11 | A | Recargue el arreglo 1 (Ctrl+F5) y mire **Cierre → Formalizacion**. Hasta el paso 12.8 el campo estaba bloqueado | **Documento firmado** está **habilitado** (hay un papel nuevo que firmar). **Conversación de origen** sigue bloqueada | [ ] OK [ ] Falla |
 | 12.12 | A | En **Documento firmado** del arreglo 1 adjunte otro PDF, JPG o PNG de prueba (reemplaza al anterior) | Queda el nombre del archivo nuevo. Con un `.txt` o `.docx` el sistema responde "El documento firmado debe ser PDF, JPG o PNG." | [ ] OK [ ] Falla |
+| 12.13 | A | **Error esperado (un solo vigente por crédito).** Cree un arreglo nuevo (borrador) con el cliente `HUMO GUIA Cliente Uno` y **Número de préstamo o tarjeta** = `HUMOGUIA0001` (el mismo crédito del arreglo 1, que está Vigente). **Generar formato**, adjunte el documento firmado de prueba y pulse **Formalizar** | "Este crédito ya tiene un arreglo vigente (1). Anúlelo antes de formalizar otro." (código interno CARP-ARR-030, no se muestra). El borrador sigue como borrador | [ ] OK [ ] Falla |
+| 12.14 | A | En ese borrador, quite el documento firmado, **Desbloquear** si hace falta, escriba **Motivo de descarte** = `Prueba guiada HUMO` y pulse **Descartar** | Estado **Descartado**. El arreglo 1 sigue Vigente | [ ] OK [ ] Falla |
 
 Notas:
 

@@ -77,6 +77,26 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.Datos
         }
 
         [Fact]
+        public void PA_ARD_13_VigentesDelCredito_SoloLosVigentesDelMismoCredito_SinElExcluido()
+        {
+            // D-43 (2026-11-04): un credito no tiene dos vigentes; la lectura excluye al propio arreglo.
+            var almacen = new OrganizationServiceEnMemoria();
+            const string credito = "ZZF-VIG-1";
+            var propio = Sembrar(almacen, DelCredito(EstadoDeArreglo.Vigente, ProductoCrediticio.Prestamo, credito).Con("sanic_numeroarreglo", 1));
+            Sembrar(almacen, DelCredito(EstadoDeArreglo.Vigente, ProductoCrediticio.Prestamo, credito).Con("sanic_numeroarreglo", 2));
+            Sembrar(almacen, DelCredito(EstadoDeArreglo.Terminado, ProductoCrediticio.Prestamo, credito).Con("sanic_numeroarreglo", 3));
+            Sembrar(almacen, DelCredito(EstadoDeArreglo.Borrador, ProductoCrediticio.Prestamo, credito));
+            Sembrar(almacen, DelCredito(EstadoDeArreglo.Vigente, ProductoCrediticio.Tarjeta, credito).Con("sanic_numeroarreglo", 9));
+            Sembrar(almacen, DelCredito(EstadoDeArreglo.Vigente, ProductoCrediticio.Prestamo, "ZZF-VIG-2").Con("sanic_numeroarreglo", 8));
+            var repo = new ArreglosDataverse(almacen);
+
+            Assert.Equal(new int?[] { 2 }, repo.VigentesDelCredito(ProductoCrediticio.Prestamo, credito, propio).ToArray());
+            Assert.Equal(new int?[] { 1, 2 }, repo.VigentesDelCredito(ProductoCrediticio.Prestamo, credito, Guid.NewGuid()).OrderBy(n => n).ToArray());
+            Assert.Empty(repo.VigentesDelCredito(ProductoCrediticio.Prestamo, "ZZF-NADA", Guid.NewGuid()));
+            Assert.Throws<ArgumentException>(() => repo.VigentesDelCredito(ProductoCrediticio.Prestamo, "", Guid.NewGuid()));
+        }
+
+        [Fact]
         public void PA_ARD_04_NumerosDelCredito_SinArreglosDevuelveVacio_YUnNumeroDeProductoVacioLanza()
         {
             var almacen = new OrganizationServiceEnMemoria();

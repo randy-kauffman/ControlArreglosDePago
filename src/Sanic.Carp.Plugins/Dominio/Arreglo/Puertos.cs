@@ -13,6 +13,12 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
     {
         /// <summary>Los <c>sanic_numeroarreglo</c> no nulos de todos los arreglos del crédito (<c>producto</c>, <c>numeroProducto</c> ya normalizado). Sin orden.</summary>
         IReadOnlyList<int> NumerosDelCredito(ProductoCrediticio producto, string numeroProducto);
+
+        /// <summary>
+        /// Los <c>sanic_numeroarreglo</c> de los OTROS arreglos VIGENTES del crédito (<paramref name="excluirId"/> no cuenta: es el arreglo que se formaliza o reabre). Un crédito no puede tener dos vigentes a la vez
+        /// (D-43, 2026-11-04). Vacío ⇒ no hay otro vigente. Un vigente sin número (no debería existir) aparece como <c>null</c>. Se lee con SYSTEM: el llamador puede no ver todos los arreglos.
+        /// </summary>
+        IReadOnlyList<int?> VigentesDelCredito(ProductoCrediticio producto, string numeroProducto, Guid excluirId);
     }
 
     /// <summary>

@@ -26,6 +26,12 @@ namespace Sanic.Carp.Plugins.Datos
             // Sin filtro de estado: el consecutivo no se reutiliza (2.0.5). La paginacion la hace el repositorio.
             return new ArreglosDataverse(_s).NumerosDelCredito(producto, numeroProducto);
         }
+
+        /// <inheritdoc />
+        public IReadOnlyList<int?> VigentesDelCredito(ProductoCrediticio producto, string numeroProducto, Guid excluirId)
+        {
+            return new ArreglosDataverse(_s).VigentesDelCredito(producto, numeroProducto, excluirId);
+        }
     }
 
     /// <summary>

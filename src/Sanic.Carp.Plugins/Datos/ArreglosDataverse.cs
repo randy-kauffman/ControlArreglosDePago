@@ -47,6 +47,22 @@ namespace Sanic.Carp.Plugins.Datos
             return numeros;
         }
 
+        public IReadOnlyList<int?> VigentesDelCredito(ProductoCrediticio producto, string numeroProducto, Guid excluirId)
+        {
+            if (string.IsNullOrEmpty(numeroProducto)) throw new ArgumentException("El numero de producto es obligatorio.", nameof(numeroProducto));
+            var vigente = Estados.De(EstadoDeArreglo.Vigente);
+            var consulta = new QueryExpression(Tabla) { ColumnSet = new ColumnSet("sanic_numeroarreglo") };
+            consulta.Criteria.AddCondition("sanic_producto", ConditionOperator.Equal, (int)producto);
+            consulta.Criteria.AddCondition("sanic_numeroproducto", ConditionOperator.Equal, numeroProducto);
+            consulta.Criteria.AddCondition("statecode", ConditionOperator.Equal, vigente.StateCode);
+            consulta.Criteria.AddCondition("statuscode", ConditionOperator.Equal, vigente.StatusCode);
+            consulta.Criteria.AddCondition(AyudaDeConsultas.ColumnaDeId(Tabla), ConditionOperator.NotEqual, excluirId);
+
+            var numeros = new List<int?>();
+            foreach (var arreglo in AyudaDeConsultas.Todas(_servicio, consulta)) numeros.Add(arreglo.GetAttributeValue<int?>("sanic_numeroarreglo"));
+            return numeros;
+        }
+
         public IReadOnlyList<Guid> IdsDeConversacion(Guid conversacionId)
         {
             var consulta = AyudaDeConsultas.SoloId(Tabla);

@@ -29,6 +29,20 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
             Llamadas.Add(new KeyValuePair<ProductoCrediticio, string>(producto, numeroProducto));
             return _numeros;
         }
+
+        /// <summary>Los números de los OTROS vigentes del crédito que la lectura devuelve (por defecto ninguno).</summary>
+        public int?[] Vigentes { get; set; } = new int?[0];
+
+        public List<Guid> ExcluidosEnLasLecturasDeVigentes { get; } = new List<Guid>();
+
+        public List<KeyValuePair<ProductoCrediticio, string>> LlamadasDeVigentes { get; } = new List<KeyValuePair<ProductoCrediticio, string>>();
+
+        public IReadOnlyList<int?> VigentesDelCredito(ProductoCrediticio producto, string numeroProducto, Guid excluirId)
+        {
+            LlamadasDeVigentes.Add(new KeyValuePair<ProductoCrediticio, string>(producto, numeroProducto));
+            ExcluidosEnLasLecturasDeVigentes.Add(excluirId);
+            return Vigentes;
+        }
     }
 
     internal sealed class JefaturaFalsa : IJefatura
@@ -1359,6 +1373,37 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
         }
 
         [Fact]
+        public void PA_ARR_86_D43_Formalizar_ConOtroVigenteEnElCredito_CARP_ARR_030_ConSuNumero_AntesDelConsecutivo()
+        {
+            var consecutivos = new ConsecutivosFalsos(1) { Vigentes = new int?[] { 1 } };
+
+            AssertRechaza(Act(Formalizar(), Previa(EstadoDeArreglo.Borrador, congelado: true), Persona(), consecutivos), CodigosDeError.ARR_030, 1);
+
+            Assert.Equal(new[] { new KeyValuePair<ProductoCrediticio, string>(ProductoCrediticio.Prestamo, "AB12") }, consecutivos.LlamadasDeVigentes.ToArray());
+            Assert.Equal(new[] { IdDelArreglo }, consecutivos.ExcluidosEnLasLecturasDeVigentes.ToArray());
+            Assert.Empty(consecutivos.Llamadas);
+        }
+
+        [Fact]
+        public void PA_ARR_87_D43_Formalizar_SinOtroVigente_PermiteAunqueHayaAnuladosOTerminados()
+        {
+            var consecutivos = new ConsecutivosFalsos(1, 2);
+
+            AssertPermite(Act(Formalizar(), Previa(EstadoDeArreglo.Borrador, congelado: true), Persona(), consecutivos));
+
+            Assert.Single(consecutivos.LlamadasDeVigentes);
+        }
+
+        [Fact]
+        public void PA_ARR_88_D43_Formalizar_LaRazonDelOtroVigenteGanaSobreCARP_ARR_020()
+        {
+            // otro arreglo se formalizo despues de imprimir: el consecutivo tambien no coincide, pero el motivo real es el vigente.
+            var consecutivos = new ConsecutivosFalsos(1, 2, 3) { Vigentes = new int?[] { 3 } };
+
+            AssertRechaza(Act(Formalizar(), Previa(EstadoDeArreglo.Borrador, congelado: true), Persona(), consecutivos), CodigosDeError.ARR_030, 3);
+        }
+
+        [Fact]
         public void PA5C_RAR_145_PA_ARR_26_FormalizarConOtraColumna_CARP_ARR_012_NombrandoLaColumna()
         {
             var consecutivos = new ConsecutivosFalsos(1, 2);
@@ -1478,6 +1523,38 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
             var previa = Previa(EstadoDeArreglo.Terminado, true, "sanic_cantidadreaperturas", null);
 
             AssertEfectosDeReabrir(Act(ReabrirTerminado(), previa, Persona(), jefatura: new JefaturaFalsa(true)), 0);
+        }
+
+        [Fact]
+        public void PA_ARR_89_D43_ReabrirUnTerminado_ConOtroVigenteEnElCredito_CARP_ARR_031_ConSuNumero()
+        {
+            var consecutivos = new ConsecutivosFalsos { Vigentes = new int?[] { 2 } };
+
+            AssertRechaza(Act(ReabrirTerminado(), Previa(EstadoDeArreglo.Terminado, true), Persona(), consecutivos, jefatura: new JefaturaFalsa(true)), CodigosDeError.ARR_031, 2);
+
+            Assert.Equal(new[] { IdDelArreglo }, consecutivos.ExcluidosEnLasLecturasDeVigentes.ToArray());
+        }
+
+        [Fact]
+        public void PA_ARR_90_D43_ReabrirUnTerminado_SinOtroVigente_Permite_YReabrirUnVigenteNoPreguntaPorOtros()
+        {
+            var sinOtro = new ConsecutivosFalsos();
+            AssertEfectosDeReabrir(Act(ReabrirTerminado(), Previa(EstadoDeArreglo.Terminado, true, "sanic_cantidadreaperturas", 0), Persona(), sinOtro, jefatura: new JefaturaFalsa(true)), 0);
+            Assert.Single(sinOtro.LlamadasDeVigentes);
+
+            var conOtro = new ConsecutivosFalsos { Vigentes = new int?[] { 9 } };
+            AssertEfectosDeReabrir(Act(D("sanic_motivoreapertura", "x"), Previa(EstadoDeArreglo.Vigente, true, "sanic_cantidadreaperturas", 0), Persona(), conOtro, jefatura: new JefaturaFalsa(true)), 0);
+            Assert.Empty(conOtro.LlamadasDeVigentes);
+        }
+
+        [Fact]
+        public void PA_ARR_91_D43_ReabrirUnTerminado_SinJefatura_016_AntesDeLeerLosVigentes()
+        {
+            var consecutivos = new ConsecutivosFalsos { Vigentes = new int?[] { 2 } };
+
+            AssertRechaza(Act(ReabrirTerminado(), Previa(EstadoDeArreglo.Terminado, true), Persona(), consecutivos, jefatura: new JefaturaFalsa(false)), CodigosDeError.ARR_016);
+
+            Assert.Empty(consecutivos.LlamadasDeVigentes);
         }
 
         [Fact]

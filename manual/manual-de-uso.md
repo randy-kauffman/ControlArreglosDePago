@@ -148,11 +148,11 @@ Un botón hace una sola cosa y la confirma el servidor. Si el servidor rechaza l
 
 **8. Formalizar.** Aparece en un borrador congelado, una vez que el cliente firmó.
 1. Adjunte el **documento firmado** (el formato firmado y formalizado, escaneado o en foto): pestaña **Cierre**, sección **Formalizacion**, campo **Documento firmado**. Es **uno solo**, **PDF, JPG o PNG**, de hasta 10 MB. El campo solo se habilita cuando el formato ya está generado y el arreglo es un borrador. Para cambiar el archivo, suba otro en el mismo campo mientras el arreglo siga en borrador.
-2. Pulse **Formalizar**. Si todavía no adjuntó el documento, la aplicación se lo avisa y no hace nada más.
+2. Pulse **Formalizar**. Si todavía no adjuntó el documento, la aplicación se lo avisa y no hace nada más. Si el crédito ya tiene otro arreglo vigente, el sistema lo rechaza y dice cuál es: un crédito no puede tener dos arreglos vigentes a la vez, así que primero hay que anular el otro.
 3. Confirme que el cliente firmó el formato impreso y que el documento adjunto es el correcto.
 4. El arreglo pasa a **Vigente** y recibe su número definitivo, que aparece en el mensaje.
 - Una vez Vigente, **nadie cambia el documento** y queda guardado para consultarlo cuando haga falta (con el permiso de datos sensibles, porque lleva la cédula del cliente). Si el Jefe reabre el arreglo, el documento se conserva; cuando se corrigen los datos y se **genera el formato otra vez**, el campo vuelve a habilitarse para subir el documento firmado nuevo (el arreglo sigue Vigente).
-- `CARP-ARR-019`: primero genere el formato. `CARP-ARR-020`: otro arreglo del mismo crédito se formalizó después de imprimir este formato. `CARP-ARR-025`: falta adjuntar el documento firmado. `CARP-ARR-026`: el documento debe ser PDF, JPG o PNG. `CARP-ARR-027`: el documento solo se adjunta o reemplaza en un borrador con el formato ya generado.
+- `CARP-ARR-019`: primero genere el formato. `CARP-ARR-020`: otro arreglo del mismo crédito se formalizó después de imprimir este formato. `CARP-ARR-025`: falta adjuntar el documento firmado. `CARP-ARR-026`: el documento debe ser PDF, JPG o PNG. `CARP-ARR-027`: el documento solo se adjunta o reemplaza en un borrador con el formato ya generado. `CARP-ARR-030`: el crédito ya tiene otro arreglo vigente; anúlelo antes de formalizar este (un crédito tiene a lo sumo un vigente; los borradores sí pueden ser varios).
 
 **9. Descartar.** Aparece en un borrador.
 1. En la pestaña **Cierre**, escriba el **Motivo de descarte**.
@@ -167,7 +167,7 @@ Un botón hace una sola cosa y la confirma el servidor. Si el servidor rechaza l
 **11. Reabrir arreglo (solo el Jefe).** Aparece en un arreglo terminado o en un vigente congelado.
 1. En **Cierre**, escriba el **Motivo de reapertura**.
 2. Pulse **Reabrir arreglo** y confirme. Los datos se descongelan. El próximo formato los vuelve a congelar.
-- `CARP-ARR-015`: falta el motivo. `CARP-ARR-016`: solo la jefatura reabre.
+- `CARP-ARR-015`: falta el motivo. `CARP-ARR-016`: solo la jefatura reabre. `CARP-ARR-031`: no se reabre un arreglo terminado mientras el crédito tenga otro arreglo vigente (anule primero el vigente).
 
 **12. Registrar un pago.** No tiene botón.
 1. En la pestaña **Cuotas**, abra la cuota.
