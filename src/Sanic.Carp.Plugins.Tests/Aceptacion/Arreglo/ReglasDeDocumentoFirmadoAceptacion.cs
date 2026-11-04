@@ -215,11 +215,13 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
         [InlineData("hoja.xlsx")]
         [InlineData("firmado.pdf.exe")]
         [InlineData("animado.gif")]
-        public void PA5G_DOC_22_SubirUnTipoNoPermitido_CARP_ARR_026(string nombre)
+        public void PA5G_DOC_22_SubirConUnNombreLeidoDeUnTipoNoPermitido_Pasa_PorqueEseNombreEsElDelArchivoAnterior_LaBarreraEsFormalizar(string nombre)
         {
             var lecturas = new LecturasDelDocumentoFalsas(Ficha(EstadoDeArreglo.Borrador, congelado: true, conArchivo: true, nombre: nombre));
 
-            AssertRechaza(Evaluar(Sube(), Persona(), lecturas), CodigosDeError.ARR_026);
+            // Dev, 2026-11-04: al subir, el nombre leido es el del archivo anterior; juzgarlo atrapaba al borrador (no se podia reemplazar ni borrar el .txt).
+            AssertPermite(Evaluar(Sube(), Persona(), lecturas));
+            AssertPermite(Evaluar(new Dictionary<string, object> { { "sanic_documentofirmado", null } }, Persona(), lecturas));
         }
 
         [Fact]
@@ -245,8 +247,8 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
 
         [Theory]
         [InlineData("firmado-nuevo.pdf", true)]
-        [InlineData("virus.exe", false)]
-        public void PA5G_DOC_28_UnVigenteReabiertoYVueltoACongelar_AdmiteSubirOReemplazar_ConElMismoControlDeTipo(string nombre, bool pasa)
+        [InlineData("virus.exe", true)]
+        public void PA5G_DOC_28_UnVigenteReabiertoYVueltoACongelar_AdmiteSubirOReemplazar_SinMirarElTipoAnterior(string nombre, bool pasa)
         {
             // 2026-11-03: tras Reabrir y corregir, el siguiente Generar formato congela otra vez (congelamiento POSTERIOR a la reapertura) y se firma un papel nuevo.
             var lecturas = new LecturasDelDocumentoFalsas(Ficha(EstadoDeArreglo.Vigente, congelado: true, conArchivo: true, nombre: nombre,
@@ -255,7 +257,7 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
             var resultado = Evaluar(Sube(), Persona(), lecturas);
 
             if (pasa) AssertPermite(resultado);
-            else AssertRechaza(resultado, CodigosDeError.ARR_026);
+            else AssertRechaza(resultado, CodigosDeError.ARR_027);
         }
 
         [Fact]

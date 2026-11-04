@@ -47,8 +47,7 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
     /// </para>
     /// <para>
     /// <b>Pasos</b> (gana el primero que rechaza). El sistema (<c>EsEscrituraDelSistema</c>, UNA consulta) ⇒ permite (DC-03). Después UNA lectura de la ficha.
-    /// <b>Subida</b>: la ficha no existe, o el arreglo no es un Borrador congelado ni un Vigente reabierto y vuelto a congelar (<see cref="FichaDelDocumentoFirmado.ReabiertoYRecongelado"/>) ⇒ <c>CARP-ARR-027</c>; con nombre de archivo conocido y de un tipo no permitido ⇒ <c>CARP-ARR-026</c> (si el nombre todavía
-    /// no está, la barrera es Formalizar). <b>Formalizar</b> (solo si el origen es Borrador; los demás orígenes los rechaza S-21): sin archivo ⇒ <c>CARP-ARR-025</c>; con archivo cuyo nombre falta o no es de un
+    /// <b>Subida</b>: la ficha no existe, o el arreglo no es un Borrador congelado ni un Vigente reabierto y vuelto a congelar (<see cref="FichaDelDocumentoFirmado.ReabiertoYRecongelado"/>) ⇒ <c>CARP-ARR-027</c>; el tipo NO se valida al subir (el nombre que se lee es el del archivo anterior, medido en Dev el 2026-11-04: validarlo atrapaba al borrador); la barrera del tipo es Formalizar. <b>Formalizar</b> (solo si el origen es Borrador; los demás orígenes los rechaza S-21): sin archivo ⇒ <c>CARP-ARR-025</c>; con archivo cuyo nombre falta o no es de un
     /// tipo permitido ⇒ <c>CARP-ARR-026</c> (falla cerrado). <b>Desbloquear</b> (origen Borrador congelado con archivo) ⇒ <c>CARP-ARR-028</c>: el documento corresponde al formato que se va a invalidar y una persona
     /// no puede borrar un archivo escribiendo <c>null</c> (solo <c>DeleteFile</c> o <c>DELETE</c> a la columna), así que se pide quitarlo antes.
     /// </para>
@@ -100,8 +99,9 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
 
             if (sube)
             {
+                // El tipo NO se mira al subir (medido en Dev, 2026-11-04, H-35): cuando llega el Update oculto de la subida, sanic_documentofirmado_name todavia trae el nombre del archivo ANTERIOR,
+                // asi que un .txt pasaba y atrapaba al borrador (el .pdf que lo reemplazaba, y hasta el DELETE, se juzgaban por el .txt). La barrera del tipo es Formalizar (-026), donde el nombre ya es el vigente.
                 if (!PuedeCambiarElDocumento(ficha)) return Rechazo(CodigosDeError.ARR_027);
-                if (!string.IsNullOrWhiteSpace(ficha.NombreDelArchivo) && !TipoPermitido(ficha.NombreDelArchivo)) return Rechazo(CodigosDeError.ARR_026);
             }
 
             // Formalizar y Desbloquear solo existen desde un Borrador; los demas origenes los resuelve S-21 con su propio codigo.
