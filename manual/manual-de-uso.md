@@ -102,7 +102,7 @@ No hay botón. El Jefe cambia el campo **Oficial asignado** y guarda. Si un Ofic
 
 ## 5. Los botones (gestos)
 
-Un botón hace una sola cosa y la confirma el servidor. Si el servidor rechaza la acción, usted ve un mensaje que empieza con un código `CARP-...`: el texto explica qué falta. Copie el código si tiene que avisar a soporte.
+Un botón hace una sola cosa y la confirma el servidor. Si el servidor rechaza la acción, usted ve un mensaje que explica qué falta. Los mensajes no muestran códigos internos: si tiene que avisar a soporte, copie el texto del mensaje (o descargue el archivo de registro) e indique la hora. Los códigos `CARP-...` que aparecen en este manual son una referencia interna para el equipo de soporte; usted no los ve en pantalla.
 
 **Campos de gesto.** Resultado, motivo y detalle de la conversación, y los motivos de descarte, anulación y reapertura del arreglo, solo se guardan **con su botón**. Si escribe el motivo y guarda con Guardar o con el guardado automático, la aplicación lo detiene y le pide que use el botón.
 
