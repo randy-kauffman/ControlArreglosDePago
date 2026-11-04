@@ -151,7 +151,7 @@ Un botón hace una sola cosa y la confirma el servidor. Si el servidor rechaza l
 2. Pulse **Formalizar**. Si todavía no adjuntó el documento, la aplicación se lo avisa y no hace nada más.
 3. Confirme que el cliente firmó el formato impreso y que el documento adjunto es el correcto.
 4. El arreglo pasa a **Vigente** y recibe su número definitivo, que aparece en el mensaje.
-- Una vez Vigente, **nadie cambia el documento** y queda guardado para consultarlo cuando haga falta (con el permiso de datos sensibles, porque lleva la cédula del cliente). Si el Jefe reabre el arreglo, el documento se conserva.
+- Una vez Vigente, **nadie cambia el documento** y queda guardado para consultarlo cuando haga falta (con el permiso de datos sensibles, porque lleva la cédula del cliente). Si el Jefe reabre el arreglo, el documento se conserva; cuando se corrigen los datos y se **genera el formato otra vez**, el campo vuelve a habilitarse para subir el documento firmado nuevo (el arreglo sigue Vigente).
 - `CARP-ARR-019`: primero genere el formato. `CARP-ARR-020`: otro arreglo del mismo crédito se formalizó después de imprimir este formato. `CARP-ARR-025`: falta adjuntar el documento firmado. `CARP-ARR-026`: el documento debe ser PDF, JPG o PNG. `CARP-ARR-027`: el documento solo se adjunta o reemplaza en un borrador con el formato ya generado.
 
 **9. Descartar.** Aparece en un borrador.
@@ -216,7 +216,7 @@ Mensajes frecuentes al guardar:
 | Estado | Cómo se llega | Qué se puede hacer |
 |---|---|---|
 | **Borrador** | Al registrar | Corregir, generar formato (congela), adjuntar el documento firmado, desbloquear (sin documento), formalizar (con documento), descartar |
-| **Vigente** | Formalizar | Registrar pagos, generar formato, anular; el Jefe puede reabrir. El documento firmado y la conversación de origen ya no se cambian |
+| **Vigente** | Formalizar | Registrar pagos, generar formato, anular; el Jefe puede reabrir. La conversación de origen ya no se cambia, y el documento firmado solo si el Jefe reabre y se genera el formato de nuevo |
 | **Terminado** | Solo, cuando todas las cuotas tienen un pago registrado (un pago parcial cuenta) | Generar formato; el Jefe puede reabrir |
 | **Anulado** | Anular | Solo consulta y formato |
 | **Descartado** | Descartar | Solo consulta y formato |

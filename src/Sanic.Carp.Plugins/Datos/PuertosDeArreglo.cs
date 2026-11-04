@@ -72,6 +72,7 @@ namespace Sanic.Carp.Plugins.Datos
         private const string ColCongelamiento = "sanic_fechacongelamiento";
         private const string ColDocumento = "sanic_documentofirmado";
         private const string ColNombreDelDocumento = "sanic_documentofirmado_name";
+        private const string ColReapertura = "sanic_fechareapertura";
 
         private readonly IOrganizationService _s;
 
@@ -84,7 +85,7 @@ namespace Sanic.Carp.Plugins.Datos
         /// <inheritdoc />
         public FichaDelDocumentoFirmado FichaDelArreglo(Guid arregloId)
         {
-            var fila = new ArreglosDataverse(_s).Leer(arregloId, new[] { ColEstado, ColMotivoDeEstado, ColCongelamiento, ColDocumento, ColNombreDelDocumento });
+            var fila = new ArreglosDataverse(_s).Leer(arregloId, new[] { ColEstado, ColMotivoDeEstado, ColCongelamiento, ColReapertura, ColDocumento, ColNombreDelDocumento });
             if (fila == null) return null;
 
             var estado = Opcion(fila, ColEstado);
@@ -94,6 +95,8 @@ namespace Sanic.Carp.Plugins.Datos
 
             object congelamiento;
             fila.Valores.TryGetValue(ColCongelamiento, out congelamiento);
+            object reapertura;
+            fila.Valores.TryGetValue(ColReapertura, out reapertura);
             object archivo;
             fila.Valores.TryGetValue(ColDocumento, out archivo);
             object nombre;
@@ -101,7 +104,7 @@ namespace Sanic.Carp.Plugins.Datos
             var texto = nombre as string;
             var hayNombre = !string.IsNullOrWhiteSpace(texto);
 
-            return new FichaDelDocumentoFirmado(conocido, congelamiento != null, archivo != null || hayNombre, hayNombre ? texto : null);
+            return new FichaDelDocumentoFirmado(conocido, congelamiento != null, archivo != null || hayNombre, hayNombre ? texto : null, congelamiento as DateTime?, reapertura as DateTime?);
         }
 
         private static int? Opcion(FilaDeDatos fila, string columna)

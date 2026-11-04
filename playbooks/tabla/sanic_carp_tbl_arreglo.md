@@ -435,7 +435,7 @@ Advertencias: el idioma base del entorno de desarrollo es 1033. Las etiquetas so
         "1033": "Documento firmado",
         "3082": "Documento firmado"
       },
-      "descripcion": "PDF, JPG o PNG del formato firmado por el cliente: uno solo. Lo adjunta el oficial en un borrador con el formato ya generado y es obligatorio para formalizar; desde que el arreglo es vigente solo lo cambia el sistema. Se guarda solo en Dataverse. Lleva la cédula del cliente: seguridad por columna y auditoría.",
+      "descripcion": "PDF, JPG o PNG del formato firmado por el cliente: uno solo. Lo adjunta el oficial en un borrador con el formato ya generado y es obligatorio para formalizar; desde que el arreglo es vigente solo lo cambia el sistema, salvo si se reabre y se vuelve a congelar el formato. Se guarda solo en Dataverse. Lleva la cédula del cliente: seguridad por columna y auditoría.",
       "tipo": "archivo",
       "requerida": false,
       "protegida": true,

@@ -56,10 +56,13 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
             return new ValorDeOpcion(Estados.De(estado).StateCode);
         }
 
-        private static FichaDelDocumentoFirmado Ficha(EstadoDeArreglo? estado, bool congelado = true, bool conArchivo = false, string nombre = null)
+        private static FichaDelDocumentoFirmado Ficha(EstadoDeArreglo? estado, bool congelado = true, bool conArchivo = false, string nombre = null,
+            DateTime? fechaDeCongelamiento = null, DateTime? fechaDeReapertura = null)
         {
-            return new FichaDelDocumentoFirmado(estado, congelado, conArchivo, nombre);
+            return new FichaDelDocumentoFirmado(estado, congelado, conArchivo, nombre, fechaDeCongelamiento, fechaDeReapertura);
         }
+
+        private static readonly DateTime Reapertura = new DateTime(2026, 11, 10, 9, 0, 0, DateTimeKind.Utc);
 
         private static IdentidadContadora Persona()
         {
@@ -238,6 +241,70 @@ namespace Sanic.Carp.Plugins.Tests.Aceptacion.DominioArreglo
             var lecturas = new LecturasDelDocumentoFalsas(Ficha(estado, congelado, conArchivo: true, nombre: "firmado.pdf"));
 
             AssertRechaza(Evaluar(Sube(), Persona(), lecturas), CodigosDeError.ARR_027);
+        }
+
+        [Theory]
+        [InlineData("firmado-nuevo.pdf", true)]
+        [InlineData("virus.exe", false)]
+        public void PA5G_DOC_28_UnVigenteReabiertoYVueltoACongelar_AdmiteSubirOReemplazar_ConElMismoControlDeTipo(string nombre, bool pasa)
+        {
+            // 2026-11-03: tras Reabrir y corregir, el siguiente Generar formato congela otra vez (congelamiento POSTERIOR a la reapertura) y se firma un papel nuevo.
+            var lecturas = new LecturasDelDocumentoFalsas(Ficha(EstadoDeArreglo.Vigente, congelado: true, conArchivo: true, nombre: nombre,
+                fechaDeCongelamiento: Reapertura.AddDays(2), fechaDeReapertura: Reapertura));
+
+            var resultado = Evaluar(Sube(), Persona(), lecturas);
+
+            if (pasa) AssertPermite(resultado);
+            else AssertRechaza(resultado, CodigosDeError.ARR_026);
+        }
+
+        [Fact]
+        public void PA5G_DOC_29_UnVigenteReabiertoPeroTodaviaSinCongelar_NoAdmiteSubir_CARP_ARR_027()
+        {
+            var lecturas = new LecturasDelDocumentoFalsas(Ficha(EstadoDeArreglo.Vigente, congelado: false, conArchivo: true, nombre: "firmado.pdf", fechaDeCongelamiento: null, fechaDeReapertura: Reapertura));
+
+            AssertRechaza(Evaluar(Sube(), Persona(), lecturas), CodigosDeError.ARR_027);
+        }
+
+        [Theory]
+        [InlineData(-2)]
+        [InlineData(0)]
+        public void PA5G_DOC_30_UnVigenteCuyoCongelamientoNoEsPosteriorALaReapertura_NoAdmiteSubir_CARP_ARR_027(int dias)
+        {
+            // Congelado antes de la reapertura (dato incoherente) o en el mismo instante: no hay evidencia de un formato nuevo.
+            var lecturas = new LecturasDelDocumentoFalsas(Ficha(EstadoDeArreglo.Vigente, congelado: true, conArchivo: true, nombre: "firmado.pdf",
+                fechaDeCongelamiento: Reapertura.AddDays(dias), fechaDeReapertura: Reapertura));
+
+            AssertRechaza(Evaluar(Sube(), Persona(), lecturas), CodigosDeError.ARR_027);
+        }
+
+        [Fact]
+        public void PA5G_DOC_31_UnVigenteFormalizadoYNuncaReabierto_NoAdmiteSubir_AunqueEsteCongelado()
+        {
+            var lecturas = new LecturasDelDocumentoFalsas(Ficha(EstadoDeArreglo.Vigente, congelado: true, conArchivo: true, nombre: "firmado.pdf",
+                fechaDeCongelamiento: Reapertura, fechaDeReapertura: null));
+
+            AssertRechaza(Evaluar(Sube(), Persona(), lecturas), CodigosDeError.ARR_027);
+        }
+
+        [Fact]
+        public void PA5G_DOC_32_UnTerminadoReabiertoYCongelado_NoAdmiteSubir_ElSistemaSiPasa()
+        {
+            // Terminado, Anulado y Descartado nunca: aunque las fechas digan "reabierto y re-congelado".
+            var ficha = Ficha(EstadoDeArreglo.Terminado, congelado: true, conArchivo: true, nombre: "firmado.pdf", fechaDeCongelamiento: Reapertura.AddDays(1), fechaDeReapertura: Reapertura);
+
+            AssertRechaza(Evaluar(Sube(), Persona(), new LecturasDelDocumentoFalsas(ficha)), CodigosDeError.ARR_027);
+            AssertPermite(Evaluar(Sube(), Sistema(), new LecturasDelDocumentoFalsas(ficha)));
+        }
+
+        [Fact]
+        public void PA5G_DOC_33_LaSenalDeReabiertoYRecongelado_SaleDeLasFechas()
+        {
+            Assert.True(Ficha(EstadoDeArreglo.Vigente, true, true, "a.pdf", Reapertura.AddSeconds(1), Reapertura).ReabiertoYRecongelado);
+            Assert.False(Ficha(EstadoDeArreglo.Vigente, true, true, "a.pdf", Reapertura, Reapertura).ReabiertoYRecongelado);
+            Assert.False(Ficha(EstadoDeArreglo.Vigente, true, true, "a.pdf", Reapertura.AddSeconds(-1), Reapertura).ReabiertoYRecongelado);
+            Assert.False(Ficha(EstadoDeArreglo.Vigente, true, true, "a.pdf", null, Reapertura).ReabiertoYRecongelado);
+            Assert.False(Ficha(EstadoDeArreglo.Vigente, true, true, "a.pdf", Reapertura, null).ReabiertoYRecongelado);
         }
 
         [Fact]

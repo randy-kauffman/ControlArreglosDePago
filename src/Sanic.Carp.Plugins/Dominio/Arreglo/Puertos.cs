@@ -56,12 +56,31 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
         /// <summary>El nombre del archivo, o <c>null</c> si no hay.</summary>
         public string NombreDelArchivo { get; }
 
-        public FichaDelDocumentoFirmado(EstadoDeArreglo? estado, bool congelado, bool tieneArchivo, string nombreDelArchivo)
+        /// <summary><c>sanic_fechacongelamiento</c>, o <c>null</c> si no hay.</summary>
+        public DateTime? FechaDeCongelamiento { get; }
+
+        /// <summary><c>sanic_fechareapertura</c> (la escribe Reabrir y nada la vacía), o <c>null</c> si el arreglo nunca se reabrió.</summary>
+        public DateTime? FechaDeReapertura { get; }
+
+        /// <summary>
+        /// ¿Reabierto y vuelto a congelar? El congelamiento es POSTERIOR a la última reapertura: Reabrir vacía el congelamiento y el siguiente Generar formato lo escribe de nuevo, así que
+        /// <c>FechaDeCongelamiento &gt; FechaDeReapertura</c> distingue un arreglo reabierto y re-congelado (hay un papel nuevo que firmar) de uno recién formalizado (nunca reabierto, o
+        /// reabierto y todavía sin congelar). Sin las dos fechas es <c>false</c>.
+        /// </summary>
+        public bool ReabiertoYRecongelado
+        {
+            get { return FechaDeCongelamiento.HasValue && FechaDeReapertura.HasValue && FechaDeCongelamiento.Value > FechaDeReapertura.Value; }
+        }
+
+        public FichaDelDocumentoFirmado(EstadoDeArreglo? estado, bool congelado, bool tieneArchivo, string nombreDelArchivo,
+            DateTime? fechaDeCongelamiento = null, DateTime? fechaDeReapertura = null)
         {
             Estado = estado;
             Congelado = congelado;
             TieneArchivo = tieneArchivo;
             NombreDelArchivo = nombreDelArchivo;
+            FechaDeCongelamiento = fechaDeCongelamiento;
+            FechaDeReapertura = fechaDeReapertura;
         }
     }
 

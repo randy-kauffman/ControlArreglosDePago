@@ -47,7 +47,7 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
     /// </para>
     /// <para>
     /// <b>Pasos</b> (gana el primero que rechaza). El sistema (<c>EsEscrituraDelSistema</c>, UNA consulta) ⇒ permite (DC-03). Después UNA lectura de la ficha.
-    /// <b>Subida</b>: la ficha no existe, o el arreglo no es Borrador, o no está congelado ⇒ <c>CARP-ARR-027</c>; con nombre de archivo conocido y de un tipo no permitido ⇒ <c>CARP-ARR-026</c> (si el nombre todavía
+    /// <b>Subida</b>: la ficha no existe, o el arreglo no es un Borrador congelado ni un Vigente reabierto y vuelto a congelar (<see cref="FichaDelDocumentoFirmado.ReabiertoYRecongelado"/>) ⇒ <c>CARP-ARR-027</c>; con nombre de archivo conocido y de un tipo no permitido ⇒ <c>CARP-ARR-026</c> (si el nombre todavía
     /// no está, la barrera es Formalizar). <b>Formalizar</b> (solo si el origen es Borrador; los demás orígenes los rechaza S-21): sin archivo ⇒ <c>CARP-ARR-025</c>; con archivo cuyo nombre falta o no es de un
     /// tipo permitido ⇒ <c>CARP-ARR-026</c> (falla cerrado). <b>Desbloquear</b> (origen Borrador congelado con archivo) ⇒ <c>CARP-ARR-028</c>: el documento corresponde al formato que se va a invalidar y una persona
     /// no puede borrar un archivo escribiendo <c>null</c> (solo <c>DeleteFile</c> o <c>DELETE</c> a la columna), así que se pide quitarlo antes.
@@ -100,7 +100,7 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
 
             if (sube)
             {
-                if (ficha == null || ficha.Estado != EstadoDeArreglo.Borrador || !ficha.Congelado) return Rechazo(CodigosDeError.ARR_027);
+                if (!PuedeCambiarElDocumento(ficha)) return Rechazo(CodigosDeError.ARR_027);
                 if (!string.IsNullOrWhiteSpace(ficha.NombreDelArchivo) && !TipoPermitido(ficha.NombreDelArchivo)) return Rechazo(CodigosDeError.ARR_026);
             }
 
@@ -116,6 +116,15 @@ namespace Sanic.Carp.Plugins.Dominio.Arreglo
             if (desbloquea && ficha.Congelado && ficha.TieneArchivo) return Rechazo(CodigosDeError.ARR_028);
 
             return ResultadoDeEvaluacion.Permitir();
+        }
+
+        // Se adjunta o reemplaza en un Borrador congelado, o en un Vigente reabierto y vuelto a congelar (2026-11-03: se firma un papel nuevo). Un Vigente recien formalizado, o
+        // reabierto y todavia sin congelar, no; tampoco un Terminado, Anulado o Descartado. Sin ficha, falla cerrado.
+        private static bool PuedeCambiarElDocumento(FichaDelDocumentoFirmado ficha)
+        {
+            if (ficha == null) return false;
+            if (ficha.Estado == EstadoDeArreglo.Borrador) return ficha.Congelado;
+            return ficha.Estado == EstadoDeArreglo.Vigente && ficha.ReabiertoYRecongelado;
         }
 
         // El par que dejaria el Target es el Vigente (statuscode Vigente y, si viene, statecode Activo). Solo mira el Target: el origen se confirma despues con la ficha.

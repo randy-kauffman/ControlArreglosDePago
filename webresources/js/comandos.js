@@ -677,8 +677,22 @@ SanicCarp.Arreglo = (function () {
         }
         var documento = fc.getControl(CAMPO_DOCUMENTO);
         if (documento) {
-            documento.setDisabled(!(enBorrador && estaCongelado(fc)));
+            documento.setDisabled(!((enBorrador && estaCongelado(fc)) || (estado === ESTADO_VIGENTE && reabiertoYRecongelado(fc))));
         }
+    }
+
+    /**
+     * Vigente reabierto y vuelto a congelar: el congelamiento es POSTERIOR a la ultima reapertura (Reabrir vacia el congelamiento y el siguiente Generar formato lo escribe de nuevo;
+     * la fecha de reapertura nunca se vacia). Asi se distingue de un Vigente recien formalizado, donde no hay papel nuevo que firmar. Misma regla que el servidor (diseno/03 2.6).
+     * Sin las dos fechas en el formulario, false.
+     */
+    function reabiertoYRecongelado(fc) {
+        var congelamiento = SanicCarp.Comun.valor(fc, "sanic_fechacongelamiento");
+        var reapertura = SanicCarp.Comun.valor(fc, "sanic_fechareapertura");
+        if (!congelamiento || !reapertura || typeof congelamiento.getTime !== "function" || typeof reapertura.getTime !== "function") {
+            return false;
+        }
+        return congelamiento.getTime() > reapertura.getTime();
     }
 
     function alCargar(executionContext) {

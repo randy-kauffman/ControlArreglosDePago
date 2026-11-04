@@ -322,6 +322,8 @@ Notas:
 | 12.8 | A | **Error esperado.** Abra el arreglo 1 (Vigente). Si ve **Reabrir arreglo**, escriba un motivo en **Cierre** y púlselo | "Solo la jefatura puede reabrir un arreglo.", o el botón no aparece para el Oficial (código interno CARP-ARR-016, no se muestra) | [ ] OK [ ] Falla |
 | 12.9 | B | Abra el arreglo 1. En **Cierre**, **Motivo de reapertura** = `Corrección solicitada por el cliente (HUMO)`. Pulse **Reabrir arreglo** y confirme | Se borra la **Fecha de congelamiento**. Sigue **Vigente** y el **Documento firmado** sigue adjunto | [ ] OK [ ] Falla |
 | 12.10 | A | En el arreglo 1, **Generar formato** | El mensaje avisa que **se vuelve a congelar** con los datos actuales. Descarga el `.xlsx` | [ ] OK [ ] Falla |
+| 12.11 | A | Recargue el arreglo 1 (Ctrl+F5) y mire **Cierre → Formalizacion**. Hasta el paso 12.8 el campo estaba bloqueado | **Documento firmado** está **habilitado** (hay un papel nuevo que firmar). **Conversación de origen** sigue bloqueada | [ ] OK [ ] Falla |
+| 12.12 | A | En **Documento firmado** del arreglo 1 adjunte otro PDF, JPG o PNG de prueba (reemplaza al anterior) | Queda el nombre del archivo nuevo. Con un `.txt` o `.docx` el sistema responde "El documento firmado debe ser PDF, JPG o PNG." | [ ] OK [ ] Falla |
 
 Notas:
 
@@ -380,10 +382,10 @@ Notas:
 | 9 | Pago de cuota | 5 | | | |
 | 10 | Gestos y finalizar | 7 | | | |
 | 11 | Iniciar nueva, unir, reabrir | 12 | | | |
-| 12 | Descartar, anular, reabrir arreglo | 10 | | | |
+| 12 | Descartar, anular, reabrir arreglo, documento nuevo | 12 | | | |
 | 13 | Supervisión | 7 | | | |
 | 14 | Plantilla | 8 | | | |
-| **Total** | | **105 (+2)** | | | |
+| **Total** | | **107 (+2)** | | | |
 
 ### Fallas encontradas
 

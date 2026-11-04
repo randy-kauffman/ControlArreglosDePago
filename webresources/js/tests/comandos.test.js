@@ -195,6 +195,28 @@ test("alCargar en un Borrador sin congelar deshabilita el documento firmado (pri
     assert.strictEqual(f.llamadas.sanic_documentofirmado, true);
 });
 
+test("alCargar en un Vigente reabierto y vuelto a congelar (congelamiento posterior a la reapertura) habilita el documento firmado", function () {
+    const { A } = cargarConRegistro({});
+    const f = formulario({ statuscode: VIGENTE, sanic_fechareapertura: new Date("2026-11-10T09:00:00Z"), sanic_fechacongelamiento: new Date("2026-11-12T09:00:00Z") },
+        ["sanic_conversacionid", "sanic_documentofirmado"]);
+    A.alCargar(f.ctx);
+    assert.strictEqual(f.llamadas.sanic_documentofirmado, false);
+    assert.strictEqual(f.llamadas.sanic_conversacionid, true);   // la conversacion de origen sigue bloqueada en un Vigente
+});
+
+test("alCargar en un Vigente reabierto pero sin congelar, o formalizado y nunca reabierto, deja el documento firmado deshabilitado", function () {
+    const { A } = cargarConRegistro({});
+    const sinCongelar = formulario({ statuscode: VIGENTE, sanic_fechareapertura: new Date("2026-11-10T09:00:00Z"), sanic_fechacongelamiento: null }, ["sanic_documentofirmado"]);
+    A.alCargar(sinCongelar.ctx);
+    assert.strictEqual(sinCongelar.llamadas.sanic_documentofirmado, true);
+    const nuncaReabierto = formulario({ statuscode: VIGENTE, sanic_fechareapertura: null, sanic_fechacongelamiento: new Date("2026-11-12T09:00:00Z") }, ["sanic_documentofirmado"]);
+    A.alCargar(nuncaReabierto.ctx);
+    assert.strictEqual(nuncaReabierto.llamadas.sanic_documentofirmado, true);
+    const anterior = formulario({ statuscode: VIGENTE, sanic_fechareapertura: new Date("2026-11-12T09:00:00Z"), sanic_fechacongelamiento: new Date("2026-11-10T09:00:00Z") }, ["sanic_documentofirmado"]);
+    A.alCargar(anterior.ctx);
+    assert.strictEqual(anterior.llamadas.sanic_documentofirmado, true);
+});
+
 test("alCargar sin los controles en el formulario no rompe (ante la duda no toca nada)", function () {
     const { A } = cargarConRegistro({});
     const f = formulario({ statuscode: VIGENTE }, []);

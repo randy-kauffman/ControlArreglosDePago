@@ -98,7 +98,7 @@ namespace Sanic.Carp.Plugins.Dominio.Errores
         public static readonly DefinicionDeError ARR_024 = new DefinicionDeError("CARP-ARR-024", "El motivo solo se registra junto con su acción (descartar, anular o reabrir).");
         public static readonly DefinicionDeError ARR_025 = new DefinicionDeError("CARP-ARR-025", "Adjunte el documento firmado (PDF, JPG o PNG) antes de formalizar.");
         public static readonly DefinicionDeError ARR_026 = new DefinicionDeError("CARP-ARR-026", "El documento firmado debe ser PDF, JPG o PNG.");
-        public static readonly DefinicionDeError ARR_027 = new DefinicionDeError("CARP-ARR-027", "El documento firmado solo se puede adjuntar o reemplazar en un borrador con el formato ya generado.");
+        public static readonly DefinicionDeError ARR_027 = new DefinicionDeError("CARP-ARR-027", "El documento firmado solo se puede adjuntar o reemplazar en un borrador, o en un arreglo reabierto, con el formato ya generado.");
         public static readonly DefinicionDeError ARR_028 = new DefinicionDeError("CARP-ARR-028", "Quite el documento firmado antes de desbloquear: corresponde al formato impreso que va a dejar de valer.");
         public static readonly DefinicionDeError ARR_029 = new DefinicionDeError("CARP-ARR-029", "La conversación de origen no se puede cambiar una vez formalizado el arreglo.");
         public static readonly DefinicionDeError CUO_001 = new DefinicionDeError("CARP-CUO-001", "En una cuota solo se puede registrar la fecha y el monto de pago. Columna no permitida: {columna}.");
